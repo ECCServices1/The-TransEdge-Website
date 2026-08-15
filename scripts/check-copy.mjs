@@ -113,6 +113,18 @@ const RULES = [
     level: 'warn',
   },
   {
+    id: 'third-person-church',
+    /*
+      "the wider church" and "the early church" mean the body of believers, not
+      TTE, so the pattern requires "church" to follow the article directly and
+      leaves those alone.
+    */
+    pattern: /\b(?:the|this)\s+church\b/i,
+    message:
+      'We write "our church", not "the church" or "this church". The site speaks from inside the community rather than describing it from outside. Use check-copy-ignore on the line if you genuinely mean the church universal.',
+    level: 'error',
+  },
+  {
     id: 'tagline-case',
     pattern: /A Change is Inevitable/,
     message:

@@ -28,7 +28,7 @@ const accounts = GIVING.bank.accounts ?? [];
     <section class="method" aria-labelledby="bank-heading">
       <h2 id="bank-heading">Direct bank transfer</h2>
       <p class="method__note">
-        No fees are taken out, so the full amount reaches the church.
+        No fees are taken out, so the full amount reaches our church.
       </p>
 
       <p class="bank__name">
@@ -39,7 +39,7 @@ const accounts = GIVING.bank.accounts ?? [];
            toggle: a giver should never have to guess which they were meant to use. -->
       <div class="bank__accounts">
         {
-          accounts.map((account, index) => (
+          accounts.map((account) => (
             <dl class="bank">
               {accounts.length > 1 && (
                 <p class="bank__index">Either</p>
@@ -79,9 +79,9 @@ const accounts = GIVING.bank.accounts ?? [];
       <h2 id="deductible-heading">About receipts</h2>
       <div class="prose">
         <p>
-          Giving to the church supports the life of the church: the gatherings, the teams,
-          the building and the people who serve here. It is not a deductible gift, and we
-          will not issue a receipt that suggests otherwise.
+          Giving to our church supports its life: the gatherings, the teams, the building
+          and the people who serve here. It is not a deductible gift, and we will not issue
+          a receipt that suggests otherwise.
         </p>
         <p>
           {FAMILY_ORGS.eccs.name} is our sister organisation and is separately endorsed as a
@@ -182,7 +182,7 @@ const accounts = GIVING.bank.accounts ?? [];
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
   }
 
   .bank__reference {

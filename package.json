@@ -18,7 +18,8 @@
     "tokens:contrast": "node scripts/check-contrast.mjs",
     "fonts:fetch": "node scripts/fetch-fonts.mjs",
     "connect:snapshot": "node scripts/connect-snapshot.mjs",
-    "verify": "npm run check:copy && npm run check:brand && npm run tokens:contrast && npm run check",
+    "verify": "npm run check:copy && npm run check:brand && npm run tokens:contrast && npm run check:quiet-text && npm run check",
+    "check:quiet-text": "node scripts/check-quiet-text.mjs",
     "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs",
     "check:brand": "node scripts/check-brand.mjs",
     "fonts:subset": "node scripts/subset-brand-fonts.mjs"
