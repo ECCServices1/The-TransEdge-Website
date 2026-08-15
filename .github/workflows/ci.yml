@@ -61,6 +61,13 @@ jobs:
       - name: Internal links resolve
         run: npm run check:links
 
+      # A draft page that loses its noindex gets published; a noindex page
+      # nobody recorded stays out of search forever. Both are silent, so the
+      # register, the build and the Lighthouse budget are checked against each
+      # other rather than trusted.
+      - name: Draft register matches the build
+        run: npm run check:noindex
+
       # The generated redirect map must match its source. A hand edit to
       # public/_redirects would otherwise survive until someone noticed in
       # production that a printed QR code had stopped working.

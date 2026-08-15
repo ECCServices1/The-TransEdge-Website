@@ -23,7 +23,8 @@
     "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs",
     "check:brand": "node scripts/check-brand.mjs",
     "fonts:subset": "node scripts/subset-brand-fonts.mjs",
-    "check:links": "node scripts/check-links.mjs"
+    "check:links": "node scripts/check-links.mjs",
+    "check:noindex": "node scripts/check-noindex.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
