@@ -15,6 +15,29 @@ placeholder that looks like a decision is worse than an obvious gap.
 Because each slot already holds its aspect ratio, dropping the real photograph
 in changes no layout and costs no cumulative layout shift.
 
+## What has been supplied
+
+Fifteen frames from an evening event, reviewed August 2026. The assignments
+below are provisional until the files are in the repository and can be cropped
+and graded.
+
+| Slot | The frame | Why |
+|---|---|---|
+| **S1** | Row of the congregation standing in worship, side-on, keyboard and worship leader at right, open door and daylight behind | Faces, ages and backgrounds all legible. The welcome movement's copy is "a congregation of many languages and many countries", and this is that sentence as a photograph |
+| **S6** | The buffet queue. Foil trays, gloved hands serving, people waiting with plates | The most useful frame supplied. It is hospitality rather than performance, it is lit by the room rather than the stage, and it is the only one where a stranger could picture themselves |
+| **S8** | A tight crop of the same buffet frame, on the serving hands | Square, and already in the set |
+| **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
+| **S7** | Provisional. Either the group of four with the roses, or the portrait in the white blazer | Neither is the agreed shot, which is the two senior pastors together and environmental. Needs the pastors to say who is who and whether they want it |
+
+**Still missing after fifteen frames**, and these are the ones the New Here pages
+run on: S2 the recording setup, S3 the entrance from the street, S4 the welcome
+desk, S5 the EdgeKids room, S9 the empty room in morning light.
+
+**No child appears in any supplied frame.** That keeps the consent position
+simple, and it leaves the EdgeKids page with no photograph of children at all. A
+parent reading that page currently sees no evidence that other children are
+there. Worth a shot with consent, or the page carries the reserved slot.
+
 ## The shot list
 
 One Sunday, one volunteer photographer. Ordered by how much the site needs them.
