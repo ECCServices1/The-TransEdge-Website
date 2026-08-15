@@ -21,7 +21,7 @@ import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import CrisisPointer from '../../components/CrisisPointer.astro';
-import { TRANSLATED_LOCALES, getLocale, localeHref } from '../../i18n/locales.mjs';
+import { TRANSLATED_LOCALES, localeHref } from '../../i18n/locales.mjs';
 import { ESSENTIAL_PAGES } from '../../i18n/essential-pages.mjs';
 import { useTranslations, isPublishable } from '../../i18n/ui.mjs';
 import { CHURCH } from '../../data/church.mjs';
@@ -36,9 +36,13 @@ export const getStaticPaths: GetStaticPaths = () =>
     }))
   );
 
+interface Props {
+  localePath: string;
+  page: import('../../i18n/essential-pages.mjs').EssentialPage;
+}
+
 const { localePath, page } = Astro.props;
 
-const locale = getLocale(localePath);
 const t = useTranslations(localePath);
 const reviewed = isPublishable(localePath);
 

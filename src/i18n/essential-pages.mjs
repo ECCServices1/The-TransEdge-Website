@@ -14,7 +14,12 @@
  * language.
  */
 
-/** @typedef {{ slug: string, titleKey: string, kind: 'visit'|'expect'|'find'|'kids'|'contact' }} EssentialPage */
+/**
+ * `titleKey` is checked against the English string set, so a typo here is a
+ * build error rather than a page whose heading silently renders the key.
+ *
+ * @typedef {{ slug: string, titleKey: import('./ui.mjs').UiKey, kind: 'visit'|'expect'|'find'|'kids'|'contact' }} EssentialPage
+ */
 
 /** @type {EssentialPage[]} */
 export const ESSENTIAL_PAGES = [

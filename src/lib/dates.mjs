@@ -33,7 +33,8 @@ export function todayInSydney(now = new Date()) {
 /**
  * The next occurrence of a weekday, as YYYY-MM-DD in Sydney. Today counts, so
  * structured data emitted on a Sunday morning describes that morning.
- * @param {keyof typeof DAY_INDEX} dayName
+ * @param {string} dayName  a weekday name; an unknown name throws rather than
+ *   silently returning today, because a wrong service date is worse than a crash
  */
 export function nextOccurrence(dayName, now = new Date()) {
   const target = DAY_INDEX[dayName];

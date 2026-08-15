@@ -19,6 +19,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   return events.map((event) => ({ params: { slug: event.slug }, props: { event } }));
 };
 
+/* The content layer is JSDoc-typed, so the event shape is imported from there
+   rather than restated here. One definition, checked at the boundary. */
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+}
+
 const { event } = Astro.props;
 
 const location = event.locationName ?? CHURCH.name;

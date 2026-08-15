@@ -10,6 +10,7 @@
  * Adding a locale is a single entry here plus a translation file. Nothing else
  * in the build needs to change.
  */
+/** @type {{ path: string, hreflang: string, dir: 'ltr'|'rtl', endonym: string, english: string, fontStack: string }[]} */
 export const LOCALES = [
   { path: 'en', hreflang: 'en-AU', dir: 'ltr', endonym: 'English', english: 'English', fontStack: 'latin' },
   { path: 'zh', hreflang: 'zh-Hans', dir: 'ltr', endonym: '简体中文', english: 'Mandarin', fontStack: 'sc' },

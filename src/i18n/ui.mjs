@@ -21,7 +21,11 @@
 
 import { LOCALES, DEFAULT_LOCALE } from './locales.mjs';
 
-/** English is the source. Every key here must exist before a locale is translated. */
+/**
+ * English is the source. Every key here must exist before a locale is translated.
+ *
+ * @typedef {keyof typeof en} UiKey
+ */
 export const en = {
   'site.name': 'The Transformation Edge',
   'site.skipToContent': 'Skip to content',
