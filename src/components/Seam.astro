@@ -36,21 +36,27 @@ const { dir = 'ltr' } = Astro.props;
  * The path in seam space. Each vertex sits at a movement boundary, which is
  * what makes the change of angle read as a handoff rather than a wobble.
  *
- *    0    enters at the top, just off the leading edge
- *  180    leans in across the welcome
- *  330    steepens through the vision
- *  520    crosses to the trailing side behind the EdgedIn movement
- *  700    returns, flattening
+ *    0    enters at the top on the trailing side
+ *  180    leans in behind the welcome photograph
+ *  330    eases back out past the vision
+ *  520    swings in across the EdgedIn movement
+ *  700    returns
  *  880    settles vertical into the footer
+ *
+ * The whole path stays in the trailing third, between x 68 and 88. The prose
+ * column is capped at 42 to 46rem inside an 80rem shell, so it ends around 62
+ * per cent on a wide screen. Keeping the seam beyond that is what stops it
+ * reading as a stray line drawn through the headline: it passes behind the
+ * images and the open right-hand space, which is where a fold belongs.
  */
 const PATH = [
-  'M 22 -20',
-  'C 22 60, 14 110, 16 180',
-  'C 18 250, 34 280, 38 330',
-  'C 42 390, 70 430, 74 520',
-  'C 78 600, 52 650, 46 700',
-  'C 40 760, 30 820, 28 880',
-  'C 27 940, 27 980, 27 1020',
+  'M 88 -20',
+  'C 88 60, 82 120, 79 180',
+  'C 76 250, 84 280, 86 330',
+  'C 88 400, 72 450, 70 520',
+  'C 68 600, 78 650, 80 700',
+  'C 82 770, 74 820, 72 880',
+  'C 71 940, 71 980, 71 1020',
 ].join(' ');
 
 /* Right-to-left mirroring is a scaleX on the field in CSS rather than a second
@@ -138,11 +144,11 @@ const maskId = 'seam-lit-window';
       stroke-width: 1;
     }
     .seam {
-      /* Pulled mostly off-canvas: a hint of a spine, not a diagram. */
-      transform: translateX(-30%) scaleX(1.4);
+      /* Pushed mostly off-canvas: a hint of a fold, not a diagram. */
+      transform: translateX(22%) scaleX(1.3);
     }
     .seam-field[data-dir='rtl'] .seam {
-      transform: translateX(30%) scaleX(-1.4);
+      transform: translateX(-22%) scaleX(-1.3);
     }
   }
 

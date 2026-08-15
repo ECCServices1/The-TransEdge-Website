@@ -1,0 +1,40 @@
+{
+  "brand": {
+    "primary": "#303847",
+    "heritage": "#4B576E",
+    "accent-ember": "#E46F3C",
+    "accent-ember-accessible": "#A94722"
+  },
+  "neutral": {
+    "100": "#F6F5F2",
+    "200": "#E9E7E2",
+    "300": "#D8D5CF",
+    "400": "#C7C3BC",
+    "500": "#A7A39C",
+    "600": "#7F7C76",
+    "700": "#5C5A56",
+    "800": "#383A3D",
+    "900": "#171D24"
+  },
+  "semantic": {
+    "text": "#171D24",
+    "text-secondary": "#4B576E",
+    "surface": "#FFFFFF",
+    "surface-warm": "#F6F5F2",
+    "border": "#D8D5CF",
+    "focus": "#A94722",
+    "brand": "#303847",
+    "accent": "#E46F3C"
+  },
+  "usage": {
+    "accent-max-composition": "5%",
+    "accent-in-core-symbol": false
+  },
+  "minimum-size": {
+    "symbol-digital": "16px",
+    "symbol-print": "5mm",
+    "horizontal-with-tagline": "200px / 50mm",
+    "horizontal-compact": "140px / 35mm",
+    "stacked": "96px / 25mm"
+  }
+}

@@ -1,176 +1,139 @@
-# Brand audit and three directions
+# Brand: the approved identity
 
-Section 6 of the brief. See the three directions rendered at every size, on every
-ground, at **`/brand`**. This document is the argument; that page is the evidence.
+**The gate is closed.** The client supplied *TTE Masterbrand Production Suite
+v1.0*, and **A2 Architectural Threshold** is the approved symbol. The three
+exploratory directions produced during week 1 are superseded and have been
+removed from the repository.
 
-## The current mark
+Working reference: **`/brand`**. Supplied guidelines:
+`public/brand/reference/TTE_Masterbrand_Guidelines_v1.0.pdf`.
 
-A circular lockup holding a four-square monogram, a three-line all-caps wordmark
-and the tagline. Palette slate `#4B576E`, cool grey `#A1AAAF`, near-black text.
+## What was supplied
 
-### What is wrong with it
+| Group | Contents |
+|---|---|
+| Vector masters | Horizontal, stacked and symbol cuts in primary, reversed, mono and compact, each as SVG, PDF and EPS |
+| Digital icons | Favicon, app icon and social avatar, SVG plus PNG at 16, 32, 48, 512, 1024 and 1080 |
+| Guidelines and tokens | Guidelines PDF, `tte_brand_tokens.css`, `tte_brand_tokens.json` |
 
-**The circle is decorative.** It adds no meaning and forces everything inside it
-to shrink. A containing circle costs roughly 30 per cent of the available area
-before the mark has said anything. At favicon size, nothing inside survives.
+The wordmark is fully outlined, so the files are portable with no typeface to
+supply alongside them. That was the one step the earlier plan flagged as
+outstanding, and it is now done.
 
-**The monogram is ambiguous.** It spells EDGE read column by column and EGDE read
-left to right. English readers read left to right first. For a mark that has to
-carry a family of organisations, a coin-flip reading is not a quirk, it is a
-defect.
+## The rules that govern everything else
 
-**Five elements compete.** Circle, monogram, wordmark, tagline and the implied
-grid. None can stand alone as an icon, which means there is no icon.
+From the supplied README, verbatim:
 
-**The palette reads corporate.** Measured, the slate is OKLCh lightness 0.456,
-chroma 0.041, hue 263. That chroma is very low. The cool grey is lower again at
-0.012. Low chroma plus cool hue is the palette of a professional services firm,
-and it is not warm.
+> Approved symbol: A2 Architectural Threshold.
+> Primary identity: Deep Slate one-colour mark.
+> Ember is a controlled supporting accent only and must never colour a plane in
+> the core symbol.
 
-**The wordmark fights its context.** Heavily tracked across three lines, so it
-never sits comfortably in a horizontal header, which is where a wordmark spends
-most of its life.
+Plus, from the token file: **accent capped at five per cent of a composition**.
 
-**There are no variants.** No single-colour, no reversed, no dark mode, no app
-icon. Every one of those is needed the week a site goes live.
+These are encoded rather than left to memory:
 
-## What was kept
+- `EdgeMark` takes no colour prop and offers no variant. It inherits
+  `currentColor`, so it is one colour by construction.
+- `npm run check:brand` fails the build if any plane in the vector master is
+  filled with an accent value.
+- The primary action is Deep Slate, not ember. Making every button ember would
+  spend the whole accent budget on furniture. Ember is reserved for the rule
+  device in the lockups, the focus ring, the lit seam and inline accent text.
+- The canvas wash mixes ember at 5 to 9 per cent, so it reads as warmth in the
+  paper rather than as colour.
 
-**The slate.** It holds equity and it measures well: 7.27:1 on white, which is
-AAA. It is carried forward at step 700 of the new ramp as `#4b576e`, the same
-value, not an approximation. Everything else in the slate ramp is built around
-it in OKLCh so each step is a perceptually even move.
+## The palette, as mapped
 
-**The tagline.** "A Change is Inevitable", with a defined relationship to the
-mark: it sits below the wordmark in the stacked lockup, in the display face,
-italic, in the accent. It never sits inside the symbol.
+Primitives are the supplied values, verbatim. The semantic mapping is ours, and
+it is where accessibility is won.
 
-## What was added
-
-**Ember**, a warm accent at hue 42 with chroma up to 0.168. It sits almost
-opposite the slate, which is what gives the pairing its charge, and it is the
-warmth the audit found missing. `ember-600` is `#be4f1b` and clears 4.5:1 on
-both white and the page canvas.
-
-**A nine-step warm neutral ramp** at hue 70, chroma under 0.012, so paper reads
-warm rather than clinical.
-
-Every guaranteed pairing is measured, in both schemes, in
-`docs/colour-contrast-evidence.md`. The check found two real failures during
-build: a button outline and a control border, both below the 3:1 that SC 1.4.11
-requires. Both were fixed before anything shipped.
-
-## The three directions
-
-All three are single symbols on one 32 unit construction grid with a 4 unit
-margin. None contains a letterform, so none can be misread. None sits inside a
-containing circle. All three hold at 16px in one colour.
-
-### The Fold
-
-One plane folded along a diagonal, the two faces offset so the seam reads as a
-gap of light.
-
-The most literal reading of an edge: the line where a surface changes direction.
-Asymmetric, so it carries movement with no added device, and the diagonal gives
-it an obvious relationship to a seam running down a page.
-
-*Against it:* a diagonally divided square is a common construction. Its
-distinctiveness rests entirely on the offset, so the offset must never be
-reduced.
-
-### The Threshold
-
-Two planes standing apart, the opening between them widening as it rises.
-
-A doorway read as pure geometry. The widening gap does the work the tagline
-states without stating it: the way through is already open, and it opens further
-ahead of you. The negative space is the mark, which gives it a genuine reversed
-form rather than an inverted one.
-
-*Against it:* doorway marks are well populated in church identity. The lean and
-the asymmetric widening are what separate it, so both must survive refinement.
-
-### The Crossing
-
-A disc that has met an edge and shifted across it. Two half-discs, sheared apart
-along the line they crossed.
-
-This answers the vision rather than the tagline: a whole form, nations, meeting a
-threshold and moving through it changed. The circle is load-bearing here, which
-is the direct answer to the finding that the present circle is decorative.
-
-*Against it:* the most conceptually loaded of the three, so it needs the most
-explanation, and the least neutral if the family later has to stretch to
-organisations with no crossing story.
-
-## The Edge family
-
-One construction grid, one type system. The symbol does not change between
-organisations, which is what shows the Edge in ECCS is the Edge in TTE. Accent
-and descriptor do the differentiating.
-
-| Organisation | Accent | Descriptor |
+| Supplied | Value | Used as |
 |---|---|---|
-| The Transformation Edge | `ember-600` | Church |
-| Edge Community Care Services | `slate-600` | Community care |
-| EdgedIn Network | `ember-800` | Media and publishing |
+| `brand.primary` | `#303847` | Canvas inverse, primary action, the mark |
+| `brand.heritage` | `#4B576E` | Anchor text, quiet action label |
+| `brand.accent-ember` | `#E46F3C` | Graphic accent only. Never text |
+| `brand.accent-ember-accessible` | `#A94722` | Accent text, focus ring, lit seam |
+| `neutral.100` … `neutral.900` | supplied | Surfaces and text |
 
-ECCS is legally separate and DGR-endorsed, so it keeps its own giving flow,
-receipting, privacy notice and complaints pathway. The shared mark shows the
-relationship; it does not merge the entities.
+One value is not from the supplied file: `--color-ember-light` `#f6895b`,
+derived on the same OKLCh hue (42.7) because plain ember measures **3.72:1** on
+the dark raised surface and fails. It exists to keep the accent usable in dark
+mode, not to change the brand.
 
-## Clear space, minimum sizes, misuse
+Plain ember measures **2.90:1** on the warm surface, which is why the supplied
+palette carries an accessible cut at all. The brand designer anticipated this
+correctly.
 
-Written now so they are not invented later under deadline. They apply to
-whichever direction is chosen.
+All 50 guaranteed pairings pass in both schemes:
+`docs/colour-contrast-evidence.md`.
 
-**Clear space.** One quarter of the symbol's height on all four sides. Nothing
-enters it, including the wordmark in a lockup.
+## How the mark is used on the site
 
-**Minimum sizes.**
+**Symbol.** Inlined from geometry transcribed from
+`tte_symbol_primary.svg`, so it inherits `currentColor` and needs no second
+request. `check:brand` re-reads the master and fails on any drift, so the
+inline copy cannot disagree with the shipped vector.
+
+**Lockup.** The header and footer inline the **compact** cut, read from the
+supplied file at build time with its single fill swapped for `currentColor`.
+One asset, correct on any ground and in both colour schemes, 1.5KB gzipped, no
+request on the critical path, and nothing transcribed by hand.
+
+**Minimum sizes**, enforced in code rather than remembered:
 
 | Use | Minimum |
 |---|---|
-| Symbol, screen | 16px |
-| Symbol, print | 6mm |
-| Horizontal lockup, screen | 120px wide |
-| Horizontal lockup, print | 30mm wide |
-| Stacked lockup, print | 22mm wide |
+| Symbol, digital | 16px, clamped by the component |
+| Symbol, print | 5mm |
+| Horizontal with tagline | 200px / 50mm |
+| Horizontal compact | 140px / 35mm |
+| Stacked | 96px / 25mm |
 
-**Never:**
+## Misuse
 
-- redraw, restretch or rotate the symbol
-- add a containing circle, box or drop shadow
-- recolour outside the palette, or use a gradient inside the symbol
-- place it on a busy photograph without the reversed form and adequate contrast
-- outline it, or set it in an unapproved typeface
-- reduce the offset, the lean or the shear that gives the chosen direction its
-  meaning
-- use the tagline as a substitute for the mark
+- Do not recolour a plane of the symbol, and never with ember.
+- Do not add a containing circle, box, outline or drop shadow.
+- Do not close, narrow or widen the gap between the planes. The gap is the threshold.
+- Do not rotate, stretch, skew or redraw the symbol.
+- Do not set any lockup below its minimum size.
+- Do not rebuild the wordmark in another typeface.
+- Do not place the primary lockup on a busy photograph. Use the reversed cut.
+- Do not use the tagline as a substitute for the mark.
 
-## Producing PDF and EPS
+## Two things to confirm
 
-The SVG set is generated from one geometry source by `npm run brand:export`, so
-there is no second copy to drift. PDF and EPS are converted from those files:
+**1. The tagline case.** The supplied lockup artwork sets the tagline as
+*A change is inevitable*. The locked wording in section 2 of the brief is
+*A Change is Inevitable*, in title case. The site uses the locked wording
+wherever the tagline is set as text; the artwork has not been altered because it
+is a supplied master. Worth resolving before anything goes to print.
 
-```bash
-# from public/brand/
-inkscape crossing-symbol-mono.svg --export-type=pdf --export-filename=crossing-symbol-mono.pdf
-inkscape crossing-symbol-mono.svg --export-type=eps --export-filename=crossing-symbol-mono.eps
-```
+**2. The family lockups.** The supplied README states:
 
-Check the output for three things: the paths are paths and not a raster; the
-fill rule survived; and the document is one colour where it should be.
+> The exact organisation family names and descriptors referenced in section 7
+> were not supplied. The masterbrand and descriptor construction rule are
+> complete; named family lockups remain to be generated when those names are
+> confirmed.
 
-## What happens after the gate
+The names are confirmed in the brief and are listed at `/brand` ready to be
+generated. Until those lockups exist, this site renders no family mark at all.
+An approximated ECCS lockup would be worse than none: ECCS is a separate legal
+entity and its identity is not ours to improvise.
 
-1. One direction is chosen. The other two are set aside, not blended.
-2. Set `ACTIVE_MARK` in `src/lib/brand-marks.mjs`, run
-   `npm run brand:export <key>`, and delete the other directions' files.
-3. The chosen symbol is refined against the construction grid: optical
-   alignment, not mathematical.
-4. The wordmark is drawn and outlined. This is the step that turns the lockups
-   from live text into portable vector.
-5. PDF and EPS are cut, and the asset set is handed over.
-6. High-fidelity screen design begins. Not before.
+## What the earlier audit found
+
+Retained as the record of why the redesign happened. Every finding is answered
+by the supplied identity.
+
+| Finding on the old mark | How the new identity answers it |
+|---|---|
+| The circle was decorative and forced the lockup to shrink inside it | No containing shape. The symbol is the mark |
+| The monogram read EGDE left to right | No letterform in the symbol at all |
+| Five competing elements, none usable as an icon | One symbol, usable at 16px |
+| Palette cool and low in chroma, reading corporate | Ember accent with real chroma, warm neutral ramp |
+| Wordmark tracked across three lines | One line in the compact cut, two in the full |
+| No single-colour, reversed, dark or app-icon variant | All supplied |
+
+The heritage slate `#4B576E` is carried forward in the supplied palette rather
+than dropped, so the equity survives the redesign.

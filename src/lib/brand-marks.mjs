@@ -1,145 +1,142 @@
 /**
- * The Edge symbol: three directions, one construction grid.
+ * The approved Edge symbol: A2 Architectural Threshold.
  *
- * Geometry is defined once here and consumed by the Astro component, the
- * review page and scripts/export-brand.mjs, so the SVG shipped to a printer is
- * the same geometry the site renders. There is no second copy to drift.
+ * Source: TTE Masterbrand Production Suite v1.0, supplied by the client.
+ * The vector masters live in public/brand/vector/ and are the files to hand to
+ * a printer. The geometry is restated here only so the symbol can be inlined
+ * and inherit currentColor, which is what lets one definition serve the light
+ * header, the Deep Slate footer and a reversed placement over photography
+ * without three separate files.
  *
- * CONSTRUCTION GRID
- *   32 x 32 units. A 4-unit margin on every side gives a 24-unit live area,
- *   which is what holds the mark's weight steady from favicon to banner.
- *   All coordinates are whole or half units, so the mark lands on pixel
- *   boundaries at 16px and 32px rather than blurring across them.
+ * The coordinates below are transcribed verbatim from
+ * 01_Vector_Masters/tte_symbol_primary.svg on the supplied 96 unit grid.
+ * scripts/check-brand.mjs re-reads that file and fails the build if this copy
+ * ever drifts from it, so there is no way for the inline mark and the shipped
+ * vector to disagree.
  *
- * WHY THESE THREE
- *   The brief asks for the edge itself: a threshold, a fold, two planes
- *   meeting, a horizon about to be crossed. Each direction takes one of those
- *   readings literally and commits to it. None contains a letterform, so none
- *   can be misread the way the current EDGE monogram reads EGDE, and none uses
- *   a containing circle, so none shrinks inside its own frame.
+ * ============================== BRAND RULES ================================
+ * Two rules from the supplied README are load-bearing:
+ *
+ *   "Primary identity: Deep Slate one-colour mark."
+ *   "Ember is a controlled supporting accent only and must never colour a
+ *    plane in the core symbol."
+ *
+ * So the symbol is rendered in one colour, always, inheriting from its
+ * context. There is no ember variant of the symbol and there must not be one.
+ * The accent appears only as the small rule device in the supplied lockups and
+ * icons, which is why those are used as supplied rather than reconstructed.
+ * ===========================================================================
  */
 
 /**
- * @typedef {object} Mark
- * @property {string} name
- * @property {string} reading      what the form is
- * @property {string} rationale    why it answers the brief
- * @property {string} risk         the honest argument against it
- * @property {string[]} paths      solid paths, one colour
- * @property {string} [fillRule]
+ * The two planes of the threshold, as polygon points on the 96 unit grid.
+ * They read as two surfaces receding toward a gap: the threshold itself is the
+ * negative space between them, which is why the gap is never closed up to make
+ * the mark "tidier" at small sizes.
  */
+export const SYMBOL = {
+  name: 'A2 Architectural Threshold',
+  viewBox: '0 0 96 96',
+  planes: [
+    '8,16 44,28 44,84 8,72',
+    '52,28 88,16 88,72 52,84',
+  ],
+};
 
-/** @type {Record<string, Mark>} */
-export const MARKS = {
-  fold: {
-    name: 'The Fold',
-    reading: 'One plane folded along a diagonal, the two faces offset so the seam reads as a gap of light.',
-    rationale:
-      'The most literal reading of an edge: the line where a surface changes direction. Asymmetric, so it carries movement without any added device, and the diagonal gives the mark an obvious relationship to a seam running down a page. Reads as a single confident diagonal at 16px.',
-    risk: 'A diagonally divided square is a common construction. Its distinctiveness rests entirely on the offset, so the offset must never be reduced.',
-    paths: [
-      // Upper-left plane. Corners eased by 1.5 units on the outer square only,
-      // leaving the fold edge sharp, which is where the meaning sits.
-      'M5.5 4 H26 L4 26 V5.5 A1.5 1.5 0 0 1 5.5 4 Z',
-      // Lower-right plane, translated 2 units along both axes.
-      'M28 6.5 V26.5 A1.5 1.5 0 0 1 26.5 28 H6 Z',
-    ],
+/**
+ * Minimum sizes, from 03_Guidelines_and_Tokens/tte_brand_tokens.json.
+ * Reproduced so a component can assert against them rather than a designer
+ * having to remember them.
+ */
+export const MINIMUM_SIZES = {
+  symbolDigital: 16,
+  symbolPrintMm: 5,
+  horizontalWithTagline: 200,
+  horizontalCompact: 140,
+  stacked: 96,
+};
+
+/** The supplied asset set, by role. Paths are public URLs. */
+export const ASSETS = {
+  symbol: {
+    primary: '/brand/vector/tte_symbol_primary.svg',
+    reversed: '/brand/vector/tte_symbol_reversed.svg',
+    tonal: '/brand/vector/tte_symbol_tonal.svg',
   },
-
-  threshold: {
-    name: 'The Threshold',
-    reading: 'Two planes standing apart, the opening between them widening as it rises.',
-    rationale:
-      'A doorway read as pure geometry. The widening gap does the work the tagline states, without stating it: the way through is already open and it opens further ahead of you. Two heavy verticals hold at very small sizes, and the negative space is the mark, which is what gives it a genuine reversed form rather than an inverted one.',
-    risk: 'Doorway marks are well populated in church identity. The lean and the asymmetric widening are what separate it, so both must survive the refinement.',
-    paths: [
-      // Left plane: outer edge vertical, inner edge leaning in toward the base.
-      'M4 5.5 A1.5 1.5 0 0 1 5.5 4 H12.5 L15 28 H4 Z',
-      // Right plane: mirrored lean, set wider at the top so the opening flares.
-      'M19.5 4 H26.5 A1.5 1.5 0 0 1 28 5.5 V28 H17 Z',
-    ],
+  horizontal: {
+    primary: '/brand/vector/tte_horizontal_primary.svg',
+    reversed: '/brand/vector/tte_horizontal_reversed.svg',
+    mono: '/brand/vector/tte_horizontal_mono.svg',
+    compact: '/brand/vector/tte_horizontal_compact.svg',
   },
-
-  crossing: {
-    name: 'The Crossing',
-    reading: 'A disc that has met an edge and shifted across it. Two half-discs, sheared apart along the line they crossed.',
-    rationale:
-      'Answers the vision rather than the tagline: a whole form, nations, meeting a threshold and moving through it changed. The circle is load-bearing here, which is the direct answer to the audit finding that the present circle is decorative. The shear reads instantly at 16px as one form broken by a bright line.',
-    risk: 'The most conceptually loaded of the three, so it needs the most explanation. It is also the least neutral if the family later has to stretch to organisations with no crossing story.',
-    paths: [
-      // Upper half-disc, centre (14.5, 14.25), radius 10.5.
-      'M4 14.25 A10.5 10.5 0 0 1 25 14.25 Z',
-      // Lower half-disc, centre (17.5, 17.75): shifted 3 units along the edge
-      // and 3.5 units below it, so the gap is a constant band of light.
-      'M7 17.75 A10.5 10.5 0 0 0 28 17.75 Z',
-    ],
+  stacked: {
+    primary: '/brand/vector/tte_stacked_primary.svg',
+    reversed: '/brand/vector/tte_stacked_reversed.svg',
+    mono: '/brand/vector/tte_stacked_mono.svg',
+  },
+  icons: {
+    favicon: '/favicon.svg',
+    appIcon: '/brand/icons/tte_app_icon.svg',
+    socialAvatar: '/brand/icons/tte_social_avatar.svg',
+    socialAvatarPng: '/brand/icons/tte_social_avatar_1080.png',
+  },
+  reference: {
+    guidelines: '/brand/reference/TTE_Masterbrand_Guidelines_v1.0.pdf',
+    tokens: '/brand/reference/tte_brand_tokens.json',
   },
 };
 
-export const MARK_KEYS = /** @type {const} */ (['fold', 'threshold', 'crossing']);
-
 /**
- * The direction the site renders while the choice is open.
+ * The Edge family, section 7.
  *
- * PROVISIONAL. Section 6 requires three directions to be presented before one
- * is refined, and no high-fidelity screen design before a brand direction is
- * approved. This constant exists so the site can be built and reviewed at all,
- * not because the decision is made. Change this one value once the gate closes,
- * then run `node scripts/export-brand.mjs <key>` to cut the asset set down to
- * the approved direction.
+ * The supplied README is explicit that the family lockups are not yet drawn:
+ * "The exact organisation family names and descriptors referenced in section 7
+ * were not supplied. The masterbrand and descriptor construction rule are
+ * complete; named family lockups remain to be generated when those names are
+ * confirmed."
  *
- * @type {keyof typeof MARKS}
+ * The names below are the confirmed ones from the brief, so they are what the
+ * lockups should be generated from. Until those lockups exist, nothing on this
+ * site renders a family mark: an approximated ECCS lockup would be worse than
+ * none, because ECCS is a separate legal entity and its mark is not ours to
+ * improvise.
  */
-export const ACTIVE_MARK = 'crossing';
-
-/**
- * The Edge family. One construction grid, one type system, differentiated by
- * accent and descriptor, per section 7. The symbol itself does not change
- * between organisations: that is what shows the Edge in ECCS is the Edge in TTE.
- *
- * ECCS is legally separate and DGR-endorsed, so its accent is the most
- * distinct of the set. Shared identity, visibly separate entity.
- */
-export const FAMILY = [
+export const FAMILY_PENDING = [
   {
     key: 'tte',
     name: 'The Transformation Edge',
     descriptor: 'Church',
-    accent: 'var(--color-ember-600)',
-    accentDark: 'var(--color-ember-400)',
-    note: 'The parent. Ember is the family accent.',
+    status: 'masterbrand, supplied',
   },
   {
     key: 'eccs',
-    name: 'Edge Community Care Services',
+    name: 'Edge Community Care Services Ltd',
     descriptor: 'Community care',
-    accent: 'var(--color-slate-600)',
-    accentDark: 'var(--color-slate-300)',
-    note: 'Sister organisation, legally separate, DGR-endorsed. Anchor slate carries the shared grid while reading as its own entity.',
+    status: 'lockup to be generated. Separate legal entity, DGR-endorsed.',
   },
   {
     key: 'edgedin',
     name: 'EdgedIn Network',
     descriptor: 'Media and publishing',
-    accent: 'var(--color-ember-800)',
-    accentDark: 'var(--color-ember-200)',
-    note: 'Media and publishing arm. The deepest ember in the ramp, which is what lets the editorial pages run expressive without leaving the family.',
+    status: 'lockup to be generated',
   },
 ];
 
 /**
- * Renders a mark to a complete standalone SVG document.
- * @param {keyof typeof MARKS} key
- * @param {{ size?: number, colour?: string, title?: string, id?: string }} [options]
+ * Renders the symbol to a standalone one-colour SVG document.
+ * @param {{ size?: number, colour?: string, title?: string }} [options]
  */
-export function markToSvg(key, options = {}) {
-  const mark = MARKS[key];
-  const { size = 32, colour = 'currentColor', title = `${mark.name}, The Transformation Edge` } = options;
-  const paths = mark.paths.map((d) => `  <path d="${d}" />`).join('\n');
+export function symbolToSvg(options = {}) {
+  const {
+    size = 96,
+    colour = 'currentColor',
+    title = 'The Transformation Edge',
+  } = options;
+  const planes = SYMBOL.planes.map((points) => `  <polygon points="${points}" />`).join('\n');
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" fill="${colour}" role="img" aria-label="${title}">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${SYMBOL.viewBox}" width="${size}" height="${size}" fill="${colour}" role="img" aria-label="${title}">
   <title>${title}</title>
-${paths}
+${planes}
 </svg>
 `;
 }

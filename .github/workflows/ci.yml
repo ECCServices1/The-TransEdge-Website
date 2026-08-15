@@ -33,6 +33,11 @@ jobs:
       - name: Copy rules
         run: npm run check:copy
 
+      # The inlined symbol geometry and the brand primitives must still match the
+      # supplied masterbrand files. A copy with no check attached drifts.
+      - name: Brand fidelity
+        run: npm run check:brand
+
       # Every guaranteed colour pairing, in both schemes. Fails below WCAG 2.2 AA.
       - name: Colour contrast
         run: npm run tokens:contrast

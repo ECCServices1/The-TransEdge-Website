@@ -20,18 +20,28 @@ no scroll handler exists.
 
 Vertices sit at movement boundaries, in seam units of a 1000-unit viewBox:
 
-| Unit | Movement boundary | What the seam does |
-|---|---|---|
-| 0 | enters above the fold | steep, close to the leading edge |
-| 180 | arrival into welcome | leans in behind the type |
-| 330 | welcome into vision | steepens |
-| 520 | vision into this week | crosses to the trailing side |
-| 700 | this week into EdgedIn | returns, flattening |
-| 880 | EdgedIn into outreach | settles vertical |
-| 1020 | into the footer | runs out of the canvas |
+| Unit | Movement boundary | x | What the seam does |
+|---|---|---|---|
+| 0 | enters above the fold | 88 | steep, on the trailing edge |
+| 180 | arrival into welcome | 79 | leans in behind the welcome photograph |
+| 330 | welcome into vision | 86 | eases back out past the vision |
+| 520 | vision into this week | 70 | swings in across the EdgedIn movement |
+| 700 | this week into EdgedIn | 80 | returns |
+| 880 | EdgedIn into outreach | 72 | settles vertical |
+| 1020 | into the footer | 71 | runs out of the canvas |
 
-On screens under 48rem it is pulled mostly off-canvas and thinned: a hint of a
-spine, not a diagram competing with the text over it.
+The path stays between x 68 and 88, in the trailing third. The prose column is
+capped at 42 to 46rem inside an 80rem shell, so it ends around 62 per cent on a
+wide screen. Keeping the seam beyond that is what stops it reading as a stray
+line drawn through the headline: it passes behind the images and the open
+right-hand space, which is where a fold belongs.
+
+An earlier route put it at x 22, which rendered as a straight diagonal through
+the h1. That was caught by looking at it rather than by any test, which is the
+argument for looking at it.
+
+On screens under 48rem it is pushed mostly off-canvas and thinned: a hint of a
+fold, not a diagram competing with the text over it.
 
 In right-to-left the whole seam field is mirrored with `scaleX(-1)`, so it
 enters from the leading edge in Arabic too. The mark and photography sit outside
@@ -67,8 +77,8 @@ continues into the next movement.
 **Holds:** the locked vision statement, set at `--text-4` on wide screens, and
 the tagline.
 
-Indented from the leading edge on wide screens so it sits clear of the seam as
-it steepens past.
+Indented from the leading edge on wide screens, with the seam easing out to x 86
+past it so the two never collide.
 
 **Handoff out:** the seam changes colour here, and that colour resolves into the
 accent the next movement's links use.
@@ -143,5 +153,9 @@ movements is part of the composition.
   `docs/photography-shot-list.md`.
 - The weekly notice collection exists and is editable, but is not yet surfaced
   in the arrival movement.
-- The composition has not been reviewed at 320, 768, 1024 and 1440 against the
-  definition of done. That review needs a browser and a person.
+- Checked at 480, 900 and 1280. Below 480 is unverified: headless Chrome in the
+  build environment clamps its layout viewport at about 480px, so a 320px
+  screenshot is a crop rather than a narrow-viewport layout. 320px needs a real
+  device.
+- Neither scheme has been reviewed by a person at each width. That review needs
+  eyes, not a test.

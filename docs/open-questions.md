@@ -33,7 +33,10 @@ wrong entity is an ACNC and ATO problem, not a website problem.
 
 ## 3. Who is the native-speaker reviewer for each of the six languages?
 
-**Blocks:** publishing any non-English page.
+**Decided: leave the locales in place and review afterwards.** No locale has been
+dropped.
+
+**Blocks:** publishing any non-English page. Nothing else.
 
 **Built in the meantime:** all seven locales route, switch, load the right
 typeface and handle direction. The six non-English ones render English and are

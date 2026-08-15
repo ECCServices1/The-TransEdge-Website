@@ -11,15 +11,16 @@ These come first because everything downstream depends on them.
 
 | Gate | State | On whom |
 |---|---|---|
-| Brand direction chosen from the three at `/brand` | **blocked** | Client |
+| ~~Brand direction chosen~~ | **done** | Masterbrand Suite v1.0 supplied, A2 Architectural Threshold approved |
 | Connect read API available, or the decision to launch on static content | **blocked** | Connect team |
 | Native-speaker reviewer named per language | **blocked** | Client |
 | Nominated approver for weekly content | **blocked** | Client |
 | Bank account details for the Give page | **blocked** | Client |
 | Photo consent register location | **blocked** | Client |
 
-No high-fidelity screen design proceeds before the first of these. That is the
-brief's own constraint, section 6.
+The brand gate is closed, so high-fidelity screen design is no longer blocked.
+Two brand items remain open and are in `docs/brand-audit.md`: the tagline case
+in the supplied artwork, and the family lockups for ECCS and EdgedIn.
 
 ## Definition of done, item by item
 
@@ -62,15 +63,25 @@ giving flow exists and the bank details are real.
 
 ### The home canvas reads as one composition at 320, 768, 1024 and 1440, light and dark, with motion reduced and JavaScript disabled
 
-**partial.** Built to hold at all four, in both schemes, and the motion and no-JS
-paths are implemented as the brief specifies. It has not been reviewed in a
-browser by a person at each width. That review needs eyes, not a test.
+**partial.** Rendered and checked at 480, 900 and 1280: the composition holds,
+the seam runs clear of the prose column, and the mobile menu appears below
+1024.
+
+**Below 480 is unverified.** Headless Chrome in the build environment clamps its
+layout viewport at roughly 480px, so a 320 or 390px screenshot is a crop of a
+480px render rather than a genuine narrow-viewport layout. Every `ch`-based
+width cap has been made container-safe as a precaution, but 320px still needs a
+real device or real device emulation. It has also not been reviewed in both
+schemes by a person, and that review needs eyes, not a test.
 
 ### The mark is legible at 16px and in one colour
 
-**done** for all three directions. Rendered and checked at 16, 24, 32, 48, 96 and
-160px, one colour, on paper, reversed, on accent and on a busy ground. Visible at
-`/brand`.
+**done.** The approved A2 Architectural Threshold symbol rendered and checked at
+16, 24, 32, 48, 96 and 160px, one colour, on the warm surface, on white,
+reversed on Deep Slate and on a busy ground. Visible at `/brand`. The component
+clamps to the supplied 16px digital minimum, so it cannot be set below it by
+accident, and `npm run check:brand` fails the build if the inlined geometry
+drifts from the vector master or if an accent ever fills a plane.
 
 ### The Arabic build passes the same accessibility and layout checks as English
 

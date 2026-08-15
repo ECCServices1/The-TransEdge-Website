@@ -9,19 +9,22 @@ and it is on the launch checklist.
 
 ## Colour
 
-Ramps are generated in OKLCh, so each step is a perceptually even move rather
-than an even move in sRGB. That is why the mid-tones hold their chroma instead
-of going muddy.
-
 ### Primitives
 
 Never used directly in a component.
 
-| Ramp | Hue | Role |
+Supplied by the client in *TTE Masterbrand Production Suite v1.0*. A primitive
+is the brand, not a preference, and `npm run check:brand` fails the build if one
+is edited.
+
+| Token | Value | Role |
 |---|---|---|
-| `slate-100…950` | 263 | The anchor. Step 700 is the original brand slate `#4b576e`, preserved exactly |
-| `ember-100…900` | 42 | The warm accent the old palette lacked. Almost opposite the slate |
-| `neutral-100…900` | 70 | Nine steps, warmed off true grey, chroma under 0.012 |
+| `--color-primary` | `#303847` | Deep Slate. The identity and the one-colour mark |
+| `--color-heritage` | `#4B576E` | The previous brand slate, carried forward |
+| `--color-ember` | `#E46F3C` | Graphic accent only, capped at 5% of a composition |
+| `--color-ember-accessible` | `#A94722` | The accent cut that clears 4.5:1 on light |
+| `--color-ember-light` | `#f6895b` | Derived on the same hue for dark surfaces |
+| `--color-neutral-100…900` | supplied | Nine steps, warm |
 
 ### Semantic
 
@@ -34,7 +37,7 @@ What components actually use, so a palette change is one edit.
 
 ### Rules
 
-- **Every guaranteed pairing is measured.** `npm run tokens:contrast` checks 46
+- **Every guaranteed pairing is measured.** `npm run tokens:contrast` checks 50
   pairings in both schemes and fails below WCAG 2.2. Evidence in
   `docs/colour-contrast-evidence.md`.
 - **Accent text is guaranteed on `canvas` and `canvas-raised` only.** On

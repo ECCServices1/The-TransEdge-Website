@@ -41,7 +41,7 @@ const {
   route = '',
   locale = DEFAULT_LOCALE,
   schema = [],
-  image = '/brand/crossing-social-avatar.svg',
+  image = '/brand/icons/tte_social_avatar_1080.png',
   noindex = false,
   bare = false,
 } = Astro.props;
@@ -96,7 +96,7 @@ const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.nam
     {scriptStylesheet && <link rel="stylesheet" href={scriptStylesheet} />}
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/brand/crossing-app-icon.svg" />
+    <link rel="apple-touch-icon" href="/brand/icons/tte_app_icon_512.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- hreflang. x-default points at English, which is the canonical root. -->
@@ -115,8 +115,8 @@ const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.nam
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={socialImage} />
 
-    <meta name="theme-color" content="#faf8f6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#101621" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#171d24" media="(prefers-color-scheme: dark)" />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
 
@@ -151,20 +151,26 @@ const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.nam
     position: relative;
     /* Backgrounds shift through large-radius gradients that cross movement
        boundaries, so there is never a hard section break to see. */
+    /*
+      Mix percentages are deliberately tiny. The brand caps ember at five per
+      cent of a composition, and a wash across the full page is the easiest way
+      to spend that budget without noticing. At 7 and 5 per cent these read as
+      warmth in the paper rather than as colour.
+    */
     background-image:
       radial-gradient(
         120rem 80rem at 78% 4%,
-        color-mix(in oklab, var(--color-ember-100) 55%, transparent),
+        color-mix(in oklab, var(--color-ember) 7%, transparent),
         transparent 70%
       ),
       radial-gradient(
         100rem 70rem at 8% 38%,
-        color-mix(in oklab, var(--color-slate-100) 70%, transparent),
+        color-mix(in oklab, var(--color-heritage) 8%, transparent),
         transparent 68%
       ),
       radial-gradient(
         110rem 90rem at 92% 76%,
-        color-mix(in oklab, var(--color-ember-100) 40%, transparent),
+        color-mix(in oklab, var(--color-ember) 5%, transparent),
         transparent 72%
       );
     background-repeat: no-repeat;
@@ -185,17 +191,17 @@ const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.nam
       background-image:
         radial-gradient(
           120rem 80rem at 78% 4%,
-          color-mix(in oklab, var(--color-ember-900) 45%, transparent),
+          color-mix(in oklab, var(--color-ember) 9%, transparent),
           transparent 70%
         ),
         radial-gradient(
           100rem 70rem at 8% 38%,
-          color-mix(in oklab, var(--color-slate-900) 80%, transparent),
+          color-mix(in oklab, var(--color-primary) 55%, transparent),
           transparent 68%
         ),
         radial-gradient(
           110rem 90rem at 92% 76%,
-          color-mix(in oklab, var(--color-ember-900) 30%, transparent),
+          color-mix(in oklab, var(--color-ember) 6%, transparent),
           transparent 72%
         );
     }

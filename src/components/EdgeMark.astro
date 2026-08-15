@@ -1,17 +1,23 @@
 ---
 /**
- * The Edge symbol.
+ * The Edge symbol: A2 Architectural Threshold.
  *
  * Inlined rather than referenced as an <img>, so it inherits currentColor and
- * needs no second request. That is what lets one file serve the light header,
- * the dark footer and a reversed placement over photography.
+ * needs no second request. That is what lets one definition serve the light
+ * header, the Deep Slate footer and a reversed placement over photography.
+ *
+ * One colour, always. The supplied README is explicit that ember must never
+ * colour a plane in the core symbol, so this component offers no colour prop
+ * and no variant: it takes whatever ink its context is set in.
  */
-import { MARKS, ACTIVE_MARK } from '../lib/brand-marks.mjs';
+import { SYMBOL, MINIMUM_SIZES } from '../lib/brand-marks.mjs';
 
 interface Props {
-  /** Which direction to draw. Defaults to the direction currently under review. */
-  variant?: keyof typeof MARKS;
-  /** Rendered size in pixels. The mark is drawn on a 32 unit grid at any size. */
+  /**
+   * Rendered size in pixels. Clamped to the supplied 16px digital minimum,
+   * because a mark set below its minimum is a brand breach rather than a small
+   * mark, and it is the kind that reaches production unnoticed.
+   */
   size?: number;
   /**
    * Decorative marks are hidden from assistive technology. A mark that is the
@@ -21,29 +27,35 @@ interface Props {
   class?: string;
 }
 
-const { variant = ACTIVE_MARK, size = 32, label = null, class: className = '' } = Astro.props;
-const mark = MARKS[variant];
-const titleId = label ? `mark-${variant}-${Math.random().toString(36).slice(2, 8)}` : null;
+const { size = 32, label = null, class: className = '' } = Astro.props;
+
+const rendered = Math.max(size, MINIMUM_SIZES.symbolDigital);
 ---
 
 <svg
   class:list={['edge-mark', className]}
-  viewBox="0 0 32 32"
-  width={size}
-  height={size}
+  viewBox={SYMBOL.viewBox}
+  width={rendered}
+  height={rendered}
   fill="currentColor"
   role={label ? 'img' : 'presentation'}
   aria-hidden={label ? undefined : 'true'}
-  aria-labelledby={titleId ?? undefined}
+  aria-label={label ?? undefined}
   focusable="false"
 >
-  {label && <title id={titleId}>{label}</title>}
-  {mark.paths.map((d) => <path d={d} />)}
+  {SYMBOL.planes.map((points) => <polygon points={points} />)}
 </svg>
 
 <style>
   .edge-mark {
     display: block;
     flex-shrink: 0;
+  }
+
+  /* The symbol is a logo, so it never mirrors in right-to-left. The threshold
+     it draws is symmetrical in any case, but the rule is stated rather than
+     left to a coincidence of the current geometry. */
+  :global([dir='rtl']) .edge-mark {
+    transform: none;
   }
 </style>

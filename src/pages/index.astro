@@ -51,8 +51,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       </p>
 
       <h1 id="arrival-heading" class="arrival__heading" data-reveal>
-        A church in Penrith with a vision that reaches
-        <em>nations</em>.
+        A church in Penrith with a vision that reaches{' '}<em>nations</em>.
       </h1>
 
       <dl class="arrival__facts" data-reveal>
@@ -301,9 +300,15 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   }
 
   .arrival__heading {
-    max-inline-size: 18ch;
+    /* min() rather than a bare ch cap. 18ch at the top of the type scale is
+       wider than a 390px viewport, and a bare max-inline-size in ch units lets
+       the heading box exceed its container, which pushes the whole layout wider
+       than the screen and takes the mobile menu button off the edge with it. */
+    max-inline-size: min(18ch, 100%);
     font-size: var(--text-5);
     font-weight: var(--weight-semibold);
+    /* Long place names must break rather than overflow at 320px. */
+    overflow-wrap: break-word;
   }
 
   /* The one place the display face is allowed its full character. */
@@ -343,7 +348,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   }
 
   .arrival__reassurance {
-    max-inline-size: 46ch;
+    max-inline-size: min(46ch, 100%);
     color: var(--color-text-muted);
     font-size: var(--text--1);
   }
@@ -355,7 +360,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     font-size: var(--text-3);
     line-height: var(--leading-snug);
     color: var(--color-text-muted);
-    max-inline-size: 20ch;
+    max-inline-size: min(20ch, 100%);
   }
 
   /* ---------------------------------------------------------- welcome */
@@ -370,7 +375,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   }
 
   .welcome__heading {
-    max-inline-size: 24ch;
+    max-inline-size: min(24ch, 100%);
     font-size: var(--text-3);
     color: var(--color-text);
     margin-block-end: var(--space-m);
@@ -476,7 +481,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   .week__summary {
     color: var(--color-text-muted);
     font-size: var(--text--1);
-    max-inline-size: 42ch;
+    max-inline-size: min(42ch, 100%);
   }
 
   /* ---------------------------------------------------------- edgedin */
@@ -511,7 +516,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
   .edgedin__heading {
     margin-block: var(--space-2xs) var(--space-m);
-    max-inline-size: 20ch;
+    max-inline-size: min(20ch, 100%);
     font-size: var(--text-3);
   }
 

@@ -1,64 +1,64 @@
 /* ==========================================================================
    The Transformation Edge: design tokens
    --------------------------------------------------------------------------
-   Tokens before screens. Nothing in the codebase may use a raw colour, size or
-   duration. If a value is needed and no token fits, the token set is wrong and
-   this file changes first.
+   Primitives are the supplied masterbrand palette, TTE Masterbrand Production
+   Suite v1.0, taken verbatim from 03_Guidelines_and_Tokens/tte_brand_tokens.json.
+   Do not adjust a primitive: it is the brand, not a preference.
 
-   Every colour pairing named in the semantic layer is verified by
-   `npm run tokens:contrast`, which fails CI below WCAG 2.2 AA. The evidence
-   table it produces is docs/colour-contrast-evidence.md.
+   The semantic layer below maps those primitives onto surfaces. That mapping is
+   ours, and it is where accessibility is won or lost, so every pairing it
+   guarantees is verified by `npm run tokens:contrast`, which fails CI below
+   WCAG 2.2 AA. Evidence: docs/colour-contrast-evidence.md.
 
-   Ramps are generated in OKLCh so each step is a perceptually even move rather
-   than an even move in sRGB, which is why the mid-tones hold their chroma
-   instead of going muddy.
+   TWO BRAND RULES ARE ENCODED HERE, NOT LEFT TO JUDGEMENT
+   1. Ember never colours a plane in the core symbol. EdgeMark inherits
+      currentColor and is only ever placed on ink or reversed tokens.
+   2. Ember is a controlled supporting accent, capped at five per cent of a
+      composition. So the primary action is Deep Slate, not ember. Ember is
+      reserved for the rule device under the wordmark, the focus ring, the lit
+      seam and inline accent text. Making every button ember would spend the
+      whole accent budget on furniture.
    ========================================================================== */
 
 :root {
   /* ---------------------------------------------------------------------
-     COLOUR: primitive ramps
-     Primitives are never used directly in a component. Use the semantic
-     layer below, so a palette change is one edit rather than a hunt.
+     BRAND PRIMITIVES, supplied. Never used directly in a component.
      --------------------------------------------------------------------- */
 
-  /* Slate, the anchor. Carried forward from the existing identity: step 700 is
-     the original brand slate #4B576E, preserved exactly so the equity survives
-     the redesign. Hue 263.3 in OKLCh. */
-  --color-slate-100: #eff4fc;
-  --color-slate-200: #dbe3f2;
-  --color-slate-300: #c1cde3;
-  --color-slate-400: #9eadca;
-  --color-slate-500: #7989a9;
-  --color-slate-600: #606f8c;
-  --color-slate-700: #4b576e;
-  --color-slate-800: #333d50;
-  --color-slate-900: #1c2331;
-  --color-slate-950: #101621;
+  /* Deep Slate. The primary identity and the colour of the one-colour mark. */
+  --color-primary: #303847;
 
-  /* Ember, the warm accent the old palette lacked. Hue 42 in OKLCh, sitting
-     almost opposite the slate, which is what gives the pairing its charge.
-     The idea is light at a threshold rather than a corporate highlight. */
-  --color-ember-100: #feeee8;
-  --color-ember-200: #fedacc;
-  --color-ember-300: #fcbda5;
-  --color-ember-400: #f6946d;
-  --color-ember-500: #e66a34;
-  --color-ember-600: #be4f1b;
-  --color-ember-700: #983e14;
-  --color-ember-800: #722c0b;
-  --color-ember-900: #491c08;
+  /* The previous brand slate, carried forward as heritage rather than dropped. */
+  --color-heritage: #4b576e;
 
-  /* Neutral, nine steps, warmed off true grey (hue 70, chroma under 0.012) so
-     paper reads warm rather than clinical. */
-  --color-neutral-100: #faf8f6;
-  --color-neutral-200: #efece9;
-  --color-neutral-300: #dedad5;
-  --color-neutral-400: #c2bdb7;
-  --color-neutral-500: #a39d97;
-  --color-neutral-600: #827c76;
-  --color-neutral-700: #615d58;
-  --color-neutral-800: #403c39;
-  --color-neutral-900: #201e1b;
+  /* Ember, the supporting accent. Fails text contrast on light grounds by
+     design: it is a graphic accent, not a text colour. */
+  --color-ember: #e46f3c;
+
+  /* The accessible cut of ember, supplied for text and for anything that has to
+     clear 4.5:1 on a light ground. */
+  --color-ember-accessible: #a94722;
+
+  /* A lighter cut of ember on the same OKLCh hue, 42.7, derived for dark
+     surfaces where #e46f3c measures 3.72:1 on the raised slate and fails.
+     The only value here not in the supplied file, and it exists to keep the
+     accent usable in dark mode rather than to change the brand. */
+  --color-ember-light: #f6895b;
+
+  /* Neutral ramp, nine steps, supplied. */
+  --color-neutral-100: #f6f5f2;
+  --color-neutral-200: #e9e7e2;
+  --color-neutral-300: #d8d5cf;
+  --color-neutral-400: #c7c3bc;
+  --color-neutral-500: #a7a39c;
+  --color-neutral-600: #7f7c76;
+  --color-neutral-700: #5c5a56;
+  --color-neutral-800: #383a3d;
+  --color-neutral-900: #171d24;
+
+  /* Derived one step below neutral 900 on the same hue, for the deepest
+     surface in dark mode. */
+  --color-neutral-950: #050a10;
 
   --color-white: #ffffff;
   --color-black: #000000;
@@ -73,48 +73,52 @@
   --color-danger-bg: #fdeaea;
 
   /* ---------------------------------------------------------------------
-     COLOUR: semantic layer, light
+     SEMANTIC LAYER, light
      --------------------------------------------------------------------- */
 
   --color-canvas: var(--color-neutral-100);
   --color-canvas-raised: var(--color-white);
   --color-canvas-sunken: var(--color-neutral-200);
-  --color-canvas-inverse: var(--color-slate-900);
+
+  /* The inverted surface is Deep Slate in both schemes. The footer is always
+     the brand primary, which is what makes the mark's reversed lockup correct
+     there without a per-scheme swap. */
+  --color-canvas-inverse: var(--color-primary);
 
   --color-text: var(--color-neutral-900);
   --color-text-muted: var(--color-neutral-700);
   --color-text-subtle: var(--color-neutral-600);
   --color-text-inverse: var(--color-neutral-100);
 
-  /* Accent text sits on canvas or canvas-raised only. On canvas-sunken it
-     drops below 4.5:1, so the sunken surface uses --color-text instead. */
-  --color-text-accent: var(--color-ember-700);
-  --color-text-anchor: var(--color-slate-700);
+  /* Accent text uses the accessible cut. Plain ember measures 2.90:1 on the
+     canvas and is never used for text. */
+  --color-text-accent: var(--color-ember-accessible);
+  --color-text-anchor: var(--color-heritage);
 
-  --color-action-bg: var(--color-ember-600);
-  --color-action-bg-hover: var(--color-ember-700);
-  --color-action-bg-active: var(--color-ember-800);
+  /* Primary action is Deep Slate, per the accent budget above. */
+  --color-action-bg: var(--color-primary);
+  --color-action-bg-hover: var(--color-neutral-900);
+  --color-action-bg-active: var(--color-black);
   --color-action-fg: var(--color-white);
 
   --color-action-quiet-bg: transparent;
-  --color-action-quiet-fg: var(--color-slate-700);
-  /* Slate 500, not 400. A button outline is a user interface component, so it
-     owes 3:1 against the canvas under SC 1.4.11. Slate 400 measured 2.14:1. */
-  --color-action-quiet-border: var(--color-slate-500);
+  --color-action-quiet-fg: var(--color-heritage);
+  --color-action-quiet-border: var(--color-neutral-600);
 
-  /* Hairline separation only. Deliberately below 3:1 and never load-bearing:
-     anything that carries state or a control boundary uses border-strong. */
+  /* Hairline separation only, deliberately below 3:1. Anything carrying state
+     or a control boundary uses border-strong. */
   --color-border: var(--color-neutral-300);
   --color-border-strong: var(--color-neutral-600);
 
-  --color-focus: var(--color-slate-800);
+  /* Ember accessible, matching the supplied semantic.focus token. */
+  --color-focus: var(--color-ember-accessible);
   --color-focus-offset: var(--color-neutral-100);
 
-  /* The seam is the single continuous line running the length of the page.
-     It changes weight and colour as it passes each movement, so it gets its
-     own tokens rather than borrowing a border colour. */
-  --color-seam: var(--color-slate-300);
-  --color-seam-lit: var(--color-ember-500);
+  /* The seam is the continuous line running the length of the page. It reads as
+     the same threshold geometry as the mark, so it gets its own tokens rather
+     than borrowing a border colour. */
+  --color-seam: var(--color-neutral-400);
+  --color-seam-lit: var(--color-ember-accessible);
 
   /* ---------------------------------------------------------------------
      TYPE
@@ -189,11 +193,18 @@
   --grid-gutter: clamp(1rem, 0.5rem + 2vw, 2rem);
   --page-inline-padding: clamp(1.25rem, 0.75rem + 2.5vw, 4rem);
 
+  /* Minimum sizes from the supplied guidelines, so a lockup cannot be set
+     below its specified floor by accident. */
+  --brand-min-symbol: 16px;
+  --brand-min-horizontal: 200px;
+  --brand-min-horizontal-compact: 140px;
+  --brand-min-stacked: 96px;
+
   /* ---------------------------------------------------------------------
      RADII, BORDERS, ELEVATION
      Depth comes from layering, not from drop shadows. The shadow set is
-     deliberately small and deliberately soft, and is reserved for elements
-     that genuinely float above the canvas: the sticky header and the modal.
+     deliberately small and reserved for elements that genuinely float above
+     the canvas: the sticky header and the modal.
      --------------------------------------------------------------------- */
 
   --radius-xs: 0.125rem;
@@ -205,13 +216,13 @@
   --border-hairline: 1px;
   --border-thick: 2px;
 
-  --elevation-raised: 0 1px 2px color-mix(in oklab, var(--color-slate-900) 6%, transparent);
-  --elevation-floating: 0 8px 24px -12px color-mix(in oklab, var(--color-slate-900) 22%, transparent);
+  --elevation-raised: 0 1px 2px color-mix(in oklab, var(--color-neutral-900) 8%, transparent);
+  --elevation-floating: 0 8px 24px -12px color-mix(in oklab, var(--color-neutral-900) 28%, transparent);
 
   /* ---------------------------------------------------------------------
      MOTION
      Three durations, three easings. Movement explains continuity: nothing
-     moves for decoration. Every one of these resolves to 0 under
+     moves for decoration. Every one of these resolves to a single frame under
      prefers-reduced-motion, handled in base.css.
      --------------------------------------------------------------------- */
 
@@ -237,42 +248,42 @@
 
 /* ==========================================================================
    DARK
-   The dark scheme is a re-mapping of the semantic layer, never a filter.
-   Both `.theme-dark` and the media query are supported so a visitor's
-   explicit choice beats the system setting.
+   A re-mapping of the semantic layer, never a filter. Both `.theme-dark` and
+   the media query are supported so a visitor's explicit choice beats the system
+   setting, and the contrast checker fails on any drift between the two.
    ========================================================================== */
 
 @media (prefers-color-scheme: dark) {
   :root:not(.theme-light) {
-    --color-canvas: var(--color-slate-950);
-    --color-canvas-raised: var(--color-slate-900);
-    --color-canvas-sunken: var(--color-black);
-    --color-canvas-inverse: var(--color-neutral-100);
+    --color-canvas: var(--color-neutral-900);
+    --color-canvas-raised: var(--color-primary);
+    --color-canvas-sunken: var(--color-neutral-950);
+    --color-canvas-inverse: var(--color-primary);
 
     --color-text: var(--color-neutral-100);
     --color-text-muted: var(--color-neutral-300);
-    --color-text-subtle: var(--color-neutral-400);
-    --color-text-inverse: var(--color-neutral-900);
+    --color-text-subtle: var(--color-neutral-500);
+    --color-text-inverse: var(--color-neutral-100);
 
-    --color-text-accent: var(--color-ember-300);
-    --color-text-anchor: var(--color-slate-300);
+    --color-text-accent: var(--color-ember-light);
+    --color-text-anchor: var(--color-neutral-400);
 
-    --color-action-bg: var(--color-ember-400);
-    --color-action-bg-hover: var(--color-ember-300);
-    --color-action-bg-active: var(--color-ember-200);
-    --color-action-fg: var(--color-slate-950);
+    --color-action-bg: var(--color-neutral-100);
+    --color-action-bg-hover: var(--color-white);
+    --color-action-bg-active: var(--color-neutral-300);
+    --color-action-fg: var(--color-neutral-900);
 
     --color-action-quiet-fg: var(--color-neutral-100);
-    --color-action-quiet-border: var(--color-slate-600);
+    --color-action-quiet-border: var(--color-neutral-600);
 
-    --color-border: var(--color-slate-800);
-    --color-border-strong: var(--color-slate-600);
+    --color-border: var(--color-neutral-800);
+    --color-border-strong: var(--color-neutral-600);
 
-    --color-focus: var(--color-ember-300);
-    --color-focus-offset: var(--color-slate-950);
+    --color-focus: var(--color-ember-light);
+    --color-focus-offset: var(--color-neutral-900);
 
-    --color-seam: var(--color-slate-700);
-    --color-seam-lit: var(--color-ember-400);
+    --color-seam: var(--color-neutral-700);
+    --color-seam-lit: var(--color-ember-light);
 
     --color-success-fg: #7fd8a3;
     --color-success-bg: #12281c;
@@ -287,35 +298,35 @@
 }
 
 .theme-dark {
-  --color-canvas: var(--color-slate-950);
-  --color-canvas-raised: var(--color-slate-900);
-  --color-canvas-sunken: var(--color-black);
-  --color-canvas-inverse: var(--color-neutral-100);
+  --color-canvas: var(--color-neutral-900);
+  --color-canvas-raised: var(--color-primary);
+  --color-canvas-sunken: var(--color-neutral-950);
+  --color-canvas-inverse: var(--color-primary);
 
   --color-text: var(--color-neutral-100);
   --color-text-muted: var(--color-neutral-300);
-  --color-text-subtle: var(--color-neutral-400);
-  --color-text-inverse: var(--color-neutral-900);
+  --color-text-subtle: var(--color-neutral-500);
+  --color-text-inverse: var(--color-neutral-100);
 
-  --color-text-accent: var(--color-ember-300);
-  --color-text-anchor: var(--color-slate-300);
+  --color-text-accent: var(--color-ember-light);
+  --color-text-anchor: var(--color-neutral-400);
 
-  --color-action-bg: var(--color-ember-400);
-  --color-action-bg-hover: var(--color-ember-300);
-  --color-action-bg-active: var(--color-ember-200);
-  --color-action-fg: var(--color-slate-950);
+  --color-action-bg: var(--color-neutral-100);
+  --color-action-bg-hover: var(--color-white);
+  --color-action-bg-active: var(--color-neutral-300);
+  --color-action-fg: var(--color-neutral-900);
 
   --color-action-quiet-fg: var(--color-neutral-100);
-  --color-action-quiet-border: var(--color-slate-600);
+  --color-action-quiet-border: var(--color-neutral-600);
 
-  --color-border: var(--color-slate-800);
-  --color-border-strong: var(--color-slate-600);
+  --color-border: var(--color-neutral-800);
+  --color-border-strong: var(--color-neutral-600);
 
-  --color-focus: var(--color-ember-300);
-  --color-focus-offset: var(--color-slate-950);
+  --color-focus: var(--color-ember-light);
+  --color-focus-offset: var(--color-neutral-900);
 
-  --color-seam: var(--color-slate-700);
-  --color-seam-lit: var(--color-ember-400);
+  --color-seam: var(--color-neutral-700);
+  --color-seam-lit: var(--color-ember-light);
 
   --color-success-fg: #7fd8a3;
   --color-success-bg: #12281c;

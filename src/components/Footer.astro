@@ -6,7 +6,7 @@
  * where, how to reach a person. It is the one place the suburb appears in
  * prose, because it is an address block.
  */
-import EdgeMark from './EdgeMark.astro';
+import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import { CHURCH, FAMILY_ORGS, TAGLINE } from '../data/church.mjs';
 import { localeHref } from '../i18n/locales.mjs';
@@ -29,8 +29,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
   <div class="page-shell page-shell--wide">
     <div class="site-footer__grid">
       <div class="site-footer__brand">
-        <EdgeMark size={40} />
-        <p class="site-footer__name">The Transformation Edge</p>
+        <BrandLockup cut="compact" width={180} label={null} />
         <p class="site-footer__tagline">{TAGLINE}</p>
       </div>
 
@@ -144,13 +143,10 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
     gap: var(--space-2xs);
   }
 
-  .site-footer__name {
-    font-family: var(--font-display);
-    font-size: var(--text-1);
-    font-weight: var(--weight-semibold);
-    line-height: var(--leading-tight);
-  }
-
+  /* The tagline is set in title case here, matching the locked wording in
+     section 2. The supplied lockups carry their own tagline artwork, which is
+     why the compact cut is used in the footer: two taglines in one block would
+     be one too many. */
   .site-footer__tagline {
     font-style: italic;
     opacity: 0.8;

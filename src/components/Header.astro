@@ -10,7 +10,7 @@
  * first paint and keeps working if a bundle fails. Escape and click-outside are
  * the only behaviours a script adds, and they are progressive.
  */
-import EdgeMark from './EdgeMark.astro';
+import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import { CHURCH } from '../data/church.mjs';
 import { localeHref } from '../i18n/locales.mjs';
@@ -44,11 +44,8 @@ const isCurrent = (href: string) => current === href.replace(/\/$/, '');
 <header class="site-header no-print">
   <div class="site-header__bar page-shell page-shell--wide">
     <a class="site-header__brand" href={h('')} aria-label={`${CHURCH.name}, home`}>
-      <EdgeMark size={34} />
-      <span class="site-header__wordmark">
-        <span class="site-header__name">The Transformation Edge</span>
-        <span class="site-header__place">{CHURCH.place}</span>
-      </span>
+      <BrandLockup cut="compact" width={168} label={null} />
+      <span class="site-header__place">{CHURCH.place}</span>
     </a>
 
     <!-- Desktop navigation -->
@@ -143,25 +140,15 @@ const isCurrent = (href: string) => current === href.replace(/\/$/, '');
     margin-inline-end: auto;
   }
 
-  .site-header__wordmark {
-    display: flex;
-    flex-direction: column;
-    line-height: var(--leading-tight);
-  }
-
-  /* One line, not three. The old wordmark was tracked across three lines and
-     fought every horizontal header it sat in. */
-  .site-header__name {
-    font-family: var(--font-display);
-    font-size: var(--text-0);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-tight);
-    white-space: nowrap;
-  }
-
+  /* The supplied lockup carries the wordmark, so the header sets no type of its
+     own beside it. The place line sits under the lockup as a separate note
+     rather than competing inside it. */
   .site-header__place {
+    display: none;
     font-size: var(--text--1);
     color: var(--color-text-muted);
+    padding-inline-start: var(--space-2xs);
+    border-inline-start: var(--border-hairline) solid var(--color-border);
   }
 
   .site-header__nav {
@@ -293,8 +280,8 @@ const isCurrent = (href: string) => current === href.replace(/\/$/, '');
       display: none;
     }
 
-    .site-header__name {
-      font-size: var(--text-1);
+    .site-header__place {
+      display: block;
     }
   }
 </style>

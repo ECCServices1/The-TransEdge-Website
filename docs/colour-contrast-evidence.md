@@ -14,28 +14,28 @@ definition, not estimated.
 
 | Pairing | Foreground | Background | Measured | Required | Grade | Result |
 |---|---|---|---|---|---|---|
-| Body copy on the page canvas | `text` #201e1b | `canvas` #faf8f6 | 15.70:1 | 4.5:1 | AAA | pass |
-| Body copy on a raised surface | `text` #201e1b | `canvas-raised` #ffffff | 16.63:1 | 4.5:1 | AAA | pass |
-| Body copy on a sunken surface | `text` #201e1b | `canvas-sunken` #efece9 | 14.13:1 | 4.5:1 | AAA | pass |
-| Secondary copy on the canvas | `text-muted` #615d58 | `canvas` #faf8f6 | 6.17:1 | 4.5:1 | AA | pass |
-| Secondary copy on a raised surface | `text-muted` #615d58 | `canvas-raised` #ffffff | 6.53:1 | 4.5:1 | AA | pass |
-| Secondary copy on a sunken surface | `text-muted` #615d58 | `canvas-sunken` #efece9 | 5.55:1 | 4.5:1 | AA | pass |
-| Captions and metadata, large or non-essential only | `text-subtle` #827c76 | `canvas` #faf8f6 | 3.89:1 | 3:1 | AA large | pass |
-| Accent copy and inline links on the canvas | `text-accent` #983e14 | `canvas` #faf8f6 | 6.53:1 | 4.5:1 | AA | pass |
-| Accent copy on a raised surface | `text-accent` #983e14 | `canvas-raised` #ffffff | 6.92:1 | 4.5:1 | AA | pass |
-| Anchor-coloured copy on the canvas | `text-anchor` #4b576e | `canvas` #faf8f6 | 6.86:1 | 4.5:1 | AA | pass |
-| Copy on the inverted surface | `text-inverse` #faf8f6 | `canvas-inverse` #1c2331 | 14.86:1 | 4.5:1 | AAA | pass |
-| Metadata on the canvas at large sizes | `text-muted` #615d58 | `canvas` #faf8f6 | 6.17:1 | 3:1 | AA | pass |
-| Primary button label, resting | `action-fg` #ffffff | `action-bg` #be4f1b | 4.86:1 | 4.5:1 | AA | pass |
-| Primary button label, hover | `action-fg` #ffffff | `action-bg-hover` #983e14 | 6.92:1 | 4.5:1 | AA | pass |
-| Primary button label, active | `action-fg` #ffffff | `action-bg-active` #722c0b | 10.09:1 | 4.5:1 | AAA | pass |
-| Quiet button label on the canvas | `action-quiet-fg` #4b576e | `canvas` #faf8f6 | 6.86:1 | 4.5:1 | AA | pass |
-| Quiet button outline, SC 1.4.11 | `action-quiet-border` #7989a9 | `canvas` #faf8f6 | 3.32:1 | 3:1 | AA large | pass |
-| Primary button surface against the canvas | `action-bg` #be4f1b | `canvas` #faf8f6 | 4.58:1 | 3:1 | AA | pass |
-| Input and control borders, SC 1.4.11 | `border-strong` #827c76 | `canvas` #faf8f6 | 3.89:1 | 3:1 | AA large | pass |
-| Focus ring against the canvas, SC 1.4.11 | `focus` #333d50 | `canvas` #faf8f6 | 10.30:1 | 3:1 | AAA | pass |
-| Focus ring against a raised surface | `focus` #333d50 | `canvas-raised` #ffffff | 10.91:1 | 3:1 | AAA | pass |
-| The lit seam where it carries meaning | `seam-lit` #e66a34 | `canvas` #faf8f6 | 3.06:1 | 3:1 | AA large | pass |
+| Body copy on the page canvas | `text` #171d24 | `canvas` #f6f5f2 | 15.56:1 | 4.5:1 | AAA | pass |
+| Body copy on a raised surface | `text` #171d24 | `canvas-raised` #ffffff | 16.97:1 | 4.5:1 | AAA | pass |
+| Body copy on a sunken surface | `text` #171d24 | `canvas-sunken` #e9e7e2 | 13.73:1 | 4.5:1 | AAA | pass |
+| Secondary copy on the canvas | `text-muted` #5c5a56 | `canvas` #f6f5f2 | 6.31:1 | 4.5:1 | AA | pass |
+| Secondary copy on a raised surface | `text-muted` #5c5a56 | `canvas-raised` #ffffff | 6.88:1 | 4.5:1 | AA | pass |
+| Secondary copy on a sunken surface | `text-muted` #5c5a56 | `canvas-sunken` #e9e7e2 | 5.57:1 | 4.5:1 | AA | pass |
+| Captions and metadata, large or non-essential only | `text-subtle` #7f7c76 | `canvas` #f6f5f2 | 3.82:1 | 3:1 | AA large | pass |
+| Accent copy and inline links on the canvas | `text-accent` #a94722 | `canvas` #f6f5f2 | 5.33:1 | 4.5:1 | AA | pass |
+| Accent copy on a raised surface | `text-accent` #a94722 | `canvas-raised` #ffffff | 5.81:1 | 4.5:1 | AA | pass |
+| Anchor-coloured copy on the canvas | `text-anchor` #4b576e | `canvas` #f6f5f2 | 6.67:1 | 4.5:1 | AA | pass |
+| Copy on the inverted surface | `text-inverse` #f6f5f2 | `canvas-inverse` #303847 | 10.81:1 | 4.5:1 | AAA | pass |
+| Metadata on the canvas at large sizes | `text-muted` #5c5a56 | `canvas` #f6f5f2 | 6.31:1 | 3:1 | AA | pass |
+| Primary button label, resting | `action-fg` #ffffff | `action-bg` #303847 | 11.78:1 | 4.5:1 | AAA | pass |
+| Primary button label, hover | `action-fg` #ffffff | `action-bg-hover` #171d24 | 16.97:1 | 4.5:1 | AAA | pass |
+| Primary button label, active | `action-fg` #ffffff | `action-bg-active` #000000 | 21.00:1 | 4.5:1 | AAA | pass |
+| Quiet button label on the canvas | `action-quiet-fg` #4b576e | `canvas` #f6f5f2 | 6.67:1 | 4.5:1 | AA | pass |
+| Quiet button outline, SC 1.4.11 | `action-quiet-border` #7f7c76 | `canvas` #f6f5f2 | 3.82:1 | 3:1 | AA large | pass |
+| Primary button surface against the canvas | `action-bg` #303847 | `canvas` #f6f5f2 | 10.81:1 | 3:1 | AAA | pass |
+| Input and control borders, SC 1.4.11 | `border-strong` #7f7c76 | `canvas` #f6f5f2 | 3.82:1 | 3:1 | AA large | pass |
+| Focus ring against the canvas, SC 1.4.11 | `focus` #a94722 | `canvas` #f6f5f2 | 5.33:1 | 3:1 | AA | pass |
+| Focus ring against a raised surface | `focus` #a94722 | `canvas-raised` #ffffff | 5.81:1 | 3:1 | AA | pass |
+| The lit seam where it carries meaning | `seam-lit` #a94722 | `canvas` #f6f5f2 | 5.33:1 | 3:1 | AA | pass |
 | Success message | `success-fg` #1f6b3f | `success-bg` #e8f5ed | 5.79:1 | 4.5:1 | AA | pass |
 | Warning message | `warning-fg` #7a4f00 | `warning-bg` #fdf3dd | 6.46:1 | 4.5:1 | AA | pass |
 | Error message and form validation | `danger-fg` #a11b1b | `danger-bg` #fdeaea | 6.75:1 | 4.5:1 | AA | pass |
@@ -44,28 +44,28 @@ definition, not estimated.
 
 | Pairing | Foreground | Background | Measured | Required | Grade | Result |
 |---|---|---|---|---|---|---|
-| Body copy on the page canvas | `text` #faf8f6 | `canvas` #101621 | 17.11:1 | 4.5:1 | AAA | pass |
-| Body copy on a raised surface | `text` #faf8f6 | `canvas-raised` #1c2331 | 14.86:1 | 4.5:1 | AAA | pass |
-| Body copy on a sunken surface | `text` #faf8f6 | `canvas-sunken` #000000 | 19.82:1 | 4.5:1 | AAA | pass |
-| Secondary copy on the canvas | `text-muted` #dedad5 | `canvas` #101621 | 13.03:1 | 4.5:1 | AAA | pass |
-| Secondary copy on a raised surface | `text-muted` #dedad5 | `canvas-raised` #1c2331 | 11.31:1 | 4.5:1 | AAA | pass |
-| Secondary copy on a sunken surface | `text-muted` #dedad5 | `canvas-sunken` #000000 | 15.10:1 | 4.5:1 | AAA | pass |
-| Captions and metadata, large or non-essential only | `text-subtle` #c2bdb7 | `canvas` #101621 | 9.71:1 | 3:1 | AAA | pass |
-| Accent copy and inline links on the canvas | `text-accent` #fcbda5 | `canvas` #101621 | 11.19:1 | 4.5:1 | AAA | pass |
-| Accent copy on a raised surface | `text-accent` #fcbda5 | `canvas-raised` #1c2331 | 9.72:1 | 4.5:1 | AAA | pass |
-| Anchor-coloured copy on the canvas | `text-anchor` #c1cde3 | `canvas` #101621 | 11.31:1 | 4.5:1 | AAA | pass |
-| Copy on the inverted surface | `text-inverse` #201e1b | `canvas-inverse` #faf8f6 | 15.70:1 | 4.5:1 | AAA | pass |
-| Metadata on the canvas at large sizes | `text-muted` #dedad5 | `canvas` #101621 | 13.03:1 | 3:1 | AAA | pass |
-| Primary button label, resting | `action-fg` #101621 | `action-bg` #f6946d | 8.09:1 | 4.5:1 | AAA | pass |
-| Primary button label, hover | `action-fg` #101621 | `action-bg-hover` #fcbda5 | 11.19:1 | 4.5:1 | AAA | pass |
-| Primary button label, active | `action-fg` #101621 | `action-bg-active` #fedacc | 13.91:1 | 4.5:1 | AAA | pass |
-| Quiet button label on the canvas | `action-quiet-fg` #faf8f6 | `canvas` #101621 | 17.11:1 | 4.5:1 | AAA | pass |
-| Quiet button outline, SC 1.4.11 | `action-quiet-border` #606f8c | `canvas` #101621 | 3.58:1 | 3:1 | AA large | pass |
-| Primary button surface against the canvas | `action-bg` #f6946d | `canvas` #101621 | 8.09:1 | 3:1 | AAA | pass |
-| Input and control borders, SC 1.4.11 | `border-strong` #606f8c | `canvas` #101621 | 3.58:1 | 3:1 | AA large | pass |
-| Focus ring against the canvas, SC 1.4.11 | `focus` #fcbda5 | `canvas` #101621 | 11.19:1 | 3:1 | AAA | pass |
-| Focus ring against a raised surface | `focus` #fcbda5 | `canvas-raised` #1c2331 | 9.72:1 | 3:1 | AAA | pass |
-| The lit seam where it carries meaning | `seam-lit` #f6946d | `canvas` #101621 | 8.09:1 | 3:1 | AAA | pass |
+| Body copy on the page canvas | `text` #f6f5f2 | `canvas` #171d24 | 15.56:1 | 4.5:1 | AAA | pass |
+| Body copy on a raised surface | `text` #f6f5f2 | `canvas-raised` #303847 | 10.81:1 | 4.5:1 | AAA | pass |
+| Body copy on a sunken surface | `text` #f6f5f2 | `canvas-sunken` #050a10 | 18.22:1 | 4.5:1 | AAA | pass |
+| Secondary copy on the canvas | `text-muted` #d8d5cf | `canvas` #171d24 | 11.59:1 | 4.5:1 | AAA | pass |
+| Secondary copy on a raised surface | `text-muted` #d8d5cf | `canvas-raised` #303847 | 8.04:1 | 4.5:1 | AAA | pass |
+| Secondary copy on a sunken surface | `text-muted` #d8d5cf | `canvas-sunken` #050a10 | 13.56:1 | 4.5:1 | AAA | pass |
+| Captions and metadata, large or non-essential only | `text-subtle` #a7a39c | `canvas` #171d24 | 6.76:1 | 3:1 | AA | pass |
+| Accent copy and inline links on the canvas | `text-accent` #f6895b | `canvas` #171d24 | 6.99:1 | 4.5:1 | AA | pass |
+| Accent copy on a raised surface | `text-accent` #f6895b | `canvas-raised` #303847 | 4.85:1 | 4.5:1 | AA | pass |
+| Anchor-coloured copy on the canvas | `text-anchor` #c7c3bc | `canvas` #171d24 | 9.66:1 | 4.5:1 | AAA | pass |
+| Copy on the inverted surface | `text-inverse` #f6f5f2 | `canvas-inverse` #303847 | 10.81:1 | 4.5:1 | AAA | pass |
+| Metadata on the canvas at large sizes | `text-muted` #d8d5cf | `canvas` #171d24 | 11.59:1 | 3:1 | AAA | pass |
+| Primary button label, resting | `action-fg` #171d24 | `action-bg` #f6f5f2 | 15.56:1 | 4.5:1 | AAA | pass |
+| Primary button label, hover | `action-fg` #171d24 | `action-bg-hover` #ffffff | 16.97:1 | 4.5:1 | AAA | pass |
+| Primary button label, active | `action-fg` #171d24 | `action-bg-active` #d8d5cf | 11.59:1 | 4.5:1 | AAA | pass |
+| Quiet button label on the canvas | `action-quiet-fg` #f6f5f2 | `canvas` #171d24 | 15.56:1 | 4.5:1 | AAA | pass |
+| Quiet button outline, SC 1.4.11 | `action-quiet-border` #7f7c76 | `canvas` #171d24 | 4.08:1 | 3:1 | AA large | pass |
+| Primary button surface against the canvas | `action-bg` #f6f5f2 | `canvas` #171d24 | 15.56:1 | 3:1 | AAA | pass |
+| Input and control borders, SC 1.4.11 | `border-strong` #7f7c76 | `canvas` #171d24 | 4.08:1 | 3:1 | AA large | pass |
+| Focus ring against the canvas, SC 1.4.11 | `focus` #f6895b | `canvas` #171d24 | 6.99:1 | 3:1 | AA | pass |
+| Focus ring against a raised surface | `focus` #f6895b | `canvas-raised` #303847 | 4.85:1 | 3:1 | AA | pass |
+| The lit seam where it carries meaning | `seam-lit` #f6895b | `canvas` #171d24 | 6.99:1 | 3:1 | AA | pass |
 | Success message | `success-fg` #7fd8a3 | `success-bg` #12281c | 9.10:1 | 4.5:1 | AAA | pass |
 | Warning message | `warning-fg` #f2c464 | `warning-bg` #2c2107 | 9.68:1 | 4.5:1 | AAA | pass |
 | Error message and form validation | `danger-fg` #ff9d9d | `danger-bg` #2e1010 | 8.82:1 | 4.5:1 | AAA | pass |

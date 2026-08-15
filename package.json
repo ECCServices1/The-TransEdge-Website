@@ -16,11 +16,11 @@
     "check": "astro check",
     "check:copy": "node scripts/check-copy.mjs",
     "tokens:contrast": "node scripts/check-contrast.mjs",
-    "brand:export": "node scripts/export-brand.mjs",
     "fonts:fetch": "node scripts/fetch-fonts.mjs",
     "connect:snapshot": "node scripts/connect-snapshot.mjs",
-    "verify": "npm run check:copy && npm run tokens:contrast && npm run check",
-    "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs"
+    "verify": "npm run check:copy && npm run check:brand && npm run tokens:contrast && npm run check",
+    "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs",
+    "check:brand": "node scripts/check-brand.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",
