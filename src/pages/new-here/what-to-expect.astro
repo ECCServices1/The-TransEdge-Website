@@ -14,7 +14,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
-import PhotoSlot from '../../components/PhotoSlot.astro';
+import Photo from '../../components/Photo.astro';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -90,7 +90,7 @@ const wontHappen = [
       </div>
     </section>
 
-    <PhotoSlot
+    <Photo
       ref="S6"
       brief="Tea and coffee afterwards. Two or three people talking, not posed."
       ratio="3 / 2"

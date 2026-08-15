@@ -11,7 +11,7 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import PhotoSlot from '../../components/PhotoSlot.astro';
+import Photo from '../../components/Photo.astro';
 import { CHURCH } from '../../data/church.mjs';
 import { nextOccurrence } from '../../lib/dates.mjs';
 import { gatheringSchema } from '../../lib/structured-data.mjs';
@@ -59,7 +59,7 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
       </dl>
     </section>
 
-    <PhotoSlot
+    <Photo
       ref="S3"
       brief="The main entrance from the street, in daylight, step-free approach visible."
       ratio="16 / 9"

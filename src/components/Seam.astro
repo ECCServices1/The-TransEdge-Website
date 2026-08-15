@@ -25,12 +25,26 @@
  * the stroke an even weight despite that non-uniform scale.
  */
 
+import { SEAM_PATH, SEAM_DRIFT } from '../lib/seam-path.mjs';
+
 interface Props {
   /** Left-to-right and right-to-left get mirrored paths, so the seam always enters from the leading edge. */
   dir?: 'ltr' | 'rtl';
+  /** The travelling drop. Home only: it needs a long page and waypoints to land on. */
+  drop?: boolean;
 }
 
-const { dir = 'ltr' } = Astro.props;
+const { dir = 'ltr', drop = false } = Astro.props;
+
+/*
+  The drop's lateral track, written as a keyframe block rather than a class per
+  stop, so adding a movement to the home page changes one array in
+  src/lib/seam-path.mjs and nothing here.
+*/
+const driftKeyframes = SEAM_DRIFT.map(
+  (x, i) =>
+    `${((i / (SEAM_DRIFT.length - 1)) * 100).toFixed(1)}% { transform: translateX(calc(${x} * -1%)); }`
+).join('\n    ');
 
 /**
  * The path in seam space. Each vertex sits at a movement boundary, which is
@@ -49,15 +63,7 @@ const { dir = 'ltr' } = Astro.props;
  * reading as a stray line drawn through the headline: it passes behind the
  * images and the open right-hand space, which is where a fold belongs.
  */
-const PATH = [
-  'M 88 -20',
-  'C 88 60, 82 120, 79 180',
-  'C 76 250, 84 280, 86 330',
-  'C 88 400, 72 450, 70 520',
-  'C 68 600, 78 650, 80 700',
-  'C 82 770, 74 820, 72 880',
-  'C 71 940, 71 980, 71 1020',
-].join(' ');
+const PATH = SEAM_PATH;
 
 /* Right-to-left mirroring is a scaleX on the field in CSS rather than a second
    path, so there is only ever one set of coordinates to keep in step. */
@@ -94,6 +100,28 @@ const maskId = 'seam-lit-window';
       <path class="seam-lit" d={PATH} vector-effect="non-scaling-stroke" />
     </g>
   </svg>
+
+  {
+    /*
+      The drop.
+
+      It does not ride the SVG path. The seam is stretched non-uniformly to the
+      page height, so a circle placed in that coordinate space would flatten
+      into a horizontal smear on a page this long. Instead the drop is sticky at
+      eye level and the page travels past it, which is the same relationship
+      seen from the other side and costs one transform.
+
+      It carries no meaning and no content. A reader who never sees it loses
+      nothing, which is why it is aria-hidden along with the rest of the field.
+    */
+    drop && (
+      <div class="drop-rail">
+        <div class="drop" data-seam-drop>
+          <span class="drop__bead" />
+        </div>
+      </div>
+    )
+  }
 </div>
 
 <style>
@@ -177,4 +205,77 @@ const maskId = 'seam-lit-window';
       transform: translateY(1260px);
     }
   }
+
+  /* ------------------------------------------------------------------
+     The drop.
+
+     Sticky at just above the middle of the viewport, so it sits where the
+     eye already is. Its vertical position is free; only its horizontal
+     position is animated, tracking the seam's drift. The page scrolling
+     past a fixed bead is what reads as the bead running down the page.
+     ------------------------------------------------------------------ */
+
+  .drop-rail {
+    position: absolute;
+    inset-block: 0;
+    /* Anchored to the trailing edge, which is the third the seam lives in. */
+    inset-inline-end: 0;
+    inline-size: 1px;
+  }
+
+  .drop {
+    position: sticky;
+    inset-block-start: 46vh;
+    /* Parked off the seam until a browser can move it. A bead sitting still
+       halfway down the page is a smudge, so by default it is not shown. */
+    opacity: 0;
+    transform: translateX(-20%);
+  }
+
+  /* The drift animation itself is in an inline style block below, keyed on a
+     data attribute rather than this class. Astro rewrites both class names and
+     keyframe names inside a scoped style block, so a keyframe generated from
+     SEAM_DRIFT and referenced from here would be looking for a name that no
+     longer exists. */
+
+  .drop__bead {
+    display: block;
+    inline-size: var(--space-2xs);
+    block-size: var(--space-2xs);
+    border-radius: 50%;
+    background-color: var(--color-seam-lit);
+    /* No filter and no shadow: both would take this off the compositor and
+       the whole point of the drop is that it costs one transform. */
+  }
+
+  /* On a narrow screen the seam is pushed mostly off-canvas, so the drop goes
+     with it rather than hovering over the text on its own. */
+  @media (max-width: 48rem) {
+    .drop-rail {
+      display: none;
+    }
+  }
 </style>
+
+{
+  /* Generated from SEAM_DRIFT, so the drop's track and the seam's path cannot
+     disagree: adding a movement changes one array in src/lib/seam-path.mjs. */
+  drop && (
+    <style
+      is:inline
+      set:html={`
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-seam-drop] {
+      opacity: 1;
+      animation: tte-drop-drift linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@keyframes tte-drop-drift {
+    ${driftKeyframes}
+}`}
+    />
+  )
+}

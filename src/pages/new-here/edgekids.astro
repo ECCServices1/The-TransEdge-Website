@@ -13,7 +13,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
-import PhotoSlot from '../../components/PhotoSlot.astro';
+import Photo from '../../components/Photo.astro';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -65,7 +65,7 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
       </ol>
     </section>
 
-    <PhotoSlot
+    <Photo
       ref="S5"
       brief="EdgeKids space, empty of children, set up and ready."
       ratio="3 / 2"

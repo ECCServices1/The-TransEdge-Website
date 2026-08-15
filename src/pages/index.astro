@@ -2,19 +2,30 @@
 /**
  * Home: the continuous canvas.
  *
- * Seven movements, each opening into the next. The handoff device for every
+ * Eleven movements, each opening into the next. The handoff device for every
  * boundary is named in a comment above the movement and drawn in
  * docs/home-scroll-storyboard.md.
+ *
+ * The order runs arrival, welcome, vision, events, outreach, EdgedIn, watch and
+ * listen, give, life at TTE, connect, and finishes at get in touch. That last
+ * one matters: every movement above it asks the reader to do something, and the
+ * page ends by offering a person to talk to instead.
+ *
+ * Several movements are joined by a sentence that starts in one and finishes as
+ * the heading of the next, so the page reads as one statement rather than a
+ * stack of panels. The drop on the seam carries the same idea visually: it
+ * lands on each movement's waypoint, which lights and reaches towards the next.
  *
  * Above the fold: who, where, when, one primary action. No carousel, no
  * autoplay, no modal on load.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
-import PhotoSlot from '../components/PhotoSlot.astro';
+import Photo from '../components/Photo.astro';
 import EdgeMark from '../components/EdgeMark.astro';
+import Waypoint from '../components/Waypoint.astro';
 
-import { CHURCH, VISION, TAGLINE, FAMILY_ORGS } from '../data/church.mjs';
+import { CHURCH, VISION, TAGLINE, FAMILY_ORGS, GIVING } from '../data/church.mjs';
 import { gatheringSchema } from '../lib/structured-data.mjs';
 import { getUpcomingEvents } from '../lib/connect.mjs';
 import { nextOccurrence } from '../lib/dates.mjs';
@@ -35,6 +46,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   route=""
   schema={schema}
   bare
+  seamDrop
 >
   <!-- ==================================================================
        MOVEMENT 1: ARRIVAL
@@ -44,6 +56,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        this movement and its second half opens movement 2.
        ================================================================== -->
   <section class="movement arrival" aria-labelledby="arrival-heading">
+    <Waypoint step={1} />
     <div class="page-shell page-shell--wide arrival__inner">
       <p class="arrival__eyebrow" data-reveal>{CHURCH.place}</p>
 
@@ -93,6 +106,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        Handoff out: the photograph continues past the boundary.
        ================================================================== -->
   <section class="movement welcome" aria-labelledby="welcome-heading">
+    <Waypoint step={2} />
     <div class="page-shell page-shell--wide welcome__inner">
       <div class="welcome__copy">
         <h2 id="welcome-heading" class="welcome__heading" data-reveal>
@@ -114,7 +128,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         </p>
       </div>
 
-      <PhotoSlot
+      <Photo
         ref="S1"
         brief="Wide shot of the room mid-gathering, from the back. Faces visible, no single hero. Landscape, room for the seam to cross the top right."
         ratio="3 / 4"
@@ -131,6 +145,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        into the accent used by the next movement's action.
        ================================================================== -->
   <section class="movement vision" aria-labelledby="vision-heading">
+    <Waypoint step={3} />
     <div class="page-shell vision__inner">
       <h2 id="vision-heading" class="vision__label" data-reveal>Our vision</h2>
       <blockquote class="vision__quote" data-reveal>
@@ -152,6 +167,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        rule of the EdgedIn movement.
        ================================================================== -->
   <section class="movement week" aria-labelledby="week-heading">
+    <Waypoint step={4} />
     <div class="page-shell page-shell--wide">
       <div class="week__head">
         <h2 id="week-heading" data-reveal>What is on</h2>
@@ -190,14 +206,38 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     </div>
   </section>
 
+
   <!-- ==================================================================
-       MOVEMENT 5: EDGEDIN
+       MOVEMENT 5: OUTREACH
+       ECCS as sister organisation. Careful wording: separate entity,
+       services are not church programs, no church involvement required.
+       Handoff out: the closing line opens the Connect movement.
+       ================================================================== -->
+  <section class="movement outreach" aria-labelledby="outreach-heading">
+    <Waypoint step={5} />
+    <div class="page-shell outreach__inner">
+      <h2 id="outreach-heading" data-reveal>Beyond the room</h2>
+      <div class="prose" data-reveal>
+        <p>
+          {FAMILY_ORGS.eccs.name} is our sister organisation and community outreach arm. It is a
+          separate entity with its own team, and its services are open to anyone in the
+          community. You do not need to be part of our church, or any church, to use them.
+        </p>
+      </div>
+      <p data-reveal>
+        <Button href="/outreach" tone="quiet">About our outreach</Button>
+      </p>
+    </div>
+  </section>
+  <!-- ==================================================================
+       MOVEMENT 6: EDGEDIN
        The most editorially expressive area. Inverted ground, so the seam
        reads as light rather than line while it crosses.
        Handoff out: the inverted ground resolves back to canvas through a
        gradient that starts inside this movement and finishes in the next.
        ================================================================== -->
   <section class="movement edgedin" aria-labelledby="edgedin-heading">
+    <Waypoint step={6} />
     <div class="page-shell page-shell--wide edgedin__inner">
       <div>
         <p class="edgedin__eyebrow" data-reveal>EdgedIn Network</p>
@@ -213,7 +253,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         </p>
       </div>
 
-      <PhotoSlot
+      <Photo
         ref="S2"
         brief="Recording setup mid-session, hands and microphone, shallow depth. Portrait or square. Warm key light."
         ratio="1 / 1"
@@ -223,34 +263,90 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 6: OUTREACH
-       ECCS as sister organisation. Careful wording: separate entity,
-       services are not church programs, no church involvement required.
-       Handoff out: the closing line opens the Connect movement.
+       MOVEMENT 7: WATCH AND LISTEN
+       The first movement a returning visitor is looking for. Inverted
+       ground again, briefly, so the drop reads as light crossing it.
+       Handoff out: "take it with you" opens the giving movement, which is
+       the other thing people do between Sundays.
        ================================================================== -->
-  <section class="movement outreach" aria-labelledby="outreach-heading">
-    <div class="page-shell outreach__inner">
-      <h2 id="outreach-heading" data-reveal>Beyond the room</h2>
+  <section class="movement listen" aria-labelledby="listen-heading">
+    <Waypoint step={7} />
+    <div class="page-shell listen__inner">
+      <h2 id="listen-heading" data-reveal>Missed a Sunday, or want it again</h2>
       <div class="prose" data-reveal>
         <p>
-          {FAMILY_ORGS.eccs.name} is our sister organisation and community outreach arm. It is a
-          separate entity with its own team, and its services are open to anyone in the
-          community. You do not need to be part of our church, or any church, to use them.
+          Every message is there to listen back to, and the gathering is streamed live if you
+          cannot be in the room. Put it on in the car, or in the kitchen, or at two in the
+          morning when the house is finally quiet.
         </p>
       </div>
-      <p data-reveal>
-        <Button href="/outreach" tone="quiet">About our outreach</Button>
+      <p class="movement__actions" data-reveal>
+        <Button href="/watch-and-listen">Watch and listen</Button>
+        <Button href={`${CHURCH.connectUrl}/live`} tone="quiet" external>Watch live</Button>
       </p>
+      <p class="movement__handoff" data-reveal>What happens on a Sunday costs something to make,</p>
     </div>
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 7: CONNECT
+       MOVEMENT 8: GIVE
+       Completes the sentence opened above. Trust markers, not marketing:
+       no urgency, no guilt, no countdown, and the deductibility line is
+       stated rather than left for someone to assume.
+       Handoff out: "and none of it runs itself" opens Life at TTE.
+       ================================================================== -->
+  <section class="movement give" aria-labelledby="give-heading">
+    <Waypoint step={8} />
+    <div class="page-shell give__inner">
+      <h2 id="give-heading" data-reveal>and giving is how most of it is paid for.</h2>
+      <div class="prose" data-reveal>
+        <p>
+          Bank transfer or card, whichever suits. No fees come out of a transfer, so the full
+          amount reaches our church. Giving to our church is not tax deductible, and we will
+          not issue a receipt that suggests otherwise.
+        </p>
+      </div>
+      <p class="movement__actions" data-reveal>
+        <Button href="/give">Ways to give</Button>
+        <Button href={GIVING.card.href} tone="quiet" external>Give in Connect</Button>
+      </p>
+      <p class="movement__handoff" data-reveal>None of it runs itself,</p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 9: LIFE AT TTE
+       Completes the sentence again. The people who do the work are the
+       congregation, which is the point rather than a flourish.
+       Handoff out: the mark appears, and the Connect movement follows.
+       ================================================================== -->
+  <section class="movement life" aria-labelledby="life-heading">
+    <Waypoint step={9} />
+    <div class="page-shell life__inner">
+      <h2 id="life-heading" data-reveal>and the people who do it come on a Sunday.</h2>
+      <div class="prose" data-reveal>
+        <p>
+          Welcome, music, sound, children's work, coffee, setting up and packing down. Groups
+          through the week, and teams that keep a Sunday running. Most people here started by
+          being asked once and saying yes.
+        </p>
+      </div>
+      <p class="movement__actions" data-reveal>
+        <Button href="/life-at-tte">Life at TTE</Button>
+        <Button href="/new-here/edgekids" tone="quiet">EdgeKids</Button>
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ==================================================================
+       MOVEMENT 10: CONNECT
        The handoff out of the marketing site. Same tokens, same symbol, so
        leaving does not feel like leaving.
        Handoff out: the seam settles vertical and runs into the footer.
        ================================================================== -->
   <section class="movement connect" aria-labelledby="connect-heading">
+    <Waypoint step={10} />
     <div class="page-shell connect__inner">
       <EdgeMark size={44} />
       <h2 id="connect-heading" data-reveal>Already part of our church?</h2>
@@ -262,6 +358,34 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
           data-connect-label
           data-connect-label-signed-in="Open Connect">Sign in to Connect</Button
         >
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 11: GET IN TOUCH
+       The last movement, and the only one that asks nothing. Everything
+       above offers something to do; this offers a person to talk to.
+       The drop stops here: the chain ends rather than fading out.
+       ================================================================== -->
+  <section class="movement reach" aria-labelledby="reach-heading">
+    <Waypoint step={11} last />
+    <div class="page-shell reach__inner">
+      <h2 id="reach-heading" data-reveal>If you would rather just ask someone</h2>
+      <div class="prose" data-reveal>
+        <p>
+          Call, email, or ask for prayer privately. A person reads everything that comes in
+          and replies within two working days. You do not have to be coming on Sunday, and
+          you do not have to explain why you are writing.
+        </p>
+      </div>
+      <p class="movement__actions" data-reveal>
+        <Button href="/get-in-touch" size="large">Get in touch</Button>
+        <Button href="/get-in-touch/prayer" tone="quiet">Ask for prayer</Button>
+      </p>
+      <p class="reach__direct" data-reveal>
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>
+        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>
       </p>
     </div>
   </section>
@@ -551,6 +675,81 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
   .outreach__inner > * + * {
     margin-block-start: var(--space-m);
+  }
+
+  /* ------------------------------- listen, give, life, reach ---------
+     The four movements added to carry the page through to Get in Touch.
+     They share a shape, so they share a rule: a heading, a paragraph, two
+     actions, and a line that opens the next movement.
+
+     Rhythm alternates deliberately. Two tight movements in a row would
+     read as a list of links, which is exactly what the continuous canvas
+     is meant not to be.
+     ------------------------------------------------------------------ */
+
+  .listen {
+    padding-block: var(--space-movement) var(--space-movement-tight);
+  }
+
+  .give {
+    padding-block: var(--space-movement-tight);
+  }
+
+  .life {
+    padding-block: var(--space-movement-tight) var(--space-movement);
+  }
+
+  .reach {
+    padding-block: var(--space-movement);
+  }
+
+  .listen__inner > * + *,
+  .give__inner > * + *,
+  .life__inner > * + *,
+  .reach__inner > * + * {
+    margin-block-start: var(--space-m);
+  }
+
+  .listen__inner,
+  .give__inner,
+  .life__inner,
+  .reach__inner {
+    max-inline-size: 42rem;
+  }
+
+  .listen h2,
+  .give h2,
+  .life h2,
+  .reach h2 {
+    font-size: var(--text-3);
+    text-wrap: balance;
+  }
+
+  .movement__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  /* The line that opens the next movement. Set in the display face and
+     kept quiet, so it reads as a sentence carrying on rather than as a
+     heading in its own right. */
+  .movement__handoff {
+    margin-block-start: var(--space-xl);
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+
+  .reach__direct {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-l);
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+    font-size: var(--text-1);
   }
 
   /* ---------------------------------------------------------- connect */

@@ -1,0 +1,136 @@
+---
+/**
+ * Where the drop lands.
+ *
+ * The brief for the home page asked for something carried from the top of the
+ * page to the bottom, landing on each element, and each element releasing the
+ * next. Continuity was never the missing piece: the seam already runs the full
+ * length of the page and is drawn from the mark. What was missing is causality,
+ * the sense that one movement produces the next rather than merely following it.
+ *
+ * So each movement carries a waypoint on the trailing edge. It lights as its
+ * movement comes into view, and the short stem below it reaches down towards
+ * the next one. Read top to bottom, the page is a chain rather than a stack.
+ *
+ * HOW IT MEETS THE CONSTRAINTS
+ *
+ * Driven by `animation-timeline: view()`, so it needs no JavaScript, no
+ * observer and no measurement. Transform and opacity only, so it stays on the
+ * compositor.
+ *
+ * With reduced motion, or in a browser without scroll-driven animation, every
+ * waypoint renders lit. The arrived state is the resting state, so nothing is
+ * hidden behind an animation that never runs, and nobody who turns motion off
+ * gets a page of grey dots.
+ *
+ * It is decorative. The label is the movement's own heading, already on the
+ * page, so the waypoint carries no information of its own and is hidden from
+ * assistive technology.
+ */
+interface Props {
+  /** Position in the chain, 1-based. The last one does not reach onward. */
+  step: number;
+  /** True for the final waypoint, which closes the chain rather than passing it on. */
+  last?: boolean;
+}
+
+const { step, last = false } = Astro.props;
+---
+
+<div class="waypoint" data-step={step} data-last={last ? '' : undefined} aria-hidden="true">
+  <span class="waypoint__node"></span>
+  {!last && <span class="waypoint__stem"></span>}
+</div>
+
+<style>
+  .waypoint {
+    position: absolute;
+    inset-block-start: var(--space-2xl);
+    inset-inline-end: 0;
+    inline-size: var(--space-2xs);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    z-index: var(--layer-seam);
+  }
+
+  .waypoint__node {
+    inline-size: var(--space-2xs);
+    block-size: var(--space-2xs);
+    border-radius: 50%;
+    background-color: var(--color-seam-lit);
+  }
+
+  .waypoint__stem {
+    inline-size: 2px;
+    /* Long enough to read as reaching towards the next movement, short enough
+       that it never joins up into a continuous rule. The gap is the point:
+       the chain is made of links, not a line. */
+    block-size: var(--space-2xl);
+    margin-block-start: var(--space-3xs);
+    background: linear-gradient(
+      to bottom,
+      var(--color-seam-lit),
+      transparent
+    );
+  }
+
+  /* The resting state is the arrived state. Everything below is the animation
+     that browsers which can afford it play on the way in. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .waypoint__node {
+        animation: waypoint-land linear both;
+        animation-timeline: view();
+        /* Lands as the movement reaches the middle of the viewport, which is
+           where the drop is sitting. */
+        animation-range: entry 20% cover 45%;
+      }
+
+      .waypoint__stem {
+        transform-origin: top center;
+        animation: waypoint-reach linear both;
+        animation-timeline: view();
+        /* Starts only once the node has landed, so the order reads as
+           arrival, then release. */
+        animation-range: cover 45% cover 80%;
+      }
+    }
+  }
+
+  @keyframes waypoint-land {
+    from {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    70% {
+      /* Overshoots very slightly, which is what makes it read as something
+         arriving rather than something fading up. */
+      transform: scale(1.35);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes waypoint-reach {
+    from {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+
+  /* On a narrow screen the seam is pushed off-canvas, so the chain goes with
+     it. A column of dots down the edge of a phone is clutter. */
+  @media (max-width: 48rem) {
+    .waypoint {
+      display: none;
+    }
+  }
+</style>
