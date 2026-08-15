@@ -130,10 +130,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         </p>
       </div>
 
+      <!-- Landscape, and full width beneath the copy rather than in a narrow
+           column. A wide shot of a full room is the single most useful
+           photograph on this site, and squeezing it into a portrait slot beside
+           the text throws away the room, which is the whole subject. -->
       <Photo
         ref="S1"
-        brief="Wide shot of the room mid-gathering, from the back. Faces visible, no single hero. Landscape, room for the seam to cross the top right."
-        ratio="3 / 4"
+        brief="Wide, from the back of the room, mid-gathering. Faces visible, no single hero, no empty seats. Room at top right for the seam to cross."
+        ratio="16 / 9"
         bleed="inline-end"
         class="welcome__photo"
       />
@@ -792,8 +796,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
   @media (min-width: 56rem) {
     .welcome__inner {
-      grid-template-columns: 1fr 0.85fr;
-      align-items: center;
+      /* One column. S1 is a wide shot of a full room, and a room is not a
+         thing you put in a sidebar. */
+      grid-template-columns: 1fr;
+    }
+
+    .welcome__copy {
+      max-inline-size: 42rem;
     }
 
     .edgedin__inner {

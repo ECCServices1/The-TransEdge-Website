@@ -21,7 +21,7 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 
 | Ref | Shot | Where it goes | Format |
 |---|---|---|---|
-| **S1** | Wide, from the back of the room, mid-gathering. Faces visible, no single hero. Room at top right for the seam to cross | Home, welcome movement | Portrait 3:4 |
+| **S1** | Wide, from the back of the room, mid-gathering. Faces visible, no single hero, **no empty seats**. Room at top right for the seam to cross | Home, welcome movement | Landscape 16:9 |
 | **S2** | Recording setup mid-session. Hands and microphone, shallow depth, warm key light | Home, EdgedIn movement | Square 1:1 |
 | **S3** | The main entrance from the street, in daylight, step-free approach visible | Find us | Landscape 16:9 |
 | **S4** | The welcome desk with a volunteer, mid-conversation, badge visible | Plan your visit | Landscape 3:2 |
