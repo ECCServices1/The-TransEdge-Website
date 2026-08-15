@@ -14,6 +14,14 @@
   "name": "the-transedge-website",
   "compatibility_date": "2026-08-01",
 
+  // Wrangler runs this before deploying, so the site is built even when the
+  // dashboard's build command is left empty. Cloudflare's Workers flow arrives
+  // with no build command and gives no hint that one is needed, so leaving the
+  // deploy dependent on a dashboard field nobody set is how this fails twice.
+  "build": {
+    "command": "npm run build"
+  },
+
   "assets": {
     // Matches the Astro build output. Changing one without the other breaks
     // the deploy.

@@ -35,28 +35,27 @@ Nothing is built, so `wrangler` finds no site to publish and fails with:
 
     Could not detect a directory containing static files (e.g. html, css and js)
 
-That message is accurate and unhelpful. Two things were missing, and both are
-now fixed:
+That message is accurate and unhelpful. Both causes are now handled in the
+repository, so there is only one thing left to change in the dashboard.
 
-1. **`wrangler.jsonc` in the repository** tells Cloudflare the built site is in
-   `./dist`. It is committed, so there is nothing to do about this one.
-2. **The build command was empty.** Set it in the dashboard, below.
+**Fixed in `wrangler.jsonc`, nothing to do:**
 
-## Fix the settings
+- it points Cloudflare at `./dist`
+- it runs `npm run build` itself, through wrangler's build hook, so the
+  dashboard's empty build command no longer matters
 
-In the project, open **Settings**, find the build configuration, and set:
+**Still to change in the dashboard, one setting:**
 
 | Setting | Change it to |
 |---|---|
-| Build command | `npm run build` |
-| Deploy command | `npx wrangler deploy` (already correct, leave it) |
-| Root directory | `/` (already correct, leave it) |
 | Branch | `claude/tte-website-redesign-0blqx1` |
 
-Save, then **Retry build**.
+Then **Retry build**.
 
-The branch matters as much as the build command. `main` holds one file, a
-README, so building it produces no site no matter what else is configured.
+The branch is the one thing the repository cannot fix for itself. `main` holds a
+single README, so `npm install` fails there before anything else runs, whatever
+else is configured. Merging pull request #1 into `main` solves it just as well,
+if the board has approved.
 
 ## What a good build looks like
 
