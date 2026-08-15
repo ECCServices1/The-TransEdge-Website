@@ -68,6 +68,16 @@ jobs:
       - name: Draft register matches the build
         run: npm run check:noindex
 
+      # axe over every built page, both colour schemes. Lighthouse visits ten
+      # URLs and the site builds forty-five, and that gap has cost us twice:
+      # a 3:1 token used at body size in five components, of which CI saw one,
+      # and two composition failures the token checker structurally cannot see.
+      - name: Install Chromium for the accessibility sweep
+        run: npx --yes playwright@1.62 install --with-deps chromium
+
+      - name: Accessibility, every page
+        run: npm run check:a11y
+
       # The generated redirect map must match its source. A hand edit to
       # public/_redirects would otherwise survive until someone noticed in
       # production that a printed QR code had stopped working.

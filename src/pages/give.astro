@@ -40,19 +40,23 @@ const accounts = GIVING.bank.accounts ?? [];
       <div class="bank__accounts">
         {
           accounts.map((account) => (
-            <dl class="bank">
-              {accounts.length > 1 && (
-                <p class="bank__index">Either</p>
-              )}
-              <div>
-                <dt>BSB</dt>
-                <dd class="ltr-embed">{account.bsb}</dd>
-              </div>
-              <div>
-                <dt>Account number</dt>
-                <dd class="ltr-embed">{account.accountNumber}</dd>
-              </div>
-            </dl>
+            /* The "Either" label sits outside the list rather than inside it.
+               A <dl> may only contain dt/dd groups, and a stray <p> in there is
+               not a styling detail: a screen reader announces the label as part
+               of the term list, unattached to either account. */
+            <div class="bank">
+              {accounts.length > 1 && <p class="bank__index">Either</p>}
+              <dl>
+                <div>
+                  <dt>BSB</dt>
+                  <dd class="ltr-embed">{account.bsb}</dd>
+                </div>
+                <div>
+                  <dt>Account number</dt>
+                  <dd class="ltr-embed">{account.accountNumber}</dd>
+                </div>
+              </dl>
+            </div>
           ))
         }
       </div>
@@ -189,6 +193,12 @@ const accounts = GIVING.bank.accounts ?? [];
     margin-block-start: var(--space-m);
     font-size: var(--text-0);
     color: var(--color-text-muted);
+  }
+
+  .bank dl {
+    display: grid;
+    gap: var(--space-s);
+    margin: 0;
   }
 
   .bank dt {
