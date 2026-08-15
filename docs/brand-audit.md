@@ -108,6 +108,11 @@ the supplied lockup artwork. This supersedes the title-case form in section 2 of
 the brief, by the client's decision. The copy linter fails the build on the old
 form, so the two cannot drift apart again.
 
+Corroborated independently: it is painted on the auditorium wall in sentence
+case, beneath the church name, and appears that way in the supplied photography.
+The artwork, the building and the site now agree, which is a stronger position
+than the artwork alone.
+
 ## One thing to confirm
 
 **The family lockups.** The supplied README states:
