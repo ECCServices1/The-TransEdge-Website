@@ -133,9 +133,12 @@ const bankDetailsConfirmed = !GIVING.bank.bsb.startsWith('TBC');
     margin-block-end: var(--space-2xs);
   }
 
+  /* Giving is named in rule 4 as never-micro, so nothing on this page drops
+     below body size. */
   .method__note {
     max-inline-size: var(--measure);
     margin-block-end: var(--space-m);
+    font-size: var(--text-0);
     color: var(--color-text-muted);
   }
 

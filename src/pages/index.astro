@@ -45,13 +45,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        ================================================================== -->
   <section class="movement arrival" aria-labelledby="arrival-heading">
     <div class="page-shell page-shell--wide arrival__inner">
-      <p class="arrival__eyebrow" data-reveal>
-        <EdgeMark size={20} />
-        <span>{CHURCH.place}</span>
-      </p>
+      <p class="arrival__eyebrow" data-reveal>{CHURCH.place}</p>
 
+      <!-- Supplied hero copy, verbatim from the typography handover. Two
+           sentences, sentence case, with the accent on the final word only. -->
       <h1 id="arrival-heading" class="arrival__heading" data-reveal>
-        A church in Penrith with a vision that reaches{' '}<em>nations</em>.
+        A church in Penrith.<br />
+        A vision to impact <em>nations.</em>
       </h1>
 
       <dl class="arrival__facts" data-reveal>
@@ -77,7 +77,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <div class="arrival__action" data-reveal>
         <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
         <p class="arrival__reassurance">
-          About an hour and three quarters. Your kids are looked after. You will not be
+          About an hour and three quarters. Your children are cared for. You will not be
           singled out or asked to give.
         </p>
       </div>
@@ -289,9 +289,6 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   }
 
   .arrival__eyebrow {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2xs);
     font-size: var(--text--1);
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-wide);
@@ -300,22 +297,37 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   }
 
   .arrival__heading {
-    /* min() rather than a bare ch cap. 18ch at the top of the type scale is
-       wider than a 390px viewport, and a bare max-inline-size in ch units lets
-       the heading box exceed its container, which pushes the whole layout wider
-       than the screen and takes the mobile menu button off the edge with it. */
-    max-inline-size: min(18ch, 100%);
+    /* The line breaks are authored, so no ch cap is needed and none is set. */
+    max-inline-size: 100%;
+    font-family: var(--font-display);
     font-size: var(--text-5);
-    font-weight: var(--weight-semibold);
-    /* Long place names must break rather than overflow at 320px. */
+    font-weight: var(--weight-bold);
+    line-height: var(--text-5-leading);
+    letter-spacing: var(--text-5-tracking);
+    /* The copy is two authored sentences. Balancing would re-break them. */
+    text-wrap: nowrap;
     overflow-wrap: break-word;
   }
 
-  /* The one place the display face is allowed its full character. */
+  /*
+    The accent, on the final word only. The handover caps the accent at roughly
+    ten per cent of a typographic composition, and one word of two lines is
+    about eight.
+  */
   .arrival__heading em {
     font-style: normal;
-    color: var(--color-text-accent);
-    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 144;
+    color: var(--color-accent-display);
+  }
+
+  /* On narrow screens the authored breaks are dropped so the two sentences can
+     reflow rather than overflow. */
+  @media (max-width: 45rem) {
+    .arrival__heading br {
+      display: none;
+    }
+    .arrival__heading {
+      text-wrap: balance;
+    }
   }
 
   .arrival__facts {
@@ -350,7 +362,9 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   .arrival__reassurance {
     max-inline-size: min(46ch, 100%);
     color: var(--color-text-muted);
-    font-size: var(--text--1);
+    /* Body size, not micro. This answers "will I be singled out" and "what
+       happens to my children", which is not a supporting label. */
+    font-size: var(--text-0);
   }
 
   /* The handoff. Reads as an unfinished sentence, because it is one. */

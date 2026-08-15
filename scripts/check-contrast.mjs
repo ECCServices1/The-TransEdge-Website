@@ -92,6 +92,7 @@ const PAIRINGS = [
   ['--color-text-muted', '--color-canvas-sunken', 'text', 'Secondary copy on a sunken surface'],
   ['--color-text-subtle', '--color-canvas', 'large', 'Captions and metadata, large or non-essential only'],
   ['--color-text-accent', '--color-canvas', 'text', 'Accent copy and inline links on the canvas'],
+  ['--color-accent-display', '--color-canvas', 'large', 'The accent word in the hero, at display size'],
   ['--color-text-accent', '--color-canvas-raised', 'text', 'Accent copy on a raised surface'],
   ['--color-text-anchor', '--color-canvas', 'text', 'Anchor-coloured copy on the canvas'],
   ['--color-text-inverse', '--color-canvas-inverse', 'text', 'Copy on the inverted surface'],

@@ -1,0 +1,75 @@
+:root {
+  --tte-font-display: "Inter Display", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --tte-font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --tte-slate-900: #303847;
+  --tte-slate-700: #4B576E;
+  --tte-grey-500: #A1AAAF;
+  --tte-porcelain: #F6F5F2;
+  --tte-ember: #E46F3C;
+
+  --tte-display-size: clamp(3.25rem, 6.1vw, 5.125rem);
+  --tte-display-line: 1.07;
+  --tte-display-track: -0.038em;
+  --tte-h1-size: clamp(2.75rem, 4.8vw, 4rem);
+  --tte-h1-line: 1.09;
+  --tte-h1-track: -0.034em;
+  --tte-h2-size: clamp(2rem, 3.4vw, 2.75rem);
+  --tte-h2-line: 1.18;
+  --tte-h2-track: -0.025em;
+  --tte-h3-size: clamp(1.5rem, 2.2vw, 1.75rem);
+  --tte-h3-line: 1.29;
+  --tte-body-large-size: 1.125rem;
+  --tte-body-large-line: 1.67;
+  --tte-body-size: 1rem;
+  --tte-body-line: 1.625;
+  --tte-nav-size: 0.875rem;
+  --tte-nav-line: 1.43;
+  --tte-micro-size: 0.75rem;
+  --tte-micro-line: 1.42;
+}
+
+.tte-display,
+.tte-h1,
+.tte-h2,
+.tte-h3 {
+  color: var(--tte-slate-900);
+  font-family: var(--tte-font-display);
+  text-wrap: balance;
+}
+
+.tte-display {
+  font-size: var(--tte-display-size);
+  font-weight: 700;
+  letter-spacing: var(--tte-display-track);
+  line-height: var(--tte-display-line);
+}
+
+.tte-accent { color: var(--tte-ember); }
+
+.tte-body {
+  color: var(--tte-slate-900);
+  font-family: var(--tte-font-body);
+  font-size: var(--tte-body-size);
+  font-weight: 450;
+  line-height: var(--tte-body-line);
+}
+
+.tte-nav {
+  font-family: var(--tte-font-body);
+  font-size: var(--tte-nav-size);
+  font-weight: 550;
+  line-height: var(--tte-nav-line);
+}
+
+.tte-micro {
+  font-family: var(--tte-font-body);
+  font-size: var(--tte-micro-size);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: var(--tte-micro-line);
+}
+
+@media (max-width: 720px) {
+  .tte-display { letter-spacing: -0.032em; }
+}

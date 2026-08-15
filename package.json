@@ -20,7 +20,8 @@
     "connect:snapshot": "node scripts/connect-snapshot.mjs",
     "verify": "npm run check:copy && npm run check:brand && npm run tokens:contrast && npm run check",
     "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs",
-    "check:brand": "node scripts/check-brand.mjs"
+    "check:brand": "node scripts/check-brand.mjs",
+    "fonts:subset": "node scripts/subset-brand-fonts.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",

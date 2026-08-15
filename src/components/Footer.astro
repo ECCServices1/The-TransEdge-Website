@@ -117,6 +117,9 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
     padding-block: var(--space-2xl) var(--space-l);
     background-color: var(--color-canvas-inverse);
     color: var(--color-text-inverse);
+    /* Nav size, not micro. The footer carries the safeguarding and privacy
+       routes, which rule 4 forbids setting below body size, so those are
+       raised individually below. */
     font-size: var(--text--1);
   }
 
@@ -190,6 +193,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
   }
 
   .site-footer__acknowledgement {
+    font-size: var(--text-0);
     max-inline-size: var(--measure);
     margin-block: var(--space-2xl) var(--space-l);
     padding-block-start: var(--space-l);
@@ -205,12 +209,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
     justify-content: space-between;
   }
 
+  /* Safeguarding, privacy and terms. Named in rule 4, so body size. */
   .site-footer__legal-links {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-m);
     margin: 0;
     padding: 0;
+    font-size: var(--text-0);
   }
 
   .site-footer__legal {

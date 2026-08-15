@@ -95,6 +95,21 @@
   --color-text-accent: var(--color-ember-accessible);
   --color-text-anchor: var(--color-heritage);
 
+  /*
+    The accent on display-size type.
+
+    The typography handover asks for #E46F3C on the hero word. Measured, that is
+    2.90:1 on the porcelain surface, which fails WCAG 2.2 SC 1.4.3 even at the
+    3:1 large-text threshold, and section 21 of the brief makes AA the floor.
+    So this resolves to the accessible cut the brand's own token file supplies
+    for exactly this purpose, at 5.33:1.
+
+    To ship the brighter ember instead, change this one line to
+    var(--color-ember) and remove the pairing from scripts/check-contrast.mjs.
+    That is a deliberate accessibility trade and should be recorded as one.
+  */
+  --color-accent-display: var(--color-ember-accessible);
+
   /* Primary action is Deep Slate, per the accent budget above. */
   --color-action-bg: var(--color-primary);
   --color-action-bg-hover: var(--color-neutral-900);
@@ -122,37 +137,79 @@
 
   /* ---------------------------------------------------------------------
      TYPE
-     Two families. Fraunces for display, Inter for text, both SIL Open Font
-     Licence, so there is no per-domain licence to track and no cost line.
-     Non-Latin scripts fall back to the Noto family, also OFL, loaded per
+     One voice: Inter Display for display, Inter for everything else, both SIL
+     Open Font Licence, so there is no per-domain licence to track and no cost
+     line. Non-Latin scripts fall back to the Noto family, also OFL, loaded per
      locale because the CJK files are large.
      --------------------------------------------------------------------- */
 
-  --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
-  --font-text: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /*
+    One voice. Inter Display is the only display face and Inter carries
+    navigation, body, buttons, labels and legal text.
+
+    The serif is deliberately not here. From the typography handover: "The serif
+    treatment shown in the website concept is not adopted: although attractive,
+    it would create a second and competing masterbrand voice." Inter Display is
+    also the closer match to the mark, which is drawn from flat architectural
+    planes rather than from anything calligraphic.
+  */
+  --font-display: 'Inter Display', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-text: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
 
-  /* Seven-step fluid scale. Each step is a clamp between 320px and 1440px
-     viewports, so there are no size breakpoints to maintain. */
-  --text--1: clamp(0.833rem, 0.8rem + 0.16vw, 0.889rem);
-  --text-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-  --text-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.44rem);
-  --text-2: clamp(1.44rem, 1.31rem + 0.65vw, 1.85rem);
-  --text-3: clamp(1.73rem, 1.51rem + 1.1vw, 2.44rem);
-  --text-4: clamp(2.07rem, 1.68rem + 1.95vw, 3.3rem);
-  --text-5: clamp(2.49rem, 1.79rem + 3.5vw, 4.8rem);
+  /*
+    The supplied scale, values verbatim from tte_web_typography_tokens.css.
+    Eight steps, each with its own leading and tracking, because a display face
+    set at 82px and a nav label set at 14px do not share either.
+
+    Floors that are rules, not preferences:
+      nav   14px, --text--1
+      body  16px, --text-0
+      micro 12px, --text-micro, supporting labels only. Never essential
+            instructions, access conditions, safeguarding, privacy, complaints
+            or giving.
+  */
+  --text-5: clamp(3.25rem, 6.1vw, 5.125rem);
+  --text-5-leading: 1.07;
+  --text-5-tracking: -0.038em;
+
+  --text-4: clamp(2.75rem, 4.8vw, 4rem);
+  --text-4-leading: 1.09;
+  --text-4-tracking: -0.034em;
+
+  --text-3: clamp(2rem, 3.4vw, 2.75rem);
+  --text-3-leading: 1.18;
+  --text-3-tracking: -0.025em;
+
+  --text-2: clamp(1.5rem, 2.2vw, 1.75rem);
+  --text-2-leading: 1.29;
+  --text-2-tracking: -0.014em;
+
+  --text-1: 1.125rem;
+  --text-1-leading: 1.67;
+
+  --text-0: 1rem;
+  --text-0-leading: 1.625;
+
+  --text--1: 0.875rem;
+  --text--1-leading: 1.43;
+
+  --text-micro: 0.75rem;
+  --text-micro-leading: 1.42;
 
   --weight-regular: 400;
+  --weight-body: 450;
   --weight-medium: 500;
+  --weight-nav: 550;
   --weight-semibold: 600;
   --weight-bold: 700;
 
-  --leading-tight: 1.1;
-  --leading-snug: 1.25;
-  --leading-normal: 1.5;
-  --leading-loose: 1.65;
+  --leading-tight: 1.09;
+  --leading-snug: 1.29;
+  --leading-normal: 1.625;
+  --leading-loose: 1.67;
 
-  --tracking-tight: -0.02em;
+  --tracking-tight: -0.025em;
   --tracking-normal: 0;
   --tracking-wide: 0.06em;
 
@@ -267,6 +324,7 @@
 
     --color-text-accent: var(--color-ember-light);
     --color-text-anchor: var(--color-neutral-400);
+    --color-accent-display: var(--color-ember-light);
 
     --color-action-bg: var(--color-neutral-100);
     --color-action-bg-hover: var(--color-white);
@@ -310,6 +368,7 @@
 
   --color-text-accent: var(--color-ember-light);
   --color-text-anchor: var(--color-neutral-400);
+  --color-accent-display: var(--color-ember-light);
 
   --color-action-bg: var(--color-neutral-100);
   --color-action-bg-hover: var(--color-white);

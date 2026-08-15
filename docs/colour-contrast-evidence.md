@@ -8,7 +8,7 @@ user interface components and graphical objects (SC 1.4.11).
 Ratios are computed from the sRGB relative luminance formula in the WCAG
 definition, not estimated.
 
-**Result: all 50 guaranteed pairings pass.**
+**Result: all 52 guaranteed pairings pass.**
 
 ## Light scheme
 
@@ -22,6 +22,7 @@ definition, not estimated.
 | Secondary copy on a sunken surface | `text-muted` #5c5a56 | `canvas-sunken` #e9e7e2 | 5.57:1 | 4.5:1 | AA | pass |
 | Captions and metadata, large or non-essential only | `text-subtle` #7f7c76 | `canvas` #f6f5f2 | 3.82:1 | 3:1 | AA large | pass |
 | Accent copy and inline links on the canvas | `text-accent` #a94722 | `canvas` #f6f5f2 | 5.33:1 | 4.5:1 | AA | pass |
+| The accent word in the hero, at display size | `accent-display` #a94722 | `canvas` #f6f5f2 | 5.33:1 | 3:1 | AA | pass |
 | Accent copy on a raised surface | `text-accent` #a94722 | `canvas-raised` #ffffff | 5.81:1 | 4.5:1 | AA | pass |
 | Anchor-coloured copy on the canvas | `text-anchor` #4b576e | `canvas` #f6f5f2 | 6.67:1 | 4.5:1 | AA | pass |
 | Copy on the inverted surface | `text-inverse` #f6f5f2 | `canvas-inverse` #303847 | 10.81:1 | 4.5:1 | AAA | pass |
@@ -52,6 +53,7 @@ definition, not estimated.
 | Secondary copy on a sunken surface | `text-muted` #d8d5cf | `canvas-sunken` #050a10 | 13.56:1 | 4.5:1 | AAA | pass |
 | Captions and metadata, large or non-essential only | `text-subtle` #a7a39c | `canvas` #171d24 | 6.76:1 | 3:1 | AA | pass |
 | Accent copy and inline links on the canvas | `text-accent` #f6895b | `canvas` #171d24 | 6.99:1 | 4.5:1 | AA | pass |
+| The accent word in the hero, at display size | `accent-display` #f6895b | `canvas` #171d24 | 6.99:1 | 3:1 | AA | pass |
 | Accent copy on a raised surface | `text-accent` #f6895b | `canvas-raised` #303847 | 4.85:1 | 4.5:1 | AA | pass |
 | Anchor-coloured copy on the canvas | `text-anchor` #c7c3bc | `canvas` #171d24 | 9.66:1 | 4.5:1 | AAA | pass |
 | Copy on the inverted surface | `text-inverse` #f6f5f2 | `canvas-inverse` #303847 | 10.81:1 | 4.5:1 | AAA | pass |
