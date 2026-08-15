@@ -1,0 +1,64 @@
+---
+/**
+ * Marks a page whose content is drafted but not yet confirmed by the people who
+ * are entitled to confirm it.
+ *
+ * Some of this site's content is not ours to write. A statement of faith, the
+ * order of a Sunday, the name of the person who receives a safeguarding
+ * concern: these are matters of fact about a real church, and a plausible guess
+ * published as fact is worse than an empty page, because nobody goes looking
+ * for an error they cannot see.
+ *
+ * So a drafted page says so, in the open, and carries `noindex` until someone
+ * signs it off. That is the same treatment an unreviewed translation gets, for
+ * the same reason.
+ *
+ * Removing this component from a page is the act of approving it. That is
+ * deliberate: approval should be a visible line in a diff with a name against
+ * it, not a flag flipped in a config file.
+ */
+interface Props {
+  /** Who has to confirm it, and what specifically. One sentence. */
+  what: string;
+}
+
+const { what } = Astro.props;
+---
+
+<aside class="draft" role="note" aria-labelledby="draft-heading">
+  <h2 id="draft-heading" class="draft__heading">Draft, not yet confirmed</h2>
+  <p class="draft__body">{what}</p>
+  <p class="draft__body">
+    This page is hidden from search engines until it is signed off. Everything on it is a
+    starting point for editing, not a statement of fact.
+  </p>
+</aside>
+
+<style>
+  .draft {
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-2xl);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    /* A weight change and a heading carry the emphasis, not a colour alone.
+       Colour is never the only signal. */
+    border: var(--border-thick) solid var(--color-border-strong);
+    border-radius: var(--radius-m);
+  }
+
+  .draft__heading {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-2xs);
+  }
+
+  /* Body size. This is an essential instruction to an editor, and rule 4
+     forbids micro type for those. */
+  .draft__body {
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
+  }
+
+  .draft__body + .draft__body {
+    margin-block-start: var(--space-2xs);
+  }
+</style>

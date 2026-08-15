@@ -21,7 +21,13 @@ export const VISION =
 export const MISSION =
   'To discover, develop, and empower individuals to become faithful disciples of Jesus Christ. Our mission is to equip believers to influence their communities through the power of the Gospel. We are committed to building a Christian community that is youthful, creative, and purpose-driven—raising leaders who make a lasting impact in every sphere of life.';
 
-export const TAGLINE = 'A Change is Inevitable';
+/*
+  Sentence case, no full stop, matching the supplied lockup artwork in
+  TTE Masterbrand Production Suite v1.0. This supersedes the title-case form in
+  section 2 of the brief, by the client's decision: the artwork is the master and
+  the copy now agrees with it rather than contradicting it in print.
+*/
+export const TAGLINE = 'A change is inevitable';
 
 export const CHURCH = {
   legalName: 'The Transformation Edge Ltd',
@@ -117,11 +123,24 @@ export const FAMILY_ORGS = {
  * while they are still placeholders: see scripts/check-copy.mjs.
  */
 export const GIVING = {
+  /*
+    Two accounts, either one. Supplied by the client and reproduced exactly:
+    a wrong digit here sends someone's gift to a stranger, so these are never
+    retyped from memory or reformatted for tidiness.
+
+    accountName is not on the supplied slip and is inferred from the legal
+    entity. Confirm it against the bank's own record before launch: several
+    Australian banks now run confirmation of payee, and a name that does not
+    match the account warns the giver mid-transfer.
+  */
   bank: {
     accountName: 'The Transformation Edge Ltd',
-    bsb: 'TBC-BSB',
-    accountNumber: 'TBC-ACCOUNT',
+    accountNameConfirmed: false,
     reference: 'Your name, or OFFERING',
+    accounts: [
+      { bsb: '633-000', accountNumber: '159 596 881' },
+      { bsb: '112-879', accountNumber: '475 901 531' },
+    ],
   },
   card: {
     /** Stripe lives inside Connect. There is no card capture on this site. */

@@ -10,6 +10,7 @@
 import BaseLayout from './BaseLayout.astro';
 import { breadcrumbSchema } from '../lib/structured-data.mjs';
 import { localeHref, DEFAULT_LOCALE } from '../i18n/locales.mjs';
+import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
 
 interface Crumb {
   name: string;
@@ -41,7 +42,11 @@ const {
 } = Astro.props;
 
 const trail = [
-  { name: 'Home', href: localeHref(locale, '') },
+  /* The home page exists in English only, so a translated page's first crumb
+     points there rather than at a locale root that was never built. The trail
+     also feeds breadcrumb structured data, so a wrong href here would be
+     published to search engines as well as shown to a reader. */
+  { name: 'Home', href: resolvedLocaleHref(localeHref, locale, '') },
   ...crumbs,
   { name: title, href: localeHref(locale, route) },
 ];
@@ -102,7 +107,7 @@ const trail = [
   .crumbs li + li::before {
     content: '/';
     margin-inline-end: var(--space-2xs);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
   }
 
   .crumbs a {

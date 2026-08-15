@@ -10,8 +10,9 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { CHURCH } from '../../data/church.mjs';
+import { LEAD_FAQS } from '../../data/faqs.mjs';
 import { nextOccurrence, toGoogleCalendarUrl } from '../../lib/dates.mjs';
-import { faqSchema, gatheringSchema } from '../../lib/structured-data.mjs';
+import { gatheringSchema } from '../../lib/structured-data.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
 const nextSunday = nextOccurrence(sunday.isoDay);
@@ -50,32 +51,6 @@ const steps = [
   },
 ];
 
-const faqs = [
-  {
-    question: 'What do people wear?',
-    answer: 'Whatever you are comfortable in. You will see everything from a suit to shorts on the same row.',
-  },
-  {
-    question: 'Will I be singled out?',
-    answer: 'No. We do not ask visitors to stand, introduce themselves or put a hand up. Nobody will ask you for money.',
-  },
-  {
-    question: 'What happens with my kids?',
-    answer: 'EdgeKids runs during the gathering for school-age children, with screened and trained leaders. Younger children are welcome to stay with you, and there is space at the back if you need to move around.',
-  },
-  {
-    question: 'How long does it go for?',
-    answer: 'About an hour and three quarters, including time afterwards for a cup of tea.',
-  },
-  {
-    question: 'Is the building accessible?',
-    answer: 'The main entrance and the auditorium are step-free, and there is an accessible toilet. If you need anything specific, call us before you come and we will sort it out.',
-  },
-  {
-    question: 'What if I am not religious?',
-    answer: 'You are welcome exactly as you are. Plenty of people here came for the first time not knowing what they thought, and that is a completely normal way to arrive.',
-  },
-];
 ---
 
 <PageLayout
@@ -84,7 +59,7 @@ const faqs = [
   route="new-here/plan-your-visit"
   crumbs={[{ name: 'New Here', href: '/new-here' }]}
   standfirst="Four steps, and none of them involve filling anything in."
-  schema={[faqSchema(faqs), gatheringSchema(sunday, nextSunday)]}
+  schema={[gatheringSchema(sunday, nextSunday)]}
 >
   <!-- The three facts, then the one action. Nothing else at this height. -->
   <section class="essentials" aria-labelledby="essentials-heading">
@@ -144,7 +119,7 @@ const faqs = [
     <h2 id="faq-heading">Questions people actually ask</h2>
     <div class="faq__list">
       {
-        faqs.map((faq) => (
+        LEAD_FAQS.map((faq) => (
           <details class="faq__item">
             <summary>
               <h3>{faq.question}</h3>
@@ -154,6 +129,9 @@ const faqs = [
         ))
       }
     </div>
+    <p class="faq__more">
+      <Button href="/new-here/faq" tone="quiet">All the questions people ask</Button>
+    </p>
   </section>
 </PageLayout>
 
@@ -241,6 +219,10 @@ const faqs = [
 
   .faq__list {
     max-inline-size: 46rem;
+    margin-block-start: var(--space-m);
+  }
+
+  .faq__more {
     margin-block-start: var(--space-m);
   }
 

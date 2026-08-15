@@ -159,3 +159,139 @@ movements is part of the composition.
   device.
 - Neither scheme has been reviewed by a person at each width. That review needs
   eyes, not a test.
+
+
+## The twelve movements, the reveal, and the drop
+
+Revised after review: the page was too short and stopped before most of what a
+returning visitor comes for. It now runs the full length of the site.
+
+| # | Movement | Leads to | Joined to the next by |
+|---|---|---|---|
+| 1 | Arrival | Plan your visit | "There is a place for you here," |
+| 2 | Welcome | What a Sunday looks like | the photograph crossing the boundary |
+| 3 | Vision | Who we are | the seam changing colour |
+| 4 | The Rain is Coming | Conference 2026 | the weather clearing |
+| 5 | What is on | Events | the card edge aligning with the next rule |
+| 6 | Beyond the room | Outreach | the closing line |
+| 7 | EdgedIn | EdgedIn Network | the inverted ground resolving to canvas |
+| 8 | Watch and listen | Watch and listen, live | "What happens on a Sunday costs something to make," |
+| 9 | Give | Ways to give | "None of it runs itself," |
+| 10 | Life at TTE | Life at TTE | the mark appearing |
+| 11 | Connect | Connect Hub | the seam settling vertical |
+| 12 | Get in touch | Get in touch, prayer | nothing. The page ends here |
+
+Movements 1 and 2, 7 and 8, and 8 and 9 are joined by a sentence that begins in
+one movement and finishes as the heading of the next. Read straight down, the
+page is a statement rather than a stack of panels.
+
+The last movement is the only one that asks nothing. Everything above it offers
+something to do; this offers a person to talk to.
+
+### The drop
+
+The brief asked for something carried from the top of the page to the bottom,
+landing on each element, with each element releasing the next.
+
+Continuity was never what was missing. The seam already runs the full length of
+the page and is drawn from the gap between the two planes of the mark. What was
+missing is **causality**: the sense that one movement produces the next rather
+than merely following it.
+
+So the seam is the channel, and a drop travels it. Each movement carries a
+waypoint on the trailing edge; the waypoint lights as its movement arrives, and
+a short stem reaches down towards the next one. The gap between the stem and the
+next waypoint is deliberate: the chain is made of links, not a continuous rule.
+
+**Why the drop is not on the seam path.** The seam is drawn in a 100 by 1000
+viewBox with `preserveAspectRatio="none"`, so it stretches to whatever the page
+height turns out to be. A circle placed in that coordinate space is flattened
+into a horizontal smear on a page this long. Instead the drop is a sticky
+element at 46vh and the page travels past it, which is the same relationship
+seen from the other side. Only its horizontal position is animated, tracking
+`SEAM_DRIFT` in `src/lib/seam-path.mjs`, so the whole device costs one transform
+and never touches layout.
+
+Adding a movement means adding one number to that array. The seam and the drop
+read the same source, so they cannot drift apart.
+
+**Without scroll-driven animation, or with motion reduced**, every waypoint
+renders lit and the drop is not shown at all. The arrived state is the resting
+state. Nobody who turns motion off gets a page of grey dots waiting for
+something that will never happen.
+
+### What was considered and not chosen
+
+A ribbon, or a line of scripture running the length of the page, were the other
+two options on the table.
+
+A second graphic device would compete with the seam, which is already the
+brand's own line and already runs the full page. Two continuous devices on one
+page is one too many.
+
+Scripture would work, and would work better than the drop, but it needs a verse
+this church has actually chosen. Guessing one is the same mistake as guessing a
+statement of faith. If a verse is nominated, the drop can travel along it rather
+than beside it, and the text becomes the channel.
+
+
+## The reveal, revised
+
+The first version lit the seam evenly and let the drop do the work. The revised
+brief asked for something better: the connecting line should **open out of
+obscurity**, brightening as the page is read, dimming in places for effect and
+returning.
+
+That is now `SEAM_REVEAL` in `src/lib/seam-path.mjs`. Ten stops, each
+`[progress, opacity, width]`, driving the seam's own opacity and stroke weight
+off the root scroll timeline. Brightness and weight rise together, so the line
+**gathers** rather than merely fading up.
+
+The two dips are placed, not spaced:
+
+- **over the vision**, so the locked words carry that movement on their own
+- **over giving**, for the same reason
+
+A line brightening beside copy that matters competes with it. The drawing-back
+and returning is also what stops a monotonic fade from reading as a progress bar.
+
+The drop is now the leading point of that light rather than a separate object:
+it brightens on the same curve, slightly ahead of the seam behind it.
+
+Without scroll-driven animation, or with motion reduced, the seam is simply
+drawn at full strength and the drop is not shown. The arrived state is the
+resting state.
+
+### Why this figure
+
+The conference artwork for **RAIN** is light breaking through storm cloud onto
+water. The page now does across twelve movements what the poster does in one
+frame, and the two arrive in the same place. That was not the plan when the seam
+was drawn; the seam came from the gap between the two planes of the mark. It is
+a coincidence worth keeping rather than a theme applied on top.
+
+The conference movement sits at the peak of the reveal curve, and it is the
+darkest thing on the page. It is the one movement where the light-out-of-
+obscurity figure is not a metaphor.
+
+## The conference
+
+`src/data/conference.mjs`. Everything in it came from the supplied teaser and
+nothing was inferred: the name, the tag, the teaser line, and the dates
+13 to 15 November 2026.
+
+There is deliberately no venue, no timetable, no speaker list, no price and no
+registration link, because none were given. `registrationUrl` is null and the
+component renders "Tell me when registration opens" rather than a button that
+goes nowhere, which is a worse thing to do on a conference page than anywhere
+else on a site.
+
+It is set typographically in the site's own system rather than as a copy of the
+poster. The poster uses a metallic display face that is not part of the
+masterbrand: fine on a poster, wrong on a web page, and an approximation of it
+in Fraunces would read as a mistake rather than a decision. The shaft of light
+is drawn with two gradients and a column, so it is the same figure as the poster
+and none of its pixels.
+
+**When the artwork is supplied**, add it as `src/assets/photos/E1-rain-2026.jpg`
+and pass it to the teaser. The typographic setting then becomes its caption.

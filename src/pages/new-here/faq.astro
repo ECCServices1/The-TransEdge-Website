@@ -1,0 +1,132 @@
+---
+/**
+ * Questions, section 9 under New Here.
+ *
+ * The full set, grouped. Plan Your Visit shows the six leading questions and
+ * links here for the rest, and both read the same list so they cannot drift
+ * apart.
+ *
+ * This is the only page that emits FAQPage structured data. Two pages emitting
+ * schema for an overlapping question set is how a site competes with itself in
+ * search results.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { FAQS, FAQ_GROUPS } from '../../data/faqs.mjs';
+import { faqSchema } from '../../lib/structured-data.mjs';
+
+const grouped = FAQ_GROUPS.map((group) => ({
+  ...group,
+  faqs: FAQS.filter((faq) => faq.group === group.key),
+})).filter((group) => group.faqs.length > 0);
+---
+
+<PageLayout
+  title="Questions"
+  description="The things people ask before their first Sunday at The Transformation Edge, answered plainly."
+  route="new-here/faq"
+  crumbs={[{ name: 'New Here', href: '/new-here' }]}
+  standfirst="The things people ask before a first Sunday, including the ones they would rather not have to ask."
+  schema={[faqSchema(FAQS)]}
+>
+  <div class="faq">
+    {
+      grouped.map((group) => (
+        <section aria-labelledby={`group-${group.key}`}>
+          <h2 id={`group-${group.key}`}>{group.title}</h2>
+          <div class="faq__list">
+            {group.faqs.map((faq) => (
+              <details class="faq__item">
+                <summary>
+                  <h3>{faq.question}</h3>
+                </summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section aria-labelledby="ask-heading">
+      <h2 id="ask-heading">Something we have not answered</h2>
+      <p class="prose">
+        Ask it. Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>{' '}
+        or email <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, and a person will
+        answer within two working days. No question about coming to church is too small or
+        too obvious to ask.
+      </p>
+      <p class="actions">
+        <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+        <Button href="/get-in-touch" tone="quiet">Get in touch</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .faq {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .faq h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  /* A native disclosure, so every answer is in the DOM for search and for a
+     visitor with no JavaScript, and Ctrl+F finds them. */
+  .faq__item {
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-block: var(--space-s);
+    cursor: pointer;
+    list-style: none;
+    min-block-size: 2.75rem;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item summary h3 {
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    letter-spacing: normal;
+  }
+
+  .faq__item summary::after {
+    content: '+';
+    flex-shrink: 0;
+    font-size: var(--text-2);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  .faq__item[open] summary::after {
+    content: '−';
+  }
+
+  .faq__item p {
+    max-inline-size: var(--measure);
+    padding-block-end: var(--space-s);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

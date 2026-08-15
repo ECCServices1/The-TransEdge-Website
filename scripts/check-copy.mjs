@@ -112,6 +112,25 @@ const RULES = [
       'Bank details are still placeholders. This is a launch blocker: the Give page cannot go live without confirmed account details.',
     level: 'warn',
   },
+  {
+    id: 'third-person-church',
+    /*
+      "the wider church" and "the early church" mean the body of believers, not
+      TTE, so the pattern requires "church" to follow the article directly and
+      leaves those alone.
+    */
+    pattern: /\b(?:the|this)\s+church\b/i,
+    message:
+      'We write "our church", not "the church" or "this church". The site speaks from inside the community rather than describing it from outside. Use check-copy-ignore on the line if you genuinely mean the church universal.',
+    level: 'error',
+  },
+  {
+    id: 'tagline-case',
+    pattern: /A Change is Inevitable/,
+    message:
+      'The tagline is set in sentence case with no full stop, matching the supplied lockup artwork: "A change is inevitable".',
+    level: 'error',
+  },
 ];
 
 /** @param {string} dir */
@@ -175,7 +194,7 @@ for (const dir of SCAN_DIRS) {
 const lockedChecks = [
   ['VISION', VISION, 'generously impact nations'],
   ['MISSION', MISSION, 'youthful, creative, and purpose-driven'],
-  ['TAGLINE', TAGLINE, 'A Change is Inevitable'],
+  ['TAGLINE', TAGLINE, 'A change is inevitable'],
 ];
 for (const [name, value, mustContain] of lockedChecks) {
   if (!value.includes(mustContain)) {

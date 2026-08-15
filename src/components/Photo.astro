@@ -1,0 +1,144 @@
+---
+/**
+ * A real photograph, or the reserved space for one.
+ *
+ * Same component, same aspect ratio, same place in the layout whether the
+ * photograph exists yet or not. Dropping a file into src/assets/photos/ swaps
+ * the slot for the picture and changes no layout, so nothing shifts and the
+ * cumulative layout shift budget is unaffected either way.
+ *
+ * WHY IT WRAPS PhotoSlot RATHER THAN REPLACING IT
+ *
+ * Section 17 forbids publishing an image without alt text and a recorded
+ * consent, and section 22 forbids stock photography of people who are not in
+ * this congregation. Those rules are easy to agree with and easy to forget at
+ * four in the afternoon, so this component will not render a photograph without
+ * alt text: `alt` is required, and an empty string is rejected rather than
+ * treated as decorative. A congregation photograph is never decorative.
+ *
+ * DELIVERY
+ *
+ * <Picture> rather than <Image>, so the browser is offered AVIF and WebP and
+ * falls back to JPEG, at four widths, with the intrinsic dimensions written
+ * onto the tag. Below the fold, images are lazy and async-decoded. The first
+ * photograph on a page can opt into eager loading, which is the only way an
+ * image can be the LCP element and still come in under two seconds on a
+ * throttled phone.
+ */
+import { Picture } from 'astro:assets';
+import PhotoSlot from './PhotoSlot.astro';
+
+interface Props {
+  /** Shot list reference, e.g. "S1". Must have a row in docs/photography-shot-list.md. */
+  ref: string;
+  /** What the photograph must show. Shown in the reserved slot until it exists. */
+  brief: string;
+  /**
+   * The imported image. Import it in the page:
+   *   import welcome from '../assets/photos/S1-welcome.jpg';
+   * Leave it out and the reserved slot renders instead.
+   */
+  src?: ImageMetadata;
+  /**
+   * What is in the picture, for someone who cannot see it. Required whenever
+   * `src` is set. Describe the scene, not the shot: "the congregation talking
+   * after a gathering", not "photograph of church".
+   */
+  alt?: string;
+  /** Aspect ratio as width / height. Held whether or not the photograph exists. */
+  ratio?: string;
+  /** Whether this image bleeds past the movement boundary. */
+  bleed?: 'none' | 'inline-start' | 'inline-end';
+  /**
+   * Set on the one image that is likely to be the largest thing in the first
+   * viewport. Everything else stays lazy.
+   */
+  priority?: boolean;
+  /** Rendered widths, for the srcset. Defaults suit a content-column image. */
+  sizes?: string;
+  class?: string;
+}
+
+const {
+  ref,
+  brief,
+  src,
+  alt,
+  ratio = '4 / 3',
+  bleed = 'none',
+  priority = false,
+  sizes = '(min-width: 56rem) 40rem, 100vw',
+  class: className = '',
+} = Astro.props;
+
+/*
+  A build error rather than a runtime shrug. An image published without alt text
+  is a compliance failure and an accessibility failure at the same time, and it
+  is exactly the kind of thing that survives review because the page looks fine.
+*/
+if (src && (!alt || !alt.trim())) {
+  throw new Error(
+    `Photo ${ref} has an image but no alt text. Describe what is in the picture. ` +
+      `If it is genuinely decorative it does not belong on this site: see section 17.`
+  );
+}
+---
+
+{
+  src ? (
+    <figure class:list={['photo', `photo--bleed-${bleed}`, className]} style={`--ratio: ${ratio}`} data-shot={ref}>
+      <Picture
+        src={src}
+        alt={alt!}
+        widths={[480, 800, 1200, 1600]}
+        sizes={sizes}
+        formats={['avif', 'webp']}
+        fallbackFormat="jpeg"
+        loading={priority ? 'eager' : 'lazy'}
+        decoding={priority ? 'sync' : 'async'}
+      />
+    </figure>
+  ) : (
+    <PhotoSlot ref={ref} brief={brief} ratio={ratio} bleed={bleed} class={className} />
+  )
+}
+
+<style>
+  .photo {
+    margin: 0;
+    /* The ratio is held by the figure, not the image, so the space is reserved
+       before the file arrives and stays identical afterwards. */
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background-color: var(--color-canvas-raised);
+  }
+
+  .photo :global(img) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    /* Faces are usually in the upper half of a wide shot, so a crop takes it
+       off the bottom rather than off the top. */
+    object-position: center 40%;
+    display: block;
+  }
+
+  .photo--bleed-inline-end {
+    margin-inline-end: calc(var(--space-l) * -1);
+  }
+
+  .photo--bleed-inline-start {
+    margin-inline-start: calc(var(--space-l) * -1);
+  }
+
+  @media (min-width: 56rem) {
+    .photo--bleed-inline-end {
+      margin-inline-end: calc(var(--space-3xl) * -1);
+    }
+
+    .photo--bleed-inline-start {
+      margin-inline-start: calc(var(--space-3xl) * -1);
+    }
+  }
+</style>

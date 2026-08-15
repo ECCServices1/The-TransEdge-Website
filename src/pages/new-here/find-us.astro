@@ -1,0 +1,157 @@
+---
+/**
+ * Find us, section 9 under New Here.
+ *
+ * Everything here is a fact this church already publishes about itself: the
+ * address, the entrance, the parking, the accessibility of the building. No bus
+ * route numbers, because a wrong route number strands somebody.
+ *
+ * The suburb appears here because this is an address block, which section 3
+ * names as one of the four places it belongs.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import Photo from '../../components/Photo.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { nextOccurrence } from '../../lib/dates.mjs';
+import { gatheringSchema } from '../../lib/structured-data.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
+
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
+const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CHURCH.address.full)}`;
+---
+
+<PageLayout
+  title="Find us"
+  description={`How to get to The Transformation Edge: ${CHURCH.address.full}. Parking on site, a step-free entrance on Harford Street.`}
+  route="new-here/find-us"
+  crumbs={[{ name: 'New Here', href: '/new-here' }]}
+  standfirst="Parking on site, a step-free entrance, and a welcome desk just inside the door."
+  schema={[gatheringSchema(sunday, nextOccurrence(sunday.isoDay))]}
+>
+  <div class="find">
+    <section aria-labelledby="address-heading">
+      <h2 id="address-heading">Where we are</h2>
+      <address>
+        {CHURCH.address.unit}, {CHURCH.address.street}<br />
+        {CHURCH.address.suburb} {CHURCH.address.state}{' '}
+        <span class="ltr-embed">{CHURCH.address.postcode}</span>
+      </address>
+      <p class="actions">
+        <Button href={directionsHref} size="large" external>Get directions</Button>
+        <Button href={mapHref} tone="quiet" external>Open the map</Button>
+      </p>
+    </section>
+
+    <section aria-labelledby="when-heading">
+      <h2 id="when-heading">When we gather</h2>
+      <dl class="times">
+        <div>
+          <dt>Sundays</dt>
+          <dd class="ltr-embed">{sunday.time}</dd>
+        </div>
+        <div>
+          <dt>Wednesdays</dt>
+          <dd class="ltr-embed">{midweek.time}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <Photo
+      ref="S3"
+      brief="The main entrance from the street, in daylight, step-free approach visible."
+      ratio="16 / 9"
+    />
+
+    <section aria-labelledby="parking-heading">
+      <h2 id="parking-heading">Parking</h2>
+      <p class="prose">
+        There is parking on site and on the street around Harford Street. On a Sunday it
+        fills from about ten minutes before the start, so arriving a little early gives you
+        your pick of it. Accessible parking is closest to the main entrance.
+      </p>
+    </section>
+
+    <section aria-labelledby="entrance-heading">
+      <h2 id="entrance-heading">Getting in</h2>
+      <div class="prose">
+        <p>
+          The main entrance is on Harford Street and it is step-free. The welcome desk is
+          just inside it. Tell them it is your first Sunday and someone will walk you in.
+        </p>
+        <p>
+          The auditorium is step-free from the entrance and there is an accessible toilet. If
+          you need something specific arranged before you come, call us and we will sort it
+          out rather than leave you to work it out on the day.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href={`tel:${CHURCH.phoneE164}`} tone="quiet">Call {CHURCH.phone}</Button>
+      </p>
+    </section>
+
+    <section aria-labelledby="transport-heading">
+      <h2 id="transport-heading">Public transport</h2>
+      <p class="prose">
+        The nearest railway station is Penrith, and there are bus services between the
+        station and Jamisontown. Routes and timetables change, so check{' '}
+        <a href="https://transportnsw.info" rel="noopener">transportnsw.info</a> for the
+        current service on the day you are coming. If you would rather someone met you, call
+        ahead and we will arrange it.
+      </p>
+    </section>
+
+    <p class="actions">
+      <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .find {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .find h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  address {
+    font-style: normal;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: var(--leading-snug);
+  }
+
+  .times {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-2xl);
+  }
+
+  .times dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .times dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

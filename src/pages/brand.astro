@@ -103,12 +103,16 @@ const misuse = [
     <section class="panel" aria-labelledby="palette-heading">
       <h2 id="palette-heading">Palette</h2>
       <div class="swatches">
-        <div class="swatch" style="--c: var(--color-primary)"><span>Deep Slate</span><code>#303847</code></div>
-        <div class="swatch" style="--c: var(--color-heritage)"><span>Heritage slate</span><code>#4B576E</code></div>
-        <div class="swatch" style="--c: var(--color-ember)"><span>Ember, accent only</span><code>#E46F3C</code></div>
-        <div class="swatch" style="--c: var(--color-ember-accessible)"><span>Ember accessible, text</span><code>#A94722</code></div>
-        <div class="swatch swatch--light" style="--c: var(--color-neutral-100)"><span>Warm surface</span><code>#F6F5F2</code></div>
-        <div class="swatch" style="--c: var(--color-neutral-900)"><span>Text</span><code>#171D24</code></div>
+        <!-- The chip carries the colour; the label sits beneath it on the page
+             canvas. Setting the label on the swatch put white text on ember at
+             2.9:1, on the very page that says ember must never be used for
+             text. The palette also reads better with nothing written across it. -->
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-primary)"></span><span class="swatch__name">Deep Slate</span><code>#303847</code></div>
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-heritage)"></span><span class="swatch__name">Heritage slate</span><code>#4B576E</code></div>
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-ember)"></span><span class="swatch__name">Ember, accent only</span><code>#E46F3C</code></div>
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-ember-accessible)"></span><span class="swatch__name">Ember accessible, text</span><code>#A94722</code></div>
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-neutral-100)"></span><span class="swatch__name">Warm surface</span><code>#F6F5F2</code></div>
+        <div class="swatch"><span class="swatch__chip" style="--c: var(--color-neutral-900)"></span><span class="swatch__name">Text</span><code>#171D24</code></div>
       </div>
       <p class="panel__caption">
         Plain ember measures 2.90:1 on the warm surface, so it is never used for text. The
@@ -327,24 +331,30 @@ const misuse = [
   .swatch {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
     gap: var(--space-3xs);
-    min-block-size: 8rem;
-    padding: var(--space-s);
-    background-color: var(--c);
-    color: var(--color-neutral-100);
-    border-radius: var(--radius-m);
     font-size: var(--text--1);
   }
 
-  .swatch--light {
-    color: var(--color-neutral-900);
-    border: var(--border-hairline) solid var(--color-border);
+  .swatch__chip {
+    display: block;
+    block-size: 6rem;
+    background-color: var(--c);
+    border-radius: var(--radius-m);
+    /* A hairline, so a swatch the same colour as the page it sits on still has
+       an edge. Without it the warm surface chip is invisible in light mode. */
+    border: var(--border-hairline) solid var(--color-border-strong);
+  }
+
+  .swatch__name {
+    margin-block-start: var(--space-2xs);
+    font-weight: var(--weight-semibold);
   }
 
   .swatch code {
     font-family: var(--font-mono);
-    opacity: 0.85;
+    /* No opacity. It was 0.85, which quietly took an already-tight pairing
+       below the threshold, and an opacity is invisible to a token checker. */
+    color: var(--color-text-muted);
   }
 
   .misuse,
@@ -399,7 +409,7 @@ const misuse = [
 
   .family__status {
     font-size: var(--text--1);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
   }
 
   .panel--flag p {

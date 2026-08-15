@@ -8,9 +8,15 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import ConferenceTeaser from '../../components/ConferenceTeaser.astro';
 import { getUpcomingEvents } from '../../lib/connect.mjs';
 import { eventSchema } from '../../lib/structured-data.mjs';
 import { CHURCH } from '../../data/church.mjs';
+import { conferenceIsUpcoming } from '../../data/conference.mjs';
+
+/* The flagship event is a standing fact rather than a Connect record, so it is
+   here whether or not the read API is answering. */
+const showConference = conferenceIsUpcoming();
 
 const events = await getUpcomingEvents();
 ---
@@ -22,6 +28,8 @@ const events = await getUpcomingEvents();
   standfirst="Everything in the diary, and what to do if you want to come."
   schema={events.map(eventSchema)}
 >
+  {showConference && <ConferenceTeaser as="article" headingId="rain-heading" headingLevel={2} />}
+
   {
     events.length > 0 ? (
       <ul class="events" role="list">
@@ -106,7 +114,7 @@ const events = await getUpcomingEvents();
   .event__where {
     margin-block-start: var(--space-2xs);
     font-size: var(--text--1);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
   }
 
   .empty {

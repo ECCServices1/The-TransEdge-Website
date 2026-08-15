@@ -11,7 +11,10 @@
         "http://localhost/get-in-touch.html",
         "http://localhost/events.html",
         "http://localhost/edgedin.html",
-        "http://localhost/ar/new-here/plan-your-visit.html"
+        "http://localhost/ar/new-here/plan-your-visit.html",
+        "http://localhost/who-we-are/safeguarding.html",
+        "http://localhost/new-here/faq.html",
+        "http://localhost/outreach.html"
       ],
       "settings": {
         "throttlingMethod": "simulate",
@@ -33,7 +36,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?:(?!/ar/).)*$",
+          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/pastoral\\-team|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
           "assertions": {
             "categories:performance": [
               "error",
@@ -109,7 +112,7 @@
           }
         },
         {
-          "matchingUrlPattern": "/ar/",
+          "matchingUrlPattern": "(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/pastoral\\-team|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
           "assertions": {
             "categories:performance": [
               "error",

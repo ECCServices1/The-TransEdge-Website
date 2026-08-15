@@ -5,44 +5,51 @@
 Three levels maximum, per section 9.
 
 ```
-/                                  Home, the continuous canvas
+/                                  Home, the continuous canvas   [built]
 /who-we-are                        [built]
-  /vision-and-mission
-  /what-we-believe
-  /pastoral-team
-  /our-community
-  /core-course
-  /safeguarding
+  /what-we-believe                 [built, draft, noindex]
+  /pastoral-team                   [built, draft, noindex]
+  /our-community                   [built]
+  /core-course                     [built, draft, noindex]
+  /safeguarding                    [built, draft, noindex]
 /new-here                          [built]
   /plan-your-visit                 [built]
-  /what-to-expect
-  /edgekids
-  /find-us
-  /faq
-/watch-and-listen
-  /live
-  /series/[slug]
+  /what-to-expect                  [built, draft, noindex]
+  /edgekids                        [built, draft, noindex]
+  /find-us                         [built]
+  /faq                             [built]
+/watch-and-listen                  [built]
+  /live                            phase 2
+  /series/[slug]                   phase 2
 /edgedin                           [built]
-  /[strand]
-  /[slug]
-/life-at-tte
-  /life-link
-  /champions
-  /edgekids
-  /serve-teams
-  /1b2gas
+  /[strand]                        phase 2
+  /[slug]                          phase 2
+/life-at-tte                       [built, draft, noindex]
+  /life-link                       phase 2
+  /champions                       phase 2
+  /serve-teams                     phase 2
+  /1b2gas                          phase 2
 /events                            [built]
   /[slug]                          [built]
-/outreach
+/outreach                          [built]
 /give                              [built]
 /get-in-touch                      [built]
   /prayer                          [built]
-/privacy-policy
-/terms-of-use
+/privacy-policy                    [built, draft, noindex]
+/terms-of-use                      [built, draft, noindex]
 /404                               [built]
 /brand                             [built, noindex, working page]
 /admin                             [built, the CMS]
 ```
+
+`vision-and-mission` is not a separate page. The locked vision and mission are
+reproduced on `/who-we-are` and again on `/what-we-believe`, which is where a
+reader looking for them goes. A third page holding the same two paragraphs would
+compete with both.
+
+**Draft** means the page is built, carries a visible notice naming what is
+missing, and is `noindex` until someone signs it off. The list of what each one
+needs is in `docs/open-questions.md`, question 11.
 
 Outbound, never framed:
 

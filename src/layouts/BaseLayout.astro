@@ -15,6 +15,7 @@ import Seam from '../components/Seam.astro';
 
 import { CHURCH } from '../data/church.mjs';
 import { LOCALES, DEFAULT_LOCALE, getLocale, localeHref } from '../i18n/locales.mjs';
+import { localeHasRoute } from '../i18n/essential-pages.mjs';
 import { useTranslations, isPublishable } from '../i18n/ui.mjs';
 import { churchSchema } from '../lib/structured-data.mjs';
 import preloadFonts from '../../public/fonts/css/preload.json';
@@ -33,6 +34,8 @@ interface Props {
   noindex?: boolean;
   /** The home canvas manages its own rhythm, so it opts out of the default page padding. */
   bare?: boolean;
+  /** The travelling drop on the seam. Home only: it needs a long page and waypoints to land on. */
+  seamDrop?: boolean;
 }
 
 const {
@@ -44,6 +47,7 @@ const {
   image = '/brand/icons/tte_social_avatar_1080.png',
   noindex = false,
   bare = false,
+  seamDrop = false,
 } = Astro.props;
 
 const current = getLocale(locale);
@@ -61,7 +65,14 @@ const socialImage = new URL(image, CHURCH.url).href;
 const localeIsPublishable = isPublishable(locale);
 const robots = noindex || !localeIsPublishable ? 'noindex, follow' : 'index, follow';
 
-const alternates = LOCALES.filter((l) => isPublishable(l.path)).map((l) => ({
+/*
+  An alternate must resolve. Google drops the whole hreflang cluster for a page
+  if one of its alternates 404s, so a locale is advertised only when it has both
+  a reviewed translation and this particular route built.
+*/
+const alternates = LOCALES.filter(
+  (l) => isPublishable(l.path) && localeHasRoute(l.path, route)
+).map((l) => ({
   hreflang: l.hreflang,
   href: new URL(localeHref(l.path, route), CHURCH.url).href,
 }));
@@ -135,7 +146,7 @@ const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.nam
     <!-- The seam field wraps the whole composition, so one path travels the
          full page rather than restarting per section. -->
     <div class="canvas">
-      <Seam dir={current.dir} />
+      <Seam dir={current.dir} drop={seamDrop} />
 
       <main id="main" class:list={['canvas__content', { 'canvas__content--bare': bare }]}>
         <slot />

@@ -77,7 +77,7 @@ export const en = {
   'give.card': 'Card giving',
   'give.cardVia': 'Card giving happens inside the TTE Connect Hub.',
   'give.notDeductible':
-    'Giving to the church is not tax deductible. Edge Community Care Services is separately endorsed as a deductible gift recipient and has its own giving flow.',
+    'Giving to our church is not tax deductible. Edge Community Care Services is separately endorsed as a deductible gift recipient and has its own giving flow.',
 
   'contact.title': 'Get in touch',
   'contact.prayer': 'Ask for prayer',

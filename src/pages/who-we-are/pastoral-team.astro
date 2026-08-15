@@ -1,0 +1,162 @@
+---
+/**
+ * Pastoral team, section 9 under Who We Are.
+ *
+ * Two facts are certain and come from src/data/church.mjs: the Senior Pastors
+ * and their roles. Everything else about a person, their story, how long they
+ * have been here, what they carry, belongs to them and is theirs to supply.
+ *
+ * Section 7 and section 22 govern the hardest line on this page. Dr Michaels
+ * Aibangbee also directs Renovate Health, which is a psychotherapy and
+ * counselling practice, and Edge Community Care Services, which is a separate
+ * DGR-endorsed entity. Those relationships are governance facts and are stated.
+ * What is not stated, anywhere, is any suggestion that our church therefore
+ * offers clinical services, or that pastoral care here is treatment. It is not.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import Photo from '../../components/Photo.astro';
+import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+---
+
+<PageLayout
+  title="Pastoral team"
+  description={`Who leads The Transformation Edge, a church in ${CHURCH.place}, and how to reach them.`}
+  route="who-we-are/pastoral-team"
+  crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
+  standfirst="Who leads here, and how to reach them without going through a form."
+  noindex
+>
+  <DraftNotice what="Each pastor needs to supply their own biography and approve a photograph. The names, roles and organisational relationships below are accurate; the descriptions of the people are not written yet." />
+
+  <div class="team">
+    <section aria-labelledby="seniors-heading">
+      <h2 id="seniors-heading">Senior Pastors</h2>
+      <!-- One slot, matching S7 on the shot list, rather than a portrait each.
+           The agreed shot is the two of them together and environmental, and
+           inventing two new studio portraits would put the site and the shot
+           list out of step before the photographer has arrived. -->
+      <Photo
+        ref="S7"
+        brief="The senior pastors, together, environmental rather than studio."
+        ratio="4 / 5"
+        class="team__photo"
+      />
+
+      <ul class="people" role="list">
+        {
+          CHURCH.seniorPastors.map((pastor) => (
+            <li class="person" data-reveal>
+              <h3 class="person__name">{pastor.name}</h3>
+              <p class="person__role">{pastor.role}</p>
+              <p class="person__bio">Biography to come.</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="reach-heading">
+      <h2 id="reach-heading">Reaching a pastor</h2>
+      <div class="prose">
+        <p>
+          Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or
+          email <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> and ask. Somebody reads
+          everything that comes in and replies within two working days.
+        </p>
+        <p>
+          If what you want is prayer rather than a conversation, there is a private route for
+          that which goes to the pastoral team and nowhere else.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href="/get-in-touch/prayer" tone="quiet">Ask for prayer</Button>
+        <Button href="/get-in-touch">Get in touch</Button>
+      </p>
+    </section>
+
+    <!-- The distinction section 22 exists to protect. Pastoral care is not
+         clinical treatment, and the page says so rather than leaving a reader
+         to assume it either way. -->
+    <section aria-labelledby="separate-heading">
+      <h2 id="separate-heading">What pastoral care is, and is not</h2>
+      <div class="prose">
+        <p>
+          Pastoral care here means someone sitting with you, praying with you and walking
+          alongside you. It is not therapy, treatment or diagnosis, and our pastors do not
+          offer it as such.
+        </p>
+        <p>
+          {FAMILY_ORGS.renovate.name} is a separate practice with qualified clinicians. You
+          can approach it directly, and doing so has nothing to do with our church.{' '}
+          {FAMILY_ORGS.eccs.name} is our sister organisation and a separately endorsed
+          charity, with its own services, its own books and its own complaints pathway.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href="/outreach" tone="quiet">Edge Community Care Services</Button>
+        <Button href={FAMILY_ORGS.renovate.url} tone="quiet" external>
+          Renovate Health
+        </Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .team {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .team h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .team__photo {
+    max-inline-size: 22rem;
+    margin-block-end: var(--space-l);
+  }
+
+  .people {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+  }
+
+  .person {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .person__name {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .person__role {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .person__bio {
+    margin-block-start: var(--space-s);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

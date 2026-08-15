@@ -101,15 +101,16 @@ request on the critical path, and nothing transcribed by hand.
 - Do not place the primary lockup on a busy photograph. Use the reversed cut.
 - Do not use the tagline as a substitute for the mark.
 
-## Two things to confirm
+## Settled: the tagline
 
-**1. The tagline case.** The supplied lockup artwork sets the tagline as
-*A change is inevitable*. The locked wording in section 2 of the brief is
-*A Change is Inevitable*, in title case. The site uses the locked wording
-wherever the tagline is set as text; the artwork has not been altered because it
-is a supplied master. Worth resolving before anything goes to print.
+The tagline is **A change is inevitable**, sentence case, no full stop, matching
+the supplied lockup artwork. This supersedes the title-case form in section 2 of
+the brief, by the client's decision. The copy linter fails the build on the old
+form, so the two cannot drift apart again.
 
-**2. The family lockups.** The supplied README states:
+## One thing to confirm
+
+**The family lockups.** The supplied README states:
 
 > The exact organisation family names and descriptors referenced in section 7
 > were not supplied. The masterbrand and descriptor construction rule are

@@ -1,0 +1,157 @@
+---
+/**
+ * EdgeKids, section 9 under New Here and an endorsed sub-brand per section 7.
+ *
+ * A parent deciding whether to hand over their child needs three things on one
+ * page: who is with them, how they get them back, and what happens if something
+ * goes wrong. Warmth is not the job here. Specifics are.
+ *
+ * Age bands, room names and the check-in method are drafted. Those are facts
+ * about how this church actually runs its children's work, and getting one
+ * wrong on a public page is a safeguarding problem rather than a copy problem.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import Photo from '../../components/Photo.astro';
+import { CHURCH } from '../../data/church.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+---
+
+<PageLayout
+  title="EdgeKids"
+  description="What your children do while you are in the Sunday gathering at The Transformation Edge, and how we keep them safe."
+  route="new-here/edgekids"
+  crumbs={[{ name: 'New Here', href: '/new-here' }]}
+  standfirst="Screened leaders, a sign-in that matches a child to one adult, and a room you can walk into at any time."
+  noindex
+>
+  <DraftNotice what="The pastoral team needs to confirm the age bands, the room names and the check-in method described below." />
+
+  <div class="kids">
+    <section aria-labelledby="how-heading">
+      <h2 id="how-heading">How it works</h2>
+      <ol class="steps" role="list">
+        <li data-reveal>
+          <h3>Sign in</h3>
+          <p>
+            Bring your child to the EdgeKids desk before the gathering starts. You sign them
+            in, and you tell us anything we need to know: allergies, medical conditions,
+            whether anyone must not collect them.
+          </p>
+        </li>
+        <li data-reveal>
+          <h3>They stay together</h3>
+          <p>
+            Children are in age groups with their leaders for the length of the gathering.
+            There is singing, a story and something to make.
+          </p>
+        </li>
+        <li data-reveal>
+          <h3>Only you collect them</h3>
+          <p>
+            A child is released to the adult who signed them in, and to nobody else. If
+            somebody different is collecting, tell us at sign-in.
+          </p>
+        </li>
+        <li data-reveal>
+          <h3>We come and get you</h3>
+          <p>
+            If your child needs you during the gathering, someone will come and find you. You
+            do not have to watch the door.
+          </p>
+        </li>
+      </ol>
+    </section>
+
+    <Photo
+      ref="S5"
+      brief="EdgeKids space, empty of children, set up and ready."
+      ratio="3 / 2"
+    />
+
+    <section aria-labelledby="safe-heading">
+      <h2 id="safe-heading">Who is with your child</h2>
+      <div class="prose">
+        <p>
+          Every leader in EdgeKids holds a current New South Wales Working With Children
+          Check, and no adult is ever alone with a child. Leaders are trained before they
+          start and are supervised by the pastoral team.
+        </p>
+        <p>
+          You are welcome in the EdgeKids room at any time. You do not need a reason and you
+          do not need to ask.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href="/who-we-are/safeguarding" tone="quiet">Our child safe policy</Button>
+      </p>
+    </section>
+
+    <section aria-labelledby="younger-heading">
+      <h2 id="younger-heading">Younger children and babies</h2>
+      <p class="prose">
+        Babies and younger children are welcome to stay with you in the gathering. There is
+        space at the back if you need to stand, walk about or step out, and nobody minds
+        noise. If you would rather be out of the room for a while, ask at the welcome desk
+        and someone will show you where to go.
+      </p>
+    </section>
+
+    <section aria-labelledby="first-heading">
+      <h2 id="first-heading">Your first Sunday</h2>
+      <p class="prose">
+        Come about ten minutes early, so signing in is unhurried and your child has a moment
+        to look at the room before you leave. We gather Sundays at {sunday.time}. If it would
+        help to talk to someone before you come, call{' '}
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>.
+      </p>
+      <p class="actions">
+        <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .kids {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .kids h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+  }
+
+  .steps li {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .steps h3 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .steps p {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>
