@@ -301,9 +301,12 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     max-inline-size: 100%;
     font-family: var(--font-display);
     font-size: var(--text-5);
-    font-weight: var(--weight-bold);
+    font-weight: var(--weight-semibold);
     line-height: var(--text-5-leading);
     letter-spacing: var(--text-5-tracking);
+    /* The largest setting on the site gets the display cut and a touch of the
+       SOFT axis, which is the one place Fraunces is allowed its full character. */
+    font-variation-settings: 'SOFT' 30, 'WONK' 0, 'opsz' 144;
     /* The copy is two authored sentences. Balancing would re-break them. */
     text-wrap: nowrap;
     overflow-wrap: break-word;

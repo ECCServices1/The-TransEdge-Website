@@ -100,8 +100,23 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: var(--weight-bold);
+  /* 600, not 700. Fraunces at 700 is heavier than the mark can carry beside it,
+     and the supplied 700 was specified for a grotesque. */
+  font-weight: var(--weight-semibold);
   text-wrap: balance;
+  /* Fraunces carries an optical size axis, so each level is drawn at the cut
+     intended for its size rather than scaled from one master. This is the work
+     that negative tracking does in a face without the axis. */
+  font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 48;
+}
+
+h1 {
+  font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 96;
+}
+
+h3,
+h4 {
+  font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 24;
 }
 
 h1 {
