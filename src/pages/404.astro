@@ -1,0 +1,46 @@
+---
+/**
+ * 404. Every retired route redirects, so anyone landing here followed a link
+ * that never existed. The page's job is to get them where they were going in
+ * one more click, not to apologise.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { CHURCH } from '../data/church.mjs';
+
+const destinations = [
+  { title: 'Plan your visit', href: '/new-here/plan-your-visit' },
+  { title: 'Events', href: '/events' },
+  { title: 'Give', href: '/give' },
+  { title: 'Get in touch', href: '/get-in-touch' },
+  { title: 'EdgedIn Network', href: '/edgedin' },
+  { title: 'Connect Hub', href: CHURCH.connectUrl },
+];
+---
+
+<BaseLayout title="That page has moved on" description="The page you were looking for does not exist." route="404" noindex>
+  <div class="page-shell notfound">
+    <h1>That page has moved on</h1>
+    <p class="notfound__body">
+      The address you followed does not exist any more. These cover what most people are
+      looking for.
+    </p>
+    <ul class="notfound__links" role="list">
+      {destinations.map((d) => <li><a href={d.href}>{d.title}</a></li>)}
+    </ul>
+    <p class="notfound__help">
+      Still stuck? Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>
+      or email <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>.
+    </p>
+    <p><Button href="/">Back to the start</Button></p>
+  </div>
+</BaseLayout>
+
+<style>
+  .notfound { max-inline-size: 42rem; }
+  .notfound h1 { font-size: var(--text-4); }
+  .notfound__body { margin-block: var(--space-m) var(--space-l); font-size: var(--text-1); color: var(--color-text-muted); }
+  .notfound__links { display: grid; gap: var(--space-2xs); margin: 0 0 var(--space-l); padding: 0; }
+  .notfound__links li { padding-block: var(--space-2xs); border-block-end: var(--border-hairline) solid var(--color-border); }
+  .notfound__help { margin-block-end: var(--space-l); color: var(--color-text-muted); }
+</style>

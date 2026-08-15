@@ -1,0 +1,47 @@
+---
+/**
+ * New Here. The landing point for audience 1, the first-time visitor.
+ * One primary action, and everything else subordinate to it.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+
+const pages = [
+  { title: 'Plan your visit', href: '/new-here/plan-your-visit', body: 'Four steps, a map link and a name to look for on arrival.' },
+  { title: 'What to expect', href: '/new-here/what-to-expect', body: 'What actually happens on a Sunday morning, minute by minute.' },
+  { title: 'EdgeKids', href: '/new-here/edgekids', body: 'What your children do while you are in the gathering.' },
+  { title: 'Find us', href: '/new-here/find-us', body: 'Parking, the entrance, and getting here on public transport.' },
+  { title: 'Questions', href: '/new-here/faq', body: 'The things people ask before their first Sunday.' },
+];
+---
+
+<PageLayout
+  title="New here"
+  description={`Everything you need before your first Sunday at The Transformation Edge. We gather Sundays at ${sunday.time} in ${CHURCH.place}.`}
+  route="new-here"
+  standfirst={`We gather Sundays at ${sunday.time}. Nothing is booked, nothing is needed, and nobody will single you out.`}
+>
+  <p class="lead-action"><Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button></p>
+
+  <ul class="index" role="list">
+    {pages.map((p) => (
+      <li data-reveal>
+        <h2><a href={p.href}>{p.title}</a></h2>
+        <p>{p.body}</p>
+      </li>
+    ))}
+  </ul>
+</PageLayout>
+
+<style>
+  .lead-action { margin-block-end: var(--space-2xl); }
+  .index { display: grid; gap: var(--space-m); margin: 0; padding: 0; max-inline-size: 46rem; }
+  .index li { padding-block-start: var(--space-s); border-block-start: var(--border-thick) solid var(--color-border-strong); }
+  .index h2 { font-size: var(--text-1); margin-block-end: var(--space-3xs); }
+  .index h2 a { color: inherit; text-decoration-color: var(--color-border-strong); }
+  .index h2 a:hover { text-decoration-color: currentColor; }
+  .index p { color: var(--color-text-muted); max-inline-size: var(--measure); }
+</style>

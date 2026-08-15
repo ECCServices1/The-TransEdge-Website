@@ -1,0 +1,97 @@
+---
+/**
+ * A reserved place for a photograph that does not exist yet.
+ *
+ * Section 22 forbids stock photography of people who are not in this
+ * congregation, and section 17 forbids publishing any image without an alt
+ * text entry, a credit where applicable and a recorded consent. So the
+ * composition reserves the space, states the shot, and refuses to fill it with
+ * a placeholder that could be mistaken for a decision.
+ *
+ * The reserved block carries its final aspect ratio, so dropping the real
+ * photograph in later changes no layout and costs no CLS.
+ *
+ * Every slot here has a matching row in docs/photography-shot-list.md.
+ */
+interface Props {
+  /** The shot list reference, e.g. "S3". */
+  ref: string;
+  /** What the photograph must show. */
+  brief: string;
+  /** Aspect ratio as width / height. */
+  ratio?: string;
+  /** Whether this image bleeds past the movement boundary. */
+  bleed?: 'none' | 'inline-start' | 'inline-end';
+  class?: string;
+}
+
+const { ref, brief, ratio = '4 / 3', bleed = 'none', class: className = '' } = Astro.props;
+---
+
+<figure
+  class:list={['photo-slot', `photo-slot--bleed-${bleed}`, className]}
+  style={`--ratio: ${ratio}`}
+  data-shot={ref}
+>
+  <div class="photo-slot__frame">
+    <span class="photo-slot__ref">{ref}</span>
+    <p class="photo-slot__brief">{brief}</p>
+    <p class="photo-slot__status">Awaiting photography, consent and alt text</p>
+  </div>
+</figure>
+
+<style>
+  .photo-slot {
+    margin: 0;
+  }
+
+  .photo-slot__frame {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    gap: var(--space-3xs);
+    aspect-ratio: var(--ratio);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-sunken);
+    border: var(--border-hairline) dashed var(--color-border-strong);
+    border-radius: var(--radius-m);
+    color: var(--color-text-muted);
+  }
+
+  .photo-slot__ref {
+    font-family: var(--font-mono);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    color: var(--color-text);
+  }
+
+  .photo-slot__brief {
+    max-inline-size: var(--measure-narrow);
+    font-size: var(--text--1);
+  }
+
+  /* Muted, not subtle. text-subtle is held to 3:1 and is for large text and
+     repeated metadata only; this is small body text and owes the full 4.5:1. */
+  .photo-slot__status {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  /* Images cross movement boundaries and are cropped by the viewport edge,
+     per section 5. The bleed is a logical property, so it reverses in Arabic. */
+  .photo-slot--bleed-inline-start .photo-slot__frame {
+    margin-inline-start: calc(var(--page-inline-padding) * -1);
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-inline-start: none;
+  }
+
+  .photo-slot--bleed-inline-end .photo-slot__frame {
+    margin-inline-end: calc(var(--page-inline-padding) * -1);
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+    border-inline-end: none;
+  }
+</style>

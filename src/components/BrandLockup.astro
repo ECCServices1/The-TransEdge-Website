@@ -1,0 +1,87 @@
+---
+/**
+ * The horizontal lockup, inlined and recoloured to currentColor.
+ *
+ * The supplied suite ships the lockup in four cuts: primary, reversed, mono and
+ * compact. Serving them as separate images would mean choosing a file per
+ * surface and per colour scheme, and the reversed cut carries a full-bleed Deep
+ * Slate background rect, so it only sits correctly on Deep Slate.
+ *
+ * Instead the mono geometry is read from the supplied file at build time and
+ * its single fill swapped for currentColor. One definition, correct on any
+ * ground, correct in both schemes, no second request on the critical path, and
+ * no transcription to drift. At 1.5KB gzipped it is cheaper than the request it
+ * replaces.
+ *
+ * scripts/check-brand.mjs verifies the source file it reads from.
+ */
+import { readFileSync } from 'node:fs';
+import { MINIMUM_SIZES } from '../lib/brand-marks.mjs';
+
+interface Props {
+  /** compact drops the tagline and is the header cut. */
+  cut?: 'compact' | 'primary';
+  /** Rendered width in pixels. Held at or above the supplied minimum. */
+  width?: number;
+  /** The accessible name. Null when a parent link already names it. */
+  label?: string | null;
+  class?: string;
+}
+
+const { cut = 'compact', width, label = 'The Transformation Edge', class: className = '' } = Astro.props;
+
+const file =
+  cut === 'compact'
+    ? 'public/brand/vector/tte_horizontal_compact.svg'
+    : 'public/brand/vector/tte_horizontal_primary.svg';
+
+const minimum = cut === 'compact' ? MINIMUM_SIZES.horizontalCompact : MINIMUM_SIZES.horizontalWithTagline;
+const renderedWidth = Math.max(width ?? minimum, minimum);
+
+const raw = readFileSync(file, 'utf8');
+
+/*
+  Every fill in the mono and compact cuts is the Deep Slate primary, so swapping
+  it for currentColor is lossless. The accent rule under the wordmark is a
+  separate element in the cuts that carry it, and is deliberately left at its own
+  colour: the brand permits ember there and only there.
+*/
+const recoloured = raw
+  .replace(/fill="#303847"/gi, 'fill="currentColor"')
+  .replace(/<svg([^>]*)>/, (_match, attrs) => {
+    const cleaned = String(attrs)
+      .replace(/\s(?:width|height)="[^"]*"/gi, '')
+      .replace(/\srole="[^"]*"/gi, '')
+      .replace(/\saria-label="[^"]*"/gi, '');
+    return `<svg${cleaned} class="brand-lockup__svg" ${
+      label ? `role="img" aria-label="${label}"` : 'aria-hidden="true" focusable="false"'
+    }>`;
+  });
+---
+
+<span
+  class:list={['brand-lockup', className]}
+  style={`--lockup-width: ${renderedWidth}px; --lockup-min: ${minimum}px`}
+  set:html={recoloured}
+/>
+
+<style>
+  .brand-lockup {
+    display: block;
+    inline-size: var(--lockup-width);
+    /* Never below the supplied minimum, whatever the container does. */
+    min-inline-size: var(--lockup-min);
+    max-inline-size: 100%;
+  }
+
+  .brand-lockup :global(.brand-lockup__svg) {
+    display: block;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  /* The lockup is a logo, so it never mirrors in right-to-left. */
+  :global([dir='rtl']) .brand-lockup {
+    direction: ltr;
+  }
+</style>

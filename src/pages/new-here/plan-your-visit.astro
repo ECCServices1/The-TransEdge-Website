@@ -1,0 +1,292 @@
+---
+/**
+ * Key screen 2: plan your visit.
+ *
+ * The target in section 23 is a confident yes in under 60 seconds, and three
+ * or four steps to a calendar invite, a map link and a name to look for on
+ * arrival. So the page is exactly that, in order, and nothing else is allowed
+ * above the fold to compete with it.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { nextOccurrence, toGoogleCalendarUrl } from '../../lib/dates.mjs';
+import { faqSchema, gatheringSchema } from '../../lib/structured-data.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const nextSunday = nextOccurrence(sunday.isoDay);
+
+const calendarEvent = {
+  title: 'Sunday gathering, The Transformation Edge',
+  description: `Our Sunday gathering. ${CHURCH.address.full}. Look for the welcome desk inside the main entrance.`,
+  location: CHURCH.address.full,
+  start: `${nextSunday}T${sunday.isoTime}:00+10:00`,
+  durationMinutes: sunday.durationMinutes,
+};
+
+const googleCalendar = toGoogleCalendarUrl(calendarEvent);
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
+
+const steps = [
+  {
+    n: '1',
+    title: 'Pick a Sunday',
+    body: `We gather every Sunday at ${sunday.time}. Nothing is booked and nothing is needed. Turn up.`,
+  },
+  {
+    n: '2',
+    title: 'Park and come in',
+    body: 'There is parking on site and on the street. The main entrance is on Harford Street, and it is step-free.',
+  },
+  {
+    n: '3',
+    title: 'Say it is your first time',
+    body: 'The welcome desk is just inside the main entrance. Tell them it is your first Sunday and someone will walk you in and sit with you if you would like.',
+  },
+  {
+    n: '4',
+    title: 'Leave when you like',
+    body: 'The gathering runs about an hour and three quarters, and there is tea and coffee afterwards. You are free to go whenever suits you.',
+  },
+];
+
+const faqs = [
+  {
+    question: 'What do people wear?',
+    answer: 'Whatever you are comfortable in. You will see everything from a suit to shorts on the same row.',
+  },
+  {
+    question: 'Will I be singled out?',
+    answer: 'No. We do not ask visitors to stand, introduce themselves or put a hand up. Nobody will ask you for money.',
+  },
+  {
+    question: 'What happens with my kids?',
+    answer: 'EdgeKids runs during the gathering for school-age children, with screened and trained leaders. Younger children are welcome to stay with you, and there is space at the back if you need to move around.',
+  },
+  {
+    question: 'How long does it go for?',
+    answer: 'About an hour and three quarters, including time afterwards for a cup of tea.',
+  },
+  {
+    question: 'Is the building accessible?',
+    answer: 'The main entrance and the auditorium are step-free, and there is an accessible toilet. If you need anything specific, call us before you come and we will sort it out.',
+  },
+  {
+    question: 'What if I am not religious?',
+    answer: 'You are welcome exactly as you are. Plenty of people here came for the first time not knowing what they thought, and that is a completely normal way to arrive.',
+  },
+];
+---
+
+<PageLayout
+  title="Plan your visit"
+  description={`Everything you need for your first Sunday at The Transformation Edge in ${CHURCH.place}. We gather Sundays at ${sunday.time}.`}
+  route="new-here/plan-your-visit"
+  crumbs={[{ name: 'New Here', href: '/new-here' }]}
+  standfirst="Four steps, and none of them involve filling anything in."
+  schema={[faqSchema(faqs), gatheringSchema(sunday, nextSunday)]}
+>
+  <!-- The three facts, then the one action. Nothing else at this height. -->
+  <section class="essentials" aria-labelledby="essentials-heading">
+    <h2 id="essentials-heading" class="visually-hidden">The essentials</h2>
+    <dl class="essentials__facts">
+      <div>
+        <dt>When</dt>
+        <dd class="ltr-embed">Sundays, {sunday.time}</dd>
+      </div>
+      <div>
+        <dt>Where</dt>
+        <dd>{CHURCH.address.street}, {CHURCH.address.suburb}</dd>
+      </div>
+      <div>
+        <dt>How long</dt>
+        <dd>About 1 hour 45</dd>
+      </div>
+    </dl>
+
+    <div class="essentials__actions">
+      <Button href="/api/sunday.ics" size="large" download>Add to calendar</Button>
+      <Button href={googleCalendar} tone="quiet" external>Google Calendar</Button>
+      <Button href={mapHref} tone="quiet" external>Get directions</Button>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="steps-heading">
+    <h2 id="steps-heading">What happens</h2>
+    <ol class="steps__list" role="list">
+      {
+        steps.map((step) => (
+          <li class="steps__item" data-reveal>
+            <span class="steps__number" aria-hidden="true">
+              {step.n}
+            </span>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="lookfor" aria-labelledby="lookfor-heading" data-reveal>
+    <h2 id="lookfor-heading">Who to look for</h2>
+    <p class="prose">
+      The welcome team wear a badge with the Edge mark on it. If you would rather message
+      ahead so someone is expecting you, call
+      <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
+      <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, and we will meet you at the door.
+    </p>
+  </section>
+
+  <section class="faq" aria-labelledby="faq-heading">
+    <h2 id="faq-heading">Questions people actually ask</h2>
+    <div class="faq__list">
+      {
+        faqs.map((faq) => (
+          <details class="faq__item">
+            <summary>
+              <h3>{faq.question}</h3>
+            </summary>
+            <p>{faq.answer}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</PageLayout>
+
+<style>
+  .essentials {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .essentials__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-2xl);
+    margin-block-end: var(--space-l);
+  }
+
+  .essentials__facts dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .essentials__facts dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .essentials__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .steps,
+  .lookfor,
+  .faq {
+    padding-block-end: var(--space-2xl);
+  }
+
+  .steps__list {
+    display: grid;
+    gap: var(--space-l);
+    margin: var(--space-l) 0 0;
+    padding: 0;
+    max-inline-size: 46rem;
+  }
+
+  .steps__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-m);
+    align-items: start;
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .steps__number {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  .steps__item h3 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .steps__item p {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .lookfor h2,
+  .faq h2,
+  .steps h2 {
+    font-size: var(--text-2);
+  }
+
+  .lookfor p {
+    margin-block-start: var(--space-s);
+  }
+
+  .faq__list {
+    max-inline-size: 46rem;
+    margin-block-start: var(--space-m);
+  }
+
+  /* A native disclosure, so the answers are in the DOM for search and for a
+     visitor with no JavaScript, and Ctrl+F finds them. */
+  .faq__item {
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .faq__item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    padding-block: var(--space-s);
+    cursor: pointer;
+    list-style: none;
+    min-block-size: 2.75rem;
+  }
+
+  .faq__item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq__item summary h3 {
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    letter-spacing: normal;
+  }
+
+  .faq__item summary::after {
+    content: '+';
+    flex-shrink: 0;
+    font-size: var(--text-2);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  .faq__item[open] summary::after {
+    content: '−';
+  }
+
+  .faq__item p {
+    max-inline-size: var(--measure);
+    padding-block-end: var(--space-s);
+    color: var(--color-text-muted);
+  }
+</style>

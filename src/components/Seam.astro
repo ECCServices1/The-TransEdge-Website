@@ -1,0 +1,180 @@
+---
+/**
+ * The Edge seam.
+ *
+ * One continuous path entering at the top of the page and travelling its full
+ * length, changing angle and weight as it passes each movement. It is the spine
+ * of the composition and the visual link back to the mark.
+ *
+ * HOW IT MEETS THE CONSTRAINTS
+ *
+ * Drawn, not animated. The path is fully present in the markup, so with
+ * JavaScript disabled or scroll-driven animation unsupported, the seam is there
+ * in full. Nothing is revealed by scrolling; only the light that travels along
+ * it moves.
+ *
+ * Transform and opacity only. The travelling light is a second copy of the same
+ * path behind a mask, and the mask window is moved with translateY. No
+ * stroke-dashoffset, no path morphing, no filter, so it stays on the compositor.
+ *
+ * Reduced motion. The window parks at the first movement and stops. The seam
+ * remains fully drawn, so no content and no structure is lost.
+ *
+ * The viewBox is 100 by 1000 with preserveAspectRatio="none", so the seam
+ * stretches to whatever the page height turns out to be. vector-effect keeps
+ * the stroke an even weight despite that non-uniform scale.
+ */
+
+interface Props {
+  /** Left-to-right and right-to-left get mirrored paths, so the seam always enters from the leading edge. */
+  dir?: 'ltr' | 'rtl';
+}
+
+const { dir = 'ltr' } = Astro.props;
+
+/**
+ * The path in seam space. Each vertex sits at a movement boundary, which is
+ * what makes the change of angle read as a handoff rather than a wobble.
+ *
+ *    0    enters at the top on the trailing side
+ *  180    leans in behind the welcome photograph
+ *  330    eases back out past the vision
+ *  520    swings in across the EdgedIn movement
+ *  700    returns
+ *  880    settles vertical into the footer
+ *
+ * The whole path stays in the trailing third, between x 68 and 88. The prose
+ * column is capped at 42 to 46rem inside an 80rem shell, so it ends around 62
+ * per cent on a wide screen. Keeping the seam beyond that is what stops it
+ * reading as a stray line drawn through the headline: it passes behind the
+ * images and the open right-hand space, which is where a fold belongs.
+ */
+const PATH = [
+  'M 88 -20',
+  'C 88 60, 82 120, 79 180',
+  'C 76 250, 84 280, 86 330',
+  'C 88 400, 72 450, 70 520',
+  'C 68 600, 78 650, 80 700',
+  'C 82 770, 74 820, 72 880',
+  'C 71 940, 71 980, 71 1020',
+].join(' ');
+
+/* Right-to-left mirroring is a scaleX on the field in CSS rather than a second
+   path, so there is only ever one set of coordinates to keep in step. */
+
+const maskId = 'seam-lit-window';
+---
+
+<div class="seam-field" aria-hidden="true" data-dir={dir}>
+  <svg
+    class="seam"
+    viewBox="0 0 100 1000"
+    preserveAspectRatio="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <defs>
+      <mask id={maskId} maskUnits="userSpaceOnUse" x="0" y="-260" width="100" height="1520">
+        <!-- A soft-edged window. The light has no hard boundary, so the seam
+             brightens and dims rather than switching on. -->
+        <linearGradient id="seam-window-fade" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#000" />
+          <stop offset="0.35" stop-color="#fff" />
+          <stop offset="0.65" stop-color="#fff" />
+          <stop offset="1" stop-color="#000" />
+        </linearGradient>
+        <rect class="seam-window" x="0" y="-260" width="100" height="260" fill="url(#seam-window-fade)" />
+      </mask>
+    </defs>
+
+    <!-- The seam itself. Always drawn. -->
+    <path class="seam-base" d={PATH} vector-effect="non-scaling-stroke" />
+
+    <!-- The light travelling along it. Hidden unless the browser can move it. -->
+    <g mask={`url(#${maskId})`}>
+      <path class="seam-lit" d={PATH} vector-effect="non-scaling-stroke" />
+    </g>
+  </svg>
+</div>
+
+<style>
+  .seam-field {
+    position: absolute;
+    inset-block: 0;
+    inset-inline: 0;
+    z-index: var(--layer-seam);
+    pointer-events: none;
+    /* The seam is behind the composition and never intercepts a click or a
+       screen reader. It is atmosphere, not content. */
+    overflow: hidden;
+  }
+
+  .seam {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Right-to-left enters from the right, so the whole field is mirrored. The
+     mark and the photography are not inside this element, so nothing that must
+     not flip is affected. */
+  .seam-field[data-dir='rtl'] .seam {
+    transform: scaleX(-1);
+  }
+
+  .seam-base,
+  .seam-lit {
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .seam-base {
+    stroke: var(--color-seam);
+    stroke-width: 1.5;
+  }
+
+  .seam-lit {
+    stroke: var(--color-seam-lit);
+    stroke-width: 2.5;
+    opacity: 0;
+  }
+
+  /* On narrow screens the seam hugs the leading edge and thins out, so it never
+     competes with the text it sits behind. */
+  @media (max-width: 48rem) {
+    .seam-base {
+      stroke-width: 1;
+    }
+    .seam {
+      /* Pushed mostly off-canvas: a hint of a fold, not a diagram. */
+      transform: translateX(22%) scaleX(1.3);
+    }
+    .seam-field[data-dir='rtl'] .seam {
+      transform: translateX(-22%) scaleX(-1.3);
+    }
+  }
+
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .seam-lit {
+        opacity: 1;
+      }
+
+      .seam-window {
+        animation: seam-travel linear both;
+        animation-timeline: scroll(root block);
+      }
+    }
+  }
+
+  /*
+    Travels one window-height above the page to one window-height below it, in
+    seam units, over the whole scroll. Transform only.
+  */
+  @keyframes seam-travel {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(1260px);
+    }
+  }
+</style>

@@ -1,0 +1,141 @@
+---
+/**
+ * Events index. Read from Connect, registration hands back to Connect.
+ *
+ * The empty state is real content, not an apology: the standing gatherings are
+ * always true, so a visitor who arrives in a quiet week still learns when the
+ * doors are open.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { getUpcomingEvents } from '../../lib/connect.mjs';
+import { eventSchema } from '../../lib/structured-data.mjs';
+import { CHURCH } from '../../data/church.mjs';
+
+const events = await getUpcomingEvents();
+---
+
+<PageLayout
+  title="Events"
+  description="What is coming up at The Transformation Edge in Penrith, Sydney."
+  route="events"
+  standfirst="Everything in the diary, and what to do if you want to come."
+  schema={events.map(eventSchema)}
+>
+  {
+    events.length > 0 ? (
+      <ul class="events" role="list">
+        {events.map((event) => (
+          <li class="event" data-reveal>
+            <p class="event__when">
+              <time datetime={event.startsAt} class="ltr-embed">
+                {event.displayDate}
+              </time>
+            </p>
+            <h2 class="event__title">
+              <a href={`/events/${event.slug}`}>{event.title}</a>
+            </h2>
+            {event.summary && <p class="event__summary">{event.summary}</p>}
+            {event.locationName && <p class="event__where">{event.locationName}</p>}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <section class="empty" aria-labelledby="empty-heading">
+        <h2 id="empty-heading">Nothing extra in the diary just now</h2>
+        <p class="prose">
+          The regular gatherings are always on, and everyone is welcome at both.
+        </p>
+        <dl class="empty__standing">
+          {CHURCH.gatherings.map((g) => (
+            <div>
+              <dt>{g.day}</dt>
+              <dd class="ltr-embed">{g.time}</dd>
+            </div>
+          ))}
+        </dl>
+        <p>
+          <Button href="/new-here/plan-your-visit">Plan your visit</Button>
+        </p>
+      </section>
+    )
+  }
+</PageLayout>
+
+<style>
+  .events {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+    max-inline-size: 52rem;
+  }
+
+  .event {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .event__when {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .event__title {
+    margin-block: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-2);
+  }
+
+  .event__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .event__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .event__summary {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .event__where {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--text--1);
+    color: var(--color-text-subtle);
+  }
+
+  .empty {
+    max-inline-size: 40rem;
+  }
+
+  .empty h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .empty__standing {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-2xl);
+    margin-block: var(--space-l);
+  }
+
+  .empty__standing dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .empty__standing dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+</style>

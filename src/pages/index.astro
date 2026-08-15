@@ -1,0 +1,591 @@
+---
+/**
+ * Home: the continuous canvas.
+ *
+ * Seven movements, each opening into the next. The handoff device for every
+ * boundary is named in a comment above the movement and drawn in
+ * docs/home-scroll-storyboard.md.
+ *
+ * Above the fold: who, where, when, one primary action. No carousel, no
+ * autoplay, no modal on load.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import PhotoSlot from '../components/PhotoSlot.astro';
+import EdgeMark from '../components/EdgeMark.astro';
+
+import { CHURCH, VISION, TAGLINE, FAMILY_ORGS } from '../data/church.mjs';
+import { gatheringSchema } from '../lib/structured-data.mjs';
+import { getUpcomingEvents } from '../lib/connect.mjs';
+import { nextOccurrence } from '../lib/dates.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
+
+const events = (await getUpcomingEvents()).slice(0, 3);
+
+const schema = CHURCH.gatherings.map((g) => gatheringSchema(g, nextOccurrence(g.isoDay)));
+
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
+---
+
+<BaseLayout
+  title={CHURCH.name}
+  description="A church in Penrith, Sydney, with a vision that reaches nations. We gather Sundays at 9:30am. Everyone is welcome, and nobody is singled out."
+  route=""
+  schema={schema}
+  bare
+>
+  <!-- ==================================================================
+       MOVEMENT 1: ARRIVAL
+       Who, where, when, one action. The seam enters at the top right and
+       leans in behind the type.
+       Handoff out: the sentence "There is a place for you here" begins in
+       this movement and its second half opens movement 2.
+       ================================================================== -->
+  <section class="movement arrival" aria-labelledby="arrival-heading">
+    <div class="page-shell page-shell--wide arrival__inner">
+      <p class="arrival__eyebrow" data-reveal>{CHURCH.place}</p>
+
+      <!-- Supplied hero copy, verbatim from the typography handover. Two
+           sentences, sentence case, with the accent on the final word only. -->
+      <h1 id="arrival-heading" class="arrival__heading" data-reveal>
+        A church in Penrith.<br />
+        A vision to impact <em>nations.</em>
+      </h1>
+
+      <dl class="arrival__facts" data-reveal>
+        <div>
+          <dt>Sundays</dt>
+          <dd class="ltr-embed">{sunday.time}</dd>
+        </div>
+        <div>
+          <dt>Wednesdays</dt>
+          <dd class="ltr-embed">{midweek.time}</dd>
+        </div>
+        <div>
+          <dt>Where</dt>
+          <dd>
+            <a href={mapHref} rel="noopener">
+              {CHURCH.address.street}, {CHURCH.address.suburb}
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      <!-- One primary action. Nothing competes with it in this movement. -->
+      <div class="arrival__action" data-reveal>
+        <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+        <p class="arrival__reassurance">
+          About an hour and three quarters. Your children are cared for. You will not be
+          singled out or asked to give.
+        </p>
+      </div>
+
+      <p class="arrival__handoff" data-reveal>There is a place for you here,</p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 2: WELCOME
+       Completes the sentence opened above. The photograph is cropped by the
+       viewport edge and sits half in this movement and half in the next.
+       Handoff out: the photograph continues past the boundary.
+       ================================================================== -->
+  <section class="movement welcome" aria-labelledby="welcome-heading">
+    <div class="page-shell page-shell--wide welcome__inner">
+      <div class="welcome__copy">
+        <h2 id="welcome-heading" class="welcome__heading" data-reveal>
+          and you do not have to arrive as anyone but yourself.
+        </h2>
+        <div class="prose" data-reveal>
+          <p>
+            We are a congregation of many languages and many countries, in one room, on a
+            Sunday morning in Western Sydney. People here lead, teach, cook, play, build and
+            welcome. That is what the room is made of.
+          </p>
+          <p>
+            If it is your first time, the welcome desk is just inside the main entrance. Tell
+            them it is your first Sunday and someone will walk you in.
+          </p>
+        </div>
+        <p data-reveal>
+          <Button href="/new-here/what-to-expect" tone="quiet">What a Sunday looks like</Button>
+        </p>
+      </div>
+
+      <PhotoSlot
+        ref="S1"
+        brief="Wide shot of the room mid-gathering, from the back. Faces visible, no single hero. Landscape, room for the seam to cross the top right."
+        ratio="3 / 4"
+        bleed="inline-end"
+        class="welcome__photo"
+      />
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 3: VISION
+       The locked vision, set large. The seam steepens through it.
+       Handoff out: the seam changes colour here, and that colour resolves
+       into the accent used by the next movement's action.
+       ================================================================== -->
+  <section class="movement vision" aria-labelledby="vision-heading">
+    <div class="page-shell vision__inner">
+      <h2 id="vision-heading" class="vision__label" data-reveal>Our vision</h2>
+      <blockquote class="vision__quote" data-reveal>
+        <p>{VISION}</p>
+      </blockquote>
+      <p class="vision__tagline" data-reveal>{TAGLINE}</p>
+      <p data-reveal>
+        <Button href="/who-we-are" tone="plain">Who we are</Button>
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 4: THIS WEEK
+       Events from Connect. Falls back to the last successful payload, and
+       to the standing gatherings if there is nothing at all, so this
+       movement is never empty.
+       Handoff out: the last card's trailing edge aligns with the opening
+       rule of the EdgedIn movement.
+       ================================================================== -->
+  <section class="movement week" aria-labelledby="week-heading">
+    <div class="page-shell page-shell--wide">
+      <div class="week__head">
+        <h2 id="week-heading" data-reveal>What is on</h2>
+        <p data-reveal><Button href="/events" tone="plain">All events</Button></p>
+      </div>
+
+      {
+        events.length > 0 ? (
+          <ul class="week__list" role="list">
+            {events.map((event) => (
+              <li class="week__card" data-reveal>
+                <p class="week__when">
+                  <time datetime={event.startsAt} class="ltr-embed">
+                    {event.displayDate}
+                  </time>
+                </p>
+                <h3 class="week__title">
+                  <a href={`/events/${event.slug}`}>{event.title}</a>
+                </h3>
+                <p class="week__summary">{event.summary}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <ul class="week__list" role="list">
+            {CHURCH.gatherings.map((g) => (
+              <li class="week__card" data-reveal>
+                <p class="week__when">Every {g.day}</p>
+                <h3 class="week__title">{g.day} gathering</h3>
+                <p class="week__summary ltr-embed">{g.time}</p>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 5: EDGEDIN
+       The most editorially expressive area. Inverted ground, so the seam
+       reads as light rather than line while it crosses.
+       Handoff out: the inverted ground resolves back to canvas through a
+       gradient that starts inside this movement and finishes in the next.
+       ================================================================== -->
+  <section class="movement edgedin" aria-labelledby="edgedin-heading">
+    <div class="page-shell page-shell--wide edgedin__inner">
+      <div>
+        <p class="edgedin__eyebrow" data-reveal>EdgedIn Network</p>
+        <h2 id="edgedin-heading" class="edgedin__heading" data-reveal>
+          Teaching, conversation and writing that travels further than a Sunday.
+        </h2>
+        <p class="edgedin__body" data-reveal>
+          The podcast, the channel, the radio hour, the devotionals and the books. Listen on
+          the way to work, or read one page before bed.
+        </p>
+        <p data-reveal>
+          <Button href="/edgedin" tone="quiet">Open EdgedIn</Button>
+        </p>
+      </div>
+
+      <PhotoSlot
+        ref="S2"
+        brief="Recording setup mid-session, hands and microphone, shallow depth. Portrait or square. Warm key light."
+        ratio="1 / 1"
+        class="edgedin__photo"
+      />
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 6: OUTREACH
+       ECCS as sister organisation. Careful wording: separate entity,
+       services are not church programs, no church involvement required.
+       Handoff out: the closing line opens the Connect movement.
+       ================================================================== -->
+  <section class="movement outreach" aria-labelledby="outreach-heading">
+    <div class="page-shell outreach__inner">
+      <h2 id="outreach-heading" data-reveal>Beyond the room</h2>
+      <div class="prose" data-reveal>
+        <p>
+          {FAMILY_ORGS.eccs.name} is our sister organisation and community outreach arm. It is a
+          separate entity with its own team, and its services are open to anyone in the
+          community. You do not need to be part of this church, or any church, to use them.
+        </p>
+      </div>
+      <p data-reveal>
+        <Button href="/outreach" tone="quiet">About our outreach</Button>
+      </p>
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 7: CONNECT
+       The handoff out of the marketing site. Same tokens, same symbol, so
+       leaving does not feel like leaving.
+       Handoff out: the seam settles vertical and runs into the footer.
+       ================================================================== -->
+  <section class="movement connect" aria-labelledby="connect-heading">
+    <div class="page-shell connect__inner">
+      <EdgeMark size={44} />
+      <h2 id="connect-heading" data-reveal>Already part of the church?</h2>
+      <p data-reveal>Rosters, groups, giving and your details are all in Connect.</p>
+      <p data-reveal>
+        <Button
+          href={CHURCH.connectUrl}
+          external
+          data-connect-label
+          data-connect-label-signed-in="Open Connect">Sign in to Connect</Button
+        >
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ------------------------------------------------------------------
+     Rhythm. Density and height vary on purpose. The silence between
+     movements is part of the composition, so these values are not equal
+     and are not meant to be.
+     ------------------------------------------------------------------ */
+
+  .movement {
+    position: relative;
+  }
+
+  .arrival {
+    padding-block: clamp(3rem, 1rem + 9vw, 8rem) var(--space-movement);
+  }
+
+  .arrival__inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-m);
+  }
+
+  .arrival__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .arrival__heading {
+    /* The line breaks are authored, so no ch cap is needed and none is set. */
+    max-inline-size: 100%;
+    font-family: var(--font-display);
+    font-size: var(--text-5);
+    font-weight: var(--weight-semibold);
+    line-height: var(--text-5-leading);
+    letter-spacing: var(--text-5-tracking);
+    /* The largest setting on the site gets the display cut and a touch of the
+       SOFT axis, which is the one place Fraunces is allowed its full character. */
+    font-variation-settings: 'SOFT' 30, 'WONK' 0, 'opsz' 144;
+    /* The copy is two authored sentences. Balancing would re-break them. */
+    text-wrap: nowrap;
+    overflow-wrap: break-word;
+  }
+
+  /*
+    The accent, on the final word only. The handover caps the accent at roughly
+    ten per cent of a typographic composition, and one word of two lines is
+    about eight.
+  */
+  .arrival__heading em {
+    font-style: normal;
+    color: var(--color-accent-display);
+  }
+
+  /* On narrow screens the authored breaks are dropped so the two sentences can
+     reflow rather than overflow. */
+  @media (max-width: 45rem) {
+    .arrival__heading br {
+      display: none;
+    }
+    .arrival__heading {
+      text-wrap: balance;
+    }
+  }
+
+  .arrival__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-xl);
+    margin-block-start: var(--space-s);
+  }
+
+  .arrival__facts dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .arrival__facts dd {
+    margin: 0;
+    font-size: var(--text-2);
+    font-family: var(--font-display);
+  }
+
+  .arrival__action {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-xs);
+    margin-block-start: var(--space-s);
+  }
+
+  .arrival__reassurance {
+    max-inline-size: min(46ch, 100%);
+    color: var(--color-text-muted);
+    /* Body size, not micro. This answers "will I be singled out" and "what
+       happens to my children", which is not a supporting label. */
+    font-size: var(--text-0);
+  }
+
+  /* The handoff. Reads as an unfinished sentence, because it is one. */
+  .arrival__handoff {
+    margin-block-start: var(--space-2xl);
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+    max-inline-size: min(20ch, 100%);
+  }
+
+  /* ---------------------------------------------------------- welcome */
+
+  .welcome {
+    padding-block-end: var(--space-movement);
+  }
+
+  .welcome__inner {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .welcome__heading {
+    max-inline-size: min(24ch, 100%);
+    font-size: var(--text-3);
+    color: var(--color-text);
+    margin-block-end: var(--space-m);
+  }
+
+  .welcome__copy > * + * {
+    margin-block-start: var(--space-m);
+  }
+
+  /* ----------------------------------------------------------- vision */
+
+  .vision {
+    padding-block: var(--space-movement);
+  }
+
+  .vision__inner {
+    max-inline-size: 46rem;
+  }
+
+  .vision__label {
+    font-family: var(--font-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-m);
+  }
+
+  .vision__quote {
+    margin: 0;
+  }
+
+  .vision__quote p {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: var(--leading-snug);
+    letter-spacing: var(--tracking-tight);
+    text-wrap: pretty;
+  }
+
+  .vision__tagline {
+    margin-block: var(--space-l) var(--space-m);
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-style: italic;
+    color: var(--color-text-accent);
+  }
+
+  /* ------------------------------------------------------------- week */
+
+  .week {
+    padding-block-end: var(--space-movement);
+  }
+
+  .week__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-block-end: var(--space-l);
+  }
+
+  .week__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+  }
+
+  /* No boxed cards, section 5. Each item is separated by a single rule that
+     starts at the seam side and runs out, so the group reads as a rhythm
+     rather than a row of containers. */
+  .week__card {
+    padding-block-start: var(--space-s);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .week__when {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .week__title {
+    margin-block: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-1);
+  }
+
+  .week__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .week__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .week__summary {
+    color: var(--color-text-muted);
+    font-size: var(--text--1);
+    max-inline-size: min(42ch, 100%);
+  }
+
+  /* ---------------------------------------------------------- edgedin */
+
+  .edgedin {
+    padding-block: var(--space-movement);
+    /* The inverted ground begins and ends inside the movement, so the
+       boundary is a gradient rather than an edge. */
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--color-canvas-inverse) 14%,
+      var(--color-canvas-inverse) 86%,
+      transparent 100%
+    );
+    color: var(--color-text-inverse);
+  }
+
+  .edgedin__inner {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  .edgedin__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .edgedin__heading {
+    margin-block: var(--space-2xs) var(--space-m);
+    max-inline-size: min(20ch, 100%);
+    font-size: var(--text-3);
+  }
+
+  .edgedin__body {
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-m);
+    opacity: 0.85;
+  }
+
+  /* --------------------------------------------------------- outreach */
+
+  .outreach {
+    padding-block: var(--space-movement) var(--space-movement-tight);
+  }
+
+  .outreach__inner > * + * {
+    margin-block-start: var(--space-m);
+  }
+
+  /* ---------------------------------------------------------- connect */
+
+  .connect {
+    padding-block: var(--space-movement-tight) var(--space-movement);
+  }
+
+  .connect__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-s);
+    max-inline-size: 34rem;
+  }
+
+  /* ------------------------------------------------------ wide layout */
+
+  @media (min-width: 56rem) {
+    .welcome__inner {
+      grid-template-columns: 1fr 0.85fr;
+      align-items: center;
+    }
+
+    .edgedin__inner {
+      grid-template-columns: 1fr 0.6fr;
+    }
+
+    .vision__quote p {
+      font-size: var(--text-4);
+    }
+
+    /* The vision is indented to sit clear of the seam as it steepens past. */
+    .vision__inner {
+      margin-inline-start: 8%;
+    }
+  }
+</style>

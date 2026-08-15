@@ -1,0 +1,237 @@
+---
+/**
+ * The visitor-essential set, in every launch locale.
+ *
+ * Section 15 scopes launch translation to Plan Your Visit, What to Expect,
+ * Find Us, service times, EdgeKids and Get in Touch. The rest of the site stays
+ * English. This route generates that set for the six non-English locales, so
+ * adding a page per locale later is one entry in ESSENTIAL_PAGES rather than
+ * six new files.
+ *
+ * Right-to-left is handled entirely by the layout and by logical properties, so
+ * Arabic gets no special case here. That is the test of whether the design
+ * system actually holds: if Arabic needed its own template, the system would
+ * have failed.
+ *
+ * Until a native speaker has reviewed a locale, these pages render English
+ * copy and are marked noindex by BaseLayout. Nothing machine-translated is
+ * published, per section 22.
+ */
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import CrisisPointer from '../../components/CrisisPointer.astro';
+import { TRANSLATED_LOCALES, localeHref } from '../../i18n/locales.mjs';
+import { ESSENTIAL_PAGES } from '../../i18n/essential-pages.mjs';
+import { useTranslations, isPublishable } from '../../i18n/ui.mjs';
+import { CHURCH } from '../../data/church.mjs';
+import { nextOccurrence } from '../../lib/dates.mjs';
+import { gatheringSchema } from '../../lib/structured-data.mjs';
+
+export const getStaticPaths: GetStaticPaths = () =>
+  TRANSLATED_LOCALES.flatMap((locale) =>
+    ESSENTIAL_PAGES.map((page) => ({
+      params: { locale: locale.path, slug: page.slug },
+      props: { localePath: locale.path, page },
+    }))
+  );
+
+interface Props {
+  localePath: string;
+  page: import('../../i18n/essential-pages.mjs').EssentialPage;
+}
+
+const { localePath, page } = Astro.props;
+
+const t = useTranslations(localePath);
+const reviewed = isPublishable(localePath);
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
+
+const title = t(page.titleKey);
+---
+
+<PageLayout
+  title={title}
+  description={`${title}. The Transformation Edge, ${CHURCH.place}.`}
+  route={page.slug}
+  locale={localePath}
+  schema={page.kind === 'visit' ? [gatheringSchema(sunday, nextOccurrence(sunday.isoDay))] : []}
+>
+  {
+    !reviewed && (
+      <p class="pending" role="note" lang="en" dir="ltr">
+        {t('locale.awaitingReview')}
+      </p>
+    )
+  }
+
+  <div class="essential">
+    {/* Service times appear on every page in the essential set, because they are
+        the single fact a first-time visitor came for. */}
+    <section class="times" aria-labelledby="times-heading">
+      <h2 id="times-heading">{t('visit.when')}</h2>
+      <dl>
+        <div>
+          <dt>{t('visit.sunday')}</dt>
+          <dd class="ltr-embed">{sunday.time}</dd>
+        </div>
+        <div>
+          <dt>{t('visit.midweek')}</dt>
+          <dd class="ltr-embed">{midweek.time}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="where" aria-labelledby="where-heading">
+      <h2 id="where-heading">{t('visit.where')}</h2>
+      <address>
+        {CHURCH.address.unit}, {CHURCH.address.street}<br />
+        {CHURCH.address.suburb} {CHURCH.address.state}{' '}
+        <span class="ltr-embed">{CHURCH.address.postcode}</span>
+      </address>
+      <p class="actions">
+        <Button href={mapHref} tone="quiet" external>{t('visit.getDirections')}</Button>
+      </p>
+    </section>
+
+    {
+      (page.kind === 'visit' || page.kind === 'expect') && (
+        <section class="reassure" aria-labelledby="reassure-heading">
+          <h2 id="reassure-heading">{t('visit.whatToExpect')}</h2>
+          <ul role="list">
+            <li>{t('visit.howLong')}</li>
+            <li>{t('visit.singledOut')}</li>
+            <li>{t('visit.lookFor')}</li>
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      page.kind === 'kids' && (
+        <section class="reassure" aria-labelledby="kids-heading">
+          <h2 id="kids-heading">{t('visit.forYourKids')}</h2>
+          <ul role="list">
+            <li>
+              EdgeKids runs during the gathering for school-age children, with screened and
+              trained leaders.
+            </li>
+            <li>Younger children are welcome to stay with you.</li>
+            <li>{t('visit.lookFor')}</li>
+          </ul>
+        </section>
+      )
+    }
+
+    <section class="reach" aria-labelledby="reach-heading">
+      <h2 id="reach-heading">{t('contact.title')}</h2>
+      <ul role="list">
+        <li><a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a></li>
+        <li><a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a></li>
+      </ul>
+      <p class="response">{t('contact.responseTime')}</p>
+    </section>
+
+    {page.kind === 'contact' && <CrisisPointer locale={localePath} />}
+
+    <p class="full-site" lang="en" dir="ltr">
+      {t('locale.englishOnly')} <a href={localeHref('en', page.slug)}>Open the English site</a>.
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .pending {
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-l);
+    padding: var(--space-s) var(--space-m);
+    background-color: var(--color-canvas-raised);
+    border-inline-start: var(--border-thick) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .essential {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 42rem;
+  }
+
+  .essential h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .times dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-2xl);
+  }
+
+  .times dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .times dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  address {
+    font-style: normal;
+    font-size: var(--text-1);
+  }
+
+  .actions {
+    margin-block-start: var(--space-m);
+  }
+
+  .reassure ul,
+  .reach ul {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-inline-size: var(--measure);
+  }
+
+  .reassure li {
+    padding-inline-start: var(--space-m);
+    position: relative;
+  }
+
+  /* A logical-property marker, so the bullet sits on the correct side in
+     Arabic without a right-to-left override. */
+  .reassure li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: var(--space-2xs);
+    block-size: 2px;
+    background-color: var(--color-text-accent);
+  }
+
+  .response {
+    margin-block-start: var(--space-s);
+    color: var(--color-text-muted);
+    font-size: var(--text--1);
+  }
+
+  .full-site {
+    padding-block-start: var(--space-l);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,40 @@
+{
+  // Cloudflare Workers Static Assets.
+  //
+  // Cloudflare's current dashboard flow creates a Worker rather than a Pages
+  // project, and a Worker needs to be told where the built site is. Without
+  // this file the deploy fails with "Could not detect a directory containing
+  // static files", which is accurate but unhelpful: nothing had been built and
+  // nothing had been pointed at.
+  //
+  // There is no "main" entry because this is an assets-only Worker. No
+  // server-side code runs. The site is static, exactly as it was designed to
+  // be, and this file only tells Cloudflare where to find it.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "the-transedge-website",
+  "compatibility_date": "2026-08-01",
+
+  // Wrangler runs this before deploying, so the site is built even when the
+  // dashboard's build command is left empty. Cloudflare's Workers flow arrives
+  // with no build command and gives no hint that one is needed, so leaving the
+  // deploy dependent on a dashboard field nobody set is how this fails twice.
+  "build": {
+    "command": "npm run build"
+  },
+
+  "assets": {
+    // Matches the Astro build output. Changing one without the other breaks
+    // the deploy.
+    "directory": "./dist",
+
+    // Unmatched routes serve the real 404 page rather than a bare Cloudflare
+    // error, so a visitor who follows a dead link still gets the header, the
+    // service times and a way onward.
+    "not_found_handling": "404-page"
+  },
+
+  "observability": {
+    // Request logs, so a broken redirect is visible rather than guessed at.
+    "enabled": true
+  }
+}

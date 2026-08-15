@@ -1,0 +1,104 @@
+---
+/**
+ * EdgedIn Network hub, section 14.
+ *
+ * The most editorially expressive area of the site, still inside the family.
+ * Assets come from Connect and are never duplicated into this repository.
+ *
+ * Phase 2 adds the persistent player, episode pages with transcripts and
+ * chapters, and the publishing strand. This is the launch hub: the strands, and
+ * the latest release playable without a page reload.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { getEdgedInAssets } from '../../lib/connect.mjs';
+
+const assets = await getEdgedInAssets();
+const latest = assets[0] ?? null;
+
+const strands = [
+  { key: 'podcast', name: 'Podcast', body: 'Conversation and teaching, weekly.' },
+  { key: 'youtube', name: 'Channel', body: 'Messages and short films.' },
+  { key: 'radio', name: 'Radio', body: 'The radio hour, and where to catch it.' },
+  { key: 'devotional', name: 'Devotionals', body: 'One page, most mornings.' },
+  { key: 'publishing', name: 'Publishing', body: 'Books and study material from this house.' },
+];
+---
+
+<PageLayout
+  title="EdgedIn Network"
+  description="The media and publishing arm of The Transformation Edge: podcast, channel, radio, devotionals and publishing."
+  route="edgedin"
+  standfirst="Teaching, conversation and writing that travels further than a Sunday."
+>
+  {latest && (
+    <section class="latest" aria-labelledby="latest-heading">
+      <p class="latest__eyebrow">Latest release</p>
+      <h2 id="latest-heading" class="latest__title">{latest.title}</h2>
+      {latest.summary && <p class="latest__summary">{latest.summary}</p>}
+      {latest.audioUrl && (
+        <audio class="latest__player" controls preload="none" src={latest.audioUrl}>
+          Your browser cannot play audio. <a href={latest.audioUrl}>Download the episode</a> instead.
+        </audio>
+      )}
+    </section>
+  )}
+
+  {!latest && (
+    <section class="latest latest--pending" aria-labelledby="pending-heading">
+      <h2 id="pending-heading">The network is being wired up</h2>
+      <p class="latest__summary">
+        Episodes are published through the TTE Connect Hub and will appear here as soon as the
+        first ones land. Nothing is missing: nothing has been published yet.
+      </p>
+    </section>
+  )}
+
+  <section class="strands" aria-labelledby="strands-heading">
+    <h2 id="strands-heading">The strands</h2>
+    <ul role="list">
+      {strands.map((strand) => {
+        const count = assets.filter((a) => a.strand === strand.key).length;
+        return (
+          <li data-reveal>
+            <h3>{strand.name}</h3>
+            <p>{strand.body}</p>
+            <p class="strands__count">{count > 0 ? `${count} published` : 'Coming'}</p>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+
+  <p><Button href="/watch-and-listen" tone="quiet">Sunday messages</Button></p>
+</PageLayout>
+
+<style>
+  .latest {
+    padding: var(--space-l);
+    margin-block-end: var(--space-2xl);
+    max-inline-size: 46rem;
+    background-color: var(--color-canvas-inverse);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-l);
+  }
+  .latest__eyebrow {
+    font-size: var(--text--1); font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; opacity: 0.75;
+  }
+  .latest__title { margin-block: var(--space-2xs) var(--space-s); font-size: var(--text-3); }
+  .latest__summary { max-inline-size: var(--measure); opacity: 0.85; }
+  .latest__player { inline-size: 100%; margin-block-start: var(--space-m); }
+  .strands ul {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: var(--space-l); margin: var(--space-m) 0 var(--space-2xl); padding: 0;
+  }
+  .strands li { padding-block-start: var(--space-s); border-block-start: var(--border-thick) solid var(--color-border-strong); }
+  .strands h2 { font-size: var(--text-2); }
+  .strands h3 { font-size: var(--text-1); margin-block-end: var(--space-3xs); }
+  .strands p { color: var(--color-text-muted); }
+  .strands__count {
+    margin-block-start: var(--space-2xs); font-size: var(--text--1);
+    letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-text-subtle);
+  }
+</style>

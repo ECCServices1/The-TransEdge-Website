@@ -1,0 +1,135 @@
+# Sveltia CMS, mounted at /admin.
+#
+# Editors authenticate with GitHub and never see the repository. Every save is a
+# commit on a branch, and nothing reaches the site without a merge, which is the
+# same gate the Claude content pipeline goes through.
+#
+# The definition of done requires a non-technical person to complete three real
+# content tasks unaided. The three tasks are: publish a weekly notice, add an
+# event, and correct a service time. Each is a collection below.
+
+backend:
+  name: github
+  repo: ECCServices1/The-TransEdge-Website
+  branch: main
+  # Editors work on a branch and open a pull request rather than committing to
+  # main, so a second pair of eyes is structural rather than a habit.
+  open_authoring: false
+  squash_merges: true
+  # GitHub OAuth is handled by a Cloudflare Worker running sveltia-cms-auth, not
+  # by Netlify's service, because this site is not on Netlify. The Worker holds
+  # the OAuth client secret; nothing sensitive is served from this file, which is
+  # public. Deployment steps are in docs/cms-and-content-pipeline.md.
+  base_url: https://auth.thetransedge.com
+
+publish_mode: editorial_workflow
+
+media_folder: public/media
+public_folder: /media
+
+locale: en
+
+site_url: https://www.thetransedge.com
+display_url: https://www.thetransedge.com
+logo_url: https://www.thetransedge.com/brand/icons/tte_app_icon.svg
+
+collections:
+  # ---------------------------------------------------------------------
+  # Task 1: publish the weekly notice.
+  # This is also the collection the Claude content pipeline drafts into.
+  # ---------------------------------------------------------------------
+  - name: notices
+    label: Weekly notice
+    label_singular: notice
+    folder: src/content/notices
+    create: true
+    delete: false
+    slug: '{{forDate}}'
+    summary: '{{forDate}} — {{title}}'
+    sortable_fields: [forDate, title]
+    view_filters:
+      - label: Published
+        field: published
+        pattern: true
+    fields:
+      - { name: title, label: Title, widget: string, pattern: ['^.{1,80}$', 'Keep it under 80 characters'] }
+      - { name: forDate, label: For the Sunday of, widget: datetime, date_format: 'YYYY-MM-DD', time_format: false, picker_utc: false }
+      - name: summary
+        label: One-sentence summary
+        widget: text
+        hint: This appears on the home page, so it has to earn the space. One sentence, no em-dashes.
+        pattern: ['^.{1,200}$', 'Keep it under 200 characters']
+      - name: approvedBy
+        label: Approved by
+        widget: string
+        hint: Your name. Required, so there is a record of who signed this off.
+      - { name: published, label: Publish this notice, widget: boolean, default: false }
+      - name: body
+        label: The notice
+        widget: markdown
+        hint: >-
+          Plain and direct. Australian English. No em-dashes. Nothing about a named
+          person, nothing doctrinal, and nothing involving a child without a recorded consent.
+
+  # ---------------------------------------------------------------------
+  # Task 2: add an event.
+  # While Connect has no read API, this file is the site's event source. Once
+  # Connect is wired up, the build reads from Connect and this becomes the
+  # fallback payload only. Editors do not need to know which mode is live.
+  # ---------------------------------------------------------------------
+  - name: events
+    label: Events
+    files:
+      - name: upcoming
+        label: Upcoming events
+        file: src/data/connect/events.snapshot.json
+        description: >-
+          Events shown on the site. Once the Connect Hub is connected, events are
+          managed there and this list becomes a safety net that is refreshed
+          automatically.
+        fields:
+          - name: events
+            label: Events
+            label_singular: event
+            widget: list
+            summary: '{{fields.title}} — {{fields.startsAt}}'
+            fields:
+              - { name: id, label: Reference, widget: string, hint: Any unique short code, for example easter-2026. }
+              - { name: slug, label: Web address, widget: string, pattern: ['^[a-z0-9-]+$', 'Lower case letters, numbers and hyphens only'] }
+              - { name: title, label: Title, widget: string }
+              - { name: summary, label: Summary, widget: text, required: false }
+              - { name: startsAt, label: Starts, widget: datetime, picker_utc: false }
+              - { name: endsAt, label: Ends, widget: datetime, required: false, picker_utc: false }
+              - { name: locationName, label: Location name, widget: string, required: false }
+              - { name: registrationUrl, label: Registration link, widget: string, required: false, hint: A Connect Hub link. Registration always happens in Connect. }
+              - { name: image, label: Image, widget: image, required: false, hint: Every published image needs alt text and a recorded consent. Images of children need a parent or guardian consent on file. }
+
+  # ---------------------------------------------------------------------
+  # Task 3: correct a service time.
+  # Deliberately a tiny, single-purpose collection, because the third task in
+  # the definition of done is meant to be findable by someone who has never
+  # opened this tool before.
+  # ---------------------------------------------------------------------
+  - name: settings
+    label: Church details
+    files:
+      - name: gatherings
+        label: Service times and contact details
+        file: src/data/gatherings.json
+        description: >-
+          Changing a time here changes it everywhere on the site at once,
+          including the calendar files and the search result listings.
+        fields:
+          - name: gatherings
+            label: Gatherings
+            widget: list
+            summary: '{{fields.day}} {{fields.time}}'
+            fields:
+              - { name: key, label: Reference, widget: string }
+              - name: day
+                label: Day
+                widget: select
+                options: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+              - { name: time, label: Time as written, widget: string, hint: 'For example 9:30am' }
+              - { name: isoTime, label: Time in 24 hour form, widget: string, pattern: ['^\d{2}:\d{2}$', 'Use HH:MM, for example 09:30'] }
+              - { name: durationMinutes, label: How long, in minutes, widget: number, value_type: int, min: 15, max: 300 }

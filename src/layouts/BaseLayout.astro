@@ -1,0 +1,209 @@
+---
+/**
+ * The page shell.
+ *
+ * Everything that must be true of every page lives here: direction, language,
+ * the font stack for the locale's script, the hreflang set, the seam, the
+ * header and footer, and the skip link.
+ */
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Seam from '../components/Seam.astro';
+
+import { CHURCH } from '../data/church.mjs';
+import { LOCALES, DEFAULT_LOCALE, getLocale, localeHref } from '../i18n/locales.mjs';
+import { useTranslations, isPublishable } from '../i18n/ui.mjs';
+import { churchSchema } from '../lib/structured-data.mjs';
+import preloadFonts from '../../public/fonts/css/preload.json';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Route without locale prefix or leading slash. Drives hreflang and the switcher. */
+  route?: string;
+  locale?: string;
+  /** Additional JSON-LD nodes for this page. */
+  schema?: unknown[];
+  /** Social preview image, absolute path from the site root. */
+  image?: string;
+  /** Set for pages that must stay out of the index. */
+  noindex?: boolean;
+  /** The home canvas manages its own rhythm, so it opts out of the default page padding. */
+  bare?: boolean;
+}
+
+const {
+  title,
+  description,
+  route = '',
+  locale = DEFAULT_LOCALE,
+  schema = [],
+  image = '/brand/icons/tte_social_avatar_1080.png',
+  noindex = false,
+  bare = false,
+} = Astro.props;
+
+const current = getLocale(locale);
+const t = useTranslations(locale);
+
+const canonical = new URL(localeHref(locale, route), CHURCH.url).href;
+const socialImage = new URL(image, CHURCH.url).href;
+
+/*
+  A locale with no reviewed translation renders in English. It is kept out of
+  the index so nobody arrives from a search result expecting their language and
+  finds English, and it is kept out of the hreflang set so it is not advertised
+  as an alternate that does not exist yet. Section 15 and section 22.
+*/
+const localeIsPublishable = isPublishable(locale);
+const robots = noindex || !localeIsPublishable ? 'noindex, follow' : 'index, follow';
+
+const alternates = LOCALES.filter((l) => isPublishable(l.path)).map((l) => ({
+  hreflang: l.hreflang,
+  href: new URL(localeHref(l.path, route), CHURCH.url).href,
+}));
+
+/* Latin is always needed. A non-Latin locale links its script on top. */
+const scriptStylesheet = current.fontStack === 'latin' ? null : `/fonts/css/${current.fontStack}.css`;
+
+const jsonLd = [churchSchema(), ...schema];
+const titleWithSuffix = title === CHURCH.name ? title : `${title} | ${CHURCH.name}`;
+---
+
+<!doctype html>
+<html lang={current.hreflang} dir={current.dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{titleWithSuffix}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Fonts. Preloaded before the stylesheet that references them, so the
+         browser starts fetching on the first look at the head rather than
+         after the CSS has parsed. -->
+    {
+      preloadFonts.map((href: string) => (
+        <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />
+      ))
+    }
+    <link rel="stylesheet" href="/fonts/css/latin.css" />
+    {scriptStylesheet && <link rel="stylesheet" href={scriptStylesheet} />}
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/brand/icons/tte_app_icon_512.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- hreflang. x-default points at English, which is the canonical root. -->
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(localeHref(DEFAULT_LOCALE, route), CHURCH.url).href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={CHURCH.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:locale" content={current.hreflang.replace('-', '_')} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+
+    <meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#171d24" media="(prefers-color-scheme: dark)" />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {
+      jsonLd.map((node) => (
+        <script type="application/ld+json" set:html={JSON.stringify(node)} />
+      ))
+    }
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{t('site.skipToContent')}</a>
+
+    <Header locale={locale} route={route} />
+
+    <!-- The seam field wraps the whole composition, so one path travels the
+         full page rather than restarting per section. -->
+    <div class="canvas">
+      <Seam dir={current.dir} />
+
+      <main id="main" class:list={['canvas__content', { 'canvas__content--bare': bare }]}>
+        <slot />
+      </main>
+    </div>
+
+    <Footer locale={locale} route={route} />
+  </body>
+</html>
+
+<style>
+  .canvas {
+    position: relative;
+    /* Backgrounds shift through large-radius gradients that cross movement
+       boundaries, so there is never a hard section break to see. */
+    /*
+      Mix percentages are deliberately tiny. The brand caps ember at five per
+      cent of a composition, and a wash across the full page is the easiest way
+      to spend that budget without noticing. At 7 and 5 per cent these read as
+      warmth in the paper rather than as colour.
+    */
+    background-image:
+      radial-gradient(
+        120rem 80rem at 78% 4%,
+        color-mix(in oklab, var(--color-ember) 7%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        100rem 70rem at 8% 38%,
+        color-mix(in oklab, var(--color-heritage) 8%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        110rem 90rem at 92% 76%,
+        color-mix(in oklab, var(--color-ember) 5%, transparent),
+        transparent 72%
+      );
+    background-repeat: no-repeat;
+  }
+
+  .canvas__content {
+    position: relative;
+    z-index: var(--layer-content);
+    padding-block: var(--space-2xl) var(--space-movement);
+  }
+
+  .canvas__content--bare {
+    padding-block: 0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not(.theme-light) .canvas {
+      background-image:
+        radial-gradient(
+          120rem 80rem at 78% 4%,
+          color-mix(in oklab, var(--color-ember) 9%, transparent),
+          transparent 70%
+        ),
+        radial-gradient(
+          100rem 70rem at 8% 38%,
+          color-mix(in oklab, var(--color-primary) 55%, transparent),
+          transparent 68%
+        ),
+        radial-gradient(
+          110rem 90rem at 92% 76%,
+          color-mix(in oklab, var(--color-ember) 6%, transparent),
+          transparent 72%
+        );
+    }
+  }
+</style>

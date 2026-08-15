@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en-AU">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Edit the site | The Transformation Edge</title>
+  </head>
+  <body>
+    <!--
+      Sveltia CMS. A form-based editor that commits to GitHub on the editor's
+      behalf, so a non-technical editor never sees the repository, and every
+      change is still a reviewable commit.
+
+      No database, no licence cost, no third party holding the content.
+
+      Sveltia is loaded from its own CDN, which is why /admin is excluded from
+      the site's Content-Security-Policy by being a separate document rather
+      than a page in the Astro build.
+    -->
+    <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js" type="module"></script>
+  </body>
+</html>

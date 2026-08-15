@@ -1,0 +1,95 @@
+---
+/**
+ * The crisis pointer, section 8 audience 5.
+ *
+ * Visible, not buried behind a disclosure. Someone reading this page at 2am is
+ * the reason it exists, and they should not have to open anything.
+ *
+ * It is honest about what this church is: it says plainly that we are not a
+ * crisis service, then gives the numbers that are. Every number is a real
+ * Australian service, dialable from the page.
+ */
+import { CRISIS_SUPPORT } from '../data/church.mjs';
+import { useTranslations } from '../i18n/ui.mjs';
+import { DEFAULT_LOCALE } from '../i18n/locales.mjs';
+
+interface Props {
+  locale?: string;
+}
+
+const { locale = DEFAULT_LOCALE } = Astro.props;
+const t = useTranslations(locale);
+---
+
+<aside class="crisis" aria-labelledby="crisis-heading">
+  <h2 id="crisis-heading">{t('contact.crisis')}</h2>
+  <p class="crisis__note">{t('contact.crisisNote')}</p>
+  <ul class="crisis__list" role="list">
+    {
+      CRISIS_SUPPORT.map((service) => (
+        <li>
+          <a href={service.href}>
+            <span class="crisis__name">{service.name}</span>
+            <span class="crisis__detail ltr-embed">{service.detail}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</aside>
+
+<style>
+  .crisis {
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    /* A weight change and a heading, not a colour, carry the emphasis. */
+    border: var(--border-thick) solid var(--color-border-strong);
+    border-radius: var(--radius-m);
+  }
+
+  .crisis h2 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-2xs);
+  }
+
+  /* Body size. Someone reading this at 2am is the reason the block exists,
+     and rule 4 of the typography handover forbids micro type for access
+     conditions and essential instructions. */
+  .crisis__note {
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-m);
+    color: var(--color-text-muted);
+    font-size: var(--text-0);
+  }
+
+  .crisis__list {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+  }
+
+  .crisis__list a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    padding-block: var(--space-2xs);
+    min-block-size: 2.75rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .crisis__list a:hover .crisis__name {
+    text-decoration: underline;
+  }
+
+  .crisis__name {
+    font-weight: var(--weight-semibold);
+  }
+
+  .crisis__detail {
+    color: var(--color-text-muted);
+    font-size: var(--text-0);
+  }
+</style>

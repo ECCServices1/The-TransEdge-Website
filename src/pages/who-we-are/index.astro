@@ -1,0 +1,94 @@
+---
+/**
+ * Who We Are.
+ *
+ * The vision and mission are reproduced from src/data/church.mjs, so they
+ * cannot be rephrased here by accident. Section 2 locks them.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH, VISION, MISSION, TAGLINE } from '../../data/church.mjs';
+
+const sections = [
+  { title: 'What we believe', href: '/who-we-are/what-we-believe', body: 'The convictions this church is built on, in plain language.' },
+  { title: 'Pastoral team', href: '/who-we-are/pastoral-team', body: 'Who leads here, and how to reach them.' },
+  { title: 'Our community', href: '/who-we-are/our-community', body: 'The people who make up this church, and what they carry.' },
+  { title: 'CORE Course', href: '/who-we-are/core-course', body: 'Where to start if you want to understand what we hold to.' },
+  { title: 'Safeguarding', href: '/who-we-are/safeguarding', body: 'Our child safe policy and how to raise a concern.' },
+];
+---
+
+<PageLayout
+  title="Who we are"
+  description="The Transformation Edge is a church in Penrith, Sydney, with a vision that reaches nations."
+  route="who-we-are"
+  standfirst="A church in Penrith, Sydney, led by Dr Michaels Aibangbee and Pastor Osas Aibangbee."
+>
+  <div class="who">
+    <section aria-labelledby="vision-heading">
+      <h2 id="vision-heading">Our vision</h2>
+      <blockquote class="statement"><p>{VISION}</p></blockquote>
+    </section>
+
+    <section aria-labelledby="mission-heading">
+      <h2 id="mission-heading">Our mission</h2>
+      <blockquote class="statement"><p>{MISSION}</p></blockquote>
+      <p class="tagline">{TAGLINE}</p>
+    </section>
+
+    <section aria-labelledby="pastors-heading">
+      <h2 id="pastors-heading">Senior Pastors</h2>
+      <ul class="pastors" role="list">
+        {CHURCH.seniorPastors.map((p) => (
+          <li>
+            <span class="pastors__name">{p.name}</span>
+            <span class="pastors__role">{p.role}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="more-heading">
+      <h2 id="more-heading">More about us</h2>
+      <ul class="index" role="list">
+        {sections.map((s) => (
+          <li>
+            <h3><a href={s.href}>{s.title}</a></h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <p><Button href="/new-here/plan-your-visit">Plan your visit</Button></p>
+  </div>
+</PageLayout>
+
+<style>
+  .who { display: grid; gap: var(--space-2xl); max-inline-size: 50rem; }
+  .who h2 { font-size: var(--text-2); margin-block-end: var(--space-s); }
+  .statement { margin: 0; max-inline-size: 40rem; }
+  .statement p {
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: var(--leading-snug);
+    text-wrap: pretty;
+  }
+  .tagline {
+    margin-block-start: var(--space-m);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text-1);
+    color: var(--color-text-accent);
+  }
+  .pastors { display: grid; gap: var(--space-s); margin: 0; padding: 0; }
+  .pastors li { display: grid; gap: var(--space-3xs); }
+  .pastors__name { font-family: var(--font-display); font-size: var(--text-1); font-weight: var(--weight-semibold); }
+  .pastors__role { font-size: var(--text--1); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--color-text-muted); }
+  .index { display: grid; gap: var(--space-m); margin: 0; padding: 0; }
+  .index li { padding-block-start: var(--space-s); border-block-start: var(--border-hairline) solid var(--color-border); }
+  .index h3 { font-size: var(--text-1); margin-block-end: var(--space-3xs); }
+  .index h3 a { color: inherit; text-decoration-color: var(--color-border-strong); }
+  .index h3 a:hover { text-decoration-color: currentColor; }
+  .index p { color: var(--color-text-muted); max-inline-size: var(--measure); }
+</style>

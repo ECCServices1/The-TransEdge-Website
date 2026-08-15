@@ -1,0 +1,18 @@
+{
+  "gatherings": [
+    {
+      "key": "sunday",
+      "day": "Sunday",
+      "time": "9:30am",
+      "isoTime": "09:30",
+      "durationMinutes": 105
+    },
+    {
+      "key": "midweek",
+      "day": "Wednesday",
+      "time": "6:30pm",
+      "isoTime": "18:30",
+      "durationMinutes": 90
+    }
+  ]
+}

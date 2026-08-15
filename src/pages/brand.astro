@@ -1,0 +1,417 @@
+---
+/**
+ * Brand reference.
+ *
+ * The approval gate is closed: the client supplied TTE Masterbrand Production
+ * Suite v1.0 and the A2 Architectural Threshold symbol is the approved mark.
+ * This page is no longer a choice between directions. It is the working
+ * reference for anyone about to place the mark somewhere.
+ *
+ * Not indexed and not in the sitemap.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EdgeMark from '../components/EdgeMark.astro';
+import BrandLockup from '../components/BrandLockup.astro';
+import { SYMBOL, MINIMUM_SIZES, ASSETS, FAMILY_PENDING } from '../lib/brand-marks.mjs';
+import { TAGLINE } from '../data/church.mjs';
+
+const misuse = [
+  'Do not recolour a plane of the symbol. It is a one-colour mark and ember must never fill a plane.',
+  'Do not add a containing circle, box, outline or drop shadow.',
+  'Do not close, narrow or widen the gap between the planes. The gap is the threshold.',
+  'Do not rotate, stretch, skew or redraw the symbol.',
+  'Do not set any lockup below its minimum size.',
+  'Do not rebuild the wordmark in another typeface. Use the supplied vector.',
+  'Do not place the primary lockup on a busy photograph. Use the reversed cut.',
+  'Do not use the tagline as a substitute for the mark.',
+];
+---
+
+<BaseLayout
+  title="Brand reference"
+  description="The approved TTE masterbrand, its usage rules and the supplied asset set."
+  route="brand"
+  noindex
+>
+  <div class="page-shell page-shell--wide brand">
+    <header class="brand__head">
+      <h1>The approved identity</h1>
+      <p class="brand__standfirst">
+        <strong>{SYMBOL.name}</strong>, from TTE Masterbrand Production Suite v1.0. Deep Slate
+        one-colour mark. Ember is a controlled supporting accent only, capped at five per cent
+        of a composition, and never colours a plane in the core symbol.
+      </p>
+      <p class="brand__note">
+        The three exploratory directions previously shown here have been withdrawn. Everything
+        below is generated from the supplied files, and <code>npm run check:brand</code> fails
+        the build if the site's copy of the geometry or the palette drifts from them.
+      </p>
+    </header>
+
+    <section class="panel" aria-labelledby="scale-heading">
+      <h2 id="scale-heading">The symbol at size</h2>
+      <div class="scale">
+        {
+          [16, 24, 32, 48, 96, 160].map((size) => (
+            <div class="scale__cell">
+              <EdgeMark size={size} />
+              <span class="scale__label ltr-embed">{size}px</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="panel__caption">
+        Digital minimum is <span class="ltr-embed">{MINIMUM_SIZES.symbolDigital}px</span>, print
+        minimum <span class="ltr-embed">{MINIMUM_SIZES.symbolPrintMm}mm</span>. The component
+        clamps to the digital minimum, so a mark cannot be set below it by accident.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="ground-heading">
+      <h2 id="ground-heading">On ground</h2>
+      <div class="grounds">
+        <div class="ground ground--paper"><EdgeMark size={72} /><span>Warm surface</span></div>
+        <div class="ground ground--white"><EdgeMark size={72} /><span>Surface</span></div>
+        <div class="ground ground--slate"><EdgeMark size={72} /><span>Deep Slate, reversed</span></div>
+        <div class="ground ground--photo"><EdgeMark size={72} /><span>On photography</span></div>
+      </div>
+      <p class="panel__caption">
+        The symbol inherits <code>currentColor</code> in every case, so there is one definition
+        rather than a file per ground.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="lockup-heading">
+      <h2 id="lockup-heading">Lockups</h2>
+      <div class="lockups">
+        <div class="lockup-cell">
+          <BrandLockup cut="compact" width={260} label={null} />
+          <span>Compact, minimum <span class="ltr-embed">{MINIMUM_SIZES.horizontalCompact}px</span></span>
+        </div>
+        <div class="lockup-cell lockup-cell--dark">
+          <BrandLockup cut="compact" width={260} label={null} />
+          <span>Compact, reversed</span>
+        </div>
+      </div>
+      <p class="panel__caption">
+        The header and footer inline the compact cut and recolour it to
+        <code>currentColor</code>, so one asset is correct on any ground and in both colour
+        schemes. The full cuts, including the tagline lockups, are in the vector set below.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="palette-heading">
+      <h2 id="palette-heading">Palette</h2>
+      <div class="swatches">
+        <div class="swatch" style="--c: var(--color-primary)"><span>Deep Slate</span><code>#303847</code></div>
+        <div class="swatch" style="--c: var(--color-heritage)"><span>Heritage slate</span><code>#4B576E</code></div>
+        <div class="swatch" style="--c: var(--color-ember)"><span>Ember, accent only</span><code>#E46F3C</code></div>
+        <div class="swatch" style="--c: var(--color-ember-accessible)"><span>Ember accessible, text</span><code>#A94722</code></div>
+        <div class="swatch swatch--light" style="--c: var(--color-neutral-100)"><span>Warm surface</span><code>#F6F5F2</code></div>
+        <div class="swatch" style="--c: var(--color-neutral-900)"><span>Text</span><code>#171D24</code></div>
+      </div>
+      <p class="panel__caption">
+        Plain ember measures 2.90:1 on the warm surface, so it is never used for text. The
+        accessible cut is used instead, and every guaranteed pairing is measured in
+        <a href="https://github.com/ECCServices1/The-TransEdge-Website/blob/main/docs/colour-contrast-evidence.md">the contrast evidence</a>.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="misuse-heading">
+      <h2 id="misuse-heading">Misuse</h2>
+      <ul class="misuse" role="list">
+        {misuse.map((rule) => <li>{rule}</li>)}
+      </ul>
+    </section>
+
+    <section class="panel" aria-labelledby="family-heading">
+      <h2 id="family-heading">The Edge family</h2>
+      <p class="panel__caption panel__caption--lead">
+        The supplied README states that the family lockups are not yet drawn, because the
+        organisation names and descriptors were not supplied with the brief given to the brand
+        designer. They are confirmed below, so the lockups can be generated from them.
+      </p>
+      <ul class="family" role="list">
+        {
+          FAMILY_PENDING.map((org) => (
+            <li>
+              <span class="family__name">{org.name}</span>
+              <span class="family__descriptor">{org.descriptor}</span>
+              <span class="family__status">{org.status}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="panel__caption">
+        Nothing on this site renders a family mark until those lockups exist. An approximated
+        ECCS mark would be worse than none: ECCS is a separate legal entity and its identity is
+        not ours to improvise.
+      </p>
+    </section>
+
+    <section class="panel" aria-labelledby="assets-heading">
+      <h2 id="assets-heading">The asset set</h2>
+      <ul class="assets" role="list">
+        <li><a href={ASSETS.reference.guidelines}>Masterbrand guidelines, PDF</a></li>
+        <li><a href={ASSETS.reference.tokens}>Brand tokens, JSON</a></li>
+        <li><a href={ASSETS.horizontal.primary}>Horizontal, primary</a></li>
+        <li><a href={ASSETS.horizontal.reversed}>Horizontal, reversed</a></li>
+        <li><a href={ASSETS.horizontal.mono}>Horizontal, mono</a></li>
+        <li><a href={ASSETS.horizontal.compact}>Horizontal, compact</a></li>
+        <li><a href={ASSETS.stacked.primary}>Stacked, primary</a></li>
+        <li><a href={ASSETS.stacked.reversed}>Stacked, reversed</a></li>
+        <li><a href={ASSETS.symbol.primary}>Symbol, primary</a></li>
+        <li><a href={ASSETS.symbol.reversed}>Symbol, reversed</a></li>
+        <li><a href={ASSETS.icons.appIcon}>App icon</a></li>
+        <li><a href={ASSETS.icons.socialAvatar}>Social avatar</a></li>
+      </ul>
+      <p class="panel__caption">
+        Each vector also ships as PDF and EPS in <code>public/brand/vector/</code>. The wordmark
+        is outlined, so the files are portable with no font to supply.
+      </p>
+    </section>
+
+    <section class="panel panel--flag" aria-labelledby="flag-heading">
+      <h2 id="flag-heading">One thing to confirm</h2>
+      <p>
+        The supplied lockup artwork sets the tagline as <em>A change is inevitable</em>. The
+        locked wording in section 2 of the brief is <em>{TAGLINE}</em>, in title case. The site
+        uses the locked wording wherever the tagline is set as text. The artwork has not been
+        altered, because it is a supplied master. Worth confirming which is intended before the
+        lockups go to print.
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .brand__head {
+    max-inline-size: 48rem;
+    margin-block-end: var(--space-2xl);
+  }
+
+  .brand__standfirst {
+    margin-block-start: var(--space-s);
+    font-size: var(--text-1);
+    color: var(--color-text-muted);
+  }
+
+  .brand__note {
+    margin-block-start: var(--space-s);
+    padding: var(--space-2xs) var(--space-s);
+    border-inline-start: var(--border-thick) solid var(--color-border-strong);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .panel {
+    padding-block: var(--space-xl);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .panel h2 {
+    margin-block-end: var(--space-m);
+    font-size: var(--text-2);
+  }
+
+  .panel__caption {
+    margin-block-start: var(--space-m);
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .panel__caption--lead {
+    margin-block: 0 var(--space-m);
+  }
+
+  .scale {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-l);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+  }
+
+  .scale__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .scale__label {
+    font-family: var(--font-mono);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .grounds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--space-s);
+  }
+
+  .ground {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+    min-block-size: 11rem;
+    border-radius: var(--radius-m);
+    font-size: var(--text--1);
+  }
+
+  .ground--paper {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+    border: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ground--white {
+    background-color: var(--color-white);
+    color: var(--color-primary);
+    border: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ground--slate {
+    background-color: var(--color-primary);
+    color: var(--color-neutral-100);
+  }
+
+  /* Stands in for photography until the shot list is executed. Deliberately
+     busy and mid-tone, because that is the hardest ground a mark has to hold. */
+  .ground--photo {
+    background-image:
+      radial-gradient(60% 80% at 20% 20%, var(--color-ember-accessible), transparent 60%),
+      radial-gradient(70% 70% at 80% 70%, var(--color-heritage), transparent 60%),
+      linear-gradient(35deg, var(--color-neutral-900), var(--color-primary));
+    color: var(--color-neutral-100);
+  }
+
+  .lockups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-s);
+  }
+
+  .lockup-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-m);
+    padding: var(--space-l);
+    background-color: var(--color-canvas-raised);
+    color: var(--color-primary);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+    font-size: var(--text--1);
+  }
+
+  .lockup-cell--dark {
+    background-color: var(--color-primary);
+    color: var(--color-neutral-100);
+    border-color: transparent;
+  }
+
+  .swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: var(--space-s);
+  }
+
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: var(--space-3xs);
+    min-block-size: 8rem;
+    padding: var(--space-s);
+    background-color: var(--c);
+    color: var(--color-neutral-100);
+    border-radius: var(--radius-m);
+    font-size: var(--text--1);
+  }
+
+  .swatch--light {
+    color: var(--color-neutral-900);
+    border: var(--border-hairline) solid var(--color-border);
+  }
+
+  .swatch code {
+    font-family: var(--font-mono);
+    opacity: 0.85;
+  }
+
+  .misuse,
+  .assets,
+  .family {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    max-inline-size: 46rem;
+  }
+
+  .misuse li {
+    padding-inline-start: var(--space-m);
+    position: relative;
+    color: var(--color-text-muted);
+  }
+
+  .misuse li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: var(--space-2xs);
+    block-size: 2px;
+    background-color: var(--color-text-accent);
+  }
+
+  .assets {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .family li {
+    display: grid;
+    gap: var(--space-3xs);
+    padding-block: var(--space-s);
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .family__name {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+  }
+
+  .family__descriptor {
+    font-size: var(--text--1);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .family__status {
+    font-size: var(--text--1);
+    color: var(--color-text-subtle);
+  }
+
+  .panel--flag p {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.3em;
+    background-color: var(--color-canvas-sunken);
+    border-radius: var(--radius-xs);
+  }
+</style>

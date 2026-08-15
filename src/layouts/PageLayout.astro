@@ -1,0 +1,125 @@
+---
+/**
+ * Interior page shell.
+ *
+ * Continuity must not cost orientation, section 5. Every interior page carries
+ * a breadcrumb, one h1, and a heading structure that matches the outline, so a
+ * visitor who arrived from a search result knows where they are inside the
+ * composition rather than only what it looks like.
+ */
+import BaseLayout from './BaseLayout.astro';
+import { breadcrumbSchema } from '../lib/structured-data.mjs';
+import { localeHref, DEFAULT_LOCALE } from '../i18n/locales.mjs';
+
+interface Crumb {
+  name: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  route: string;
+  locale?: string;
+  /** Ancestors only. The current page is appended automatically. */
+  crumbs?: Crumb[];
+  /** A short line under the heading. One sentence, not a paragraph. */
+  standfirst?: string;
+  schema?: unknown[];
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  route,
+  locale = DEFAULT_LOCALE,
+  crumbs = [],
+  standfirst,
+  schema = [],
+  noindex = false,
+} = Astro.props;
+
+const trail = [
+  { name: 'Home', href: localeHref(locale, '') },
+  ...crumbs,
+  { name: title, href: localeHref(locale, route) },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  route={route}
+  locale={locale}
+  noindex={noindex}
+  schema={[breadcrumbSchema(trail), ...schema]}
+>
+  <div class="page-shell page-shell--wide">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <ol role="list">
+        {
+          trail.map((crumb, index) => (
+            <li>
+              {index === trail.length - 1 ? (
+                <span aria-current="page">{crumb.name}</span>
+              ) : (
+                <a href={crumb.href}>{crumb.name}</a>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <header class="page-head">
+      <h1>{title}</h1>
+      {standfirst && <p class="page-head__standfirst">{standfirst}</p>}
+    </header>
+
+    <slot />
+  </div>
+</BaseLayout>
+
+<style>
+  .crumbs {
+    margin-block-end: var(--space-l);
+    font-size: var(--text--1);
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--color-text-muted);
+  }
+
+  /* The separator is a pseudo-element, so it is never read out as content and
+     never lands in a copied selection. It mirrors in right-to-left. */
+  .crumbs li + li::before {
+    content: '/';
+    margin-inline-end: var(--space-2xs);
+    color: var(--color-text-subtle);
+  }
+
+  .crumbs a {
+    color: inherit;
+  }
+
+  .page-head {
+    max-inline-size: min(28ch, 100%);
+    margin-block-end: var(--space-xl);
+  }
+
+  .page-head__standfirst {
+    max-inline-size: var(--measure);
+    margin-block-start: var(--space-s);
+    font-size: var(--text-1);
+    line-height: var(--leading-snug);
+    color: var(--color-text-muted);
+    text-wrap: pretty;
+  }
+</style>
