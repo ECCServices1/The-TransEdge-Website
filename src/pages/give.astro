@@ -15,7 +15,7 @@ import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/Button.astro';
 import { CHURCH, GIVING, FAMILY_ORGS } from '../data/church.mjs';
 
-const bankDetailsConfirmed = !GIVING.bank.bsb.startsWith('TBC');
+const accounts = GIVING.bank.accounts ?? [];
 ---
 
 <PageLayout
@@ -31,37 +31,35 @@ const bankDetailsConfirmed = !GIVING.bank.bsb.startsWith('TBC');
         No fees are taken out, so the full amount reaches the church.
       </p>
 
-      {
-        bankDetailsConfirmed ? (
-          <dl class="bank">
-            <div>
-              <dt>Account name</dt>
-              <dd>{GIVING.bank.accountName}</dd>
-            </div>
-            <div>
-              <dt>BSB</dt>
-              <dd class="ltr-embed">{GIVING.bank.bsb}</dd>
-            </div>
-            <div>
-              <dt>Account number</dt>
-              <dd class="ltr-embed">{GIVING.bank.accountNumber}</dd>
-            </div>
-            <div>
-              <dt>Reference</dt>
-              <dd>{GIVING.bank.reference}</dd>
-            </div>
-          </dl>
-        ) : (
-          <p class="method__pending" role="status">
-            Account details are being confirmed and will appear here before launch. In the
-            meantime, card giving below is live, or call the office on{' '}
-            <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">
-              {CHURCH.phone}
-            </a>
-            .
-          </p>
-        )
-      }
+      <p class="bank__name">
+        Account name <strong>{GIVING.bank.accountName}</strong>
+      </p>
+
+      <!-- Two accounts, either one. Shown side by side rather than one behind a
+           toggle: a giver should never have to guess which they were meant to use. -->
+      <div class="bank__accounts">
+        {
+          accounts.map((account, index) => (
+            <dl class="bank">
+              {accounts.length > 1 && (
+                <p class="bank__index">Either</p>
+              )}
+              <div>
+                <dt>BSB</dt>
+                <dd class="ltr-embed">{account.bsb}</dd>
+              </div>
+              <div>
+                <dt>Account number</dt>
+                <dd class="ltr-embed">{account.accountNumber}</dd>
+              </div>
+            </dl>
+          ))
+        }
+      </div>
+
+      <p class="bank__reference">
+        Put <strong>{GIVING.bank.reference}</strong> in the description, so we can thank you.
+      </p>
     </section>
 
     <section class="method" aria-labelledby="card-heading">
@@ -151,13 +149,46 @@ const bankDetailsConfirmed = !GIVING.bank.bsb.startsWith('TBC');
     border-inline-start: var(--border-thick) solid currentColor;
   }
 
+  .bank__name {
+    margin-block-end: var(--space-s);
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
+  }
+
+  .bank__name strong {
+    display: block;
+    color: var(--color-text);
+    font-size: var(--text-1);
+  }
+
+  .bank__accounts {
+    display: grid;
+    gap: var(--space-s);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
   .bank {
     display: grid;
     gap: var(--space-s);
+    align-content: start;
     padding: var(--space-m);
     background-color: var(--color-canvas-raised);
     border: var(--border-hairline) solid var(--color-border);
     border-radius: var(--radius-m);
+  }
+
+  .bank__index {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-subtle);
+  }
+
+  .bank__reference {
+    margin-block-start: var(--space-m);
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
   }
 
   .bank dt {
