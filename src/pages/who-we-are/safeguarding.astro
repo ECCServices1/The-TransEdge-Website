@@ -1,0 +1,235 @@
+---
+/**
+ * Safeguarding, section 9 under Who We Are and section 21.
+ *
+ * The obligations described here are New South Wales law and are stated
+ * accurately: the Child Safe Standards administered by the Office of the
+ * Children's Guardian, the Working With Children Check, and the Reportable
+ * Conduct Scheme.
+ *
+ * What is drafted is everything specific to this church: who receives a
+ * concern, where the policy document lives, and the name of the person a
+ * complaint escalates to. Those are the only parts of the page that matter to
+ * somebody who has something to report, so the page is marked draft until they
+ * are real.
+ *
+ * The one rule this page must never break: a person with a concern is given a
+ * route that does not go through the person they might be concerned about. So
+ * the external regulators are listed alongside our own contact, not beneath it
+ * as an afterthought.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import { CHURCH } from '../../data/church.mjs';
+
+const commitments = [
+  'Every person in a role with children holds a current New South Wales Working With Children Check, verified before they start and re-checked when it expires.',
+  'No adult is alone with a child out of sight of another adult.',
+  'Children are signed in and released only to the adult who signed them in.',
+  'Leaders are trained before they begin and are supervised by the pastoral team.',
+  'Concerns are recorded in writing, whether or not they turn out to be serious.',
+  'Nobody is asked to keep a concern about a child inside our church.',
+];
+
+const external = [
+  {
+    name: 'Police or ambulance',
+    detail: 'Call 000 if a child is in immediate danger',
+    href: 'tel:000',
+  },
+  {
+    name: 'Child Protection Helpline',
+    detail: '132 111, 24 hours, New South Wales',
+    href: 'tel:132111',
+  },
+  {
+    name: "Office of the Children's Guardian",
+    detail: 'Reportable Conduct Scheme and Child Safe Standards',
+    href: 'https://ocg.nsw.gov.au',
+  },
+];
+---
+
+<PageLayout
+  title="Safeguarding"
+  description="How The Transformation Edge keeps children and vulnerable people safe, and how to raise a concern."
+  route="who-we-are/safeguarding"
+  crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
+  standfirst="How we keep children safe, and how to raise a concern, including when the concern is about us."
+  noindex
+>
+  <DraftNotice what="Three things are still needed: the name and direct contact of the person who receives a safeguarding concern, a link to the child safe policy document, and confirmation of who a complaint escalates to if it concerns a member of the pastoral team." />
+
+  <div class="safeguarding">
+    <!-- First on the page, because somebody who needs it should not have to
+         read a policy summary to find it. -->
+    <section class="urgent" aria-labelledby="urgent-heading">
+      <h2 id="urgent-heading">If a child is in danger right now</h2>
+      <p class="urgent__note">
+        Call the police on <a href="tel:000" class="ltr-embed">000</a>. Do not wait to tell
+        us first, and do not wait for us to act.
+      </p>
+    </section>
+
+    <section aria-labelledby="commit-heading">
+      <h2 id="commit-heading">What we commit to</h2>
+      <ul class="commitments" role="list">
+        {commitments.map((line) => <li>{line}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="raise-heading">
+      <h2 id="raise-heading">Raising a concern with us</h2>
+      <div class="prose">
+        <p>
+          You can raise a concern with any leader, or in writing to{' '}
+          <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, or by calling{' '}
+          <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>. You do not
+          need proof and you do not need to be certain. A concern is enough.
+        </p>
+        <p>
+          You will be told what happens next. You will not be asked to prove anything, argue
+          your case, or explain why you are worried before it is taken seriously.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="external-heading">
+      <h2 id="external-heading">Raising it outside our church</h2>
+      <p class="prose">
+        You are entitled to go straight to any of these, at any time, including instead of
+        telling us. Doing so is not disloyal and it is not a last resort.
+      </p>
+      <ul class="external" role="list">
+        {
+          external.map((service) => (
+            <li>
+              <a href={service.href} rel="noopener">
+                <span class="external__name">{service.name}</span>
+                <span class="external__detail ltr-embed">{service.detail}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="obligations-heading">
+      <h2 id="obligations-heading">Our obligations</h2>
+      <div class="prose">
+        <p>
+          As a registered charity operating in New South Wales, we are subject to the Child
+          Safe Standards and to the Reportable Conduct Scheme, both administered by the
+          Office of the Children's Guardian. Allegations against a worker are reportable to
+          the Office of the Children's Guardian whether or not they are substantiated, and
+          reporting them is not ours to decide case by case.
+        </p>
+        <p>
+          {CHURCH.legalName} is a {CHURCH.registration.toLowerCase()}, ABN{' '}
+          <span class="ltr-embed">{CHURCH.abn}</span>.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href="/get-in-touch">Get in touch</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .safeguarding {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .safeguarding h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .urgent {
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    /* A weight change and a heading carry the emphasis, never a colour alone. */
+    border: var(--border-thick) solid var(--color-border-strong);
+    border-radius: var(--radius-m);
+  }
+
+  .urgent h2 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-2xs);
+  }
+
+  /* Body size. This is an access condition, and rule 4 forbids micro type for
+     those. */
+  .urgent__note {
+    max-inline-size: var(--measure);
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
+  }
+
+  .commitments {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .commitments li {
+    position: relative;
+    padding-inline-start: var(--space-m);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  /* A logical-property marker, so the rule sits on the correct side in a
+     right-to-left locale without an override. */
+  .commitments li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: var(--space-2xs);
+    block-size: 2px;
+    background-color: var(--color-text-accent);
+  }
+
+  .external {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: var(--space-m) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .external a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    padding-block: var(--space-2xs);
+    min-block-size: 2.75rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .external a:hover .external__name {
+    text-decoration: underline;
+  }
+
+  .external__name {
+    font-weight: var(--weight-semibold);
+  }
+
+  .external__detail {
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    margin-block-start: var(--space-m);
+  }
+</style>

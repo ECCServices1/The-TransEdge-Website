@@ -30,6 +30,7 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 | **S7** | The senior pastors, together, environmental rather than studio | Pastoral team | Portrait 4:5 |
 | **S8** | Hands, mid-serve. Setup, catering, car park, anything practical | Serve teams | Square 1:1 |
 | **S9** | The room empty, before anyone arrives, in morning light | Home or 404 | Landscape 21:9 |
+| **S10** | Congregation talking after a gathering, several groups in frame, nobody posed and nobody centred | Our community | Landscape 16:9 |
 
 ### Direction
 

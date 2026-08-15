@@ -1,0 +1,215 @@
+---
+/**
+ * Privacy policy, section 21. Linked from the footer on every page, so it was
+ * 404ing site-wide.
+ *
+ * Written against the Australian Privacy Principles. The substance is accurate
+ * to what this site actually does, which is the part most privacy policies get
+ * wrong: it describes the real forms, the real analytics posture and the real
+ * absence of third-party trackers, rather than a generic template that promises
+ * things the code does not do.
+ *
+ * Three things need a human before this goes live: the retention periods, the
+ * named privacy contact, and a legal review. Those are flagged, and the page is
+ * marked draft until they are settled.
+ *
+ * The prayer request section matters most. A prayer request can contain the
+ * most sensitive information anyone gives this church, and section 21 requires
+ * it to go to the pastoral team and nowhere else.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import DraftNotice from '../components/DraftNotice.astro';
+import { CHURCH, FAMILY_ORGS } from '../data/church.mjs';
+
+const collected = [
+  {
+    what: 'A contact form',
+    detail:
+      'Your name and one contact method, plus whatever you choose to write. Nothing else is asked for and nothing else is stored.',
+  },
+  {
+    what: 'A prayer request',
+    detail:
+      'Whatever you write, and a contact method only if you give one. Prayer requests go to the pastoral team and are not read by anyone else, not circulated, and not added to any list.',
+  },
+  {
+    what: 'Giving by bank transfer',
+    detail:
+      'Your bank shows us the name and reference on the transfer. We do not see or hold your account credentials. No card details are ever entered on this site.',
+  },
+  {
+    what: 'Visiting this site',
+    detail:
+      'Standard server logs held by our host, used to keep the site working and secure. There are no third-party advertising or tracking scripts on this site.',
+  },
+];
+---
+
+<PageLayout
+  title="Privacy policy"
+  description={`How The Transformation Edge collects, uses and protects personal information, under the Australian Privacy Principles.`}
+  route="privacy-policy"
+  standfirst="What we collect, why, who sees it, and how to get it back or have it deleted."
+  noindex
+>
+  <DraftNotice what="This policy needs a legal review before launch, plus two decisions: how long each kind of record is kept, and who is named as the privacy contact." />
+
+  <div class="privacy">
+    <section aria-labelledby="who-heading">
+      <h2 id="who-heading">Who this covers</h2>
+      <div class="prose">
+        <p>
+          This policy covers {CHURCH.legalName}, ABN{' '}
+          <span class="ltr-embed">{CHURCH.abn}</span>, and this website.
+        </p>
+        <p>
+          It does not cover {FAMILY_ORGS.eccs.name}, which is a separate legal entity with
+          its own privacy notice, or {FAMILY_ORGS.renovate.name}, which is a separate
+          practice. If you are dealing with either of those, their policy applies, not this
+          one.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="collect-heading">
+      <h2 id="collect-heading">What we collect</h2>
+      <p class="prose">
+        We ask for as little as will do the job. Every form on this site asks for a name and
+        one way to reply, and nothing more.
+      </p>
+      <dl class="collected">
+        {
+          collected.map((item) => (
+            <div>
+              <dt>{item.what}</dt>
+              <dd>{item.detail}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section aria-labelledby="use-heading">
+      <h2 id="use-heading">What we do with it</h2>
+      <div class="prose">
+        <p>
+          We use what you give us to reply to you, and for nothing else. We do not sell
+          personal information, we do not trade it, and we do not hand it to anyone for
+          marketing.
+        </p>
+        <p>
+          Being in touch with us does not put you on a mailing list. If you want to be on
+          one, you have to ask.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="cookies-heading">
+      <h2 id="cookies-heading">Cookies and tracking</h2>
+      <div class="prose">
+        <p>
+          This site sets no advertising cookies and carries no third-party tracking scripts.
+          Nothing that identifies you is loaded before you consent to it.
+        </p>
+        <p>
+          Where we measure anything, it is aggregate: how many people opened a page, not who
+          they were.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="hold-heading">
+      <h2 id="hold-heading">How long we keep it</h2>
+      <p class="prose">
+        Only as long as it is needed for the purpose you gave it for, after which it is
+        deleted. Retention periods for each kind of record are being confirmed and will be
+        stated here specifically rather than in general terms.
+      </p>
+    </section>
+
+    <section aria-labelledby="rights-heading">
+      <h2 id="rights-heading">Your rights</h2>
+      <div class="prose">
+        <p>
+          You can ask us what personal information we hold about you, ask us to correct it,
+          and ask us to delete it. Email{' '}
+          <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> or call{' '}
+          <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>. We will
+          respond within a reasonable period and we will not charge you for asking.
+        </p>
+        <p>
+          If you are not satisfied with how we have handled your information, you can
+          complain to us first, and then to the Office of the Australian Information
+          Commissioner at{' '}
+          <a href="https://www.oaic.gov.au" rel="noopener">oaic.gov.au</a>. You are entitled
+          to go to the Commissioner whether or not you have raised it with us.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="photos-heading">
+      <h2 id="photos-heading">Photographs</h2>
+      <div class="prose">
+        <p>
+          We do not publish a photograph of an identifiable person without their consent, and
+          we do not publish a photograph of a child without the recorded consent of a parent
+          or guardian. Consent can be withdrawn at any time by emailing us, and the
+          photograph comes down.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="contact-heading">
+      <h2 id="contact-heading">Contacting us about privacy</h2>
+      <p class="prose">
+        Email <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> or write to us at{' '}
+        {CHURCH.address.full}.
+      </p>
+      <p class="actions">
+        <Button href="/get-in-touch">Get in touch</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .privacy {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .privacy h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .collected {
+    display: grid;
+    gap: var(--space-l);
+    margin: var(--space-m) 0 0;
+  }
+
+  .collected > div {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .collected dt {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .collected dd {
+    margin: 0;
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    margin-block-start: var(--space-m);
+  }
+</style>

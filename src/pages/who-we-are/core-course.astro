@@ -1,0 +1,118 @@
+---
+/**
+ * CORE Course, section 9 under Who We Are and an endorsed sub-brand per
+ * section 7.
+ *
+ * Almost everything on this page is drafted. What CORE stands for, how many
+ * sessions it runs, when the next one starts and what each session covers are
+ * facts about a course this church actually runs, and none of them can be
+ * derived from anything supplied. Guessing the curriculum of somebody's
+ * discipleship course would be inventing their theology one week at a time.
+ *
+ * So the page is built and clearly unfinished, which is more useful than a page
+ * that does not exist: the shape is here and the gaps are named.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import { CHURCH } from '../../data/church.mjs';
+---
+
+<PageLayout
+  title="CORE Course"
+  description="Where to start at The Transformation Edge if you want to understand what we hold to and why."
+  route="who-we-are/core-course"
+  crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
+  standfirst="Where people start when they want to go through it properly rather than in passing."
+  noindex
+>
+  <DraftNotice what="The pastoral team needs to supply what CORE stands for, how many sessions it runs, what each session covers, when the next intake starts, and whether it costs anything." />
+
+  <div class="core">
+    <section aria-labelledby="what-heading">
+      <h2 id="what-heading">What it is</h2>
+      <div class="prose">
+        <p>
+          The CORE Course is where people start at our church when they want to understand
+          what we hold to, ask the questions they have been carrying, and work out what they
+          think without being hurried.
+        </p>
+        <p>
+          It is for anyone: people who have decided, people who have not, and people who came
+          along with someone else and stayed.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="expect-heading">
+      <h2 id="expect-heading">What to expect</h2>
+      <ul class="expect" role="list">
+        <li>You can ask anything, including the questions that sound rude.</li>
+        <li>You are not asked to pray, read aloud or say anything you would rather not.</li>
+        <li>Nobody is asked to sign up to anything at the end of it.</li>
+        <li>Missing a week is fine. People do.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="next-heading">
+      <h2 id="next-heading">The next course</h2>
+      <p class="prose">
+        Dates for the next intake are being confirmed. To be told when it opens, call{' '}
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>, email{' '}
+        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, or ask anyone on the welcome
+        desk on a Sunday.
+      </p>
+      <p class="actions">
+        <Button href="/get-in-touch" size="large">Tell me when it starts</Button>
+        <Button href="/who-we-are/what-we-believe" tone="quiet">What we believe</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .core {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .core h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .expect {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .expect li {
+    position: relative;
+    padding-inline-start: var(--space-m);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  /* A logical-property marker, so the rule sits on the correct side in a
+     right-to-left locale without an override. */
+  .expect li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: var(--space-2xs);
+    block-size: 2px;
+    background-color: var(--color-text-accent);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

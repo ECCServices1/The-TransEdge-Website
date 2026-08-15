@@ -112,14 +112,54 @@ The redirect map covers the route families and Wix's own conventions, which is
 `docs/sitemap-and-redirects.md` and takes about ten minutes with access to the
 current site.
 
-### 9. Bank account details for the Give page
+### 9. The bank account name on the Give page
 
-The Give page shows a holding message instead of details while `GIVING.bank` is
-still `TBC`. The copy linter warns on every run until they are real. Card giving
-through Connect works regardless.
+The two BSBs and account numbers are supplied and are on the page. The account
+*name* is inferred from the legal entity and is recorded as unconfirmed in
+`GIVING.bank.accountNameConfirmed`.
+
+Several Australian banks now run confirmation of payee. A name that does not
+match the account warns the giver mid-transfer, which is the moment a first-time
+giver abandons. Send a one dollar transfer, read what the banking app says the
+payee is, and set the string to that.
 
 ### 10. The ECCS domain
 
 `https://www.edgecommunitycare.org.au` is used in `FAMILY_ORGS`. It has not been
 confirmed and needs checking before launch, because it is linked from the footer
 of every page.
+
+### 11. Content the pastoral team has to write
+
+Seven pages are built and marked draft. Each carries a visible notice naming
+what is missing and is `noindex` until it is signed off. Removing the
+`DraftNotice` component from a page is the act of approving it, so approval is a
+line in a diff with a name against it.
+
+| Page | What is needed |
+|---|---|
+| `/who-we-are/what-we-believe` | The articles rewritten by the pastoral team in their own words. What is there is a structure drawn from the locked vision and mission, not an approved statement of faith |
+| `/who-we-are/safeguarding` | The name and direct contact of the person who receives a concern, a link to the policy document, and who a complaint escalates to if it concerns a pastor |
+| `/who-we-are/pastoral-team` | A biography from each pastor, and an approved photograph |
+| `/who-we-are/core-course` | What CORE stands for, the number of sessions, what each covers, the next intake date, and whether it costs anything |
+| `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
+| `/new-here/edgekids` | The age bands, the room names and the check-in method |
+| `/life-at-tte` | A description of Life-Link, Champions and 1B2GaS, who each is for, and when they meet |
+
+Two more need a non-pastoral decision:
+
+- `/privacy-policy` needs a legal review, retention periods for each kind of
+  record, and a named privacy contact.
+- `/terms-of-use` needs a legal review. It is deliberately short.
+
+### 12. Only English has the whole site
+
+The navigation on a translated page now falls back to the English page for any
+route that language does not have, rather than linking to a page that was never
+built. The locale switcher does the same and says "Visitor pages only" against
+the languages it applies to.
+
+That is honest but it is not finished. The decision to make is whether the
+visitor-essential set stays at five pages at launch, or whether Find Us, the FAQ
+and Give are added to it, since those are the three a first-time visitor reaches
+for next.

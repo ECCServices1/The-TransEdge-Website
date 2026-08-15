@@ -1,0 +1,127 @@
+---
+/**
+ * Terms of use. Linked from the footer on every page, so it was 404ing
+ * site-wide alongside the privacy policy.
+ *
+ * Short on purpose. This is a church website, not a platform: there is no
+ * account to create here, nothing to buy, and no user-generated content. Terms
+ * that describe obligations nobody has are worse than no terms, because they
+ * train people not to read them.
+ *
+ * The one clause that does real work is the giving clause, which points a
+ * disputed transfer at a person rather than at a process.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import { CHURCH, FAMILY_ORGS } from '../data/church.mjs';
+---
+
+<PageLayout
+  title="Terms of use"
+  description={`Terms for using the ${CHURCH.name} website.`}
+  route="terms-of-use"
+  standfirst="Short, because there is not much to agree to."
+  noindex
+>
+  <div class="terms">
+    <section aria-labelledby="site-heading">
+      <h2 id="site-heading">This website</h2>
+      <div class="prose">
+        <p>
+          This site is published by {CHURCH.legalName}, ABN{' '}
+          <span class="ltr-embed">{CHURCH.abn}</span>, a{' '}
+          {CHURCH.registration.toLowerCase()}. You are welcome to read it, print it, link to
+          it and share it.
+        </p>
+        <p>
+          There is no account to create here and nothing to buy. We keep the information on
+          this site accurate, and if you find something wrong, tell us and we will fix it.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="times-heading">
+      <h2 id="times-heading">Times and details change</h2>
+      <p class="prose">
+        Service times, events and details are correct when published and can change. If you
+        are travelling a distance for something specific, call{' '}
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> first and we
+        will confirm it.
+      </p>
+    </section>
+
+    <section aria-labelledby="giving-heading">
+      <h2 id="giving-heading">Giving</h2>
+      <div class="prose">
+        <p>
+          Gifts to {CHURCH.legalName} are voluntary and are not tax deductible.{' '}
+          {FAMILY_ORGS.eccs.name} is a separate entity, separately endorsed as a deductible
+          gift recipient, with its own giving flow and its own receipting.
+        </p>
+        <p>
+          No card details are entered on this site. If you think you have made a mistake with
+          a transfer, email <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> and a person
+          will sort it out with you.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="content-heading">
+      <h2 id="content-heading">Words, images and recordings</h2>
+      <div class="prose">
+        <p>
+          Text, photographs, recordings and the Edge mark on this site belong to{' '}
+          {CHURCH.legalName} unless credited otherwise. Quote us, share us and link to us
+          freely. Ask us before using the mark or a photograph of a person for anything else.
+        </p>
+        <p>
+          Photographs of people are published only with their consent, and photographs of
+          children only with the recorded consent of a parent or guardian. If a photograph of
+          you or your child is on this site and you want it removed, email us and it comes
+          down.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="links-heading">
+      <h2 id="links-heading">Links to other sites</h2>
+      <p class="prose">
+        This site links to the TTE Connect Hub, to {FAMILY_ORGS.eccs.name}, to{' '}
+        {FAMILY_ORGS.renovate.name} and to public services. Those are run by other people
+        under their own terms, and we are not responsible for what they do with your
+        information.
+      </p>
+    </section>
+
+    <section aria-labelledby="law-heading">
+      <h2 id="law-heading">Where this applies</h2>
+      <p class="prose">
+        These terms are governed by the law of New South Wales, Australia.
+      </p>
+      <p class="actions">
+        <Button href="/privacy-policy" tone="quiet">Privacy policy</Button>
+        <Button href="/get-in-touch">Get in touch</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .terms {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .terms h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

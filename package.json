@@ -22,7 +22,8 @@
     "check:quiet-text": "node scripts/check-quiet-text.mjs",
     "check:lighthouse-urls": "node scripts/check-lighthouse-urls.mjs",
     "check:brand": "node scripts/check-brand.mjs",
-    "fonts:subset": "node scripts/subset-brand-fonts.mjs"
+    "fonts:subset": "node scripts/subset-brand-fonts.mjs",
+    "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.5",

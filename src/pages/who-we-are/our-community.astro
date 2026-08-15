@@ -1,0 +1,159 @@
+---
+/**
+ * Our community, section 9 under Who We Are.
+ *
+ * Section 3 is the rule that shapes this page. Our congregation is multicultural
+ * and that is described as a fact about the people, never used as the headline
+ * positioning and never as a marketing claim. There is no "multicultural church"
+ * string here, and the copy linter fails the build if one appears.
+ *
+ * The frame is strengths-based and participatory throughout. People who have
+ * moved countries are described by what they carry and what they build, not by
+ * what they lack or what they have been through. Nobody on this page is a
+ * beneficiary of anything.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import PhotoSlot from '../../components/PhotoSlot.astro';
+import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+
+const carried = [
+  {
+    title: 'Languages',
+    body: 'Several first languages are spoken in the car park after a Sunday. The gathering is in English, and the conversation afterwards is in whatever people brought with them.',
+  },
+  {
+    title: 'Professions',
+    body: 'Nurses, drivers, teachers, tradespeople, students, carers, engineers and people between jobs. The room holds a lot of expertise and very little pretension about it.',
+  },
+  {
+    title: 'Ages',
+    body: 'Children, teenagers, students, young families, people in the middle of a working life, and people who have finished one. All in the same room on the same morning.',
+  },
+  {
+    title: 'Histories',
+    body: 'Some families have been in Western Sydney for generations. Some arrived last year. Both know things the other needs.',
+  },
+];
+---
+
+<PageLayout
+  title="Our community"
+  description={`The people who make up The Transformation Edge, a church in ${CHURCH.place}.`}
+  route="who-we-are/our-community"
+  crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
+  standfirst="Many countries, many first languages, one room on a Sunday morning."
+>
+  <div class="community">
+    <section aria-labelledby="who-heading">
+      <h2 id="who-heading">Who is here</h2>
+      <div class="prose">
+        <p>
+          Our congregation comes from many countries. People here lead, teach, cook, play,
+          build and welcome, and the work of a Sunday is done by people who were new
+          themselves not long ago. That is not a programme. It is what the room is made of.
+        </p>
+        <p>
+          Nobody is a project here. People arrive with languages, skills, histories and
+          convictions already intact, and our church is better for what they bring rather
+          than despite where they came from.
+        </p>
+      </div>
+    </section>
+
+    <PhotoSlot
+      ref="S10"
+      brief="Congregation talking after a gathering, several groups in frame, no single subject. Nobody posed and nobody centred."
+      ratio="16 / 9"
+    />
+
+    <section aria-labelledby="carried-heading">
+      <h2 id="carried-heading">What people bring</h2>
+      <dl class="carried">
+        {
+          carried.map((item) => (
+            <div data-reveal>
+              <dt>{item.title}</dt>
+              <dd>{item.body}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <section aria-labelledby="belong-heading">
+      <h2 id="belong-heading">Belonging before believing</h2>
+      <div class="prose">
+        <p>
+          You do not have to agree with us to be part of what happens here. People come for
+          months while they work out what they think, and that is a normal way to arrive
+          rather than a stage to be moved through.
+        </p>
+        <p>
+          There is nothing to sign, no membership to take out and no register you are added
+          to because you walked in.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="beyond-heading">
+      <h2 id="beyond-heading">Beyond a Sunday</h2>
+      <div class="prose">
+        <p>
+          {FAMILY_ORGS.eccs.name} is our sister organisation and a separately endorsed
+          charity. Its community work is open to anyone in Western Sydney, and using it has
+          nothing to do with coming to our church. No one will ask you about faith to get
+          help.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href="/outreach" tone="quiet">Community work</Button>
+        <Button href="/new-here/plan-your-visit">Plan your visit</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .community {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .community h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .carried {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-l);
+    margin: 0;
+  }
+
+  .carried > div {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .carried dt {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .carried dd {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

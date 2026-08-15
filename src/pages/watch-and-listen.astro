@@ -1,0 +1,192 @@
+---
+/**
+ * Watch and Listen, section 9. Linked from the main navigation, which is why
+ * this page existing matters more than most: a nav item that 404s is worse than
+ * a nav item that is missing.
+ *
+ * Sermons come from Connect at build time and are never duplicated into this
+ * repository, the same contract EdgedIn uses. Phase 2 brings the full library
+ * with filters and a persistent player. This is the launch version: the most
+ * recent messages, the live stream pointer, and an honest empty state.
+ *
+ * The empty state says nothing has been published yet rather than implying
+ * something has gone wrong, because at launch nothing will have been.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import { CHURCH } from '../data/church.mjs';
+import { getSermons } from '../lib/connect.mjs';
+
+const sermons = await getSermons();
+const latest = sermons[0] ?? null;
+const rest = sermons.slice(1, 13);
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+---
+
+<PageLayout
+  title="Watch and listen"
+  description={`Messages from The Transformation Edge, a church in ${CHURCH.place}. Listen back to a Sunday, or join the live stream.`}
+  route="watch-and-listen"
+  standfirst="Listen back to a Sunday, or join us live."
+>
+  <div class="wl">
+    {
+      latest && (
+        <section class="latest" aria-labelledby="latest-heading">
+          <p class="latest__eyebrow">Most recent</p>
+          <h2 id="latest-heading" class="latest__title">{latest.title}</h2>
+          {latest.speaker && <p class="latest__meta">{latest.speaker}</p>}
+          {latest.summary && <p class="latest__summary">{latest.summary}</p>}
+          {latest.audioUrl && (
+            <audio class="latest__player" controls preload="none" src={latest.audioUrl}>
+              Your browser cannot play audio.{' '}
+              <a href={latest.audioUrl}>Download this message</a> instead.
+            </audio>
+          )}
+        </section>
+      )
+    }
+
+    {
+      !latest && (
+        <section class="latest latest--pending" aria-labelledby="pending-heading">
+          <h2 id="pending-heading">Nothing published yet</h2>
+          <p class="latest__summary">
+            Messages are published through the TTE Connect Hub and will appear here as they
+            land. Nothing is missing and nothing is broken: nothing has been published yet.
+          </p>
+        </section>
+      )
+    }
+
+    <section aria-labelledby="live-heading">
+      <h2 id="live-heading">Joining live</h2>
+      <p class="prose">
+        We gather Sundays at {sunday.time} and the gathering is streamed. If you would rather
+        be in the room, the door is open and nobody will single you out.
+      </p>
+      <p class="actions">
+        <Button href={`${CHURCH.connectUrl}/live`} external size="large">Watch live</Button>
+        <Button href="/new-here/plan-your-visit" tone="quiet">Come in person</Button>
+      </p>
+    </section>
+
+    {
+      rest.length > 0 && (
+        <section aria-labelledby="library-heading">
+          <h2 id="library-heading">Earlier messages</h2>
+          <ul class="library" role="list">
+            {rest.map((sermon) => (
+              <li data-reveal>
+                <h3>{sermon.title}</h3>
+                {sermon.speaker && <p class="library__meta">{sermon.speaker}</p>}
+                {sermon.audioUrl && (
+                  <p class="library__action">
+                    <a href={sermon.audioUrl}>Listen</a>
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <section aria-labelledby="more-heading">
+      <h2 id="more-heading">Beyond a Sunday</h2>
+      <p class="prose">
+        EdgedIn Network carries the podcast, the channel, the radio hour, devotionals and
+        publishing from this house.
+      </p>
+      <p class="actions">
+        <Button href="/edgedin" tone="quiet">EdgedIn Network</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .wl {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .wl h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .latest {
+    padding: var(--space-l);
+    background-color: var(--color-canvas-inverse);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-l);
+  }
+
+  .latest h2 {
+    margin-block-end: var(--space-s);
+  }
+
+  .latest__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    opacity: 0.75;
+  }
+
+  .latest__title {
+    margin-block: var(--space-2xs) var(--space-s);
+    font-size: var(--text-3);
+  }
+
+  .latest__meta {
+    font-size: var(--text-0);
+    opacity: 0.85;
+  }
+
+  .latest__summary {
+    max-inline-size: var(--measure);
+    opacity: 0.85;
+  }
+
+  .latest__player {
+    inline-size: 100%;
+    margin-block-start: var(--space-m);
+  }
+
+  .library {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+  }
+
+  .library li {
+    padding-block-start: var(--space-s);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .library h3 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .library__meta {
+    color: var(--color-text-muted);
+  }
+
+  .library__action {
+    margin-block-start: var(--space-2xs);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

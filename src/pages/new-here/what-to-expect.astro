@@ -1,0 +1,191 @@
+---
+/**
+ * What to expect, section 9 under New Here.
+ *
+ * Written for the person who is nervous rather than curious. The most useful
+ * thing this page can do is remove unknowns, so it answers the questions people
+ * are too embarrassed to ask: where do I sit, will anyone talk to me, what
+ * happens if I want to leave.
+ *
+ * The shape of the morning is drafted and marked as such. The order of a
+ * Sunday is the pastoral team's to state, not ours to guess, and a plausible
+ * running order published as fact is the kind of error nobody thinks to check.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import PhotoSlot from '../../components/PhotoSlot.astro';
+import { CHURCH } from '../../data/church.mjs';
+
+const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+
+const shape = [
+  {
+    title: 'Before it starts',
+    body: 'People arrive, get a coffee and talk. It is noisy and unhurried. Come in whenever you like, and sit wherever you like.',
+  },
+  {
+    title: 'Singing',
+    body: 'A band leads a set of songs. The words are on the screen. Some people sing loudly, some stand quietly, some sit. All of that is normal and nobody is watching you.',
+  },
+  {
+    title: 'Notices and offering',
+    body: 'A few minutes on what is happening in the life of our church, and an offering. Visitors are not asked to give, and nobody watches who does.',
+  },
+  {
+    title: 'The message',
+    body: 'A talk from the Bible, usually around forty minutes, working through a passage and what it asks of us during the week.',
+  },
+  {
+    title: 'Afterwards',
+    body: 'Tea, coffee and conversation. Someone from the welcome team will find you if you would like, and will leave you be if you would rather.',
+  },
+];
+
+const wontHappen = [
+  'You will not be asked to stand up, introduce yourself or raise a hand.',
+  'You will not be asked to give money, and no one will follow up if you do not.',
+  'You will not be put on a list because you walked in the door.',
+  'You will not be stopped from leaving at any point, for any reason.',
+];
+---
+
+<PageLayout
+  title="What to expect"
+  description={`What actually happens on a Sunday morning at The Transformation Edge in ${CHURCH.place}. We gather at ${sunday.time}.`}
+  route="new-here/what-to-expect"
+  crumbs={[{ name: 'New Here', href: '/new-here' }]}
+  standfirst="An hour and three quarters, and none of it depends on you knowing what to do."
+  noindex
+>
+  <DraftNotice what="The pastoral team needs to confirm the shape of the morning below, and how long the message usually runs." />
+
+  <div class="expect">
+    <section aria-labelledby="shape-heading">
+      <h2 id="shape-heading">How the morning goes</h2>
+      <ol class="shape" role="list">
+        {
+          shape.map((part) => (
+            <li data-reveal>
+              <h3>{part.title}</h3>
+              <p>{part.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section aria-labelledby="room-heading">
+      <h2 id="room-heading">The room</h2>
+      <div class="prose">
+        <p>
+          Rows of seats facing a low stage. No assigned seating, no reserved rows, and no
+          right place to sit. The back is as good as the front, and plenty of people who
+          have been here for years sit at the back.
+        </p>
+        <p>
+          Our congregation comes from many countries and many first languages. You will hear
+          several accents in the row you sit in. The gathering itself is in English.
+        </p>
+      </div>
+    </section>
+
+    <PhotoSlot
+      ref="S6"
+      brief="Tea and coffee afterwards. Two or three people talking, not posed."
+      ratio="3 / 2"
+    />
+
+    <section aria-labelledby="wont-heading">
+      <h2 id="wont-heading">What will not happen</h2>
+      <ul class="wont" role="list">
+        {wontHappen.map((line) => <li>{line}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="kids-heading">
+      <h2 id="kids-heading">If you are bringing children</h2>
+      <p class="prose">
+        EdgeKids runs during the gathering for school-age children, with screened and trained
+        leaders. Younger children are welcome to stay with you, and there is space at the
+        back if you need to move around.
+      </p>
+      <p class="actions">
+        <Button href="/new-here/edgekids" tone="quiet">More about EdgeKids</Button>
+      </p>
+    </section>
+
+    <p class="actions">
+      <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+      <Button href="/new-here/faq" tone="quiet">More questions</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .expect {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .expect h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .shape {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+    counter-reset: step;
+  }
+
+  .shape li {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .shape h3 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .shape p,
+  .wont li {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .wont {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* A logical-property marker, so the rule sits on the correct side in a
+     right-to-left locale without an override. */
+  .wont li {
+    position: relative;
+    padding-inline-start: var(--space-m);
+  }
+
+  .wont li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    inline-size: var(--space-2xs);
+    block-size: 2px;
+    background-color: var(--color-text-accent);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+</style>

@@ -1,0 +1,144 @@
+---
+/**
+ * Outreach, section 9. The second navigation item that was 404ing.
+ *
+ * Section 7 is the rule that governs every sentence here. Edge Community Care
+ * Services Ltd is a separate legal entity, separately endorsed as a deductible
+ * gift recipient, with its own giving flow, its own receipting, its own privacy
+ * notice and its own complaints pathway.
+ *
+ * So this page describes ECCS and links to it. It does not absorb it. Nothing
+ * here implies that ECCS services are church programs, that they are delivered
+ * by our church, or that any church involvement is needed to use them. That
+ * last point is stated outright rather than left to inference, because the
+ * person it matters most to is the person least likely to ask.
+ *
+ * No family lockup is rendered. The brand designer has not drawn one, and
+ * approximating another entity's identity is not ours to do.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import { CHURCH, FAMILY_ORGS } from '../data/church.mjs';
+
+const eccs = FAMILY_ORGS.eccs;
+---
+
+<PageLayout
+  title="Outreach"
+  description={`How The Transformation Edge reaches beyond a Sunday, and how ${eccs.name}, our sister organisation, serves Western Sydney.`}
+  route="outreach"
+  standfirst="Work that reaches past a Sunday morning, and a sister organisation that anyone can approach."
+>
+  <div class="outreach">
+    <section aria-labelledby="eccs-heading">
+      <h2 id="eccs-heading">{eccs.name}</h2>
+      <div class="prose">
+        <p>
+          ECCS is our sister organisation and community outreach arm. It works across Western
+          Sydney and it is open to anyone who needs it.
+        </p>
+        <p>
+          <strong>You do not need to be part of our church, or any church, to use it.</strong>{' '}
+          Nobody will ask you about faith, invite you to a service as a condition of help, or
+          record anything about your beliefs.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href={eccs.url} external size="large">Visit Edge Community Care Services</Button>
+      </p>
+    </section>
+
+    <!-- The separation, stated plainly. A reader should not have to work out
+         which organisation they are dealing with. -->
+    <section class="separate" aria-labelledby="separate-heading">
+      <h2 id="separate-heading">Two organisations, not one</h2>
+      <dl class="compare">
+        <div>
+          <dt>{CHURCH.legalName}</dt>
+          <dd>
+            Our church. A {CHURCH.registration.toLowerCase()}, ABN{' '}
+            <span class="ltr-embed">{CHURCH.abn}</span>. Giving to it is not tax deductible.
+          </dd>
+        </div>
+        <div>
+          <dt>{eccs.name}</dt>
+          <dd>
+            A separate legal entity, separately endorsed as a deductible gift recipient, with
+            its own board, its own books, its own privacy notice and its own complaints
+            pathway. Gifts to its community work are deductible and are receipted by ECCS.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section aria-labelledby="give-heading">
+      <h2 id="give-heading">Giving to either</h2>
+      <p class="prose">
+        The two giving flows are kept apart on purpose, so nobody is left guessing which
+        organisation received their gift or what kind of receipt to expect.
+      </p>
+      <p class="actions">
+        <Button href="/give">Give to our church</Button>
+        <Button href={eccs.url} tone="quiet" external>Give to ECCS</Button>
+      </p>
+    </section>
+
+    <section aria-labelledby="serve-heading">
+      <h2 id="serve-heading">Serving</h2>
+      <p class="prose">
+        People from our church serve with ECCS, and people who have nothing to do with our
+        church serve with it too. If you would like to help, approach ECCS directly. If you
+        would rather ask us first, call{' '}
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> and we will
+        point you to the right person.
+      </p>
+      <p class="actions">
+        <Button href="/get-in-touch" tone="quiet">Get in touch</Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .outreach {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .outreach h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .compare {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0;
+  }
+
+  .compare > div {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .compare dt {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .compare dd {
+    margin: 0;
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-m);
+  }
+</style>

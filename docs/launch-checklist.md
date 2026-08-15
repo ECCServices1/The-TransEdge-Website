@@ -15,8 +15,9 @@ These come first because everything downstream depends on them.
 | Connect read API available, or the decision to launch on static content | **blocked** | Connect team |
 | Native-speaker reviewer named per language | **blocked** | Client |
 | Nominated approver for weekly content | **blocked** | Client |
-| Bank account details for the Give page | **blocked** | Client |
+| ~~Bank account details for the Give page~~ | **done**, name still unconfirmed | Two accounts supplied and on the page. Confirm the account *name* against the bank's record before launch |
 | Photo consent register location | **blocked** | Client |
+| Draft pages signed off | **blocked** | Pastoral team. Nine pages, listed in `docs/open-questions.md` question 11 |
 
 The brand gate is closed, so high-fidelity screen design is no longer blocked.
 Two brand items remain open and are in `docs/brand-audit.md`: the tagline case
@@ -103,10 +104,21 @@ deployed, and then the test needs a real person who has not seen it before.
 
 ### Every Wix, portal and Elvanto route redirects, no orphan pages, no broken links
 
-**blocked.** 86 rules cover the route families and Wix's conventions. The live
-Wix route list has not been enumerated, because egress to the current site was
-blocked from the build environment. Procedure and verification script in
-`docs/sitemap-and-redirects.md`, about ten minutes with access.
+**Broken links: done.** `npm run check:links` reads the built output and fails on
+any internal link that does not resolve. It runs in CI on every push.
+
+It found 122 dead link targets the first time it ran, in two groups. Fourteen
+were English pages that had never been written, including two main-navigation
+items and two footer links present on every page of the site. The other 108 were
+generated: the header, footer, locale switcher and breadcrumb each prefixed the
+current locale onto routes that exist in English only, so almost every link on a
+translated page pointed at a page that was never built. All are fixed.
+
+**Redirects: still blocked.** 86 rules cover the route families and Wix's
+conventions. The live Wix route list has not been enumerated, because egress to
+the current site was blocked from the build environment. Procedure and
+verification script in `docs/sitemap-and-redirects.md`, about ten minutes with
+access.
 
 ## Before the DNS switch
 

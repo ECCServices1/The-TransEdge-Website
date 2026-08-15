@@ -11,7 +11,10 @@
         "http://localhost/get-in-touch.html",
         "http://localhost/events.html",
         "http://localhost/edgedin.html",
-        "http://localhost/ar/new-here/plan-your-visit.html"
+        "http://localhost/ar/new-here/plan-your-visit.html",
+        "http://localhost/who-we-are/safeguarding.html",
+        "http://localhost/new-here/faq.html",
+        "http://localhost/outreach.html"
       ],
       "settings": {
         "throttlingMethod": "simulate",

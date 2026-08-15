@@ -10,6 +10,7 @@ import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import { CHURCH, FAMILY_ORGS, TAGLINE } from '../data/church.mjs';
 import { localeHref } from '../i18n/locales.mjs';
+import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
 import { useTranslations } from '../i18n/ui.mjs';
 
 interface Props {
@@ -19,7 +20,9 @@ interface Props {
 
 const { locale, route = '' } = Astro.props;
 const t = useTranslations(locale);
-const h = (r: string) => localeHref(locale, r);
+/* Falls back to English for routes this locale does not have built, so the
+   navigation on a translated page never points at a 404. */
+const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
 
 const mapQuery = encodeURIComponent(CHURCH.address.full);
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;

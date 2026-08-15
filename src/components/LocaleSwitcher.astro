@@ -8,8 +8,16 @@
  *
  * Each language is named in its own language. A visitor who cannot read the
  * current page cannot be expected to find their language listed in English.
+ *
+ * Only English has the whole site. Every other language has the
+ * visitor-essential set, so switching language from a page that does not exist
+ * in that language sends you to Plan Your Visit in the language you asked for,
+ * and the option says so. It used to send you to a page that had never been
+ * built, which is a poor way to greet somebody who has just told you they would
+ * rather read in Arabic.
  */
 import { LOCALES, localeHref } from '../i18n/locales.mjs';
+import { localeHasRoute, LOCALE_ENTRY_SLUG } from '../i18n/essential-pages.mjs';
 import { useTranslations, isPublishable } from '../i18n/ui.mjs';
 
 interface Props {
@@ -45,10 +53,11 @@ const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
       LOCALES.map((locale) => {
         const isCurrent = locale.path === currentLocale;
         const reviewed = isPublishable(locale.path);
+        const hasThisPage = localeHasRoute(locale.path, route);
         return (
           <li>
             <a
-              href={localeHref(locale.path, route)}
+              href={localeHref(locale.path, hasThisPage ? route : LOCALE_ENTRY_SLUG)}
               lang={locale.hreflang}
               hreflang={locale.hreflang}
               dir={locale.dir}
@@ -60,6 +69,13 @@ const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
               {!reviewed && (
                 <span class="locale__pending" lang="en">
                   In translation
+                </span>
+              )}
+              {/* Says where the link actually goes, rather than appearing to
+                  offer this page and delivering a different one. */}
+              {!hasThisPage && !isCurrent && (
+                <span class="locale__pending" lang="en">
+                  Visitor pages only
                 </span>
               )}
             </a>
