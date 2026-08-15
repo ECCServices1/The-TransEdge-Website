@@ -1,0 +1,159 @@
+---
+/**
+ * Locale switcher.
+ *
+ * A plain <details> disclosure holding real links. No JavaScript, so it works
+ * on the first paint and in the no-JS path, and every option is a crawlable
+ * href that matches the hreflang set in the head.
+ *
+ * Each language is named in its own language. A visitor who cannot read the
+ * current page cannot be expected to find their language listed in English.
+ */
+import { LOCALES, localeHref } from '../i18n/locales.mjs';
+import { useTranslations, isPublishable } from '../i18n/ui.mjs';
+
+interface Props {
+  currentLocale: string;
+  /** Route without locale prefix or leading slash, so the switch stays on the same page. */
+  route?: string;
+  placement?: 'header' | 'footer';
+}
+
+const { currentLocale, route = '', placement = 'header' } = Astro.props;
+const t = useTranslations(currentLocale);
+const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
+---
+
+<details class:list={['locale', `locale--${placement}`]} name="locale-switcher">
+  <summary class="locale__summary">
+    <svg class="locale__globe" viewBox="0 0 20 20" width="18" height="18" aria-hidden="true" focusable="false">
+      <circle cx="10" cy="10" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5" />
+      <path
+        d="M10 2.75c2 2 3 4.4 3 7.25s-1 5.25-3 7.25c-2-2-3-4.4-3-7.25s1-5.25 3-7.25ZM3.1 10h13.8"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+      />
+    </svg>
+    <span class="visually-hidden">{t('locale.switch')}, </span>
+    <span lang={current.hreflang}>{current.endonym}</span>
+  </summary>
+
+  <ul class="locale__list" role="list">
+    {
+      LOCALES.map((locale) => {
+        const isCurrent = locale.path === currentLocale;
+        const reviewed = isPublishable(locale.path);
+        return (
+          <li>
+            <a
+              href={localeHref(locale.path, route)}
+              lang={locale.hreflang}
+              hreflang={locale.hreflang}
+              dir={locale.dir}
+              aria-current={isCurrent ? 'true' : undefined}
+              class:list={['locale__link', { 'is-current': isCurrent }]}
+            >
+              <span class="locale__endonym">{locale.endonym}</span>
+              <span class="locale__english" lang="en">{locale.english}</span>
+              {!reviewed && (
+                <span class="locale__pending" lang="en">
+                  In translation
+                </span>
+              )}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</details>
+
+<style>
+  .locale {
+    position: relative;
+    font-size: var(--text--1);
+  }
+
+  .locale__summary {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-2xs);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    list-style: none;
+    color: var(--color-text-muted);
+    min-block-size: 2.75rem;
+  }
+
+  .locale__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .locale__summary:hover {
+    color: var(--color-text);
+  }
+
+  .locale__list {
+    position: absolute;
+    inset-inline-end: 0;
+    inset-block-start: calc(100% + var(--space-3xs));
+    z-index: var(--layer-header);
+    min-inline-size: 14rem;
+    padding: var(--space-3xs);
+    margin: 0;
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+    box-shadow: var(--elevation-floating);
+    list-style: none;
+  }
+
+  /* In the footer the list opens upward, because there is nothing below it. */
+  .locale--footer .locale__list {
+    inset-block-start: auto;
+    inset-block-end: calc(100% + var(--space-3xs));
+  }
+
+  .locale__link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 var(--space-2xs);
+    align-items: baseline;
+    padding: var(--space-2xs) var(--space-xs);
+    border-radius: var(--radius-s);
+    color: var(--color-text);
+    text-decoration: none;
+    min-block-size: 2.75rem;
+    align-content: center;
+  }
+
+  .locale__link:hover {
+    background-color: var(--color-canvas-sunken);
+  }
+
+  /* The current language is marked by a word as well as by weight, because
+     colour and weight alone are not meaning. */
+  .locale__link.is-current .locale__endonym::after {
+    content: ' ✓';
+  }
+
+  .locale__endonym {
+    font-size: var(--text-0);
+  }
+
+  .locale__english,
+  .locale__pending {
+    grid-column: 2;
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .locale__pending {
+    grid-column: 1 / -1;
+    color: var(--color-text-subtle);
+  }
+</style>

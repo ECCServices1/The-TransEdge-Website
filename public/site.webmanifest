@@ -1,0 +1,26 @@
+{
+  "name": "The Transformation Edge",
+  "short_name": "TransEdge",
+  "description": "A church in Penrith, Sydney, with a vision that reaches nations.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf8f6",
+  "theme_color": "#faf8f6",
+  "lang": "en-AU",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/brand/crossing-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/crossing-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

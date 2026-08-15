@@ -1,0 +1,25 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# generated search index
+public/pagefind/
+
+# environment: secrets never enter the repository, only Cloudflare Pages settings
+.env
+.env.*
+!.env.example
+
+# Connect API snapshots hold the last successful payload used as build fallback.
+# The committed snapshot is the sanitised one; live pulls stay local.
+src/data/connect/*.live.json
+
+# os and editor
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+!.vscode/extensions.json

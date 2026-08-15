@@ -1,0 +1,329 @@
+/* ==========================================================================
+   The Transformation Edge: design tokens
+   --------------------------------------------------------------------------
+   Tokens before screens. Nothing in the codebase may use a raw colour, size or
+   duration. If a value is needed and no token fits, the token set is wrong and
+   this file changes first.
+
+   Every colour pairing named in the semantic layer is verified by
+   `npm run tokens:contrast`, which fails CI below WCAG 2.2 AA. The evidence
+   table it produces is docs/colour-contrast-evidence.md.
+
+   Ramps are generated in OKLCh so each step is a perceptually even move rather
+   than an even move in sRGB, which is why the mid-tones hold their chroma
+   instead of going muddy.
+   ========================================================================== */
+
+:root {
+  /* ---------------------------------------------------------------------
+     COLOUR: primitive ramps
+     Primitives are never used directly in a component. Use the semantic
+     layer below, so a palette change is one edit rather than a hunt.
+     --------------------------------------------------------------------- */
+
+  /* Slate, the anchor. Carried forward from the existing identity: step 700 is
+     the original brand slate #4B576E, preserved exactly so the equity survives
+     the redesign. Hue 263.3 in OKLCh. */
+  --color-slate-100: #eff4fc;
+  --color-slate-200: #dbe3f2;
+  --color-slate-300: #c1cde3;
+  --color-slate-400: #9eadca;
+  --color-slate-500: #7989a9;
+  --color-slate-600: #606f8c;
+  --color-slate-700: #4b576e;
+  --color-slate-800: #333d50;
+  --color-slate-900: #1c2331;
+  --color-slate-950: #101621;
+
+  /* Ember, the warm accent the old palette lacked. Hue 42 in OKLCh, sitting
+     almost opposite the slate, which is what gives the pairing its charge.
+     The idea is light at a threshold rather than a corporate highlight. */
+  --color-ember-100: #feeee8;
+  --color-ember-200: #fedacc;
+  --color-ember-300: #fcbda5;
+  --color-ember-400: #f6946d;
+  --color-ember-500: #e66a34;
+  --color-ember-600: #be4f1b;
+  --color-ember-700: #983e14;
+  --color-ember-800: #722c0b;
+  --color-ember-900: #491c08;
+
+  /* Neutral, nine steps, warmed off true grey (hue 70, chroma under 0.012) so
+     paper reads warm rather than clinical. */
+  --color-neutral-100: #faf8f6;
+  --color-neutral-200: #efece9;
+  --color-neutral-300: #dedad5;
+  --color-neutral-400: #c2bdb7;
+  --color-neutral-500: #a39d97;
+  --color-neutral-600: #827c76;
+  --color-neutral-700: #615d58;
+  --color-neutral-800: #403c39;
+  --color-neutral-900: #201e1b;
+
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Status. Never the only carrier of meaning: every status pairs colour with
+     an icon and a word. */
+  --color-success-fg: #1f6b3f;
+  --color-success-bg: #e8f5ed;
+  --color-warning-fg: #7a4f00;
+  --color-warning-bg: #fdf3dd;
+  --color-danger-fg: #a11b1b;
+  --color-danger-bg: #fdeaea;
+
+  /* ---------------------------------------------------------------------
+     COLOUR: semantic layer, light
+     --------------------------------------------------------------------- */
+
+  --color-canvas: var(--color-neutral-100);
+  --color-canvas-raised: var(--color-white);
+  --color-canvas-sunken: var(--color-neutral-200);
+  --color-canvas-inverse: var(--color-slate-900);
+
+  --color-text: var(--color-neutral-900);
+  --color-text-muted: var(--color-neutral-700);
+  --color-text-subtle: var(--color-neutral-600);
+  --color-text-inverse: var(--color-neutral-100);
+
+  /* Accent text sits on canvas or canvas-raised only. On canvas-sunken it
+     drops below 4.5:1, so the sunken surface uses --color-text instead. */
+  --color-text-accent: var(--color-ember-700);
+  --color-text-anchor: var(--color-slate-700);
+
+  --color-action-bg: var(--color-ember-600);
+  --color-action-bg-hover: var(--color-ember-700);
+  --color-action-bg-active: var(--color-ember-800);
+  --color-action-fg: var(--color-white);
+
+  --color-action-quiet-bg: transparent;
+  --color-action-quiet-fg: var(--color-slate-700);
+  /* Slate 500, not 400. A button outline is a user interface component, so it
+     owes 3:1 against the canvas under SC 1.4.11. Slate 400 measured 2.14:1. */
+  --color-action-quiet-border: var(--color-slate-500);
+
+  /* Hairline separation only. Deliberately below 3:1 and never load-bearing:
+     anything that carries state or a control boundary uses border-strong. */
+  --color-border: var(--color-neutral-300);
+  --color-border-strong: var(--color-neutral-600);
+
+  --color-focus: var(--color-slate-800);
+  --color-focus-offset: var(--color-neutral-100);
+
+  /* The seam is the single continuous line running the length of the page.
+     It changes weight and colour as it passes each movement, so it gets its
+     own tokens rather than borrowing a border colour. */
+  --color-seam: var(--color-slate-300);
+  --color-seam-lit: var(--color-ember-500);
+
+  /* ---------------------------------------------------------------------
+     TYPE
+     Two families. Fraunces for display, Inter for text, both SIL Open Font
+     Licence, so there is no per-domain licence to track and no cost line.
+     Non-Latin scripts fall back to the Noto family, also OFL, loaded per
+     locale because the CJK files are large.
+     --------------------------------------------------------------------- */
+
+  --font-display: 'Fraunces', 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
+  --font-text: 'Inter', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, monospace;
+
+  /* Seven-step fluid scale. Each step is a clamp between 320px and 1440px
+     viewports, so there are no size breakpoints to maintain. */
+  --text--1: clamp(0.833rem, 0.8rem + 0.16vw, 0.889rem);
+  --text-0: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-1: clamp(1.2rem, 1.12rem + 0.4vw, 1.44rem);
+  --text-2: clamp(1.44rem, 1.31rem + 0.65vw, 1.85rem);
+  --text-3: clamp(1.73rem, 1.51rem + 1.1vw, 2.44rem);
+  --text-4: clamp(2.07rem, 1.68rem + 1.95vw, 3.3rem);
+  --text-5: clamp(2.49rem, 1.79rem + 3.5vw, 4.8rem);
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-loose: 1.65;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.06em;
+
+  /* Body measure held between 60 and 75 characters. */
+  --measure: 66ch;
+  --measure-narrow: 48ch;
+  --measure-wide: 75ch;
+
+  /* ---------------------------------------------------------------------
+     SPACE: 4px base grid, no arbitrary values
+     --------------------------------------------------------------------- */
+
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 8rem;
+
+  /* Movement spacing sets the rhythm of the canvas. Deliberately fluid and
+     deliberately large: the silence between movements is part of the
+     composition, not wasted height. */
+  --space-movement: clamp(4rem, 2rem + 10vw, 10rem);
+  --space-movement-tight: clamp(2.5rem, 1.5rem + 5vw, 5rem);
+
+  /* ---------------------------------------------------------------------
+     LAYOUT
+     --------------------------------------------------------------------- */
+
+  --width-page: 80rem;
+  --width-wide: 96rem;
+  --width-prose: 42rem;
+  --grid-columns: 12;
+  --grid-gutter: clamp(1rem, 0.5rem + 2vw, 2rem);
+  --page-inline-padding: clamp(1.25rem, 0.75rem + 2.5vw, 4rem);
+
+  /* ---------------------------------------------------------------------
+     RADII, BORDERS, ELEVATION
+     Depth comes from layering, not from drop shadows. The shadow set is
+     deliberately small and deliberately soft, and is reserved for elements
+     that genuinely float above the canvas: the sticky header and the modal.
+     --------------------------------------------------------------------- */
+
+  --radius-xs: 0.125rem;
+  --radius-s: 0.25rem;
+  --radius-m: 0.5rem;
+  --radius-l: 1rem;
+  --radius-full: 62.5rem;
+
+  --border-hairline: 1px;
+  --border-thick: 2px;
+
+  --elevation-raised: 0 1px 2px color-mix(in oklab, var(--color-slate-900) 6%, transparent);
+  --elevation-floating: 0 8px 24px -12px color-mix(in oklab, var(--color-slate-900) 22%, transparent);
+
+  /* ---------------------------------------------------------------------
+     MOTION
+     Three durations, three easings. Movement explains continuity: nothing
+     moves for decoration. Every one of these resolves to 0 under
+     prefers-reduced-motion, handled in base.css.
+     --------------------------------------------------------------------- */
+
+  --motion-fast: 150ms;
+  --motion-base: 320ms;
+  --motion-slow: 640ms;
+
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-entrance: cubic-bezier(0, 0, 0, 1);
+  --ease-exit: cubic-bezier(0.3, 0, 1, 1);
+
+  /* Parallax differential is capped at 15 per cent by the brief. Components
+     read this token rather than choosing their own number. */
+  --parallax-max: 0.15;
+
+  --layer-base: 0;
+  --layer-seam: 1;
+  --layer-content: 2;
+  --layer-header: 50;
+  --layer-modal: 100;
+  --layer-skip-link: 200;
+}
+
+/* ==========================================================================
+   DARK
+   The dark scheme is a re-mapping of the semantic layer, never a filter.
+   Both `.theme-dark` and the media query are supported so a visitor's
+   explicit choice beats the system setting.
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.theme-light) {
+    --color-canvas: var(--color-slate-950);
+    --color-canvas-raised: var(--color-slate-900);
+    --color-canvas-sunken: var(--color-black);
+    --color-canvas-inverse: var(--color-neutral-100);
+
+    --color-text: var(--color-neutral-100);
+    --color-text-muted: var(--color-neutral-300);
+    --color-text-subtle: var(--color-neutral-400);
+    --color-text-inverse: var(--color-neutral-900);
+
+    --color-text-accent: var(--color-ember-300);
+    --color-text-anchor: var(--color-slate-300);
+
+    --color-action-bg: var(--color-ember-400);
+    --color-action-bg-hover: var(--color-ember-300);
+    --color-action-bg-active: var(--color-ember-200);
+    --color-action-fg: var(--color-slate-950);
+
+    --color-action-quiet-fg: var(--color-neutral-100);
+    --color-action-quiet-border: var(--color-slate-600);
+
+    --color-border: var(--color-slate-800);
+    --color-border-strong: var(--color-slate-600);
+
+    --color-focus: var(--color-ember-300);
+    --color-focus-offset: var(--color-slate-950);
+
+    --color-seam: var(--color-slate-700);
+    --color-seam-lit: var(--color-ember-400);
+
+    --color-success-fg: #7fd8a3;
+    --color-success-bg: #12281c;
+    --color-warning-fg: #f2c464;
+    --color-warning-bg: #2c2107;
+    --color-danger-fg: #ff9d9d;
+    --color-danger-bg: #2e1010;
+
+    --elevation-raised: 0 1px 2px color-mix(in oklab, var(--color-black) 40%, transparent);
+    --elevation-floating: 0 8px 24px -12px color-mix(in oklab, var(--color-black) 70%, transparent);
+  }
+}
+
+.theme-dark {
+  --color-canvas: var(--color-slate-950);
+  --color-canvas-raised: var(--color-slate-900);
+  --color-canvas-sunken: var(--color-black);
+  --color-canvas-inverse: var(--color-neutral-100);
+
+  --color-text: var(--color-neutral-100);
+  --color-text-muted: var(--color-neutral-300);
+  --color-text-subtle: var(--color-neutral-400);
+  --color-text-inverse: var(--color-neutral-900);
+
+  --color-text-accent: var(--color-ember-300);
+  --color-text-anchor: var(--color-slate-300);
+
+  --color-action-bg: var(--color-ember-400);
+  --color-action-bg-hover: var(--color-ember-300);
+  --color-action-bg-active: var(--color-ember-200);
+  --color-action-fg: var(--color-slate-950);
+
+  --color-action-quiet-fg: var(--color-neutral-100);
+  --color-action-quiet-border: var(--color-slate-600);
+
+  --color-border: var(--color-slate-800);
+  --color-border-strong: var(--color-slate-600);
+
+  --color-focus: var(--color-ember-300);
+  --color-focus-offset: var(--color-slate-950);
+
+  --color-seam: var(--color-slate-700);
+  --color-seam-lit: var(--color-ember-400);
+
+  --color-success-fg: #7fd8a3;
+  --color-success-bg: #12281c;
+  --color-warning-fg: #f2c464;
+  --color-warning-bg: #2c2107;
+  --color-danger-fg: #ff9d9d;
+  --color-danger-bg: #2e1010;
+
+  --elevation-raised: 0 1px 2px color-mix(in oklab, var(--color-black) 40%, transparent);
+  --elevation-floating: 0 8px 24px -12px color-mix(in oklab, var(--color-black) 70%, transparent);
+}

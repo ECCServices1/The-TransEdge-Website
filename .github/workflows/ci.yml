@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A pull request that supersedes an in-flight run cancels it, so the queue
+# reflects the current state of the branch rather than its history.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # The rules in section 22 that can be machine-checked, checked by machine.
+      - name: Copy rules
+        run: npm run check:copy
+
+      # Every guaranteed colour pairing, in both schemes. Fails below WCAG 2.2 AA.
+      - name: Colour contrast
+        run: npm run tokens:contrast
+
+      - name: Types
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      # The generated redirect map must match its source. A hand edit to
+      # public/_redirects would otherwise survive until someone noticed in
+      # production that a printed QR code had stopped working.
+      - name: Redirect map is in step with its source
+        run: |
+          node scripts/generate-redirects.mjs
+          git diff --exit-code public/_redirects
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 3
+
+  budgets:
+    name: Performance and accessibility budgets
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Section 21. Lighthouse 95+ across all four categories, LCP under 2.0s,
+      # INP proxied by total blocking time, CLS under 0.1, JS under 150KB.
+      # assertions live in lighthouserc.json and are enforced, not advisory.
+      - name: Lighthouse
+        run: npx --yes @lhci/cli@0.14.x autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          retention-days: 7

@@ -1,0 +1,223 @@
+---
+/**
+ * Site footer.
+ *
+ * The footer carries the facts a visitor came for and could not find: when,
+ * where, how to reach a person. It is the one place the suburb appears in
+ * prose, because it is an address block.
+ */
+import EdgeMark from './EdgeMark.astro';
+import LocaleSwitcher from './LocaleSwitcher.astro';
+import { CHURCH, FAMILY_ORGS, TAGLINE } from '../data/church.mjs';
+import { localeHref } from '../i18n/locales.mjs';
+import { useTranslations } from '../i18n/ui.mjs';
+
+interface Props {
+  locale: string;
+  route?: string;
+}
+
+const { locale, route = '' } = Astro.props;
+const t = useTranslations(locale);
+const h = (r: string) => localeHref(locale, r);
+
+const mapQuery = encodeURIComponent(CHURCH.address.full);
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+---
+
+<footer class="site-footer no-print">
+  <div class="page-shell page-shell--wide">
+    <div class="site-footer__grid">
+      <div class="site-footer__brand">
+        <EdgeMark size={40} />
+        <p class="site-footer__name">The Transformation Edge</p>
+        <p class="site-footer__tagline">{TAGLINE}</p>
+      </div>
+
+      <section class="site-footer__block">
+        <h2>{t('visit.when')}</h2>
+        <ul role="list">
+          {
+            CHURCH.gatherings.map((g) => (
+              <li>
+                <span class="site-footer__day">{g.day}</span>{' '}
+                <span class="ltr-embed">{g.time}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="site-footer__block">
+        <h2>{t('visit.where')}</h2>
+        <address>
+          {CHURCH.address.unit}, {CHURCH.address.street}<br />
+          {CHURCH.address.suburb} {CHURCH.address.state}{' '}
+          <span class="ltr-embed">{CHURCH.address.postcode}</span>
+        </address>
+        <a href={mapHref} rel="noopener">{t('visit.getDirections')}</a>
+      </section>
+
+      <section class="site-footer__block">
+        <h2>{t('contact.title')}</h2>
+        <ul role="list">
+          <li><a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a></li>
+          <li><a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a></li>
+          <li><a href={h('get-in-touch/prayer')}>{t('contact.prayer')}</a></li>
+        </ul>
+      </section>
+
+      <section class="site-footer__block">
+        <h2>{t('nav.connect')}</h2>
+        <p>{t('connect.description')}</p>
+        <a
+          class="site-footer__connect"
+          href={CHURCH.connectUrl}
+          rel="noopener"
+          data-connect-label
+          data-connect-label-signed-in={t('connect.open')}>{t('connect.signIn')}</a>
+      </section>
+
+      <section class="site-footer__block">
+        <h2>The Edge family</h2>
+        <ul role="list">
+          <li>
+            <a href={FAMILY_ORGS.eccs.url} rel="noopener">{FAMILY_ORGS.eccs.shortName}</a>
+            <span class="site-footer__note">{FAMILY_ORGS.eccs.relationship}</span>
+          </li>
+          <li><a href={h('edgedin')}>{FAMILY_ORGS.edgedin.shortName}</a></li>
+          <li>
+            <a href={FAMILY_ORGS.renovate.url} rel="noopener">{FAMILY_ORGS.renovate.shortName}</a>
+            <span class="site-footer__note">{FAMILY_ORGS.renovate.relationship}</span>
+          </li>
+        </ul>
+      </section>
+    </div>
+
+    <p class="site-footer__acknowledgement">{t('footer.acknowledgement')}</p>
+
+    <div class="site-footer__base">
+      <p class="site-footer__legal">
+        {CHURCH.legalName}. ABN <span class="ltr-embed">{CHURCH.abn}</span>. {t('footer.charity')}.
+      </p>
+      <ul class="site-footer__legal-links" role="list">
+        <li><a href={h('who-we-are/safeguarding')}>{t('footer.safeguarding')}</a></li>
+        <li><a href={h('privacy-policy')}>{t('footer.privacy')}</a></li>
+        <li><a href={h('terms-of-use')}>Terms of use</a></li>
+      </ul>
+      <LocaleSwitcher currentLocale={locale} route={route} placement="footer" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: var(--layer-content);
+    margin-block-start: var(--space-movement);
+    padding-block: var(--space-2xl) var(--space-l);
+    background-color: var(--color-canvas-inverse);
+    color: var(--color-text-inverse);
+    font-size: var(--text--1);
+  }
+
+  /* The footer is the one inverted surface, so its links need their own
+     treatment rather than the canvas accent. */
+  .site-footer a {
+    color: inherit;
+    text-decoration-color: color-mix(in oklab, currentColor 45%, transparent);
+  }
+
+  .site-footer a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: var(--space-xl) var(--space-l);
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+  }
+
+  .site-footer__name {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+  }
+
+  .site-footer__tagline {
+    font-style: italic;
+    opacity: 0.8;
+  }
+
+  .site-footer__block h2 {
+    font-family: var(--font-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-block-end: var(--space-2xs);
+  }
+
+  .site-footer__block ul {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-footer__block p + a {
+    display: inline-block;
+    margin-block-start: var(--space-2xs);
+  }
+
+  .site-footer__day {
+    font-weight: var(--weight-semibold);
+  }
+
+  .site-footer__note {
+    display: block;
+    opacity: 0.7;
+  }
+
+  address {
+    font-style: normal;
+    margin-block-end: var(--space-2xs);
+  }
+
+  .site-footer__acknowledgement {
+    max-inline-size: var(--measure);
+    margin-block: var(--space-2xl) var(--space-l);
+    padding-block-start: var(--space-l);
+    border-block-start: var(--border-hairline) solid color-mix(in oklab, currentColor 20%, transparent);
+    opacity: 0.85;
+  }
+
+  .site-footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-s) var(--space-m);
+    justify-content: space-between;
+  }
+
+  .site-footer__legal-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+  }
+
+  .site-footer__legal {
+    opacity: 0.75;
+  }
+</style>

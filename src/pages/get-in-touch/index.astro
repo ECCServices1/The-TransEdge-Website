@@ -1,0 +1,217 @@
+---
+/**
+ * Key screen 8: get in touch.
+ *
+ * Calm, private, honest about response times, with a visible crisis pointer.
+ * Pastoral, not clinical: nothing here offers therapy, treatment or diagnosis,
+ * and Renovate Health is named as the separate practice it is rather than
+ * folded into the church's own offer.
+ *
+ * Minimal data on every form, section 21. Name and one contact method. No
+ * address, no date of birth, no marketing checkbox pre-ticked, nothing that is
+ * not needed to reply.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import CrisisPointer from '../../components/CrisisPointer.astro';
+import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+---
+
+<PageLayout
+  title="Get in touch"
+  description="Contact The Transformation Edge in Penrith, Sydney. We reply within two working days."
+  route="get-in-touch"
+  standfirst="A person reads everything that comes in, and replies within two working days."
+>
+  <div class="contact">
+    <section class="contact__direct" aria-labelledby="direct-heading">
+      <h2 id="direct-heading">Straight to us</h2>
+      <ul role="list" class="contact__list">
+        <li>
+          <span class="contact__label">Phone</span>
+          <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>
+          <span class="contact__hint">Office hours, Tuesday to Friday</span>
+        </li>
+        <li>
+          <span class="contact__label">Email</span>
+          <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>
+        </li>
+        <li>
+          <span class="contact__label">In person</span>
+          <span>{CHURCH.address.full}</span>
+        </li>
+      </ul>
+
+      <p class="contact__prayer-link">
+        Would you rather ask for prayer privately?
+        <a href="/get-in-touch/prayer">There is a separate, quieter route for that</a>.
+      </p>
+    </section>
+
+    <section class="contact__form-block" aria-labelledby="form-heading">
+      <h2 id="form-heading">Send us a message</h2>
+
+      <!--
+        Posts to a Cloudflare Worker, not a third-party form service, so no
+        personal data leaves the Cloudflare account and no privacy assessment
+        for an offshore processor is needed. Turnstile handles spam without a
+        tracking cookie. The Worker is in workers/contact/ and must be deployed
+        before this form is live: see docs/forms-and-privacy.md.
+      -->
+      <form class="form" method="post" action="/api/contact" novalidate>
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required />
+          <p class="field__hint" id="email-hint">So we can reply. Nothing else is done with it.</p>
+        </div>
+
+        <div class="field">
+          <label for="message">What would you like to say?</label>
+          <textarea id="message" name="message" rows="6" required></textarea>
+        </div>
+
+        <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+
+        <p class="form__privacy">
+          We keep your message and your reply, and nothing more. We do not add you to a list.
+          Read the <a href="/privacy-policy">privacy policy</a>.
+        </p>
+
+        <Button type="submit" size="large">Send</Button>
+      </form>
+    </section>
+
+    <CrisisPointer />
+
+    <section class="contact__clinical" aria-labelledby="clinical-heading">
+      <h2 id="clinical-heading">If you are looking for counselling</h2>
+      <p class="prose">
+        Our pastoral team offers prayer, conversation and practical support. That is care,
+        and it is not clinical treatment. If you are looking for psychotherapy or
+        counselling, {FAMILY_ORGS.renovate.name} is a separate practice with qualified
+        clinicians, and you can approach it directly with no connection to this church.
+      </p>
+      <p>
+        <Button href={FAMILY_ORGS.renovate.url} tone="quiet" external>
+          {FAMILY_ORGS.renovate.shortName}
+        </Button>
+      </p>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .contact h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-m);
+  }
+
+  .contact__list {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact__list li {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .contact__label {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .contact__hint {
+    font-size: var(--text--1);
+    color: var(--color-text-subtle);
+  }
+
+  .contact__prayer-link {
+    margin-block-start: var(--space-l);
+    color: var(--color-text-muted);
+  }
+
+  .contact__clinical .prose {
+    margin-block-end: var(--space-m);
+  }
+
+  .form {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-3xs);
+    inline-size: 100%;
+  }
+
+  .field label {
+    font-weight: var(--weight-semibold);
+  }
+
+  .field input,
+  .field textarea {
+    inline-size: 100%;
+    padding: var(--space-2xs) var(--space-xs);
+    min-block-size: 2.75rem;
+    background-color: var(--color-canvas-raised);
+    color: var(--color-text);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  .field textarea {
+    resize: vertical;
+    line-height: var(--leading-normal);
+  }
+
+  .field__hint {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .form__privacy {
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  /*
+    Turnstile is loaded only when the form is actually in view, so a visitor who
+    reads the contact details and leaves never contacts Cloudflare's challenge
+    endpoint at all. No third party is contacted before it is needed.
+  */
+  const widget = document.querySelector('.cf-turnstile');
+  if (widget) {
+    const observer = new IntersectionObserver((entries, obs) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      obs.disconnect();
+      const script = document.createElement('script');
+      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+      script.async = true;
+      script.defer = true;
+      document.head.append(script);
+    });
+    observer.observe(widget);
+  }
+</script>

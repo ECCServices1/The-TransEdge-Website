@@ -1,0 +1,49 @@
+---
+/**
+ * The Edge symbol.
+ *
+ * Inlined rather than referenced as an <img>, so it inherits currentColor and
+ * needs no second request. That is what lets one file serve the light header,
+ * the dark footer and a reversed placement over photography.
+ */
+import { MARKS, ACTIVE_MARK } from '../lib/brand-marks.mjs';
+
+interface Props {
+  /** Which direction to draw. Defaults to the direction currently under review. */
+  variant?: keyof typeof MARKS;
+  /** Rendered size in pixels. The mark is drawn on a 32 unit grid at any size. */
+  size?: number;
+  /**
+   * Decorative marks are hidden from assistive technology. A mark that is the
+   * only content of a link is not decorative and needs a label.
+   */
+  label?: string | null;
+  class?: string;
+}
+
+const { variant = ACTIVE_MARK, size = 32, label = null, class: className = '' } = Astro.props;
+const mark = MARKS[variant];
+const titleId = label ? `mark-${variant}-${Math.random().toString(36).slice(2, 8)}` : null;
+---
+
+<svg
+  class:list={['edge-mark', className]}
+  viewBox="0 0 32 32"
+  width={size}
+  height={size}
+  fill="currentColor"
+  role={label ? 'img' : 'presentation'}
+  aria-hidden={label ? undefined : 'true'}
+  aria-labelledby={titleId ?? undefined}
+  focusable="false"
+>
+  {label && <title id={titleId}>{label}</title>}
+  {mark.paths.map((d) => <path d={d} />)}
+</svg>
+
+<style>
+  .edge-mark {
+    display: block;
+    flex-shrink: 0;
+  }
+</style>

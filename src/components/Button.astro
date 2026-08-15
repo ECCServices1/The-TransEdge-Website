@@ -1,0 +1,164 @@
+---
+/**
+ * Button and call to action.
+ *
+ * One primary action per moment, section 20. The `primary` tone is deliberately
+ * awkward to use twice on one screen: if a design needs two, the design is
+ * wrong, not the component.
+ *
+ * Renders an <a> when given an href and a <button> otherwise, so a link is
+ * never faked with a click handler and keyboard behaviour is whatever the
+ * element already does.
+ */
+interface Props {
+  href?: string;
+  tone?: 'primary' | 'quiet' | 'plain';
+  size?: 'medium' | 'large';
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+  /** Marks an outbound handoff, which gets an indicator and the right rel. */
+  external?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  href,
+  tone = 'primary',
+  size = 'medium',
+  type = 'button',
+  disabled = false,
+  external = false,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const externalAttrs = external ? { rel: 'noopener', target: '_blank' } : {};
+---
+
+<Tag
+  class:list={['btn', `btn--${tone}`, `btn--${size}`, className]}
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  aria-disabled={href && disabled ? 'true' : undefined}
+  {...externalAttrs}
+  {...rest}
+>
+  <span class="btn__label"><slot /></span>
+  {
+    external && (
+      <>
+        <svg class="btn__external mirror-in-rtl" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+          <path
+            d="M6 3h7v7M13 3 6.5 9.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M11 9.5V13H3V5h3.5"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="visually-hidden">, opens in a new tab</span>
+      </>
+    )
+  }
+</Tag>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-m);
+    border: var(--border-thick) solid transparent;
+    border-radius: var(--radius-full);
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    /* Comfortably past the 24 by 24 minimum in SC 2.5.8. */
+    min-block-size: 2.75rem;
+    transition-property: transform, opacity;
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  .btn--large {
+    padding-block: var(--space-s);
+    padding-inline: var(--space-l);
+    font-size: var(--text-1);
+    min-block-size: 3.25rem;
+  }
+
+  .btn--primary {
+    background-color: var(--color-action-bg);
+    color: var(--color-action-fg);
+  }
+
+  .btn--primary:hover {
+    background-color: var(--color-action-bg-hover);
+  }
+
+  .btn--primary:active {
+    background-color: var(--color-action-bg-active);
+    transform: translateY(1px);
+  }
+
+  .btn--quiet {
+    background-color: var(--color-action-quiet-bg);
+    color: var(--color-action-quiet-fg);
+    border-color: var(--color-action-quiet-border);
+  }
+
+  .btn--quiet:hover {
+    border-color: var(--color-action-quiet-fg);
+  }
+
+  .btn--quiet:active {
+    transform: translateY(1px);
+  }
+
+  .btn--plain {
+    background: none;
+    padding-inline: 0;
+    color: var(--color-text-accent);
+    text-decoration: underline;
+    text-decoration-thickness: max(0.06em, 1px);
+    text-underline-offset: 0.18em;
+    min-block-size: auto;
+  }
+
+  .btn[disabled],
+  .btn[aria-disabled='true'] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    /* Still focusable and still announced. A disabled control that vanishes
+       from the tab order strands a keyboard user mid-form. */
+    pointer-events: none;
+  }
+
+  .btn__external {
+    flex-shrink: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn:active {
+      transform: none;
+    }
+  }
+</style>

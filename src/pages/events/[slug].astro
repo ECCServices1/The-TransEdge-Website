@@ -1,0 +1,139 @@
+---
+/**
+ * Key screen 5: event detail, handing off to Connect for registration.
+ *
+ * Pages are generated from whatever Connect returned at build time. If Connect
+ * is unreachable, they are generated from the snapshot, so an event that was
+ * live yesterday does not 404 today.
+ */
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { getAllEvents } from '../../lib/connect.mjs';
+import { eventSchema } from '../../lib/structured-data.mjs';
+import { toGoogleCalendarUrl } from '../../lib/dates.mjs';
+import { CHURCH } from '../../data/church.mjs';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const events = await getAllEvents();
+  return events.map((event) => ({ params: { slug: event.slug }, props: { event } }));
+};
+
+const { event } = Astro.props;
+
+const location = event.locationName ?? CHURCH.name;
+const address = event.locationAddress ? '' : CHURCH.address.full;
+
+const durationMinutes = event.endsAt
+  ? Math.max(15, Math.round((new Date(event.endsAt).getTime() - new Date(event.startsAt).getTime()) / 60000))
+  : 90;
+
+const googleCalendar = toGoogleCalendarUrl({
+  title: event.title,
+  description: event.summary,
+  location: address || location,
+  start: event.startsAt,
+  durationMinutes,
+});
+
+const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || location)}`;
+---
+
+<PageLayout
+  title={event.title}
+  description={event.summary || `${event.title} at The Transformation Edge.`}
+  route={`events/${event.slug}`}
+  crumbs={[{ name: 'Events', href: '/events' }]}
+  schema={[eventSchema(event)]}
+>
+  <div class="detail">
+    <dl class="detail__facts">
+      <div>
+        <dt>When</dt>
+        <dd>
+          <time datetime={event.startsAt} class="ltr-embed">{event.displayDate}</time>
+        </dd>
+      </div>
+      <div>
+        <dt>Where</dt>
+        <dd>{location}</dd>
+      </div>
+    </dl>
+
+    {event.summary && <p class="detail__summary">{event.summary}</p>}
+
+    <div class="detail__actions">
+      {
+        event.registrationUrl ? (
+          <>
+            <Button href={event.registrationUrl} external size="large">
+              Register
+            </Button>
+            <p class="detail__handoff">Registration happens in the TTE Connect Hub.</p>
+          </>
+        ) : (
+          <p class="detail__handoff">No registration needed. Turn up.</p>
+        )
+      }
+    </div>
+
+    <div class="detail__secondary">
+      <Button href={googleCalendar} tone="quiet" external>Add to Google Calendar</Button>
+      <Button href={mapHref} tone="quiet" external>Get directions</Button>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .detail {
+    max-inline-size: 46rem;
+  }
+
+  .detail__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-m) var(--space-2xl);
+    margin-block-end: var(--space-l);
+  }
+
+  .detail__facts dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .detail__facts dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .detail__summary {
+    max-inline-size: var(--measure);
+    font-size: var(--text-1);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-l);
+  }
+
+  .detail__actions {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-2xs);
+    margin-block-end: var(--space-l);
+  }
+
+  .detail__handoff {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .detail__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    padding-block-start: var(--space-l);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+</style>

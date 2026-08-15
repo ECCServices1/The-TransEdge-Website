@@ -1,0 +1,186 @@
+---
+/**
+ * Key screen 6: give.
+ *
+ * Two methods, section 13. Bank transfer with the details shown plainly, and
+ * card giving via Stripe inside Connect. No card capture here.
+ *
+ * The two flows are kept visibly apart. Church giving is not tax deductible.
+ * ECCS is separately DGR-endorsed with its own receipting, and the page says so
+ * rather than leaving a visitor to assume.
+ *
+ * Trust markers, not marketing. No guilt, no urgency, no countdown.
+ */
+import PageLayout from '../layouts/PageLayout.astro';
+import Button from '../components/Button.astro';
+import { CHURCH, GIVING, FAMILY_ORGS } from '../data/church.mjs';
+
+const bankDetailsConfirmed = !GIVING.bank.bsb.startsWith('TBC');
+---
+
+<PageLayout
+  title="Give"
+  description="Two ways to give to The Transformation Edge: direct bank transfer, or card giving inside the TTE Connect Hub."
+  route="give"
+  standfirst="Two ways to give, and both take under a minute."
+>
+  <div class="give">
+    <section class="method" aria-labelledby="bank-heading">
+      <h2 id="bank-heading">Direct bank transfer</h2>
+      <p class="method__note">
+        No fees are taken out, so the full amount reaches the church.
+      </p>
+
+      {
+        bankDetailsConfirmed ? (
+          <dl class="bank">
+            <div>
+              <dt>Account name</dt>
+              <dd>{GIVING.bank.accountName}</dd>
+            </div>
+            <div>
+              <dt>BSB</dt>
+              <dd class="ltr-embed">{GIVING.bank.bsb}</dd>
+            </div>
+            <div>
+              <dt>Account number</dt>
+              <dd class="ltr-embed">{GIVING.bank.accountNumber}</dd>
+            </div>
+            <div>
+              <dt>Reference</dt>
+              <dd>{GIVING.bank.reference}</dd>
+            </div>
+          </dl>
+        ) : (
+          <p class="method__pending" role="status">
+            Account details are being confirmed and will appear here before launch. In the
+            meantime, card giving below is live, or call the office on{' '}
+            <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">
+              {CHURCH.phone}
+            </a>
+            .
+          </p>
+        )
+      }
+    </section>
+
+    <section class="method" aria-labelledby="card-heading">
+      <h2 id="card-heading">Card giving</h2>
+      <p class="method__note">
+        Card giving happens inside the TTE Connect Hub, which is where your giving history
+        and your receipts live. Payments are handled by Stripe. No card details are entered
+        on this site.
+      </p>
+      <p>
+        <Button href={GIVING.card.href} external size="large">Give in Connect</Button>
+      </p>
+    </section>
+
+    <!-- The distinction that matters most, and the one most easily got wrong. -->
+    <section class="deductible" aria-labelledby="deductible-heading">
+      <h2 id="deductible-heading">About receipts</h2>
+      <div class="prose">
+        <p>
+          Giving to the church supports the life of the church: the gatherings, the teams,
+          the building and the people who serve here. It is not a deductible gift, and we
+          will not issue a receipt that suggests otherwise.
+        </p>
+        <p>
+          {FAMILY_ORGS.eccs.name} is our sister organisation and is separately endorsed as a
+          deductible gift recipient. Gifts to its community work are deductible, and they go
+          through its own giving flow with its own receipting. It is a separate entity with
+          separate books.
+        </p>
+      </div>
+      <p>
+        <Button href={FAMILY_ORGS.eccs.url} tone="quiet" external>
+          Give to Edge Community Care Services
+        </Button>
+      </p>
+    </section>
+
+    <section class="trust" aria-labelledby="trust-heading">
+      <h2 id="trust-heading">Where it goes</h2>
+      <ul class="trust__list" role="list">
+        <li>
+          <strong>{CHURCH.legalName}</strong> is a {CHURCH.registration.toLowerCase()}.
+        </li>
+        <li>
+          ABN <span class="ltr-embed">{CHURCH.abn}</span>, ACN{' '}
+          <span class="ltr-embed">{CHURCH.acn}</span>.
+        </li>
+        <li>Accounts are reported annually to the ACNC and are public.</li>
+        <li>
+          Questions about giving go to{' '}
+          <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, and a person answers them.
+        </li>
+      </ul>
+    </section>
+  </div>
+</PageLayout>
+
+<style>
+  .give {
+    display: grid;
+    gap: var(--space-2xl);
+    max-inline-size: 46rem;
+  }
+
+  .method h2,
+  .deductible h2,
+  .trust h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-2xs);
+  }
+
+  .method__note {
+    max-inline-size: var(--measure);
+    margin-block-end: var(--space-m);
+    color: var(--color-text-muted);
+  }
+
+  .method__pending {
+    padding: var(--space-s) var(--space-m);
+    background-color: var(--color-warning-bg);
+    color: var(--color-warning-fg);
+    border-radius: var(--radius-m);
+    /* Colour is never the only signal, so the message says what it is. */
+    border-inline-start: var(--border-thick) solid currentColor;
+  }
+
+  .bank {
+    display: grid;
+    gap: var(--space-s);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+  }
+
+  .bank dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .bank dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-1);
+  }
+
+  .deductible .prose {
+    margin-block-end: var(--space-m);
+  }
+
+  .trust__list {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: var(--space-s) 0 0;
+    padding: 0;
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+</style>

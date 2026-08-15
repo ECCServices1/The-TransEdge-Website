@@ -1,0 +1,78 @@
+---
+/**
+ * Prayer request. Audience 5: a calm private route, plus a visible crisis
+ * pointer. Pastoral, never clinical.
+ *
+ * The form asks for the least it can. A request can be sent without a name, and
+ * the page says so, because someone who needs to stay anonymous should not have
+ * to work that out for themselves.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import CrisisPointer from '../../components/CrisisPointer.astro';
+---
+
+<PageLayout
+  title="Ask for prayer"
+  description="Send a prayer request to the pastoral team at The Transformation Edge. It goes to the pastoral team only."
+  route="get-in-touch/prayer"
+  crumbs={[{ name: 'Get in Touch', href: '/get-in-touch' }]}
+  standfirst="It goes to the pastoral team, and nowhere else."
+>
+  <div class="prayer">
+    <div class="prose">
+      <p>
+        You do not have to explain much, and you do not have to give your name. Write as
+        little or as much as you want. Someone will pray, and if you have asked us to be in
+        touch, someone will be in touch within two working days.
+      </p>
+    </div>
+
+    <form class="form" method="post" action="/api/prayer" novalidate>
+      <div class="field">
+        <label for="request">What would you like prayer for?</label>
+        <textarea id="request" name="request" rows="7" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="name">Your name <span class="field__optional">optional</span></label>
+        <input id="name" name="name" type="text" autocomplete="name" />
+      </div>
+
+      <div class="field">
+        <label for="contact">Email or phone <span class="field__optional">optional</span></label>
+        <input id="contact" name="contact" type="text" />
+        <p class="field__hint">Only if you would like someone to reply. Leave it blank to stay anonymous.</p>
+      </div>
+
+      <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+
+      <p class="form__privacy">
+        Requests are read by the pastoral team only. They are not published, not shared with
+        the wider church, and not added to any list. Read the <a href="/privacy-policy">privacy policy</a>.
+      </p>
+
+      <Button type="submit" size="large">Send</Button>
+    </form>
+
+    <CrisisPointer />
+  </div>
+</PageLayout>
+
+<style>
+  .prayer { display: grid; gap: var(--space-2xl); max-inline-size: 42rem; }
+  .form { display: grid; gap: var(--space-m); justify-items: start; }
+  .field { display: grid; gap: var(--space-3xs); inline-size: 100%; }
+  .field label { font-weight: var(--weight-semibold); }
+  .field__optional {
+    font-weight: var(--weight-regular); font-size: var(--text--1); color: var(--color-text-muted);
+  }
+  .field input, .field textarea {
+    inline-size: 100%; padding: var(--space-2xs) var(--space-xs); min-block-size: 2.75rem;
+    background-color: var(--color-canvas-raised); color: var(--color-text);
+    border: var(--border-hairline) solid var(--color-border-strong); border-radius: var(--radius-s);
+  }
+  .field textarea { resize: vertical; line-height: var(--leading-normal); }
+  .field__hint { font-size: var(--text--1); color: var(--color-text-muted); }
+  .form__privacy { max-inline-size: var(--measure); font-size: var(--text--1); color: var(--color-text-muted); }
+</style>

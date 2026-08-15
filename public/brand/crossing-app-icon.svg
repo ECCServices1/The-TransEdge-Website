@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="The Crossing, The Transformation Edge">
+  <title>The Crossing, The Transformation Edge</title>
+  <rect width="512" height="512" fill="#1c2331"/>
+  <g transform="translate(102.4 102.4) scale(9.6)" fill="#faf8f6">
+    <path d="M4 14.25 A10.5 10.5 0 0 1 25 14.25 Z" />
+    <path d="M7 17.75 A10.5 10.5 0 0 0 28 17.75 Z" />
+  </g>
+</svg>

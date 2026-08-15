@@ -1,0 +1,33 @@
+{
+  "name": "thetransedge-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "prebuild": "node scripts/generate-redirects.mjs",
+    "build": "astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check",
+    "check:copy": "node scripts/check-copy.mjs",
+    "tokens:contrast": "node scripts/check-contrast.mjs",
+    "brand:export": "node scripts/export-brand.mjs",
+    "fonts:fetch": "node scripts/fetch-fonts.mjs",
+    "connect:snapshot": "node scripts/connect-snapshot.mjs",
+    "verify": "npm run check:copy && npm run tokens:contrast && npm run check"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.2.2",
+    "sharp": "^0.35.3"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
+  }
+}

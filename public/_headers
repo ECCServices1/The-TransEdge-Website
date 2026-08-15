@@ -1,0 +1,26 @@
+/*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), interest-cohort=()
+  X-Frame-Options: DENY
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://connect.thetransedge.com; script-src 'self' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://i.ytimg.com https://img.youtube.com; media-src 'self' https:; font-src 'self'; connect-src 'self' https://connect.thetransedge.com; frame-src https://www.youtube-nocookie.com https://challenges.cloudflare.com; manifest-src 'self'; upgrade-insecure-requests
+
+# Hashed build assets are immutable, so they cache for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/brand/*
+  Cache-Control: public, max-age=604800
+
+# HTML revalidates on every request so a merged content change is live at once.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# The search index is rebuilt on every deploy.
+/pagefind/*
+  Cache-Control: public, max-age=0, must-revalidate

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="The Fold, The Transformation Edge">
+  <title>The Fold, The Transformation Edge</title>
+  <rect width="512" height="512" fill="#1c2331"/>
+  <g transform="translate(102.4 102.4) scale(9.6)" fill="#faf8f6">
+    <path d="M5.5 4 H26 L4 26 V5.5 A1.5 1.5 0 0 1 5.5 4 Z" />
+    <path d="M28 6.5 V26.5 A1.5 1.5 0 0 1 26.5 28 H6 Z" />
+  </g>
+</svg>

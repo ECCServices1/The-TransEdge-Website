@@ -1,0 +1,307 @@
+/* ==========================================================================
+   Base: reset, typography, direction, motion policy
+   --------------------------------------------------------------------------
+   Logical properties throughout. There is no `margin-left` anywhere in this
+   codebase, because Arabic is a launch locale and mirroring is a design system
+   property, not a translation task.
+   ========================================================================== */
+
+/* ------------------------------------------------------------------ reset */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Anchors land clear of the sticky header rather than under it. */
+  scroll-padding-block-start: calc(var(--header-height, 4rem) + var(--space-m));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-block-size: 100svb;
+  background-color: var(--color-canvas);
+  color: var(--color-text);
+  font-family: var(--font-text);
+  font-size: var(--text-0);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-normal);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  /* The canvas is one continuous composition, so nothing may bleed sideways. */
+  overflow-x: clip;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+img {
+  /* Explicit dimensions live on the element. This is the CLS backstop. */
+  background-color: var(--color-canvas-sunken);
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding-inline-start: 0;
+}
+
+/* --------------------------------------------------------------- headings */
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+  /* Fraunces carries an optical size axis. Setting it here means headings are
+     drawn with the display cut and body text with the text cut, which is the
+     point of a variable optical face. */
+  font-variation-settings: 'SOFT' 0, 'WONK' 0, 'opsz' 48;
+}
+
+h1 {
+  font-size: var(--text-4);
+}
+h2 {
+  font-size: var(--text-3);
+}
+h3 {
+  font-size: var(--text-2);
+}
+h4 {
+  font-size: var(--text-1);
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+/* Prose blocks hold their measure between 60 and 75 characters. */
+.prose {
+  max-inline-size: var(--measure);
+}
+
+.prose > * + * {
+  margin-block-start: var(--space-m);
+}
+
+.prose h2,
+.prose h3 {
+  margin-block-start: var(--space-xl);
+}
+
+/* ------------------------------------------------------------------ links */
+
+a {
+  color: var(--color-text-accent);
+  text-decoration-thickness: max(0.06em, 1px);
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: max(0.12em, 2px);
+}
+
+/* --------------------------------------------------------- focus and skip */
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Focus is never removed, only restyled. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--space-2xs);
+  inset-inline-start: var(--space-2xs);
+  z-index: var(--layer-skip-link);
+  padding: var(--space-2xs) var(--space-s);
+  background-color: var(--color-canvas-raised);
+  color: var(--color-text);
+  border: var(--border-thick) solid var(--color-focus);
+  border-radius: var(--radius-s);
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.visually-hidden:not(:focus):not(:active) {
+  clip-path: inset(50%);
+  block-size: 1px;
+  inline-size: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------- layout */
+
+.page-shell {
+  inline-size: min(100%, var(--width-page));
+  margin-inline: auto;
+  padding-inline: var(--page-inline-padding);
+}
+
+.page-shell--wide {
+  inline-size: min(100%, var(--width-wide));
+}
+
+.page-shell--prose {
+  inline-size: min(100%, var(--width-prose));
+}
+
+/* --------------------------------------------------------------- direction */
+
+/* Directional glyphs and icons mirror in right-to-left. Photographs and logos
+   never do, so the mirror is opt-in per element rather than a blanket flip. */
+[dir='rtl'] .mirror-in-rtl {
+  transform: scaleX(-1);
+}
+
+/* Numerals, times and phone numbers stay left-to-right inside Arabic prose. */
+.ltr-embed {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* ------------------------------------------------------------------ motion */
+
+/*
+  The motion policy, in one place.
+
+  Under prefers-reduced-motion the brief requires scroll-linked motion to
+  resolve to its static final state with no content loss. That is exactly what
+  this does: reveal elements are forced to their arrived state rather than
+  hidden, transitions collapse to a single frame, and the scroll-driven seam
+  stops animating while remaining fully drawn.
+*/
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Final state, not hidden state. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+
+  [data-parallax] {
+    transform: none !important;
+  }
+}
+
+/*
+  Reveal on arrival. The default is the arrived state, so with JavaScript
+  disabled and with no CSS scroll-driven animation support, content is simply
+  visible. The pre-arrival state is only applied when the browser can also
+  animate out of it, which is what keeps the no-JS path honest.
+*/
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal] {
+      animation: reveal-settle linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 32%;
+    }
+  }
+}
+
+@keyframes reveal-settle {
+  from {
+    opacity: 0;
+    /* Type settles, it does not travel: 12px, not 60px. */
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Only transform and opacity are animated anywhere in this codebase. */
+.transition-standard {
+  transition-property: transform, opacity;
+  transition-duration: var(--motion-base);
+  transition-timing-function: var(--ease-standard);
+}
+
+/* --------------------------------------------------------------- rendering */
+
+/* Long movements below the fold are skipped until they are near the viewport.
+   contain-intrinsic-size prevents the scrollbar from jumping as they resolve. */
+.movement {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60svb;
+}
+
+/* The first movement is never deferred: it is the LCP element. */
+.movement:first-of-type {
+  content-visibility: visible;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

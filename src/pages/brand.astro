@@ -1,0 +1,438 @@
+---
+/**
+ * The brand approval gate, section 6.
+ *
+ * Three directions, shown at 16px, 48px, header and banner scale, in light and
+ * dark, on flat colour and on photography. Nothing on this page is a decision.
+ * It exists so a decision can be made from evidence rather than from a
+ * description.
+ *
+ * Not indexed and not in the sitemap. It is a working page for the client.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EdgeMark from '../components/EdgeMark.astro';
+import { MARKS, MARK_KEYS, FAMILY, ACTIVE_MARK } from '../lib/brand-marks.mjs';
+import { TAGLINE } from '../data/church.mjs';
+---
+
+<BaseLayout
+  title="Brand directions"
+  description="Three directions for the Edge symbol, for review."
+  route="brand"
+  noindex
+>
+  <div class="page-shell page-shell--wide brand">
+    <header class="brand__head">
+      <h1>Three directions for the Edge symbol</h1>
+      <p class="brand__standfirst">
+        Each is a single symbol built on one 32 unit grid with a 4 unit margin. None contains
+        a letterform, so none can be misread the way the present monogram reads EGDE when
+        read left to right. None sits inside a containing circle, so none shrinks inside its
+        own frame at small sizes.
+      </p>
+      <p class="brand__note">
+        The site currently renders <strong>{MARKS[ACTIVE_MARK].name}</strong> so that it can
+        be built and reviewed at all. That is not a recommendation and it is not a decision.
+      </p>
+    </header>
+
+    {
+      MARK_KEYS.map((key) => {
+        const mark = MARKS[key];
+        return (
+          <section class="direction" aria-labelledby={`dir-${key}`}>
+            <div class="direction__intro">
+              <h2 id={`dir-${key}`}>{mark.name}</h2>
+              <p class="direction__reading">{mark.reading}</p>
+              <div class="direction__argument">
+                <h3>Why it answers the brief</h3>
+                <p>{mark.rationale}</p>
+                <h3>The argument against it</h3>
+                <p>{mark.risk}</p>
+              </div>
+            </div>
+
+            {/* Scale. The 16px cell is the one that matters most. */}
+            <div class="panel">
+              <h3 class="panel__title">Scale, one colour</h3>
+              <div class="scale">
+                {[16, 24, 32, 48, 96, 160].map((size) => (
+                  <div class="scale__cell">
+                    <EdgeMark variant={key} size={size} />
+                    <span class="scale__label ltr-embed">{size}px</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Ground. Light, dark, accent, and photography. */}
+            <div class="panel">
+              <h3 class="panel__title">On ground</h3>
+              <div class="grounds">
+                <div class="ground ground--paper">
+                  <EdgeMark variant={key} size={64} />
+                  <span>Paper</span>
+                </div>
+                <div class="ground ground--ink">
+                  <EdgeMark variant={key} size={64} />
+                  <span>Reversed</span>
+                </div>
+                <div class="ground ground--ember">
+                  <EdgeMark variant={key} size={64} />
+                  <span>Accent</span>
+                </div>
+                <div class="ground ground--photo">
+                  <EdgeMark variant={key} size={64} />
+                  <span>On photography</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Lockups. Horizontal, stacked and symbol only. */}
+            <div class="panel">
+              <h3 class="panel__title">Lockups</h3>
+              <div class="lockups">
+                <div class="lockup lockup--horizontal">
+                  <EdgeMark variant={key} size={40} />
+                  <span class="lockup__word">The Transformation Edge</span>
+                </div>
+
+                <div class="lockup lockup--stacked">
+                  <EdgeMark variant={key} size={56} />
+                  <span class="lockup__word">The Transformation Edge</span>
+                  <span class="lockup__tagline">{TAGLINE}</span>
+                </div>
+
+                <div class="lockup lockup--header">
+                  <EdgeMark variant={key} size={28} />
+                  <span class="lockup__word lockup__word--small">The Transformation Edge</span>
+                </div>
+              </div>
+              <p class="panel__caption">
+                One line, not three. The present wordmark is tracked across three lines and
+                fights every horizontal header it sits in.
+              </p>
+            </div>
+
+            {/* The family, section 7. One grid, one type system, accent and
+                descriptor doing the differentiating. */}
+            <div class="panel">
+              <h3 class="panel__title">Across the Edge family</h3>
+              <div class="family">
+                {FAMILY.map((org) => (
+                  <div class="family__item" style={`--accent: ${org.accent}`}>
+                    <EdgeMark variant={key} size={36} class="family__mark" />
+                    <span class="family__name">{org.name}</span>
+                    <span class="family__descriptor">{org.descriptor}</span>
+                    <span class="family__note">{org.note}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3 class="panel__title">Favicon and app icon, actual size</h3>
+              <div class="icons">
+                <div class="icons__cell">
+                  <img src={`/brand/${key}-favicon.svg`} width="16" height="16" alt="" />
+                  <span class="ltr-embed">16px favicon</span>
+                </div>
+                <div class="icons__cell">
+                  <img src={`/brand/${key}-app-icon.svg`} width="64" height="64" alt="" />
+                  <span>App icon</span>
+                </div>
+                <div class="icons__cell">
+                  <img src={`/brand/${key}-social-avatar.svg`} width="64" height="64" alt="" />
+                  <span>Social avatar</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        );
+      })
+    }
+
+    <section class="brand__next" aria-labelledby="next-heading">
+      <h2 id="next-heading">What happens after the gate</h2>
+      <ol class="prose">
+        <li>One direction is chosen. The other two are set aside, not blended.</li>
+        <li>
+          Set <code>ACTIVE_MARK</code> in <code>src/lib/brand-marks.mjs</code> and run
+          <code>node scripts/export-brand.mjs &lt;key&gt;</code>.
+        </li>
+        <li>
+          The chosen symbol is refined against the construction grid, and clear space,
+          minimum sizes and misuse rules are written up in the brand audit.
+        </li>
+        <li>
+          The wordmark is drawn and outlined, which is the step that turns these lockups
+          from live text into portable vector, and PDF and EPS are cut from the SVG.
+        </li>
+        <li>High-fidelity screen design begins. Not before.</li>
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .brand__head {
+    max-inline-size: 48rem;
+    margin-block-end: var(--space-2xl);
+  }
+
+  .brand__standfirst {
+    margin-block-start: var(--space-s);
+    font-size: var(--text-1);
+    color: var(--color-text-muted);
+  }
+
+  .brand__note {
+    margin-block-start: var(--space-s);
+    padding: var(--space-2xs) var(--space-s);
+    border-inline-start: var(--border-thick) solid var(--color-border-strong);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .direction {
+    padding-block: var(--space-2xl);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .direction__intro {
+    max-inline-size: 48rem;
+    margin-block-end: var(--space-xl);
+  }
+
+  .direction__reading {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--text-1);
+    color: var(--color-text-accent);
+  }
+
+  .direction__argument {
+    margin-block-start: var(--space-m);
+  }
+
+  .direction__argument h3 {
+    margin-block-start: var(--space-m);
+    font-family: var(--font-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .direction__argument p {
+    max-inline-size: var(--measure);
+    margin-block-start: var(--space-3xs);
+  }
+
+  .panel {
+    margin-block-start: var(--space-xl);
+  }
+
+  .panel__title {
+    margin-block-end: var(--space-s);
+    font-family: var(--font-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .panel__caption {
+    margin-block-start: var(--space-s);
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .scale {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-l);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+  }
+
+  .scale__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .scale__label {
+    font-family: var(--font-mono);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .grounds {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--space-s);
+  }
+
+  .ground {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-s);
+    min-block-size: 11rem;
+    border-radius: var(--radius-m);
+    font-size: var(--text--1);
+  }
+
+  .ground--paper {
+    background-color: var(--color-neutral-100);
+    color: var(--color-slate-900);
+    border: var(--border-hairline) solid var(--color-border);
+  }
+
+  .ground--ink {
+    background-color: var(--color-slate-900);
+    color: var(--color-neutral-100);
+  }
+
+  .ground--ember {
+    background-color: var(--color-ember-600);
+    color: var(--color-white);
+  }
+
+  /* Stands in for photography until the shot list is executed. Deliberately
+     busy and mid-tone, because that is the hardest ground a mark has to hold. */
+  .ground--photo {
+    background-image:
+      radial-gradient(60% 80% at 20% 20%, var(--color-ember-700), transparent 60%),
+      radial-gradient(70% 70% at 80% 70%, var(--color-slate-600), transparent 60%),
+      linear-gradient(35deg, var(--color-slate-800), var(--color-ember-800));
+    color: var(--color-neutral-100);
+  }
+
+  .lockups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-l);
+    padding: var(--space-l);
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-radius: var(--radius-m);
+  }
+
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .lockup--stacked {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3xs);
+  }
+
+  .lockup__word {
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    line-height: var(--leading-tight);
+  }
+
+  .lockup__word--small {
+    font-size: var(--text-0);
+  }
+
+  .lockup__tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--text--1);
+    color: var(--color-text-accent);
+  }
+
+  .family {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: var(--space-m);
+  }
+
+  .family__item {
+    display: grid;
+    gap: var(--space-3xs);
+    padding: var(--space-m);
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border);
+    border-inline-start: 4px solid var(--accent);
+    border-radius: var(--radius-m);
+  }
+
+  .family__mark {
+    color: var(--accent);
+    margin-block-end: var(--space-2xs);
+  }
+
+  .family__name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+  }
+
+  .family__descriptor {
+    font-size: var(--text--1);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .family__note {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .icons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-l);
+  }
+
+  .icons__cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .brand__next {
+    padding-block: var(--space-2xl);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .brand__next ol {
+    margin-block-start: var(--space-m);
+    padding-inline-start: var(--space-m);
+  }
+
+  .brand__next li + li {
+    margin-block-start: var(--space-2xs);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    padding: 0.1em 0.3em;
+    background-color: var(--color-canvas-sunken);
+    border-radius: var(--radius-xs);
+  }
+</style>

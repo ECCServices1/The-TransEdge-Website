@@ -1,0 +1,335 @@
+---
+/**
+ * Site header.
+ *
+ * Chrome quiet, content loud. The header is a thin rule of type over the
+ * canvas: it does not sit on a filled bar, because a filled bar would cut the
+ * continuous composition in two every time it scrolled past an image.
+ *
+ * The mobile menu is a <details> disclosure. No JavaScript, so it opens on the
+ * first paint and keeps working if a bundle fails. Escape and click-outside are
+ * the only behaviours a script adds, and they are progressive.
+ */
+import EdgeMark from './EdgeMark.astro';
+import LocaleSwitcher from './LocaleSwitcher.astro';
+import { CHURCH } from '../data/church.mjs';
+import { localeHref } from '../i18n/locales.mjs';
+import { useTranslations } from '../i18n/ui.mjs';
+
+interface Props {
+  locale: string;
+  route?: string;
+}
+
+const { locale, route = '' } = Astro.props;
+const t = useTranslations(locale);
+const h = (r: string) => localeHref(locale, r);
+
+const primaryNav = [
+  { label: t('nav.whoWeAre'), href: h('who-we-are') },
+  { label: t('nav.newHere'), href: h('new-here') },
+  { label: t('nav.watchAndListen'), href: h('watch-and-listen') },
+  { label: t('nav.edgedin'), href: h('edgedin') },
+  { label: t('nav.lifeAtTte'), href: h('life-at-tte') },
+  { label: t('nav.events'), href: h('events') },
+  { label: t('nav.outreach'), href: h('outreach') },
+  { label: t('nav.give'), href: h('give') },
+  { label: t('nav.getInTouch'), href: h('get-in-touch') },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, '');
+const isCurrent = (href: string) => current === href.replace(/\/$/, '');
+---
+
+<header class="site-header no-print">
+  <div class="site-header__bar page-shell page-shell--wide">
+    <a class="site-header__brand" href={h('')} aria-label={`${CHURCH.name}, home`}>
+      <EdgeMark size={34} />
+      <span class="site-header__wordmark">
+        <span class="site-header__name">The Transformation Edge</span>
+        <span class="site-header__place">{CHURCH.place}</span>
+      </span>
+    </a>
+
+    <!-- Desktop navigation -->
+    <nav class="site-header__nav" aria-label={t('nav.primary')}>
+      <ul role="list">
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="site-header__utility">
+      <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
+
+      <!-- Connect holds a persistent utility position, section 11. It is a
+           separate application, so it is a plain outbound link, never an iframe. -->
+      <a class="site-header__connect" href={CHURCH.connectUrl} rel="noopener">
+        {t('nav.connect')}
+        <svg class="mirror-in-rtl" viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" focusable="false">
+          <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+    </div>
+
+    <!-- Mobile navigation -->
+    <details class="site-header__mobile">
+      <summary aria-label={t('nav.menu')}>
+        <span class="site-header__burger" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
+        <span class="visually-hidden">{t('nav.menu')}</span>
+      </summary>
+      <nav class="site-header__drawer" aria-label={t('nav.primary')}>
+        <ul role="list">
+          {
+            primaryNav.map((item) => (
+              <li>
+                <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+          <li class="site-header__drawer-connect">
+            <a href={CHURCH.connectUrl} rel="noopener">{t('nav.connect')}</a>
+          </li>
+        </ul>
+        <div class="site-header__drawer-locale">
+          <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
+        </div>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--layer-header);
+    /* Translucent rather than filled, so the composition reads through it. */
+    background-color: color-mix(in oklab, var(--color-canvas) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border-block-end: var(--border-hairline) solid transparent;
+  }
+
+  @supports not (backdrop-filter: blur(12px)) {
+    .site-header {
+      background-color: var(--color-canvas);
+    }
+  }
+
+  .site-header__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    min-block-size: 4rem;
+  }
+
+  .site-header__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    color: var(--color-text);
+    text-decoration: none;
+    margin-inline-end: auto;
+  }
+
+  .site-header__wordmark {
+    display: flex;
+    flex-direction: column;
+    line-height: var(--leading-tight);
+  }
+
+  /* One line, not three. The old wordmark was tracked across three lines and
+     fought every horizontal header it sat in. */
+  .site-header__name {
+    font-family: var(--font-display);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-tight);
+    white-space: nowrap;
+  }
+
+  .site-header__place {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .site-header__nav {
+    display: none;
+  }
+
+  .site-header__nav ul {
+    display: flex;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-header__nav a {
+    display: block;
+    padding-block: var(--space-2xs);
+    color: var(--color-text-muted);
+    font-size: var(--text--1);
+    text-decoration: none;
+  }
+
+  .site-header__nav a:hover {
+    color: var(--color-text);
+  }
+
+  .site-header__nav a[aria-current='page'] {
+    color: var(--color-text);
+    font-weight: var(--weight-semibold);
+  }
+
+  .site-header__utility {
+    display: none;
+    align-items: center;
+    gap: var(--space-2xs);
+  }
+
+  .site-header__connect {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3xs);
+    padding-block: var(--space-3xs);
+    padding-inline: var(--space-s);
+    min-block-size: 2.5rem;
+    border: var(--border-hairline) solid var(--color-action-quiet-border);
+    border-radius: var(--radius-full);
+    color: var(--color-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+  }
+
+  .site-header__connect:hover {
+    border-color: var(--color-text);
+  }
+
+  /* --------------------------------------------------------------- mobile */
+
+  .site-header__mobile summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: var(--radius-m);
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .site-header__mobile summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .site-header__burger {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    inline-size: 20px;
+  }
+
+  .site-header__burger span {
+    display: block;
+    block-size: 2px;
+    background-color: var(--color-text);
+    border-radius: var(--radius-full);
+  }
+
+  .site-header__drawer {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 100%;
+    padding: var(--space-s) var(--page-inline-padding) var(--space-l);
+    background-color: var(--color-canvas-raised);
+    border-block-end: var(--border-hairline) solid var(--color-border);
+    box-shadow: var(--elevation-floating);
+  }
+
+  .site-header__drawer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-header__drawer a {
+    display: block;
+    padding-block: var(--space-xs);
+    border-block-end: var(--border-hairline) solid var(--color-border);
+    color: var(--color-text);
+    font-size: var(--text-1);
+    text-decoration: none;
+  }
+
+  .site-header__drawer-connect a {
+    color: var(--color-text-accent);
+    font-weight: var(--weight-semibold);
+  }
+
+  .site-header__drawer-locale {
+    margin-block-start: var(--space-m);
+  }
+
+  @media (min-width: 64rem) {
+    .site-header__nav,
+    .site-header__utility {
+      display: flex;
+    }
+
+    .site-header__mobile {
+      display: none;
+    }
+
+    .site-header__name {
+      font-size: var(--text-1);
+    }
+  }
+</style>
+
+<script>
+  /*
+    Progressive only. The disclosure already opens, closes and traps nothing.
+    This adds the two behaviours a pointer user expects and a <details> does not
+    provide: Escape to close, and closing when focus or a click leaves it.
+  */
+  const menu = document.querySelector<HTMLDetailsElement>('.site-header__mobile');
+  if (menu) {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menu.open) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (menu.open && !menu.contains(event.target as Node)) menu.open = false;
+    });
+  }
+
+  /*
+    Connect session detection, section 11. If the visitor already has a Connect
+    session, the label becomes "Open Connect" rather than "Sign in to Connect".
+    The check is a cookie set on the shared parent domain by Connect itself, so
+    no request is made and nothing is stored here. Absent the cookie, the label
+    is left exactly as rendered, which is the safe default.
+  */
+  if (document.cookie.split('; ').some((c) => c.startsWith('tte_connect_session='))) {
+    document.querySelectorAll<HTMLElement>('[data-connect-label]').forEach((element) => {
+      const signedIn = element.dataset.connectLabelSignedIn;
+      if (signedIn) element.textContent = signedIn;
+    });
+  }
+</script>
