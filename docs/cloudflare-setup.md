@@ -23,58 +23,61 @@ there to build yet.
 **Option A is the one to take now.** It gives you a live URL to show the board
 without committing anything to `main` first.
 
-## Creating the project
+## Cloudflare builds a Worker, not a Pages project
 
-1. Sign in at **dash.cloudflare.com**.
-2. In the left sidebar find **Workers & Pages**, then **Create**.
-   Cloudflare has been merging Pages into Workers, so the wording moves around.
-   You are looking for anything that offers **Pages** and **Connect to Git**.
-3. Choose **Pages**, then **Connect to Git**.
-4. Pick the repository **ECCServices1/The-TransEdge-Website**.
-   If it is not listed, click the option to configure the GitHub app and grant
-   it access to that repository specifically.
+Cloudflare has folded Pages into Workers. Connecting a repository now creates a
+**Worker**, and a Worker arrives configured with:
 
-## The settings that matter
+    Build command:   None
+    Deploy command:  npx wrangler deploy
 
-Cloudflare will try to guess these. Check each one.
+Nothing is built, so `wrangler` finds no site to publish and fails with:
 
-| Setting | Value |
+    Could not detect a directory containing static files (e.g. html, css and js)
+
+That message is accurate and unhelpful. Two things were missing, and both are
+now fixed:
+
+1. **`wrangler.jsonc` in the repository** tells Cloudflare the built site is in
+   `./dist`. It is committed, so there is nothing to do about this one.
+2. **The build command was empty.** Set it in the dashboard, below.
+
+## Fix the settings
+
+In the project, open **Settings**, find the build configuration, and set:
+
+| Setting | Change it to |
 |---|---|
-| Project name | `thetransedge` (this becomes `thetransedge.pages.dev`) |
-| Production branch | `claude/tte-website-redesign-0blqx1` for option A, `main` for option B |
-| Framework preset | **Astro**, or leave it as None. Either works |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
-| Root directory | leave blank |
+| Deploy command | `npx wrangler deploy` (already correct, leave it) |
+| Root directory | `/` (already correct, leave it) |
+| Branch | `claude/tte-website-redesign-0blqx1` |
 
-**Environment variables: none.** You do not need any to get a working site.
-`CONNECT_API_URL` and the Turnstile keys only matter once the Connect Hub and
-the contact forms are live, and the site is built to work without them.
+Save, then **Retry build**.
 
-Then **Save and Deploy**.
+The branch matters as much as the build command. `main` holds one file, a
+README, so building it produces no site no matter what else is configured.
 
 ## What a good build looks like
 
-The log scrolls for two to three minutes. Near the end you want:
+The log runs two to three minutes. Near the end:
 
-```
-41 page(s) built
-Finished
-Success: Assets published!
-```
+    41 page(s) built
+    Read 544 files from the assets directory
+    Uploaded ... Deployed the-transedge-website
 
-Then Cloudflare gives you a URL ending in `.pages.dev`. **That is the site.**
-Open it. That is the preview to show the board.
+Then Cloudflare gives you a `.workers.dev` URL. **That is the site.**
 
-## If it fails
+## If it still fails
 
-| What the log says | What it means |
+| The log says | It means |
 |---|---|
-| `Could not read package.json` or `npm: command not found` at the very start | You are building from `main`. Change the production branch, per option A above |
-| `Node version` or `engine` complaint | Add an environment variable `NODE_VERSION` set to `22`, and retry the deploy |
-| `Error: Cannot find module` | The install did not finish. Retry the deploy; it is usually transient |
+| `Could not detect a directory containing static files` | The build command is still empty, or still building `main` |
+| `Could not read package.json` | Still on `main`. Change the branch |
+| `Node version` or `engine` | Add a build variable `NODE_VERSION` set to `22`, retry |
+| `Authentication error` | The build token needs redoing. Disconnect and reconnect the repository |
 
-A failed deploy changes nothing and costs nothing. Retrying is safe.
+A failed build changes nothing and costs nothing. Retrying is safe.
 
 ## What happens from now on
 
