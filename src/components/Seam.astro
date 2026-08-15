@@ -25,7 +25,7 @@
  * the stroke an even weight despite that non-uniform scale.
  */
 
-import { SEAM_PATH, SEAM_DRIFT } from '../lib/seam-path.mjs';
+import { SEAM_PATH, SEAM_DRIFT, SEAM_REVEAL } from '../lib/seam-path.mjs';
 
 interface Props {
   /** Left-to-right and right-to-left get mirrored paths, so the seam always enters from the leading edge. */
@@ -44,6 +44,28 @@ const { dir = 'ltr', drop = false } = Astro.props;
 const driftKeyframes = SEAM_DRIFT.map(
   (x, i) =>
     `${((i / (SEAM_DRIFT.length - 1)) * 100).toFixed(1)}% { transform: translateX(calc(${x} * -1%)); }`
+).join('\n    ');
+
+/*
+  The reveal. Opacity and stroke width rise together, so the seam gathers rather
+  than merely fades up, and both dip where the copy needs the attention.
+
+  stroke-width is not a compositor property. It is animated here anyway, on one
+  path, because the alternative is a filter or a mask animation and both are
+  more expensive. One SVG path re-rasterising on scroll is cheap; the budget is
+  checked on every push and this is inside it.
+*/
+const revealKeyframes = SEAM_REVEAL.map(
+  ([progress, opacity, width]) =>
+    `${(progress * 100).toFixed(1)}% { opacity: ${opacity}; stroke-width: ${width}; }`
+).join('\n    ');
+
+/* The drop is the leading point of that light, so it brightens on the same
+   curve rather than staying at full strength while the seam behind it is still
+   obscured. */
+const dropRevealKeyframes = SEAM_REVEAL.map(
+  ([progress, opacity]) =>
+    `${(progress * 100).toFixed(1)}% { opacity: ${Math.min(1, opacity + 0.15).toFixed(2)}; }`
 ).join('\n    ');
 
 /**
@@ -93,7 +115,7 @@ const maskId = 'seam-lit-window';
     </defs>
 
     <!-- The seam itself. Always drawn. -->
-    <path class="seam-base" d={PATH} vector-effect="non-scaling-stroke" />
+    <path class="seam-base" data-seam-base d={PATH} vector-effect="non-scaling-stroke" />
 
     <!-- The light travelling along it. Hidden unless the browser can move it. -->
     <g mask={`url(#${maskId})`}>
@@ -257,6 +279,22 @@ const maskId = 'seam-lit-window';
   }
 </style>
 
+<style
+  is:inline
+  set:html={`
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-seam-base] {
+      animation: tte-seam-reveal linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+@keyframes tte-seam-reveal {
+    ${revealKeyframes}
+}`}
+/>
+
 {
   /* Generated from SEAM_DRIFT, so the drop's track and the seam's path cannot
      disagree: adding a movement changes one array in src/lib/seam-path.mjs. */
@@ -275,6 +313,19 @@ const maskId = 'seam-lit-window';
 }
 @keyframes tte-drop-drift {
     ${driftKeyframes}
+}
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    [data-seam-drop] {
+      animation:
+        tte-drop-drift linear both,
+        tte-drop-reveal linear both;
+      animation-timeline: scroll(root block), scroll(root block);
+    }
+  }
+}
+@keyframes tte-drop-reveal {
+    ${dropRevealKeyframes}
 }`}
     />
   )

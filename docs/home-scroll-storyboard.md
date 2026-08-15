@@ -161,7 +161,7 @@ movements is part of the composition.
   eyes, not a test.
 
 
-## The eleven movements, and the drop
+## The twelve movements, the reveal, and the drop
 
 Revised after review: the page was too short and stopped before most of what a
 returning visitor comes for. It now runs the full length of the site.
@@ -171,14 +171,15 @@ returning visitor comes for. It now runs the full length of the site.
 | 1 | Arrival | Plan your visit | "There is a place for you here," |
 | 2 | Welcome | What a Sunday looks like | the photograph crossing the boundary |
 | 3 | Vision | Who we are | the seam changing colour |
-| 4 | What is on | Events | the card edge aligning with the next rule |
-| 5 | Beyond the room | Outreach | the closing line |
-| 6 | EdgedIn | EdgedIn Network | the inverted ground resolving to canvas |
-| 7 | Watch and listen | Watch and listen, live | "What happens on a Sunday costs something to make," |
-| 8 | Give | Ways to give | "None of it runs itself," |
-| 9 | Life at TTE | Life at TTE | the mark appearing |
-| 10 | Connect | Connect Hub | the seam settling vertical |
-| 11 | Get in touch | Get in touch, prayer | nothing. The page ends here |
+| 4 | The Rain is Coming | Conference 2026 | the weather clearing |
+| 5 | What is on | Events | the card edge aligning with the next rule |
+| 6 | Beyond the room | Outreach | the closing line |
+| 7 | EdgedIn | EdgedIn Network | the inverted ground resolving to canvas |
+| 8 | Watch and listen | Watch and listen, live | "What happens on a Sunday costs something to make," |
+| 9 | Give | Ways to give | "None of it runs itself," |
+| 10 | Life at TTE | Life at TTE | the mark appearing |
+| 11 | Connect | Connect Hub | the seam settling vertical |
+| 12 | Get in touch | Get in touch, prayer | nothing. The page ends here |
 
 Movements 1 and 2, 7 and 8, and 8 and 9 are joined by a sentence that begins in
 one movement and finishes as the heading of the next. Read straight down, the
@@ -232,3 +233,65 @@ Scripture would work, and would work better than the drop, but it needs a verse
 this church has actually chosen. Guessing one is the same mistake as guessing a
 statement of faith. If a verse is nominated, the drop can travel along it rather
 than beside it, and the text becomes the channel.
+
+
+## The reveal, revised
+
+The first version lit the seam evenly and let the drop do the work. The revised
+brief asked for something better: the connecting line should **open out of
+obscurity**, brightening as the page is read, dimming in places for effect and
+returning.
+
+That is now `SEAM_REVEAL` in `src/lib/seam-path.mjs`. Ten stops, each
+`[progress, opacity, width]`, driving the seam's own opacity and stroke weight
+off the root scroll timeline. Brightness and weight rise together, so the line
+**gathers** rather than merely fading up.
+
+The two dips are placed, not spaced:
+
+- **over the vision**, so the locked words carry that movement on their own
+- **over giving**, for the same reason
+
+A line brightening beside copy that matters competes with it. The drawing-back
+and returning is also what stops a monotonic fade from reading as a progress bar.
+
+The drop is now the leading point of that light rather than a separate object:
+it brightens on the same curve, slightly ahead of the seam behind it.
+
+Without scroll-driven animation, or with motion reduced, the seam is simply
+drawn at full strength and the drop is not shown. The arrived state is the
+resting state.
+
+### Why this figure
+
+The conference artwork for **RAIN** is light breaking through storm cloud onto
+water. The page now does across twelve movements what the poster does in one
+frame, and the two arrive in the same place. That was not the plan when the seam
+was drawn; the seam came from the gap between the two planes of the mark. It is
+a coincidence worth keeping rather than a theme applied on top.
+
+The conference movement sits at the peak of the reveal curve, and it is the
+darkest thing on the page. It is the one movement where the light-out-of-
+obscurity figure is not a metaphor.
+
+## The conference
+
+`src/data/conference.mjs`. Everything in it came from the supplied teaser and
+nothing was inferred: the name, the tag, the teaser line, and the dates
+13 to 15 November 2026.
+
+There is deliberately no venue, no timetable, no speaker list, no price and no
+registration link, because none were given. `registrationUrl` is null and the
+component renders "Tell me when registration opens" rather than a button that
+goes nowhere, which is a worse thing to do on a conference page than anywhere
+else on a site.
+
+It is set typographically in the site's own system rather than as a copy of the
+poster. The poster uses a metallic display face that is not part of the
+masterbrand: fine on a poster, wrong on a web page, and an approximation of it
+in Fraunces would read as a mistake rather than a decision. The shaft of light
+is drawn with two gradients and a column, so it is the same figure as the poster
+and none of its pixels.
+
+**When the artwork is supplied**, add it as `src/assets/photos/E1-rain-2026.jpg`
+and pass it to the teaser. The typographic setting then becomes its caption.

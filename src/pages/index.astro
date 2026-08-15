@@ -2,12 +2,13 @@
 /**
  * Home: the continuous canvas.
  *
- * Eleven movements, each opening into the next. The handoff device for every
+ * Twelve movements, each opening into the next. The handoff device for every
  * boundary is named in a comment above the movement and drawn in
  * docs/home-scroll-storyboard.md.
  *
- * The order runs arrival, welcome, vision, events, outreach, EdgedIn, watch and
- * listen, give, life at TTE, connect, and finishes at get in touch. That last
+ * The order runs arrival, welcome, vision, the conference, events, outreach,
+ * EdgedIn, watch and listen, give, life at TTE, connect, and finishes at get in
+ * touch. That last
  * one matters: every movement above it asks the reader to do something, and the
  * page ends by offering a person to talk to instead.
  *
@@ -24,6 +25,7 @@ import Button from '../components/Button.astro';
 import Photo from '../components/Photo.astro';
 import EdgeMark from '../components/EdgeMark.astro';
 import Waypoint from '../components/Waypoint.astro';
+import ConferenceTeaser from '../components/ConferenceTeaser.astro';
 
 import { CHURCH, VISION, TAGLINE, FAMILY_ORGS, GIVING } from '../data/church.mjs';
 import { gatheringSchema } from '../lib/structured-data.mjs';
@@ -159,7 +161,21 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 4: THIS WEEK
+       MOVEMENT 4: THE CONFERENCE
+       The next major event, and the darkest movement on the page. The
+       seam's reveal curve peaks here: the whole canvas is light opening
+       out of obscurity, and this is where that stops being a metaphor.
+       Handoff out: the weather clears and the diary follows.
+       ================================================================== -->
+  <section class="movement conference">
+    <Waypoint step={4} />
+    <div class="page-shell">
+      <ConferenceTeaser />
+    </div>
+  </section>
+
+  <!-- ==================================================================
+       MOVEMENT 5: THIS WEEK
        Events from Connect. Falls back to the last successful payload, and
        to the standing gatherings if there is nothing at all, so this
        movement is never empty.
@@ -167,7 +183,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        rule of the EdgedIn movement.
        ================================================================== -->
   <section class="movement week" aria-labelledby="week-heading">
-    <Waypoint step={4} />
+    <Waypoint step={5} />
     <div class="page-shell page-shell--wide">
       <div class="week__head">
         <h2 id="week-heading" data-reveal>What is on</h2>
@@ -208,13 +224,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
 
   <!-- ==================================================================
-       MOVEMENT 5: OUTREACH
+       MOVEMENT 6: OUTREACH
        ECCS as sister organisation. Careful wording: separate entity,
        services are not church programs, no church involvement required.
        Handoff out: the closing line opens the Connect movement.
        ================================================================== -->
   <section class="movement outreach" aria-labelledby="outreach-heading">
-    <Waypoint step={5} />
+    <Waypoint step={6} />
     <div class="page-shell outreach__inner">
       <h2 id="outreach-heading" data-reveal>Beyond the room</h2>
       <div class="prose" data-reveal>
@@ -230,14 +246,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     </div>
   </section>
   <!-- ==================================================================
-       MOVEMENT 6: EDGEDIN
+       MOVEMENT 7: EDGEDIN
        The most editorially expressive area. Inverted ground, so the seam
        reads as light rather than line while it crosses.
        Handoff out: the inverted ground resolves back to canvas through a
        gradient that starts inside this movement and finishes in the next.
        ================================================================== -->
   <section class="movement edgedin" aria-labelledby="edgedin-heading">
-    <Waypoint step={6} />
+    <Waypoint step={7} />
     <div class="page-shell page-shell--wide edgedin__inner">
       <div>
         <p class="edgedin__eyebrow" data-reveal>EdgedIn Network</p>
@@ -263,14 +279,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 7: WATCH AND LISTEN
+       MOVEMENT 8: WATCH AND LISTEN
        The first movement a returning visitor is looking for. Inverted
        ground again, briefly, so the drop reads as light crossing it.
        Handoff out: "take it with you" opens the giving movement, which is
        the other thing people do between Sundays.
        ================================================================== -->
   <section class="movement listen" aria-labelledby="listen-heading">
-    <Waypoint step={7} />
+    <Waypoint step={8} />
     <div class="page-shell listen__inner">
       <h2 id="listen-heading" data-reveal>Missed a Sunday, or want it again</h2>
       <div class="prose" data-reveal>
@@ -289,14 +305,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 8: GIVE
+       MOVEMENT 9: GIVE
        Completes the sentence opened above. Trust markers, not marketing:
        no urgency, no guilt, no countdown, and the deductibility line is
        stated rather than left for someone to assume.
        Handoff out: "and none of it runs itself" opens Life at TTE.
        ================================================================== -->
   <section class="movement give" aria-labelledby="give-heading">
-    <Waypoint step={8} />
+    <Waypoint step={9} />
     <div class="page-shell give__inner">
       <h2 id="give-heading" data-reveal>and giving is how most of it is paid for.</h2>
       <div class="prose" data-reveal>
@@ -315,13 +331,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 9: LIFE AT TTE
+       MOVEMENT 10: LIFE AT TTE
        Completes the sentence again. The people who do the work are the
        congregation, which is the point rather than a flourish.
        Handoff out: the mark appears, and the Connect movement follows.
        ================================================================== -->
   <section class="movement life" aria-labelledby="life-heading">
-    <Waypoint step={9} />
+    <Waypoint step={10} />
     <div class="page-shell life__inner">
       <h2 id="life-heading" data-reveal>and the people who do it come on a Sunday.</h2>
       <div class="prose" data-reveal>
@@ -340,13 +356,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
 
   <!-- ==================================================================
-       MOVEMENT 10: CONNECT
+       MOVEMENT 11: CONNECT
        The handoff out of the marketing site. Same tokens, same symbol, so
        leaving does not feel like leaving.
        Handoff out: the seam settles vertical and runs into the footer.
        ================================================================== -->
   <section class="movement connect" aria-labelledby="connect-heading">
-    <Waypoint step={10} />
+    <Waypoint step={11} />
     <div class="page-shell connect__inner">
       <EdgeMark size={44} />
       <h2 id="connect-heading" data-reveal>Already part of our church?</h2>
@@ -363,13 +379,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 11: GET IN TOUCH
+       MOVEMENT 12: GET IN TOUCH
        The last movement, and the only one that asks nothing. Everything
        above offers something to do; this offers a person to talk to.
        The drop stops here: the chain ends rather than fading out.
        ================================================================== -->
   <section class="movement reach" aria-labelledby="reach-heading">
-    <Waypoint step={11} last />
+    <Waypoint step={12} last />
     <div class="page-shell reach__inner">
       <h2 id="reach-heading" data-reveal>If you would rather just ask someone</h2>
       <div class="prose" data-reveal>
@@ -686,6 +702,12 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
      read as a list of links, which is exactly what the continuous canvas
      is meant not to be.
      ------------------------------------------------------------------ */
+
+  /* ------------------------------------------------------ conference */
+
+  .conference {
+    padding-block: var(--space-movement-tight);
+  }
 
   .listen {
     padding-block: var(--space-movement) var(--space-movement-tight);

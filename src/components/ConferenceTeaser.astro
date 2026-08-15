@@ -1,0 +1,178 @@
+---
+/**
+ * The Transformation Edge Conference 2026, tagged RAIN.
+ *
+ * Set typographically in the site's own system rather than as a copy of the
+ * supplied poster. The poster uses a metallic display face that is not part of
+ * the masterbrand, which is fine for a poster and wrong for a web page: an
+ * approximation of it in Fraunces would look like a mistake rather than a
+ * decision. When the artwork itself is added at src/assets/photos/E1-rain-2026,
+ * it goes in as the image and this typographic setting becomes its caption.
+ *
+ * It is the darkest thing on the home page, and deliberately so. The seam's
+ * reveal curve peaks here: the whole page is light opening out of obscurity,
+ * and this is the movement where that figure is not a metaphor. It is what the
+ * poster shows.
+ *
+ * Announced, not open. There is no registration link because there is no
+ * registration link to give, and a button that goes nowhere is worse on a
+ * conference page than on any other kind.
+ */
+import Button from './Button.astro';
+import { CONFERENCE } from '../data/conference.mjs';
+
+interface Props {
+  /** `section` on the home canvas, `article` in a list of events. */
+  as?: 'section' | 'article';
+  headingId?: string;
+  headingLevel?: 2 | 3;
+}
+
+const { as: Tag = 'section', headingId = 'conference-heading', headingLevel = 2 } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+---
+
+<Tag class="rain" aria-labelledby={headingId}>
+  <div class="rain__weather" aria-hidden="true">
+    <span class="rain__shaft"></span>
+  </div>
+
+  <div class="rain__inner">
+    <p class="rain__eyebrow" data-reveal>This November</p>
+
+    <Heading id={headingId} class="rain__teaser" data-reveal>
+      {CONFERENCE.teaser}
+    </Heading>
+
+    <p class="rain__name" data-reveal>
+      {CONFERENCE.name}
+      <span class="rain__tag">{CONFERENCE.tag}</span>
+    </p>
+
+    <p class="rain__dates" data-reveal>
+      <time datetime={CONFERENCE.startsAt} class="ltr-embed">{CONFERENCE.displayDates}</time>
+    </p>
+
+    <p class="rain__actions" data-reveal>
+      {
+        CONFERENCE.registrationUrl ? (
+          <Button href={CONFERENCE.registrationUrl} size="large" external>
+            Register
+          </Button>
+        ) : (
+          <Button href="/get-in-touch" tone="quiet">Tell me when registration opens</Button>
+        )
+      }
+    </p>
+  </div>
+</Tag>
+
+<style>
+  .rain {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-3xl) var(--space-l);
+    background-color: var(--color-canvas-inverse);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-l);
+    isolation: isolate;
+  }
+
+  /* The shaft of light, drawn rather than photographed. Two gradients: a wide
+     soft bloom, and a narrow column reaching down to the base. It is the same
+     figure as the poster and none of the poster's pixels. */
+  .rain__weather {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      radial-gradient(
+        60% 55% at 72% 0%,
+        color-mix(in oklab, var(--color-ember) 34%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        90% 70% at 20% 100%,
+        color-mix(in oklab, var(--color-heritage) 40%, transparent),
+        transparent 72%
+      );
+  }
+
+  .rain__shaft {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 22%;
+    inline-size: clamp(2px, 0.6vw, 6px);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-ember-light) 85%, transparent),
+      color-mix(in oklab, var(--color-ember-light) 25%, transparent) 62%,
+      transparent
+    );
+  }
+
+  .rain__inner {
+    position: relative;
+    max-inline-size: 40rem;
+  }
+
+  .rain__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    text-transform: uppercase;
+    /* Full strength rather than dimmed. This sits on the inverse ground, which
+       is a checked pairing; an opacity on top of it is not. */
+    color: var(--color-text-inverse);
+  }
+
+  .rain__teaser {
+    margin-block: var(--space-s) var(--space-m);
+    font-family: var(--font-display);
+    font-size: var(--text-4);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--text-4-tracking);
+    text-wrap: balance;
+  }
+
+  .rain__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    font-size: var(--text-1);
+  }
+
+  .rain__tag {
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-widest);
+    /* An outline rather than a fill. Ember is capped at five per cent of a
+       composition and the shaft has already spent most of it. */
+    border: var(--border-hairline) solid currentColor;
+    border-radius: var(--radius-s);
+  }
+
+  .rain__dates {
+    margin-block-start: var(--space-s);
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .rain__actions {
+    margin-block-start: var(--space-l);
+  }
+
+  @media (max-width: 48rem) {
+    .rain {
+      padding: var(--space-2xl) var(--space-m);
+    }
+
+    /* The shaft moves off the type on a narrow screen rather than falling
+       across it. */
+    .rain__shaft {
+      inset-inline-end: 8%;
+    }
+  }
+</style>

@@ -46,3 +46,45 @@ export const SEAM_PATH = [
  * (68 to 88) into a distance from the trailing edge.
  */
 export const SEAM_DRIFT = [12, 15, 20, 16, 14, 26, 30, 24, 20, 26, 29];
+
+/**
+ * The reveal.
+ *
+ * The seam is not a line that happens to be lit. It starts obscured and opens
+ * as the page is read, so scrolling is the act of revealing it, and the further
+ * down you go the more of it there is to see.
+ *
+ * Each stop is [progress, opacity, width]. Progress is the fraction of the page
+ * scrolled; opacity and width are the seam's own, so brightness and weight rise
+ * together and the line reads as gathering rather than merely fading up.
+ *
+ * The two dips are deliberate and are placed rather than spaced. The first sits
+ * over the vision, the second over giving: in both, the copy is the thing to
+ * look at, and a line brightening beside it competes. The seam drawing back and
+ * returning is also what stops a monotonic fade from reading as a loading bar.
+ *
+ * This is the same figure as the conference artwork, which is light breaking
+ * through cloud onto water. The page does over twelve movements what the poster
+ * does in one frame, and both arrive at the same place: the light wins.
+ */
+export const SEAM_REVEAL = [
+  /* Arrival. Barely there: a fold in the paper, not a line. */
+  [0.0, 0.18, 0.8],
+  /* Welcome. The first opening. */
+  [0.12, 0.42, 1.1],
+  /* Vision. Draws back, so the locked words carry the movement alone. */
+  [0.24, 0.22, 0.9],
+  /* Conference. Returns hard. This is the thing being announced. */
+  [0.34, 0.78, 2.0],
+  /* Events, outreach, EdgedIn. Settles and holds. */
+  [0.46, 0.58, 1.4],
+  [0.58, 0.66, 1.5],
+  /* Give. The second dip. */
+  [0.68, 0.34, 1.0],
+  /* Life at TTE. */
+  [0.78, 0.72, 1.7],
+  /* Connect. */
+  [0.88, 0.86, 2.0],
+  /* Get in touch. Fully open. */
+  [1.0, 1.0, 2.4],
+];
