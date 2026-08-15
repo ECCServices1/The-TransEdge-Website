@@ -76,6 +76,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      # A missing target surfaces here as one clear line, rather than as
+      # several hundred audit exceptions and a generic "unable to load the page".
+      - name: Lighthouse targets exist
+        run: npm run check:lighthouse-urls
+
       # Section 21. Lighthouse 95+ across all four categories, LCP under 2.0s,
       # INP proxied by total blocking time, CLS under 0.1, JS under 150KB.
       # assertions live in lighthouserc.json and are enforced, not advisory.

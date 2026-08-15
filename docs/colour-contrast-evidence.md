@@ -8,7 +8,7 @@ user interface components and graphical objects (SC 1.4.11).
 Ratios are computed from the sRGB relative luminance formula in the WCAG
 definition, not estimated.
 
-**Result: all 46 guaranteed pairings pass.**
+**Result: all 50 guaranteed pairings pass.**
 
 ## Light scheme
 
@@ -19,11 +19,13 @@ definition, not estimated.
 | Body copy on a sunken surface | `text` #201e1b | `canvas-sunken` #efece9 | 14.13:1 | 4.5:1 | AAA | pass |
 | Secondary copy on the canvas | `text-muted` #615d58 | `canvas` #faf8f6 | 6.17:1 | 4.5:1 | AA | pass |
 | Secondary copy on a raised surface | `text-muted` #615d58 | `canvas-raised` #ffffff | 6.53:1 | 4.5:1 | AA | pass |
+| Secondary copy on a sunken surface | `text-muted` #615d58 | `canvas-sunken` #efece9 | 5.55:1 | 4.5:1 | AA | pass |
 | Captions and metadata, large or non-essential only | `text-subtle` #827c76 | `canvas` #faf8f6 | 3.89:1 | 3:1 | AA large | pass |
 | Accent copy and inline links on the canvas | `text-accent` #983e14 | `canvas` #faf8f6 | 6.53:1 | 4.5:1 | AA | pass |
 | Accent copy on a raised surface | `text-accent` #983e14 | `canvas-raised` #ffffff | 6.92:1 | 4.5:1 | AA | pass |
 | Anchor-coloured copy on the canvas | `text-anchor` #4b576e | `canvas` #faf8f6 | 6.86:1 | 4.5:1 | AA | pass |
 | Copy on the inverted surface | `text-inverse` #faf8f6 | `canvas-inverse` #1c2331 | 14.86:1 | 4.5:1 | AAA | pass |
+| Metadata on the canvas at large sizes | `text-muted` #615d58 | `canvas` #faf8f6 | 6.17:1 | 3:1 | AA | pass |
 | Primary button label, resting | `action-fg` #ffffff | `action-bg` #be4f1b | 4.86:1 | 4.5:1 | AA | pass |
 | Primary button label, hover | `action-fg` #ffffff | `action-bg-hover` #983e14 | 6.92:1 | 4.5:1 | AA | pass |
 | Primary button label, active | `action-fg` #ffffff | `action-bg-active` #722c0b | 10.09:1 | 4.5:1 | AAA | pass |
@@ -47,11 +49,13 @@ definition, not estimated.
 | Body copy on a sunken surface | `text` #faf8f6 | `canvas-sunken` #000000 | 19.82:1 | 4.5:1 | AAA | pass |
 | Secondary copy on the canvas | `text-muted` #dedad5 | `canvas` #101621 | 13.03:1 | 4.5:1 | AAA | pass |
 | Secondary copy on a raised surface | `text-muted` #dedad5 | `canvas-raised` #1c2331 | 11.31:1 | 4.5:1 | AAA | pass |
+| Secondary copy on a sunken surface | `text-muted` #dedad5 | `canvas-sunken` #000000 | 15.10:1 | 4.5:1 | AAA | pass |
 | Captions and metadata, large or non-essential only | `text-subtle` #c2bdb7 | `canvas` #101621 | 9.71:1 | 3:1 | AAA | pass |
 | Accent copy and inline links on the canvas | `text-accent` #fcbda5 | `canvas` #101621 | 11.19:1 | 4.5:1 | AAA | pass |
 | Accent copy on a raised surface | `text-accent` #fcbda5 | `canvas-raised` #1c2331 | 9.72:1 | 4.5:1 | AAA | pass |
 | Anchor-coloured copy on the canvas | `text-anchor` #c1cde3 | `canvas` #101621 | 11.31:1 | 4.5:1 | AAA | pass |
 | Copy on the inverted surface | `text-inverse` #201e1b | `canvas-inverse` #faf8f6 | 15.70:1 | 4.5:1 | AAA | pass |
+| Metadata on the canvas at large sizes | `text-muted` #dedad5 | `canvas` #101621 | 13.03:1 | 3:1 | AAA | pass |
 | Primary button label, resting | `action-fg` #101621 | `action-bg` #f6946d | 8.09:1 | 4.5:1 | AAA | pass |
 | Primary button label, hover | `action-fg` #101621 | `action-bg-hover` #fcbda5 | 11.19:1 | 4.5:1 | AAA | pass |
 | Primary button label, active | `action-fg` #101621 | `action-bg-active` #fedacc | 13.91:1 | 4.5:1 | AAA | pass |

@@ -118,7 +118,28 @@ const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
     inset-block-end: calc(100% + var(--space-3xs));
   }
 
-  .locale__link {
+  /*
+    The footer is the one inverted surface on the site, so the trigger sitting
+    directly on it needs the inverse token. Using the canvas-relative muted
+    colour here measured 2.4:1, which is a fail: the token was right for the
+    component and wrong for the ground it was placed on.
+  */
+  .locale--footer .locale__summary {
+    color: var(--color-text-inverse);
+  }
+
+  .locale--footer .locale__summary:hover {
+    color: var(--color-text-inverse);
+    text-decoration: underline;
+  }
+
+  /*
+    The panel is a raised surface even inside the footer, so its links keep the
+    canvas text colour. Scoped through .locale to outrank the footer's blanket
+    `a { color: inherit }`, which would otherwise paint near-white text on a
+    near-white panel.
+  */
+  .locale .locale__link {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 0 var(--space-2xs);
@@ -131,7 +152,7 @@ const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
     align-content: center;
   }
 
-  .locale__link:hover {
+  .locale .locale__link:hover {
     background-color: var(--color-canvas-sunken);
   }
 
@@ -145,15 +166,14 @@ const current = LOCALES.find((l) => l.path === currentLocale) ?? LOCALES[0];
     font-size: var(--text-0);
   }
 
-  .locale__english,
-  .locale__pending {
+  .locale .locale__english,
+  .locale .locale__pending {
     grid-column: 2;
     font-size: var(--text--1);
     color: var(--color-text-muted);
   }
 
-  .locale__pending {
+  .locale .locale__pending {
     grid-column: 1 / -1;
-    color: var(--color-text-subtle);
   }
 </style>

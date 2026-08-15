@@ -25,10 +25,28 @@ brief's own constraint, section 6.
 
 ### Every budget in section 21 met and evidenced
 
-**partial.** Budgets are asserted in CI: Lighthouse 95+ on all four categories,
-LCP under 2.0s, CLS under 0.1, total blocking time under 200ms as the INP proxy.
-They have not yet been run against a deployed site on real 4G. The Arabic build
-is in the assertion set.
+**partial.** Measured on the built site, simulated 4G with a 4x CPU slowdown and
+a 360px mobile viewport:
+
+| Page | Perf | A11y | Best practices | SEO | LCP | CLS | TBT |
+|---|---|---|---|---|---|---|---|
+| Home | 1.00 | 1.00 | 1.00 | 1.00 | 1822ms | 0.000 | 0ms |
+| Plan your visit | 1.00 | 1.00 | 1.00 | 1.00 | 1816ms | 0.000 | 0ms |
+| Give | 1.00 | 1.00 | 1.00 | 1.00 | 1813ms | 0.000 | 0ms |
+| Get in touch | 1.00 | 1.00 | 1.00 | 1.00 | 1809ms | 0.000 | 0ms |
+| Events | 1.00 | 1.00 | 1.00 | 1.00 | 1805ms | 0.000 | 0ms |
+| EdgedIn | 1.00 | 1.00 | 1.00 | 1.00 | 1806ms | 0.000 | 0ms |
+| Arabic, plan your visit | 1.00 | 1.00 | 1.00 | 0.63 | 1809ms | 0.000 | 0ms |
+
+All four categories at 100, LCP under the 2.0s budget, CLS at zero, no blocking
+time. The Arabic page's SEO score is low because it is deliberately `noindex`
+until a native speaker reviews it, so SEO is asserted as a warning for that
+page only; its accessibility and performance are asserted identically to
+English and score identically.
+
+Still outstanding: these are lab numbers against the built output. They need
+re-running against the deployed site on a real connection, and field data needs
+thirty days to arrive.
 
 ### Service time, place and what to expect within two taps from any page
 

@@ -72,9 +72,11 @@ const { ref, brief, ratio = '4 / 3', bleed = 'none', class: className = '' } = A
     font-size: var(--text--1);
   }
 
+  /* Muted, not subtle. text-subtle is held to 3:1 and is for large text and
+     repeated metadata only; this is small body text and owes the full 4.5:1. */
   .photo-slot__status {
     font-size: var(--text--1);
-    color: var(--color-text-subtle);
+    color: var(--color-text-muted);
   }
 
   /* Images cross movement boundaries and are cropped by the viewport edge,
