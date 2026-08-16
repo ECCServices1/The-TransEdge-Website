@@ -24,14 +24,32 @@ and graded.
 | Slot | The frame | Why |
 |---|---|---|
 | **S1** | Row of the congregation standing in worship, side-on, keyboard and worship leader at right, open door and daylight behind | Faces, ages and backgrounds all legible. The welcome movement's copy is "a congregation of many languages and many countries", and this is that sentence as a photograph |
-| **S6** | The buffet queue. Foil trays, gloved hands serving, people waiting with plates | The most useful frame supplied. It is hospitality rather than performance, it is lit by the room rather than the stage, and it is the only one where a stranger could picture themselves |
-| **S8** | A tight crop of the same buffet frame, on the serving hands | Square, and already in the set |
+| **S6** | **Done.** `S6-afterwards.jpg`, supplied as "Buffett_Queue.jpg" | Hospitality rather than performance, lit by the room rather than the stage, and the only frame where a stranger could picture themselves. On What to Expect |
+| **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
+| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, on the pastoral team cards. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces |
 
-**Still missing after fifteen frames**, and these are the ones the New Here pages
-run on: S2 the recording setup, S3 the entrance from the street, S4 the welcome
-desk, S5 the EdgeKids room, S9 the empty room in morning light.
+**Still missing**, and these are the ones the New Here pages run on: S1 the wide
+congregation shot (named in Drive, too large to transfer so far), S2 the
+recording setup, S3 the entrance from the street, S4 the welcome desk, S5 the
+EdgeKids room, S9 the empty room in morning light, S10 the congregation in
+prayer.
+
+## How photographs reach the repository
+
+Google Drive, through the connector. Dropbox's content hosts are blocked by the
+build environment's network policy and GitHub's browser upload rejects files
+this size, but the Drive connector returns file contents through its own channel
+rather than a URL, so the bytes arrive without touching the blocked network.
+
+Name a file for the slot it fills, put it in the shared drive, and it can be
+pulled, cropped, graded and committed without leaving the repository.
+
+Every supplied frame is graded the same way on the way in: saturation to about
+0.82 and a slight easing of contrast. The stage lighting at this venue throws
+hard magenta, green and orange, and left alone it fights Deep Slate and the warm
+neutrals the site is built on.
 
 **No child appears in any supplied frame.** That keeps the consent position
 simple, and it leaves the EdgeKids page with no photograph of children at all. A

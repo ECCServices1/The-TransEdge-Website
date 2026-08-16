@@ -18,7 +18,25 @@ import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
 import seniorPastors from '../../assets/photos/S7-senior-pastors.jpg';
+import michaels from '../../assets/photos/S7-michaels.jpg';
+import osas from '../../assets/photos/S7-osas.jpg';
 import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+
+/*
+  Keyed by name rather than by array position, so reordering the pastors in
+  src/data/church.mjs cannot silently swap their photographs. Getting a face
+  wrong on a page that names people is not a layout bug.
+*/
+const portraits: Record<string, { src: ImageMetadata; alt: string }> = {
+  'Dr Michaels Aibangbee': {
+    src: michaels,
+    alt: 'Dr Michaels Aibangbee speaking to the gathering, microphone in hand.',
+  },
+  'Pastor Osas Aibangbee': {
+    src: osas,
+    alt: 'Pastor Osas Aibangbee speaking to the gathering, microphone in hand.',
+  },
+};
 ---
 
 <PageLayout
@@ -51,6 +69,17 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
         {
           CHURCH.seniorPastors.map((pastor) => (
             <li class="person" data-reveal>
+              {portraits[pastor.name] && (
+                <Photo
+                  ref="S7"
+                  src={portraits[pastor.name].src}
+                  alt={portraits[pastor.name].alt}
+                  brief={`Portrait of ${pastor.name}.`}
+                  ratio="4 / 5"
+                  sizes="(min-width: 56rem) 20rem, 50vw"
+                  class="person__photo"
+                />
+              )}
               <h3 class="person__name">{pastor.name}</h3>
               <p class="person__role">{pastor.role}</p>
               <p class="person__bio">Biography to come.</p>
@@ -134,6 +163,10 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
   .person {
     padding-block-start: var(--space-m);
     border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .person__photo {
+    margin-block-end: var(--space-s);
   }
 
   .person__name {
