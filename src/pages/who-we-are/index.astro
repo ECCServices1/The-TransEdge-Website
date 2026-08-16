@@ -7,6 +7,8 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import Photo from '../../components/Photo.astro';
+import together from '../../assets/photos/S11-together.jpg';
 import { CHURCH, VISION, MISSION, TAGLINE } from '../../data/church.mjs';
 
 const sections = [
@@ -35,6 +37,14 @@ const sections = [
       <blockquote class="statement"><p>{MISSION}</p></blockquote>
       <p class="tagline">{TAGLINE}</p>
     </section>
+
+    <Photo
+      ref="S11"
+      src={together}
+      alt="A group from our church standing together on stage at a celebration, with a cake on a table in front of them."
+      brief="Leaders and members together on stage at a celebration."
+      ratio="16 / 9"
+    />
 
     <section aria-labelledby="pastors-heading">
       <h2 id="pastors-heading">Senior Pastors</h2>

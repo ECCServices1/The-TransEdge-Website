@@ -15,6 +15,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
+import afterwards from '../../assets/photos/S6-afterwards.jpg';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -92,6 +93,8 @@ const wontHappen = [
 
     <Photo
       ref="S6"
+      src={afterwards}
+      alt="The queue at the meal after a gathering. People serving from trays while others wait with plates."
       brief="Tea and coffee afterwards. Two or three people talking, not posed."
       ratio="3 / 2"
     />
