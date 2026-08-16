@@ -6,12 +6,12 @@
  * and their roles. Everything else about a person, their story, how long they
  * have been here, what they carry, belongs to them and is theirs to supply.
  *
- * Section 7 and section 22 govern the hardest line on this page. Dr Michaels
- * Aibangbee also directs Renovate Health, which is a psychotherapy and
- * counselling practice, and Edge Community Care Services, which is a separate
- * DGR-endorsed entity. Those relationships are governance facts and are stated.
- * What is not stated, anywhere, is any suggestion that our church therefore
- * offers clinical services, or that pastoral care here is treatment. It is not.
+ * Section 22 still governs the hardest line on this page: nothing may suggest
+ * that pastoral care here is clinical treatment. The earlier version also
+ * named Renovate Health as a governance fact; the client removed every
+ * reference to it, and to any therapeutic service, in August 2026 (see the
+ * note in src/data/church.mjs). The non-clinical line stays; the pointer is
+ * gone.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
@@ -20,7 +20,7 @@ import Photo from '../../components/Photo.astro';
 import seniorPastors from '../../assets/photos/S7-senior-pastors.jpg';
 import michaels from '../../assets/photos/S7-michaels.jpg';
 import osas from '../../assets/photos/S7-osas.jpg';
-import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+import { CHURCH } from '../../data/church.mjs';
 
 /*
   Keyed by name rather than by array position, so reordering the pastors in
@@ -112,25 +112,11 @@ const portraits: Record<string, { src: ImageMetadata; alt: string }> = {
          clinical treatment, and the page says so rather than leaving a reader
          to assume it either way. -->
     <section aria-labelledby="separate-heading">
-      <h2 id="separate-heading">What pastoral care is, and is not</h2>
-      <div class="prose">
-        <p>
-          Pastoral care here means someone sitting with you, praying with you and walking
-          alongside you. It is not therapy, treatment or diagnosis, and our pastors do not
-          offer it as such.
-        </p>
-        <p>
-          {FAMILY_ORGS.renovate.name} is a separate practice with qualified clinicians. You
-          can approach it directly, and doing so has nothing to do with our church.{' '}
-          {FAMILY_ORGS.eccs.name} is our sister organisation and a separately endorsed
-          charity, with its own services, its own books and its own complaints pathway.
-        </p>
-      </div>
-      <p class="actions">
-        <Button href="/outreach" tone="quiet">Edge Community Care Services</Button>
-        <Button href={FAMILY_ORGS.renovate.url} tone="quiet" external>
-          Renovate Health
-        </Button>
+      <h2 id="separate-heading">Pastoral care</h2>
+      <p class="prose">
+        Pastoral care here means someone sitting with you, praying with you and walking
+        alongside you. It is care, not clinical treatment, and we do not present it as
+        such.
       </p>
     </section>
   </div>

@@ -24,6 +24,7 @@ const latest = sermons[0] ?? null;
 const rest = sermons.slice(1, 13);
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 ---
 
 <PageLayout
@@ -73,8 +74,9 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
     <section aria-labelledby="live-heading">
       <h2 id="live-heading">Joining live</h2>
       <p class="prose">
-        We gather Sundays at {sunday.time} and the gathering is streamed. If you would rather
-        be in the room, the door is open and nobody will single you out.
+        We gather Sundays at {sunday.time} and Wednesdays at {midweek.time}, and Sundays are
+        streamed. If you would rather be in the room, the door is open and nobody will
+        single you out.
       </p>
       <p class="actions">
         <Button href={`${CHURCH.connectUrl}/live`} external size="large">Watch live</Button>

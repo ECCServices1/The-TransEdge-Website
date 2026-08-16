@@ -20,7 +20,6 @@
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import CrisisPointer from '../../components/CrisisPointer.astro';
 import { TRANSLATED_LOCALES, localeHref } from '../../i18n/locales.mjs';
 import { ESSENTIAL_PAGES } from '../../i18n/essential-pages.mjs';
 import { useTranslations, isPublishable } from '../../i18n/ui.mjs';
@@ -134,8 +133,6 @@ const title = t(page.titleKey);
       </ul>
       <p class="response">{t('contact.responseTime')}</p>
     </section>
-
-    {page.kind === 'contact' && <CrisisPointer locale={localePath} />}
 
     <p class="full-site" lang="en" dir="ltr">
       {t('locale.englishOnly')} <a href={localeHref('en', page.slug)}>Open the English site</a>.

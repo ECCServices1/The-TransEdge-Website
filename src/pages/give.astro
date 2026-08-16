@@ -28,24 +28,22 @@ const accounts = GIVING.bank.accounts ?? [];
     <section class="method" aria-labelledby="bank-heading">
       <h2 id="bank-heading">Direct bank transfer</h2>
       <p class="method__note">
-        No fees are taken out, so the full amount reaches our church.
+        No fees are taken out, so the full amount reaches our church. Both accounts below
+        are ours; use whichever suits.
       </p>
 
       <p class="bank__name">
         Account name <strong>{GIVING.bank.accountName}</strong>
       </p>
 
-      <!-- Two accounts, either one. Shown side by side rather than one behind a
-           toggle: a giver should never have to guess which they were meant to use. -->
+      {/* Two accounts, both valid. Shown side by side rather than one behind a
+          toggle: a giver should never have to guess which they were meant to
+          use. The one-word label that used to sit above each card was removed
+          at the client's request; the note above the cards carries the fact. */}
       <div class="bank__accounts">
         {
           accounts.map((account) => (
-            /* The "Either" label sits outside the list rather than inside it.
-               A <dl> may only contain dt/dd groups, and a stray <p> in there is
-               not a styling detail: a screen reader announces the label as part
-               of the term list, unattached to either account. */
             <div class="bank">
-              {accounts.length > 1 && <p class="bank__index">Either</p>}
               <dl>
                 <div>
                   <dt>BSB</dt>
@@ -179,14 +177,6 @@ const accounts = GIVING.bank.accounts ?? [];
     background-color: var(--color-canvas-raised);
     border: var(--border-hairline) solid var(--color-border);
     border-radius: var(--radius-m);
-  }
-
-  .bank__index {
-    font-size: var(--text--1);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-text-muted);
   }
 
   .bank__reference {

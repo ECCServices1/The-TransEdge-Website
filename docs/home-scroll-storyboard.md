@@ -365,3 +365,35 @@ tracking, and now uses the defined wide step; and the quiet button sank into
 the dark conference ground in light scheme, a pairing axe cannot compute over
 the gradient weather, so both dark stages restate the quiet and primary button
 inks explicitly.
+
+
+## The client's copy revisions, August 2026
+
+Applied after the chapters shipped, by the client's instruction:
+
+- **The first words welcome.** The hero is now "Welcome. You made it home."
+  with the accent on the final word. "A church in Penrith. A vision to impact
+  nations." is retired from the heading; the eyebrow still says Penrith,
+  Sydney, and the nations still arrive in the vision movement.
+- **The welcome movement carries the client's copy verbatim**: "This family
+  is a congregation of many languages, many ethnicities and many countries.
+  That is what the room is made of. Let us know if it is your first day."
+- **No reference to Renovate Health or to any therapeutic service** anywhere
+  on the site: the family listing in the footer, the pastoral team page, the
+  contact page's counselling signpost, the legal pages, and the crisis
+  pointer (000, Lifeline, Beyond Blue, 13YARN) on the contact and prayer
+  routes. The brief required the crisis pointer, so its removal is recorded
+  as a client decision in src/data/church.mjs. The protective line survives:
+  pastoral care is still stated as care, not clinical treatment.
+- **The corrected mission** replaces the section 2 wording, and retires the
+  em-dash the original carried.
+- **Sundays and Wednesdays carry equal weight**: the handoffs no longer
+  centre Sunday, plan-your-visit offers both days (and both gatherings'
+  structured data), what-to-expect notes the Wednesday evening, and "first
+  Sunday" phrasing became "first day" except on EdgeKids, which genuinely
+  runs on Sundays.
+- **Less text everywhere it was thickest**: the welcome movement went from
+  two paragraphs to the client's three sentences, and the life and reach
+  movements each lost a sentence.
+- The "Either" label above the two bank accounts on /give was removed; the
+  note above the cards now says both accounts are ours.

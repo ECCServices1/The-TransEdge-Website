@@ -83,9 +83,6 @@ export const en = {
   'contact.prayer': 'Ask for prayer',
   'contact.responseTime': 'We read everything that comes in and reply within two working days.',
   'contact.private': 'A prayer request goes to the pastoral team only.',
-  'contact.crisis': 'If you need help now',
-  'contact.crisisNote':
-    'We are a church, not a crisis service. If you are in danger or you need urgent help, please use one of these.',
 
   'events.title': 'Events',
   'events.none': 'There is nothing in the diary just now. Check back soon.',

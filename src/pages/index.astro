@@ -72,7 +72,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
 <BaseLayout
   title={CHURCH.name}
-  description="A church in Penrith, Sydney, with a vision that reaches nations. We gather Sundays at 9:30am. Everyone is welcome, and nobody is singled out."
+  description="A church in Penrith, Sydney, with a vision that reaches nations. We gather Sundays at 9:30am and Wednesdays at 6:30pm. Everyone is welcome, and nobody is singled out."
   route=""
   schema={schema}
   bare
@@ -99,15 +99,15 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <div class="page-shell page-shell--wide arrival__inner">
         <p class="arrival__eyebrow">{CHURCH.place}</p>
 
-        <!-- Supplied hero copy, verbatim from the typography handover. Two
-             sentences, sentence case, with the accent on the final word only.
-             Block spans rather than a br: hiding a br on narrow screens
-             swallowed the space between the sentences, and "Penrith.A vision"
-             rendered joined. The space between the spans is explicit, so
-             inline reflow keeps it. -->
+        <!-- Revised by the client, August 2026: the first words welcome
+             rather than describe. The place and the vision have not left the
+             page; the eyebrow holds Penrith, and the vision movement holds
+             the nations. Two sentences, sentence case, with the accent on
+             the final word only. Block spans rather than a br: hiding a br
+             on narrow screens swallows the space between the sentences. -->
         <h1 id="arrival-heading" class="arrival__heading">
-          <span class="arrival__sentence">A church in Penrith.</span>{' '}
-          <span class="arrival__sentence">A vision to impact <em>nations.</em></span>
+          <span class="arrival__sentence">Welcome.</span>{' '}
+          <span class="arrival__sentence">You made it <em>home.</em></span>
         </h1>
 
         <dl class="arrival__facts">
@@ -158,19 +158,17 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         <h2 id="welcome-heading" class="welcome__heading" data-reveal>
           and you do not have to arrive as anyone but yourself.
         </h2>
+        <!-- The client's copy, verbatim, replacing two longer paragraphs.
+             August 2026. -->
         <div class="prose" data-reveal>
           <p>
-            We are a congregation of many languages and many countries, in one room, on a
-            Sunday morning in Western Sydney. People here lead, teach, cook, play, build and
-            welcome. That is what the room is made of.
-          </p>
-          <p>
-            If it is your first time, the welcome desk is just inside the main entrance. Tell
-            them it is your first Sunday and someone will walk you in.
+            This family is a congregation of many languages, many ethnicities and many
+            countries. That is what the room is made of. Let us know if it is your first
+            day.
           </p>
         </div>
         <p data-reveal>
-          <Button href="/new-here/what-to-expect" tone="quiet">What a Sunday looks like</Button>
+          <Button href="/new-here/what-to-expect" tone="quiet">What to expect</Button>
         </p>
       </div>
 
@@ -316,7 +314,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <div>
         <p class="edgedin__eyebrow" data-reveal>EdgedIn Network</p>
         <h2 id="edgedin-heading" class="edgedin__heading" data-reveal>
-          Teaching, conversation and writing that travels further than a Sunday.
+          Teaching, conversation and writing that travels with you through the week.
         </h2>
         <p class="edgedin__body" data-reveal>
           The podcast, the channel, the radio hour, the devotionals and the books. Listen on
@@ -346,19 +344,18 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   <section class="movement listen" aria-labelledby="listen-heading">
     <Waypoint step={8} />
     <div class="page-shell listen__inner">
-      <h2 id="listen-heading" data-reveal>Missed a Sunday, or want it again</h2>
+      <h2 id="listen-heading" data-reveal>Missed a gathering, or want it again</h2>
       <div class="prose" data-reveal>
         <p>
-          Every message is there to listen back to, and the gathering is streamed live if you
-          cannot be in the room. Put it on in the car, or in the kitchen, or at two in the
-          morning when the house is finally quiet.
+          Every message is there to listen back to, and Sundays are streamed live. Put it on
+          in the car, or at two in the morning when the house is finally quiet.
         </p>
       </div>
       <p class="movement__actions" data-reveal>
         <Button href="/watch-and-listen">Watch and listen</Button>
         <Button href={`${CHURCH.connectUrl}/live`} tone="quiet" external>Watch live</Button>
       </p>
-      <p class="movement__handoff" data-reveal>What happens on a Sunday costs something to make,</p>
+      <p class="movement__handoff" data-reveal>What happens here each week costs something to make,</p>
     </div>
   </section>
 
@@ -397,12 +394,11 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   <section class="movement life" aria-labelledby="life-heading">
     <Waypoint step={10} />
     <div class="page-shell life__inner">
-      <h2 id="life-heading" data-reveal>and the people who do it come on a Sunday.</h2>
+      <h2 id="life-heading" data-reveal>and the people who do it are this family.</h2>
       <div class="prose" data-reveal>
         <p>
-          Welcome, music, sound, children's work, coffee, setting up and packing down. Groups
-          through the week, and teams that keep a Sunday running. Most people here started by
-          being asked once and saying yes.
+          Welcome, music, sound, children's work, coffee, setting up and packing down. Most
+          people here started by being asked once and saying yes.
         </p>
       </div>
       <p class="movement__actions" data-reveal>
@@ -448,9 +444,8 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <h2 id="reach-heading" data-reveal>If you would rather just ask someone</h2>
       <div class="prose" data-reveal>
         <p>
-          Call, email, or ask for prayer privately. A person reads everything that comes in
-          and replies within two working days. You do not have to be coming on Sunday, and
-          you do not have to explain why you are writing.
+          Call, email, or ask for prayer privately. A person reads everything and replies
+          within two working days. You do not have to explain why you are writing.
         </p>
       </div>
       <p class="movement__actions" data-reveal>

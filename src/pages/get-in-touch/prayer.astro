@@ -1,15 +1,16 @@
 ---
 /**
- * Prayer request. Audience 5: a calm private route, plus a visible crisis
- * pointer. Pastoral, never clinical.
+ * Prayer request. Audience 5: a calm private route. Pastoral, never clinical.
  *
  * The form asks for the least it can. A request can be sent without a name, and
  * the page says so, because someone who needs to stay anonymous should not have
  * to work that out for themselves.
+ *
+ * The crisis pointer the brief placed here was removed by the client's
+ * instruction in August 2026; see the note in src/data/church.mjs.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import CrisisPointer from '../../components/CrisisPointer.astro';
 ---
 
 <PageLayout
@@ -54,8 +55,6 @@ import CrisisPointer from '../../components/CrisisPointer.astro';
 
       <Button type="submit" size="large">Send</Button>
     </form>
-
-    <CrisisPointer />
   </div>
 </PageLayout>
 
