@@ -17,6 +17,7 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
+import seniorPastors from '../../assets/photos/S7-senior-pastors.jpg';
 import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
 ---
 
@@ -28,19 +29,21 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
   standfirst="Who leads here, and how to reach them without going through a form."
   noindex
 >
-  <DraftNotice what="Each pastor needs to supply their own biography and approve a photograph. The names, roles and organisational relationships below are accurate; the descriptions of the people are not written yet." />
+  <DraftNotice what="Each pastor needs to supply their own biography. The names, roles, photograph and organisational relationships are confirmed; the descriptions of the people are not written yet." />
 
   <div class="team">
     <section aria-labelledby="seniors-heading">
       <h2 id="seniors-heading">Senior Pastors</h2>
-      <!-- One slot, matching S7 on the shot list, rather than a portrait each.
-           The agreed shot is the two of them together and environmental, and
-           inventing two new studio portraits would put the site and the shot
-           list out of step before the photographer has arrived. -->
+      <!-- The agreed S7: the two of them together and environmental rather
+           than studio. Landscape, because that is what the photograph is; a
+           portrait crop would have to choose between them. -->
       <Photo
         ref="S7"
+        src={seniorPastors}
+        alt="The Senior Pastors, Dr Michaels Aibangbee and Pastor Osas Aibangbee, standing together at the lectern during a gathering."
         brief="The senior pastors, together, environmental rather than studio."
-        ratio="4 / 5"
+        ratio="3 / 2"
+        sizes="(min-width: 56rem) 46rem, 100vw"
         class="team__photo"
       />
 
@@ -117,7 +120,6 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
   }
 
   .team__photo {
-    max-inline-size: 22rem;
     margin-block-end: var(--space-l);
   }
 

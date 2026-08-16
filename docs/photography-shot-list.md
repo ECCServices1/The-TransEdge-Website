@@ -27,7 +27,7 @@ and graded.
 | **S6** | The buffet queue. Foil trays, gloved hands serving, people waiting with plates | The most useful frame supplied. It is hospitality rather than performance, it is lit by the room rather than the stage, and it is the only one where a stranger could picture themselves |
 | **S8** | A tight crop of the same buffet frame, on the serving hands | Square, and already in the set |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
-| **S7** | Provisional. Either the group of four with the roses, or the portrait in the white blazer | Neither is the agreed shot, which is the two senior pastors together and environmental. Needs the pastors to say who is who and whether they want it |
+| **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
 
 **Still missing after fifteen frames**, and these are the ones the New Here pages
 run on: S2 the recording setup, S3 the entrance from the street, S4 the welcome
@@ -50,7 +50,7 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 | **S4** | The welcome desk with a volunteer, mid-conversation, badge visible | Plan your visit | Landscape 3:2 |
 | **S5** | EdgeKids space, empty of children, set up and ready | EdgeKids | Landscape 3:2 |
 | **S6** | Tea and coffee afterwards. Two or three people talking, not posed | What to expect | Landscape 3:2 |
-| **S7** | The senior pastors, together, environmental rather than studio | Pastoral team | Portrait 4:5 |
+| **S7** | The senior pastors, together, environmental rather than studio | Pastoral team | Landscape 3:2 |
 | **S8** | Hands, mid-serve. Setup, catering, car park, anything practical | Serve teams | Square 1:1 |
 | **S9** | The room empty, before anyone arrives, in morning light | Home or 404 | Landscape 21:9 |
 | **S10** | Congregation talking after a gathering, several groups in frame, nobody posed and nobody centred | Our community | Landscape 16:9 |
