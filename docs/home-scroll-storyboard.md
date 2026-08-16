@@ -276,25 +276,25 @@ obscurity figure is not a metaphor.
 
 ## The conference
 
-`src/data/conference.mjs`. Everything in it came from the supplied teaser and
-nothing was inferred: the name, the tag, the teaser line, and the dates
-13 to 15 November 2026.
+`src/data/conference.mjs`. Everything in it came from the supplied artwork and
+nothing was inferred. The teaser gave the name, the tag, the line and the dates
+13 to 15 November 2026. The master poster of August 2026 added the session
+times (Friday 6pm, Saturday 4pm, Sunday 4pm), the open-air crusade (Saturday
+14 November, 4pm), the guest ministers (Min. Nelly Ewelike and Min. Eseosa
+Ohenhen), the venue (the church's own address, built from the one address
+source), and the fact that changed the call to action: **no registration
+required**, printed on the poster in those words. The old holding line, "Tell
+me when registration opens", assumed a registration that was coming; the truth
+was better, and both the chapter and the card now say so and offer Plan Your
+Visit instead.
 
-There is deliberately no venue, no timetable, no speaker list, no price and no
-registration link, because none were given. `registrationUrl` is null and the
-component renders "Tell me when registration opens" rather than a button that
-goes nowhere, which is a worse thing to do on a conference page than anywhere
-else on a site.
-
-It is set typographically in the site's own system rather than as a copy of the
-poster. The poster uses a metallic display face that is not part of the
-masterbrand: fine on a poster, wrong on a web page, and an approximation of it
-in Fraunces would read as a mistake rather than a decision. The shaft of light
-is drawn with two gradients and a column, so it is the same figure as the poster
-and none of its pixels.
-
-**When the artwork is supplied**, add it as `src/assets/photos/E1-rain-2026.jpg`
-and pass it to the teaser. The typographic setting then becomes its caption.
+The staging is still set typographically in the site's own system rather than
+as a copy of the poster, whose metallic display face belongs to the poster.
+The artwork itself now appears as itself: the master poster lands in the home
+chapter as the last arrival of the choreography, on wide screens only (a
+poster stacked under the copy on a phone would double the stage and spend the
+pin), and the hosts-and-speakers social leads the events card, where the
+typographic setting has become what it was always going to be: the caption.
 
 
 ## The chapters, revised again

@@ -41,6 +41,13 @@ second solo frame of Pastor Osas, and `S7-osas.jpg` is better framed. A site
 does not need two portraits of the same person, and using it to fill a slot
 would be padding rather than choosing.
 
+**E1, the conference artwork.** Both supplied frames arrived in August 2026
+and are in: `E1-rain-2026.jpg` (the master poster, on the home chapter, wide
+screens) and `E1-rain-ministers.jpg` (the hosts-and-speakers social, on the
+events card). Converted from the supplied PNGs at quality 84, not re-graded:
+designed artwork keeps its own colour. The poster's facts (sessions, crusade,
+ministers, venue, no registration required) live in `src/data/conference.mjs`.
+
 **Cutouts.** The client approved replacing or removing photo backgrounds where
 it presents people better. The pipeline that produced `S12-pastors.png`:
 Higgsfield's background remover works through its MCP tools (import the image

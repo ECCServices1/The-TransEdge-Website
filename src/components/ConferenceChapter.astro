@@ -39,6 +39,8 @@
  * the facts cannot fork.
  */
 import Button from './Button.astro';
+import Photo from './Photo.astro';
+import posterArt from '../assets/photos/E1-rain-2026.jpg';
 import { CONFERENCE } from '../data/conference.mjs';
 
 interface Props {
@@ -46,6 +48,8 @@ interface Props {
 }
 
 const { headingId = 'conference-heading' } = Astro.props;
+
+const sessionLine = CONFERENCE.sessions.map((s) => `${s.day} ${s.time}`).join(', ');
 ---
 
 <div class="chapter">
@@ -58,34 +62,60 @@ const { headingId = 'conference-heading' } = Astro.props;
     </div>
 
     <div class="page-shell chapter__inner">
-      <p class="chapter__eyebrow">This November</p>
+      <div class="chapter__copy">
+        <p class="chapter__eyebrow">This November</p>
 
-      <h2 id={headingId} class="chapter__teaser">
-        <span class="chapter__mask">
-          <span class="chapter__line">{CONFERENCE.teaser}</span>
-        </span>
-      </h2>
+        <h2 id={headingId} class="chapter__teaser">
+          <span class="chapter__mask">
+            <span class="chapter__line">{CONFERENCE.teaser}</span>
+          </span>
+        </h2>
 
-      <p class="chapter__name">
-        {CONFERENCE.name}
-        <span class="chapter__tag">{CONFERENCE.tag}</span>
-      </p>
+        <p class="chapter__name">
+          {CONFERENCE.name}
+          <span class="chapter__tag">{CONFERENCE.tag}</span>
+        </p>
 
-      <p class="chapter__dates">
-        <time datetime={CONFERENCE.startsAt} class="ltr-embed">{CONFERENCE.displayDates}</time>
-      </p>
+        <p class="chapter__dates">
+          <time datetime={CONFERENCE.startsAt} class="ltr-embed">{CONFERENCE.displayDates}</time>
+        </p>
 
-      <p class="chapter__actions">
-        {
-          CONFERENCE.registrationUrl ? (
-            <Button href={CONFERENCE.registrationUrl} size="large" external>
-              Register
-            </Button>
-          ) : (
-            <Button href="/get-in-touch" tone="quiet">Tell me when registration opens</Button>
-          )
-        }
-      </p>
+        <p class="chapter__facts">
+          {sessionLine}. Open-air crusade, {CONFERENCE.crusade.day}, {CONFERENCE.crusade.time}.
+        </p>
+
+        <p class="chapter__actions">
+          {
+            CONFERENCE.registrationUrl ? (
+              <Button href={CONFERENCE.registrationUrl} size="large" external>
+                Register
+              </Button>
+            ) : (
+              <>
+                <span class="chapter__open">No registration required.</span>
+                <Button href="/new-here/plan-your-visit" tone="quiet">Plan your visit</Button>
+              </>
+            )
+          }
+        </p>
+      </div>
+
+      <!-- The master poster, wide screens only: the artwork the whole stage
+           was staged from, arriving after the light has done its work. On a
+           phone the chapter stays typographic and the artwork lives on the
+           events card instead, because a poster stacked under the copy would
+           double the stage's height and spend the pin. -->
+      <div class="chapter__artwork">
+        <Photo
+          ref="E1"
+          src={posterArt}
+          alt={`The RAIN 2026 master poster: the Senior Pastors mid-ministry under storm clouds, with ministers ${CONFERENCE.ministers.join(' and ')}, the dates and session times, and the venue.`}
+          brief="The conference master poster."
+          ratio="1672 / 941"
+          sizes="(min-width: 64rem) 34rem, 45vw"
+          class="chapter__art"
+        />
+      </div>
     </div>
   </div>
 </div>
@@ -169,6 +199,25 @@ const { headingId = 'conference-heading' } = Astro.props;
     padding-block: var(--space-2xl);
   }
 
+  /* The artwork joins the copy on wide screens only; the stage must not grow
+     past a viewport on a phone, where the pin would pay for it. */
+  .chapter__artwork {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .chapter__inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+
+    .chapter__artwork {
+      display: block;
+    }
+  }
+
   .chapter__eyebrow {
     font-size: var(--text--1);
     font-weight: var(--weight-semibold);
@@ -227,8 +276,22 @@ const { headingId = 'conference-heading' } = Astro.props;
     font-size: var(--text-2);
   }
 
+  .chapter__facts {
+    margin-block-start: var(--space-2xs);
+    max-inline-size: var(--measure);
+    color: var(--color-neutral-300);
+  }
+
   .chapter__actions {
     margin-block-start: var(--space-l);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .chapter__open {
+    font-weight: var(--weight-semibold);
   }
 
   /* The quiet button's default ink is tuned for the light canvas and would
@@ -276,6 +339,8 @@ const { headingId = 'conference-heading' } = Astro.props;
       .chapter__line,
       .chapter__name,
       .chapter__dates,
+      .chapter__facts,
+      .chapter__artwork,
       .chapter__actions {
         animation-timing-function: linear;
         animation-fill-mode: both;
@@ -320,6 +385,18 @@ const { headingId = 'conference-heading' } = Astro.props;
       .chapter__dates {
         animation-name: rain-settle;
         animation-range: cover 56% cover 66%;
+      }
+
+      .chapter__facts {
+        animation-name: rain-settle;
+        animation-range: cover 58% cover 68%;
+      }
+
+      /* The poster is the last arrival: the drawn light hands over to the
+         real artwork just before the pin releases. */
+      .chapter__artwork {
+        animation-name: rain-settle;
+        animation-range: cover 56% cover 70%;
       }
 
       .chapter__actions {
