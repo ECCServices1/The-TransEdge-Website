@@ -29,6 +29,13 @@ and graded.
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
 | **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, on the pastoral team cards. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces |
+| **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
+| **S12** | **Done.** `S12-worship.jpg`, supplied as "Singer_worship.jpg" | On Watch and Listen. The strongest worship frame in the set, on the one page whose subject is the singing |
+
+**Deliberately unused:** `Ps Osas Michaels.jpg`. Despite the name it is a
+second solo frame of Pastor Osas, and `S7-osas.jpg` is better framed. A site
+does not need two portraits of the same person, and using it to fill a slot
+would be padding rather than choosing.
 
 **Still missing**, and these are the ones the New Here pages run on: S1 the wide
 congregation shot (named in Drive, too large to transfer so far), S2 the
@@ -72,6 +79,8 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 | **S8** | Hands, mid-serve. Setup, catering, car park, anything practical | Serve teams | Square 1:1 |
 | **S9** | The room empty, before anyone arrives, in morning light | Home or 404 | Landscape 21:9 |
 | **S10** | Congregation talking after a gathering, several groups in frame, nobody posed and nobody centred | Our community | Landscape 16:9 |
+| **S11** | Leaders and members together on stage at a celebration | Who we are | Landscape 16:9 |
+| **S12** | Worship, mid-song | Watch and listen | Landscape 4:3 |
 
 ### Direction
 
