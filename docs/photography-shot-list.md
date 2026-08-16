@@ -28,7 +28,7 @@ and graded.
 | **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
-| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, on the pastoral team cards. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces |
+| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. S7a replaced in August 2026 with the client-supplied `Dr_Michaels_(august2026).jpg` from the Drive August folder, graded with the standard recipe |
 | **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
 | **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows |
 

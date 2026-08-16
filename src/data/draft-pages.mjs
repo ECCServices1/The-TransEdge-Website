@@ -31,11 +31,8 @@ export const DRAFT_PAGES = [
     reason: 'awaiting-content',
     needs: 'The pastoral team rewrites the articles in their own words.',
   },
-  {
-    route: 'who-we-are/pastoral-team',
-    reason: 'awaiting-content',
-    needs: 'A biography from each pastor, and an approved photograph.',
-  },
+  /* who-we-are/pastoral-team left the register in August 2026: the client
+     supplied both biographies and the approved photograph. */
   {
     route: 'who-we-are/core-course',
     reason: 'awaiting-content',
