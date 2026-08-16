@@ -24,15 +24,24 @@ export const CONFERENCE = {
   /** 13.11.2026 to 15.11.2026, as printed on the artwork. */
   startsAt: '2026-11-13',
   endsAt: '2026-11-15',
-  /** For a reader: "13 to 15 November 2026". Built rather than typed twice. */
+  /**
+   * For a reader: "13 to 15 November 2026". Built rather than typed twice.
+   *
+   * Every part is formatted through Intl with the Sydney timezone. The first
+   * version read the day with getDate(), which uses the machine's own clock:
+   * correct on a Sydney laptop, and a day early on the UTC build machine,
+   * where it printed "12 to 14" on every page. A conference date that is
+   * wrong by one day is the worst kind of wrong, so nothing here may consult
+   * the system timezone.
+   */
   get displayDates() {
     const start = new Date(`${this.startsAt}T00:00:00+11:00`);
     const end = new Date(`${this.endsAt}T00:00:00+11:00`);
-    const month = new Intl.DateTimeFormat('en-AU', {
-      month: 'long',
-      timeZone: 'Australia/Sydney',
-    }).format(end);
-    return `${start.getDate()} to ${end.getDate()} ${month} ${end.getFullYear()}`;
+    const sydney = { timeZone: 'Australia/Sydney' };
+    const day = new Intl.DateTimeFormat('en-AU', { day: 'numeric', ...sydney });
+    const month = new Intl.DateTimeFormat('en-AU', { month: 'long', ...sydney }).format(end);
+    const year = new Intl.DateTimeFormat('en-AU', { year: 'numeric', ...sydney }).format(end);
+    return `${day.format(start)} to ${day.format(end)} ${month} ${year}`;
   },
 
   /** Announced but not yet open. */

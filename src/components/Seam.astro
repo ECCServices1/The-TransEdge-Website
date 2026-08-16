@@ -139,6 +139,7 @@ const maskId = 'seam-lit-window';
     drop && (
       <div class="drop-rail">
         <div class="drop" data-seam-drop>
+          <span class="drop__halo" />
           <span class="drop__bead" />
         </div>
       </div>
@@ -208,8 +209,14 @@ const maskId = 'seam-lit-window';
         opacity: 1;
       }
 
+      /* Longhands, not the `animation` shorthand: the minifier folds a
+         neighbouring animation-timeline into the shorthand and the browser
+         then rejects the whole declaration. The inline blocks below are safe
+         because is:inline styles never pass through the minifier. */
       .seam-window {
-        animation: seam-travel linear both;
+        animation-name: seam-travel;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: scroll(root block);
       }
     }
@@ -268,6 +275,34 @@ const maskId = 'seam-lit-window';
     background-color: var(--color-seam-lit);
     /* No filter and no shadow: both would take this off the compositor and
        the whole point of the drop is that it costs one transform. */
+  }
+
+  /*
+    The halo. A soft field of light around the bead, so the travelling point
+    reads as a source rather than a dot. It is a static radial gradient painted
+    once: it animates nothing of its own and simply inherits the drop's drift
+    and reveal, so the light swells and dims on the same curve as the seam it
+    leads. No blur filter, for the same reason the bead has no shadow.
+
+    Ember budget: the gradient starts at a 22 per cent mix and is transparent by
+    70 per cent of its radius, half of which hangs past the viewport edge. What
+    lands on the canvas is a warmth, not a plane of colour.
+  */
+  .drop__halo {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    inline-size: 26rem;
+    block-size: 26rem;
+    margin-block-start: -13rem;
+    margin-inline-start: -13rem;
+    border-radius: 50%;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-seam-lit) 22%, transparent),
+      transparent 70%
+    );
+    opacity: 0.8;
   }
 
   /* On a narrow screen the seam is pushed mostly off-canvas, so the drop goes

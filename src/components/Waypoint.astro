@@ -78,10 +78,15 @@ const { step, last = false } = Astro.props;
 
   /* The resting state is the arrived state. Everything below is the animation
      that browsers which can afford it play on the way in. */
+  /* Longhands, not the `animation` shorthand: the minifier folds a
+     neighbouring animation-timeline into the shorthand and the browser then
+     rejects the whole declaration. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .waypoint__node {
-        animation: waypoint-land linear both;
+        animation-name: waypoint-land;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: view();
         /* Lands as the movement reaches the middle of the viewport, which is
            where the drop is sitting. */
@@ -90,7 +95,9 @@ const { step, last = false } = Astro.props;
 
       .waypoint__stem {
         transform-origin: top center;
-        animation: waypoint-reach linear both;
+        animation-name: waypoint-reach;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
         animation-timeline: view();
         /* Starts only once the node has landed, so the order reads as
            arrival, then release. */
