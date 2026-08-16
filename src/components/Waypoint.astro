@@ -1,43 +1,54 @@
 ---
 /**
- * Where the drop lands.
+ * The strand, one movement's worth.
  *
  * The brief for the home page asked for something carried from the top of the
  * page to the bottom, landing on each element, and each element releasing the
- * next. Continuity was never the missing piece: the seam already runs the full
- * length of the page and is drawn from the mark. What was missing is causality,
- * the sense that one movement produces the next rather than merely following it.
+ * next; the revision of August 2026 asked for the strand to visibly link all
+ * the elements, animating a smooth transition from one to another. So each
+ * movement now draws its own span of one continuous line on the trailing
+ * edge: a lead running from the movement's top boundary down to its node, the
+ * node itself, and a stem reaching from the node to the bottom boundary,
+ * where the next movement's lead takes over. Flush section edges make the
+ * pieces read as one unbroken thread from the first movement to the last, and
+ * the travelling drop rides it.
  *
- * So each movement carries a waypoint on the trailing edge. It lights as its
- * movement comes into view, and the short stem below it reaches down towards
- * the next one. Read top to bottom, the page is a chain rather than a stack.
+ * WHY THE LINE IS DRAWN IN PIECES
+ *
+ * Movements use content-visibility: auto, which brings paint containment: a
+ * child cannot paint outside its section, so no single element can span a
+ * boundary. Each section paints exactly its own span instead, ending at the
+ * edge the neighbour begins at. The seams between pieces are invisible
+ * because the pieces are flush and identically coloured.
  *
  * HOW IT MEETS THE CONSTRAINTS
  *
  * Driven by `animation-timeline: view()`, so it needs no JavaScript, no
- * observer and no measurement. Transform and opacity only, so it stays on the
- * compositor.
+ * observer and no measurement. Transform and opacity only: the lead and stem
+ * grow by scaleY from their own ends, so scrolling reads as the line being
+ * drawn rather than revealed.
  *
- * With reduced motion, or in a browser without scroll-driven animation, every
- * waypoint renders lit. The arrived state is the resting state, so nothing is
- * hidden behind an animation that never runs, and nobody who turns motion off
- * gets a page of grey dots.
+ * With reduced motion, or in a browser without scroll-driven animation, the
+ * whole strand renders complete. The arrived state is the resting state, so
+ * nothing is hidden behind an animation that never runs.
  *
  * It is decorative. The label is the movement's own heading, already on the
- * page, so the waypoint carries no information of its own and is hidden from
+ * page, so the strand carries no information of its own and is hidden from
  * assistive technology.
  */
 interface Props {
-  /** Position in the chain, 1-based. The last one does not reach onward. */
+  /** Position in the chain, 1-based. The first has no lead; the last does not reach onward. */
   step: number;
   /** True for the final waypoint, which closes the chain rather than passing it on. */
   last?: boolean;
 }
 
 const { step, last = false } = Astro.props;
+const first = step === 1;
 ---
 
-<div class="waypoint" data-step={step} data-last={last ? '' : undefined} aria-hidden="true">
+<div class="waypoint" data-step={step} aria-hidden="true">
+  {!first && <span class="waypoint__lead"></span>}
   <span class="waypoint__node"></span>
   {!last && <span class="waypoint__stem"></span>}
 </div>
@@ -45,64 +56,91 @@ const { step, last = false } = Astro.props;
 <style>
   .waypoint {
     position: absolute;
-    inset-block-start: var(--space-2xl);
+    /* The full block of the movement, so the pieces can reach both edges. */
+    inset-block: 0;
     inset-inline-end: 0;
     inline-size: var(--space-2xs);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     pointer-events: none;
     z-index: var(--layer-seam);
   }
 
+  /* The thread. Kept below full strength so a page-length line accompanies
+     the composition rather than framing it. */
+  .waypoint__lead,
+  .waypoint__stem {
+    position: absolute;
+    inset-inline-start: 50%;
+    inline-size: 2px;
+    margin-inline-start: -1px;
+    background-color: color-mix(in oklab, var(--color-seam-lit) 55%, transparent);
+  }
+
+  /* From the boundary above down to the node. */
+  .waypoint__lead {
+    inset-block-start: 0;
+    block-size: calc(var(--space-2xl) - var(--space-3xs));
+    transform-origin: top center;
+  }
+
   .waypoint__node {
+    position: absolute;
+    inset-block-start: var(--space-2xl);
     inline-size: var(--space-2xs);
     block-size: var(--space-2xs);
     border-radius: 50%;
     background-color: var(--color-seam-lit);
   }
 
+  /* From the node to the boundary below, where the next lead takes over. */
   .waypoint__stem {
-    inline-size: 2px;
-    /* Long enough to read as reaching towards the next movement, short enough
-       that it never joins up into a continuous rule. The gap is the point:
-       the chain is made of links, not a line. */
-    block-size: var(--space-2xl);
-    margin-block-start: var(--space-3xs);
-    background: linear-gradient(
-      to bottom,
-      var(--color-seam-lit),
-      transparent
-    );
+    inset-block-start: calc(var(--space-2xl) + var(--space-2xs) + var(--space-3xs));
+    inset-block-end: 0;
+    transform-origin: top center;
   }
 
-  /* The resting state is the arrived state. Everything below is the animation
-     that browsers which can afford it play on the way in. */
-  /* Longhands, not the `animation` shorthand: the minifier folds a
-     neighbouring animation-timeline into the shorthand and the browser then
-     rejects the whole declaration. */
+  /* The resting state is the arrived state. Everything below is the drawing
+     that browsers which can afford it play on the way through. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .waypoint__node {
-        animation-name: waypoint-land;
+      /* Longhands, not the `animation` shorthand: the minifier folds a
+         neighbouring animation-timeline into the shorthand and the browser
+         then rejects the whole declaration. */
+      .waypoint__lead,
+      .waypoint__node,
+      .waypoint__stem {
         animation-timing-function: linear;
         animation-fill-mode: both;
         animation-timeline: view();
-        /* Lands as the movement reaches the middle of the viewport, which is
-           where the drop is sitting. */
+      }
+
+      /* Arrives from the boundary as the movement enters. */
+      .waypoint__lead {
+        animation-name: waypoint-draw;
+        animation-range: entry 0% cover 30%;
+      }
+
+      /* Lands as the movement reaches the middle of the viewport, which is
+         where the drop is sitting. */
+      .waypoint__node {
+        animation-name: waypoint-land;
         animation-range: entry 20% cover 45%;
       }
 
+      /* Reaches onward only once the node has landed, so the order reads as
+         arrival, then release. */
       .waypoint__stem {
-        transform-origin: top center;
-        animation-name: waypoint-reach;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-        animation-timeline: view();
-        /* Starts only once the node has landed, so the order reads as
-           arrival, then release. */
-        animation-range: cover 45% cover 80%;
+        animation-name: waypoint-draw;
+        animation-range: cover 45% cover 85%;
       }
+    }
+  }
+
+  @keyframes waypoint-draw {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
     }
   }
 
@@ -122,19 +160,8 @@ const { step, last = false } = Astro.props;
     }
   }
 
-  @keyframes waypoint-reach {
-    from {
-      transform: scaleY(0);
-      opacity: 0;
-    }
-    to {
-      transform: scaleY(1);
-      opacity: 1;
-    }
-  }
-
-  /* On a narrow screen the seam is pushed off-canvas, so the chain goes with
-     it. A column of dots down the edge of a phone is clutter. */
+  /* On a narrow screen the seam is pushed off-canvas, so the strand goes with
+     it. A line down the edge of a phone is clutter. */
   @media (max-width: 48rem) {
     .waypoint {
       display: none;

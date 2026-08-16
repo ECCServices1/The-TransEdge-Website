@@ -367,6 +367,34 @@ the gradient weather, so both dark stages restate the quiet and primary button
 inks explicitly.
 
 
+## The strand, continuous
+
+Revised again in August 2026: the client asked for the strand to visibly link
+all the elements, animating a smooth transition from one to another. The chain
+of separate links became one continuous thread.
+
+Each movement now draws its own span of the line on the trailing edge: a lead
+from the movement's top boundary down to its node, the node, and a stem from
+the node to the bottom boundary, where the next movement's lead takes over.
+Movements sit flush, so the pieces read as one unbroken strand from arrival to
+get in touch. Scrolling draws it: the lead arrives as a movement enters, the
+node lands as it reaches the middle of the viewport, and the stem reaches
+onward once the node has landed. The line is drawn in per-movement pieces
+because `content-visibility: auto` brings paint containment and nothing may
+paint across a section boundary.
+
+The drop rides the strand. Its old lateral drift turned out to be a quiet
+no-op: the translateX percentages resolved against the bead's own eight
+pixels, not the viewport, so it had hugged the trailing edge since it shipped.
+The accident became the design; the drift was removed rather than fixed, and
+each node now lands exactly under the bead as its movement crosses the middle
+of the viewport, which is what makes the drop read as being carried from
+element to element.
+
+At rest, with motion reduced, or without scroll-driven animation support, the
+whole strand renders complete and only the drop is withheld.
+
+
 ## The client's copy revisions, August 2026
 
 Applied after the chapters shipped, by the client's instruction:

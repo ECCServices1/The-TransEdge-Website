@@ -25,7 +25,7 @@
  * the stroke an even weight despite that non-uniform scale.
  */
 
-import { SEAM_PATH, SEAM_DRIFT, SEAM_REVEAL } from '../lib/seam-path.mjs';
+import { SEAM_PATH, SEAM_REVEAL } from '../lib/seam-path.mjs';
 
 interface Props {
   /** Left-to-right and right-to-left get mirrored paths, so the seam always enters from the leading edge. */
@@ -37,14 +37,14 @@ interface Props {
 const { dir = 'ltr', drop = false } = Astro.props;
 
 /*
-  The drop's lateral track, written as a keyframe block rather than a class per
-  stop, so adding a movement to the home page changes one array in
-  src/lib/seam-path.mjs and nothing here.
+  The drop used to carry a lateral drift meant to track the seam's wander,
+  written as translateX percentages. Those percentages resolve against the
+  bead's own eight pixels, not the viewport, so the drift never moved it more
+  than a pixel and the bead has hugged the trailing edge since it shipped.
+  The strand now runs exactly there, drawn movement by movement by
+  Waypoint.astro, so the accident is promoted to the design: the drop rides
+  the strand, and the drift is gone rather than fixed.
 */
-const driftKeyframes = SEAM_DRIFT.map(
-  (x, i) =>
-    `${((i / (SEAM_DRIFT.length - 1)) * 100).toFixed(1)}% { transform: translateX(calc(${x} * -1%)); }`
-).join('\n    ');
 
 /*
   The reveal. Opacity and stroke width rise together, so the seam gathers rather
@@ -130,8 +130,11 @@ const maskId = 'seam-lit-window';
       It does not ride the SVG path. The seam is stretched non-uniformly to the
       page height, so a circle placed in that coordinate space would flatten
       into a horizontal smear on a page this long. Instead the drop is sticky at
-      eye level and the page travels past it, which is the same relationship
-      seen from the other side and costs one transform.
+      eye level on the strand's rail and the page travels past it, which is the
+      same relationship seen from the other side and costs one transform. As
+      each movement's node crosses the middle of the viewport it lands exactly
+      under the bead, which is what makes the drop read as being carried from
+      element to element.
 
       It carries no meaning and no content. A reader who never sees it loses
       nothing, which is why it is aria-hidden along with the rest of the field.
@@ -247,25 +250,20 @@ const maskId = 'seam-lit-window';
   .drop-rail {
     position: absolute;
     inset-block: 0;
-    /* Anchored to the trailing edge, which is the third the seam lives in. */
+    /* The strand's rail: the same column Waypoint.astro draws in, so the bead
+       and the nodes centre on the same line. */
     inset-inline-end: 0;
-    inline-size: 1px;
+    inline-size: var(--space-2xs);
   }
 
   .drop {
     position: sticky;
     inset-block-start: 46vh;
-    /* Parked off the seam until a browser can move it. A bead sitting still
-       halfway down the page is a smudge, so by default it is not shown. */
+    /* Hidden until a browser can brighten it on the reveal curve. A bead
+       sitting still halfway down the page is a smudge, so by default it is
+       not shown; the reveal animation below is what shows it. */
     opacity: 0;
-    transform: translateX(-20%);
   }
-
-  /* The drift animation itself is in an inline style block below, keyed on a
-     data attribute rather than this class. Astro rewrites both class names and
-     keyframe names inside a scoped style block, so a keyframe generated from
-     SEAM_DRIFT and referenced from here would be looking for a name that no
-     longer exists. */
 
   .drop__bead {
     display: block;
@@ -331,8 +329,8 @@ const maskId = 'seam-lit-window';
 />
 
 {
-  /* Generated from SEAM_DRIFT, so the drop's track and the seam's path cannot
-     disagree: adding a movement changes one array in src/lib/seam-path.mjs. */
+  /* Generated from SEAM_REVEAL, so the drop and the seam brighten on the same
+     curve: adding a movement changes one array in src/lib/seam-path.mjs. */
   drop && (
     <style
       is:inline
@@ -340,22 +338,8 @@ const maskId = 'seam-lit-window';
 @supports (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
     [data-seam-drop] {
-      opacity: 1;
-      animation: tte-drop-drift linear both;
+      animation: tte-drop-reveal linear both;
       animation-timeline: scroll(root block);
-    }
-  }
-}
-@keyframes tte-drop-drift {
-    ${driftKeyframes}
-}
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    [data-seam-drop] {
-      animation:
-        tte-drop-drift linear both,
-        tte-drop-reveal linear both;
-      animation-timeline: scroll(root block), scroll(root block);
     }
   }
 }
