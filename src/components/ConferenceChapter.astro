@@ -250,10 +250,13 @@ const { headingId = 'conference-heading' } = Astro.props;
         view-timeline-name: --rain;
       }
 
+      /* min-block-size, never a fixed block-size: on a short viewport the
+         centred content is taller than one screen, and a fixed box clips it
+         against overflow: clip. The stage growing costs only pin travel. */
       .chapter__stage {
         position: sticky;
         inset-block-start: 0;
-        block-size: 100svb;
+        min-block-size: 100svb;
       }
 
       /*
