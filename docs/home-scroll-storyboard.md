@@ -276,22 +276,152 @@ obscurity figure is not a metaphor.
 
 ## The conference
 
-`src/data/conference.mjs`. Everything in it came from the supplied teaser and
-nothing was inferred: the name, the tag, the teaser line, and the dates
-13 to 15 November 2026.
+`src/data/conference.mjs`. Everything in it came from the supplied artwork and
+nothing was inferred. The teaser gave the name, the tag, the line and the dates
+13 to 15 November 2026. The master poster of August 2026 added the session
+times (Friday 6pm, Saturday 4pm, Sunday 4pm), the open-air crusade (Saturday
+14 November, 4pm), the guest ministers (Min. Nelly Ewelike and Min. Eseosa
+Ohenhen), the venue (the church's own address, built from the one address
+source), and the fact that changed the call to action: **no registration
+required**, printed on the poster in those words. The old holding line, "Tell
+me when registration opens", assumed a registration that was coming; the truth
+was better, and both the chapter and the card now say so and offer Plan Your
+Visit instead.
 
-There is deliberately no venue, no timetable, no speaker list, no price and no
-registration link, because none were given. `registrationUrl` is null and the
-component renders "Tell me when registration opens" rather than a button that
-goes nowhere, which is a worse thing to do on a conference page than anywhere
-else on a site.
+The staging is still set typographically in the site's own system rather than
+as a copy of the poster, whose metallic display face belongs to the poster.
+The artwork itself now appears as itself: the master poster lands in the home
+chapter as the last arrival of the choreography, on wide screens only (a
+poster stacked under the copy on a phone would double the stage and spend the
+pin), and the hosts-and-speakers social leads the events card, where the
+typographic setting has become what it was always going to be: the caption.
 
-It is set typographically in the site's own system rather than as a copy of the
-poster. The poster uses a metallic display face that is not part of the
-masterbrand: fine on a poster, wrong on a web page, and an approximation of it
-in Fraunces would read as a mistake rather than a decision. The shaft of light
-is drawn with two gradients and a column, so it is the same figure as the poster
-and none of its pixels.
 
-**When the artwork is supplied**, add it as `src/assets/photos/E1-rain-2026.jpg`
-and pass it to the teaser. The typographic setting then becomes its caption.
+## The chapters, revised again
+
+Reviewed against the brief a third time: the unveiling was present but not
+felt. Every reveal was a trigger, not a scrub: a 12px settle that finished by a
+third of the element's travel, over before the thumb lifted. Nothing on the
+page ever transformed *in place*, and transformation in place, scroll spent on
+change rather than on travel, is what separates a scroll-driven page from a
+page with scroll effects. The reference given for the revision was the Apple
+Vision Pro launch page, whose architecture is exactly that: full-viewport
+scenes that pin while the scroll scrubs a staging sequence inside them, hard
+dark-to-light chapter cuts, and huge type that yields to the thing it
+announced.
+
+The page now has two kinds of movement.
+
+**Flowing movements** scroll past as before, with one change: on the home page
+`[data-reveal]` tracks the scroll to 45 per cent of cover instead of 32, so a
+reveal follows the finger rather than firing near it. The site-wide default is
+untouched; a skimming reader on an inner page never waits.
+
+**Chapters** are full-viewport dark stages that pin. The track is 220svb
+(arrival) or 240svb (conference) tall; the stage inside is sticky for the
+difference, and those viewport-heights of scroll are spent on choreography:
+
+- **Arrival, the first chapter.** The page opens pre-dawn: the deepest
+  neutral, easing to the brand slate at its foot. Who, where, when and one
+  action are all above the fold at scroll zero, exactly as the brief requires;
+  the pin only decides what scrolling is *for*. The first 120svb of scroll
+  scrub a dawn open behind the type, the hero recedes, and "There is a place
+  for you here," blooms in its place before the pin releases into the
+  porcelain canvas. The handoff sentence now crosses a ground change as well
+  as a movement boundary: it begins in the dark and is finished in the light.
+- **The conference, the second chapter.** Full bleed now, not a card. The
+  bloom gathers while the scene approaches, three shafts of light descend by
+  scaleY once it holds, "The Rain is Coming" rises out of a clipped row, and
+  the name, dates and action settle in sequence. Everything lands before the
+  pin lets go.
+
+Between them, **the vision** unveils clause by clause: the locked statement is
+split at its own commas (derived from the constant, asserted byte-identical at
+build), and each clause rises out of a clipped row as the scroll reaches it.
+The rows read as masks and cost only a transform inside `overflow: clip`.
+
+**The seam gained a halo**: a soft radial field around the travelling drop,
+painted once and animating nothing of its own. It inherits the drop's drift
+and reveal, so the light swells and dims on the same curve as the seam it
+leads and finally reads as light rather than wire. The reveal curve itself was
+retuned around the chapters: they paint over the seam while they hold, so the
+peak now sits just past the conference chapter's exit, where the seam emerges
+as though it carried the chapter's light out with it.
+
+Dark, light, dark, light. The staging is the reveal figure at page scale.
+
+**The same constraints hold.** Chapters are CSS scroll-driven animation only,
+driven by named view timelines on the tall tracks; transform and opacity only;
+no JavaScript, no observers, no measurement. The resting state is the arrived
+state: without `animation-timeline` support, or with motion reduced, each
+track collapses to a single viewport of ordinary flow with everything visible,
+and the page loses nothing but the journey. The pinned tracks opt out of
+`content-visibility: auto`, because deferring a chapter and resolving it
+mid-scroll would jump the scrollbar while the reader is inside it.
+
+Incidental fixes made on the way through: `--tracking-widest` was referenced
+by the conference card but defined by no token, silently resolving to normal
+tracking, and now uses the defined wide step; and the quiet button sank into
+the dark conference ground in light scheme, a pairing axe cannot compute over
+the gradient weather, so both dark stages restate the quiet and primary button
+inks explicitly.
+
+
+## The strand, continuous
+
+Revised again in August 2026: the client asked for the strand to visibly link
+all the elements, animating a smooth transition from one to another. The chain
+of separate links became one continuous thread.
+
+Each movement now draws its own span of the line on the trailing edge: a lead
+from the movement's top boundary down to its node, the node, and a stem from
+the node to the bottom boundary, where the next movement's lead takes over.
+Movements sit flush, so the pieces read as one unbroken strand from arrival to
+get in touch. Scrolling draws it: the lead arrives as a movement enters, the
+node lands as it reaches the middle of the viewport, and the stem reaches
+onward once the node has landed. The line is drawn in per-movement pieces
+because `content-visibility: auto` brings paint containment and nothing may
+paint across a section boundary.
+
+The drop rides the strand. Its old lateral drift turned out to be a quiet
+no-op: the translateX percentages resolved against the bead's own eight
+pixels, not the viewport, so it had hugged the trailing edge since it shipped.
+The accident became the design; the drift was removed rather than fixed, and
+each node now lands exactly under the bead as its movement crosses the middle
+of the viewport, which is what makes the drop read as being carried from
+element to element.
+
+At rest, with motion reduced, or without scroll-driven animation support, the
+whole strand renders complete and only the drop is withheld.
+
+
+## The client's copy revisions, August 2026
+
+Applied after the chapters shipped, by the client's instruction:
+
+- **The first words welcome.** The hero is now "Welcome. You made it home."
+  with the accent on the final word. "A church in Penrith. A vision to impact
+  nations." is retired from the heading; the eyebrow still says Penrith,
+  Sydney, and the nations still arrive in the vision movement.
+- **The welcome movement carries the client's copy verbatim**: "This family
+  is a congregation of many languages, many ethnicities and many countries.
+  That is what the room is made of. Let us know if it is your first day."
+- **No reference to Renovate Health or to any therapeutic service** anywhere
+  on the site: the family listing in the footer, the pastoral team page, the
+  contact page's counselling signpost, the legal pages, and the crisis
+  pointer (000, Lifeline, Beyond Blue, 13YARN) on the contact and prayer
+  routes. The brief required the crisis pointer, so its removal is recorded
+  as a client decision in src/data/church.mjs. The protective line survives:
+  pastoral care is still stated as care, not clinical treatment.
+- **The corrected mission** replaces the section 2 wording, and retires the
+  em-dash the original carried.
+- **Sundays and Wednesdays carry equal weight**: the handoffs no longer
+  centre Sunday, plan-your-visit offers both days (and both gatherings'
+  structured data), what-to-expect notes the Wednesday evening, and "first
+  Sunday" phrasing became "first day" except on EdgeKids, which genuinely
+  runs on Sundays.
+- **Less text everywhere it was thickest**: the welcome movement went from
+  two paragraphs to the client's three sentences, and the life and reach
+  movements each lost a sentence.
+- The "Either" label above the two bank accounts on /give was removed; the
+  note above the cards now says both accounts are ours.

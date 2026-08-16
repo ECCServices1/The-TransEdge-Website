@@ -1,5 +1,5 @@
 /**
- * The questions people actually ask before a first Sunday.
+ * The questions people actually ask before a first visit.
  *
  * One list, read by two pages. Plan Your Visit shows the first six, because a
  * page whose job is a confident yes in under 60 seconds cannot carry sixteen
@@ -77,7 +77,7 @@ export const FAQS = [
   {
     question: 'Can I come on my own?',
     answer:
-      'Yes, and many people do. Tell the welcome desk it is your first Sunday and someone will sit with you if you would like, or leave you to it if you would rather.',
+      'Yes, and many people do. Tell the welcome desk it is your first day and someone will sit with you if you would like, or leave you to it if you would rather.',
     group: 'visit',
   },
   {

@@ -2,10 +2,11 @@
  * Locked facts and locked copy.
  *
  * ============================ DO NOT EDIT ==================================
- * The vision, mission and tagline below are fixed by the brief, section 2.
- * They are reproduced exactly, including punctuation. Do not rephrase, shorten
- * or modernise them, and do not "fix" the em-dash in the mission: it is part of
- * the locked original. The no-em-dash rule applies to new copy, not to these.
+ * The vision, mission and tagline below are fixed copy. They are reproduced
+ * exactly, including punctuation. Do not rephrase, shorten or modernise them.
+ * The vision is from the brief, section 2. The mission is the corrected text
+ * supplied by the client in August 2026, which supersedes the section 2
+ * wording (and retired the em-dash the original carried).
  *
  * Everything in this file is the single source of truth. A service time, a
  * phone number or an address appears here once and is read everywhere else, so
@@ -19,7 +20,7 @@ export const VISION =
   "Our vision is to generously impact nations, building a people with God-likeness, a people who will lead and influence in all areas of life through the knowledge and wisdom of God's word.";
 
 export const MISSION =
-  'To discover, develop, and empower individuals to become faithful disciples of Jesus Christ. Our mission is to equip believers to influence their communities through the power of the Gospel. We are committed to building a Christian community that is youthful, creative, and purpose-driven—raising leaders who make a lasting impact in every sphere of life.';
+  'To discover, develop, and empower individuals to become faithful disciples of Jesus Christ prepared to influence their community with the Gospel. We are committed to building a Christian community that is youthful, creative, and purpose-driven in every sphere of life.';
 
 /*
   Sentence case, no full stop, matching the supplied lockup artwork in
@@ -88,8 +89,10 @@ export const CHURCH = {
  * that ECCS services are church programs, or that church involvement is
  * required to access them.
  *
- * Renovate Health is a psychotherapy and counselling practice, kept outside the
- * church brand. Pastoral care is never presented as clinical treatment.
+ * Renovate Health was removed from this list, and from the site, by the
+ * client's instruction in August 2026: the church site carries no reference
+ * to it or to any therapeutic service. Pastoral care is still never presented
+ * as clinical treatment; the site simply no longer points anywhere clinical.
  */
 export const FAMILY_ORGS = {
   eccs: {
@@ -105,13 +108,6 @@ export const FAMILY_ORGS = {
     shortName: 'EdgedIn',
     relationship: 'Media and publishing arm',
     separateEntity: false,
-  },
-  renovate: {
-    name: 'Renovate Health Consortium Ltd',
-    shortName: 'Renovate Health',
-    relationship: 'Separate psychotherapy and counselling practice',
-    separateEntity: true,
-    url: 'https://www.re-nov8.com.au',
   },
 };
 
@@ -157,13 +153,10 @@ export const GIVING = {
   },
 };
 
-/**
- * Crisis pointer, section 8 audience 5 and section 19 screen 8. Always visible
- * on the contact and prayer routes. Pastoral, never clinical.
- */
-export const CRISIS_SUPPORT = [
-  { name: 'Emergency', detail: 'Call 000', href: 'tel:000' },
-  { name: 'Lifeline', detail: '13 11 14, 24 hours', href: 'tel:131114' },
-  { name: 'Beyond Blue', detail: '1300 22 4636, 24 hours', href: 'tel:1300224636' },
-  { name: '13YARN', detail: '13 92 76, for Aboriginal and Torres Strait Islander people', href: 'tel:139276' },
-];
+/*
+  The crisis pointer (000, Lifeline, Beyond Blue, 13YARN) that section 8
+  audience 5 and section 19 screen 8 placed on the contact and prayer routes
+  was removed by the client's instruction in August 2026, along with every
+  other reference to therapeutic services. Recorded here because the brief
+  required it and the removal is a client decision, not an oversight.
+*/

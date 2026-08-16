@@ -2,10 +2,12 @@
 /**
  * Key screen 8: get in touch.
  *
- * Calm, private, honest about response times, with a visible crisis pointer.
- * Pastoral, not clinical: nothing here offers therapy, treatment or diagnosis,
- * and Renovate Health is named as the separate practice it is rather than
- * folded into the church's own offer.
+ * Calm, private, honest about response times. Pastoral, not clinical: nothing
+ * here offers therapy, treatment or diagnosis.
+ *
+ * The crisis pointer and the counselling signpost the brief placed here were
+ * removed by the client's instruction in August 2026, along with every other
+ * reference to therapeutic services; see the note in src/data/church.mjs.
  *
  * Minimal data on every form, section 21. Name and one contact method. No
  * address, no date of birth, no marketing checkbox pre-ticked, nothing that is
@@ -13,8 +15,7 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import CrisisPointer from '../../components/CrisisPointer.astro';
-import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
+import { CHURCH } from '../../data/church.mjs';
 ---
 
 <PageLayout
@@ -86,22 +87,6 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
       </form>
     </section>
 
-    <CrisisPointer />
-
-    <section class="contact__clinical" aria-labelledby="clinical-heading">
-      <h2 id="clinical-heading">If you are looking for counselling</h2>
-      <p class="prose">
-        Our pastoral team offers prayer, conversation and practical support. That is care,
-        and it is not clinical treatment. If you are looking for psychotherapy or
-        counselling, {FAMILY_ORGS.renovate.name} is a separate practice with qualified
-        clinicians, and you can approach it directly with no connection to our church.
-      </p>
-      <p>
-        <Button href={FAMILY_ORGS.renovate.url} tone="quiet" external>
-          {FAMILY_ORGS.renovate.shortName}
-        </Button>
-      </p>
-    </section>
   </div>
 </PageLayout>
 
@@ -145,10 +130,6 @@ import { CHURCH, FAMILY_ORGS } from '../../data/church.mjs';
   .contact__prayer-link {
     margin-block-start: var(--space-l);
     color: var(--color-text-muted);
-  }
-
-  .contact__clinical .prose {
-    margin-block-end: var(--space-m);
   }
 
   .form {

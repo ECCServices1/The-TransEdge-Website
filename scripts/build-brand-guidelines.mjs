@@ -144,11 +144,14 @@ const rules = [
   },
 ];
 
+/*
+  Renovate Health was removed from the family table by the client's
+  instruction in August 2026: the church's materials carry no reference to it.
+*/
 const family = [
   ['The Transformation Edge', 'Church', 'The parent. The masterbrand as supplied.'],
   ['Edge Community Care Services', 'Community care', 'Sister organisation. Separate legal entity, DGR-endorsed. Lockup still to be drawn.'],
   ['EdgedIn Network', 'Media and publishing', 'Media arm. Lockup still to be drawn.'],
-  ['Renovate Health Consortium', 'Psychotherapy and counselling', 'Separate practice. Outside the church brand. Linked, never absorbed.'],
 ];
 
 const html = `<title>The Edge Brand Standards</title>

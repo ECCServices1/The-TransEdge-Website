@@ -12,20 +12,38 @@
  * one matters: every movement above it asks the reader to do something, and the
  * page ends by offering a person to talk to instead.
  *
+ * TWO KINDS OF MOVEMENT. Most movements flow: they scroll past like a page.
+ * Two of them are chapters: full-viewport dark stages that pin while the page
+ * scrolls, so the scroll is spent on a transformation in place rather than on
+ * travel. Arrival is the first, and the conference is the second. The page
+ * opens before dawn; scrolling opens the light, the hero yields to the
+ * sentence that carries into the welcome, and the porcelain canvas arrives as
+ * the dark lifts. The conference chapter returns to that darkness mid-page and
+ * fills it with the light the artwork promises. Dark, light, dark, light: the
+ * staging is the reveal figure at page scale, and it is why the seam's
+ * brightness curve peaks where the second chapter exits.
+ *
+ * Chapters obey the same motion law as everything else here: CSS scroll-driven
+ * animation only, transform and opacity only, and the resting state is the
+ * arrived state. Without support, or with motion reduced, each chapter is one
+ * dark viewport of ordinary flow with everything visible, and the page loses
+ * nothing but the journey.
+ *
  * Several movements are joined by a sentence that starts in one and finishes as
  * the heading of the next, so the page reads as one statement rather than a
  * stack of panels. The drop on the seam carries the same idea visually: it
  * lands on each movement's waypoint, which lights and reaches towards the next.
  *
- * Above the fold: who, where, when, one primary action. No carousel, no
- * autoplay, no modal on load.
+ * Above the fold: who, where, when, one primary action, all visible at scroll
+ * zero. No carousel, no autoplay, no modal on load. The pin only decides what
+ * the first hundred and twenty viewport-heights of scrolling are for.
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Photo from '../components/Photo.astro';
 import EdgeMark from '../components/EdgeMark.astro';
 import Waypoint from '../components/Waypoint.astro';
-import ConferenceTeaser from '../components/ConferenceTeaser.astro';
+import ConferenceChapter from '../components/ConferenceChapter.astro';
 
 import { CHURCH, VISION, TAGLINE, FAMILY_ORGS, GIVING } from '../data/church.mjs';
 import { gatheringSchema } from '../lib/structured-data.mjs';
@@ -34,6 +52,16 @@ import { nextOccurrence } from '../lib/dates.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
 const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
+
+/*
+  The locked vision, split at its own commas so each clause can rise into view
+  in turn. The clauses are derived from the constant, never retyped, and the
+  build fails if they no longer reassemble into the locked text byte for byte.
+*/
+const visionClauses = VISION.split(/(?<=,)\s+/);
+if (visionClauses.join(' ') !== VISION) {
+  throw new Error('Vision clause split no longer reassembles the locked text.');
+}
 
 const events = (await getUpcomingEvents()).slice(0, 3);
 
@@ -44,60 +72,76 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
 <BaseLayout
   title={CHURCH.name}
-  description="A church in Penrith, Sydney, with a vision that reaches nations. We gather Sundays at 9:30am. Everyone is welcome, and nobody is singled out."
+  description="A church in Penrith, Sydney, with a vision that reaches nations. We gather Sundays at 9:30am and Wednesdays at 6:30pm. Everyone is welcome, and nobody is singled out."
   route=""
   schema={schema}
   bare
   seamDrop
 >
   <!-- ==================================================================
-       MOVEMENT 1: ARRIVAL
-       Who, where, when, one action. The seam enters at the top right and
-       leans in behind the type.
+       MOVEMENT 1: ARRIVAL. The first chapter.
+       Who, where, when, one action, all above the fold at scroll zero, on
+       a pre-dawn ground. Scrolling scrubs the dawn open behind the type;
+       the hero recedes the way a headline yields to the thing it announced;
+       and the handoff sentence blooms in its place before the pin releases
+       into the light canvas.
        Handoff out: the sentence "There is a place for you here" begins in
-       this movement and its second half opens movement 2.
+       this chapter, in the dark, and its second half opens movement 2 in
+       the light. The grammar crosses the ground change, which is the point.
+       No data-reveal here: the chapter choreographs its own children, and
+       the fold must be complete at first paint for LCP.
        ================================================================== -->
   <section class="movement arrival" aria-labelledby="arrival-heading">
     <Waypoint step={1} />
-    <div class="page-shell page-shell--wide arrival__inner">
-      <p class="arrival__eyebrow" data-reveal>{CHURCH.place}</p>
+    <div class="arrival__stage">
+      <div class="arrival__dawn" aria-hidden="true"></div>
 
-      <!-- Supplied hero copy, verbatim from the typography handover. Two
-           sentences, sentence case, with the accent on the final word only. -->
-      <h1 id="arrival-heading" class="arrival__heading" data-reveal>
-        A church in Penrith.<br />
-        A vision to impact <em>nations.</em>
-      </h1>
+      <div class="page-shell page-shell--wide arrival__inner">
+        <p class="arrival__eyebrow">{CHURCH.place}</p>
 
-      <dl class="arrival__facts" data-reveal>
-        <div>
-          <dt>Sundays</dt>
-          <dd class="ltr-embed">{sunday.time}</dd>
-        </div>
-        <div>
-          <dt>Wednesdays</dt>
-          <dd class="ltr-embed">{midweek.time}</dd>
-        </div>
-        <div>
-          <dt>Where</dt>
-          <dd>
-            <a href={mapHref} rel="noopener">
-              {CHURCH.address.street}, {CHURCH.address.suburb}
-            </a>
-          </dd>
-        </div>
-      </dl>
+        <!-- Revised by the client, August 2026: the first words welcome
+             rather than describe. The place and the vision have not left the
+             page; the eyebrow holds Penrith, and the vision movement holds
+             the nations. Two sentences, sentence case, with the accent on
+             the final word only. Block spans rather than a br: hiding a br
+             on narrow screens swallows the space between the sentences. -->
+        <h1 id="arrival-heading" class="arrival__heading">
+          <span class="arrival__sentence">Welcome.</span>{' '}
+          <span class="arrival__sentence">You made it <em>home.</em></span>
+        </h1>
 
-      <!-- One primary action. Nothing competes with it in this movement. -->
-      <div class="arrival__action" data-reveal>
-        <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
-        <p class="arrival__reassurance">
-          About an hour and three quarters. Your children are cared for. You will not be
-          singled out or asked to give.
-        </p>
+        <dl class="arrival__facts">
+          <div>
+            <dt>Sundays</dt>
+            <dd class="ltr-embed">{sunday.time}</dd>
+          </div>
+          <div>
+            <dt>Wednesdays</dt>
+            <dd class="ltr-embed">{midweek.time}</dd>
+          </div>
+          <div>
+            <dt>Where</dt>
+            <dd>
+              <a href={mapHref} rel="noopener">
+                {CHURCH.address.street}, {CHURCH.address.suburb}
+              </a>
+            </dd>
+          </div>
+        </dl>
+
+        <!-- One primary action. Nothing competes with it in this movement. -->
+        <div class="arrival__action">
+          <Button href="/new-here/plan-your-visit" size="large">Plan your visit</Button>
+          <p class="arrival__reassurance">
+            About an hour and three quarters. Your children are cared for. You will not be
+            singled out or asked to give.
+          </p>
+        </div>
       </div>
 
-      <p class="arrival__handoff" data-reveal>There is a place for you here,</p>
+      <div class="page-shell page-shell--wide">
+        <p class="arrival__handoff">There is a place for you here,</p>
+      </div>
     </div>
   </section>
 
@@ -114,19 +158,17 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         <h2 id="welcome-heading" class="welcome__heading" data-reveal>
           and you do not have to arrive as anyone but yourself.
         </h2>
+        <!-- The client's copy, verbatim, replacing two longer paragraphs.
+             August 2026. -->
         <div class="prose" data-reveal>
           <p>
-            We are a congregation of many languages and many countries, in one room, on a
-            Sunday morning in Western Sydney. People here lead, teach, cook, play, build and
-            welcome. That is what the room is made of.
-          </p>
-          <p>
-            If it is your first time, the welcome desk is just inside the main entrance. Tell
-            them it is your first Sunday and someone will walk you in.
+            This family is a congregation of many languages, many ethnicities and many
+            countries. That is what the room is made of. Let us know if it is your first
+            day.
           </p>
         </div>
         <p data-reveal>
-          <Button href="/new-here/what-to-expect" tone="quiet">What a Sunday looks like</Button>
+          <Button href="/new-here/what-to-expect" tone="quiet">What to expect</Button>
         </p>
       </div>
 
@@ -146,7 +188,10 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
   <!-- ==================================================================
        MOVEMENT 3: VISION
-       The locked vision, set large. The seam steepens through it.
+       The locked vision, set large, unveiled a clause at a time: each one
+       rises out of a clipped row as the scroll reaches it, so the words
+       are read at the pace they were written. The text itself is derived
+       from the locked constant and asserted byte-identical at build.
        Handoff out: the seam changes colour here, and that colour resolves
        into the accent used by the next movement's action.
        ================================================================== -->
@@ -154,8 +199,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     <Waypoint step={3} />
     <div class="page-shell vision__inner">
       <h2 id="vision-heading" class="vision__label" data-reveal>Our vision</h2>
-      <blockquote class="vision__quote" data-reveal>
-        <p>{VISION}</p>
+      <blockquote class="vision__quote">
+        <p>
+          {
+            visionClauses.map((clause) => (
+              <span class="vision__mask"><span class="vision__line">{clause}</span></span>
+            ))
+          }
+        </p>
       </blockquote>
       <p class="vision__tagline" data-reveal>{TAGLINE}</p>
       <p data-reveal>
@@ -165,17 +216,18 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   </section>
 
   <!-- ==================================================================
-       MOVEMENT 4: THE CONFERENCE
-       The next major event, and the darkest movement on the page. The
-       seam's reveal curve peaks here: the whole canvas is light opening
-       out of obscurity, and this is where that stops being a metaphor.
+       MOVEMENT 4: THE CONFERENCE. The second chapter.
+       The next major event, and the darkest thing on the page: a full-bleed
+       pinned stage where the scroll performs the unveiling the artwork
+       promises. The whole canvas is light opening out of obscurity, and this
+       is where that stops being a metaphor. The stage covers the seam while
+       it holds; the seam's reveal curve peaks just past its exit, carrying
+       the chapter's light back onto the canvas.
        Handoff out: the weather clears and the diary follows.
        ================================================================== -->
-  <section class="movement conference">
+  <section class="movement conference" aria-labelledby="conference-heading">
     <Waypoint step={4} />
-    <div class="page-shell">
-      <ConferenceTeaser />
-    </div>
+    <ConferenceChapter />
   </section>
 
   <!-- ==================================================================
@@ -262,7 +314,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <div>
         <p class="edgedin__eyebrow" data-reveal>EdgedIn Network</p>
         <h2 id="edgedin-heading" class="edgedin__heading" data-reveal>
-          Teaching, conversation and writing that travels further than a Sunday.
+          Teaching, conversation and writing that travels with you through the week.
         </h2>
         <p class="edgedin__body" data-reveal>
           The podcast, the channel, the radio hour, the devotionals and the books. Listen on
@@ -292,19 +344,18 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   <section class="movement listen" aria-labelledby="listen-heading">
     <Waypoint step={8} />
     <div class="page-shell listen__inner">
-      <h2 id="listen-heading" data-reveal>Missed a Sunday, or want it again</h2>
+      <h2 id="listen-heading" data-reveal>Missed a gathering, or want it again</h2>
       <div class="prose" data-reveal>
         <p>
-          Every message is there to listen back to, and the gathering is streamed live if you
-          cannot be in the room. Put it on in the car, or in the kitchen, or at two in the
-          morning when the house is finally quiet.
+          Every message is there to listen back to, and Sundays are streamed live. Put it on
+          in the car, or at two in the morning when the house is finally quiet.
         </p>
       </div>
       <p class="movement__actions" data-reveal>
         <Button href="/watch-and-listen">Watch and listen</Button>
         <Button href={`${CHURCH.connectUrl}/live`} tone="quiet" external>Watch live</Button>
       </p>
-      <p class="movement__handoff" data-reveal>What happens on a Sunday costs something to make,</p>
+      <p class="movement__handoff" data-reveal>What happens here each week costs something to make,</p>
     </div>
   </section>
 
@@ -343,12 +394,11 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   <section class="movement life" aria-labelledby="life-heading">
     <Waypoint step={10} />
     <div class="page-shell life__inner">
-      <h2 id="life-heading" data-reveal>and the people who do it come on a Sunday.</h2>
+      <h2 id="life-heading" data-reveal>and the people who do it are this family.</h2>
       <div class="prose" data-reveal>
         <p>
-          Welcome, music, sound, children's work, coffee, setting up and packing down. Groups
-          through the week, and teams that keep a Sunday running. Most people here started by
-          being asked once and saying yes.
+          Welcome, music, sound, children's work, coffee, setting up and packing down. Most
+          people here started by being asked once and saying yes.
         </p>
       </div>
       <p class="movement__actions" data-reveal>
@@ -394,9 +444,8 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <h2 id="reach-heading" data-reveal>If you would rather just ask someone</h2>
       <div class="prose" data-reveal>
         <p>
-          Call, email, or ask for prayer privately. A person reads everything that comes in
-          and replies within two working days. You do not have to be coming on Sunday, and
-          you do not have to explain why you are writing.
+          Call, email, or ask for prayer privately. A person reads everything and replies
+          within two working days. You do not have to explain why you are writing.
         </p>
       </div>
       <p class="movement__actions" data-reveal>
@@ -422,11 +471,83 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     position: relative;
   }
 
+  /*
+    The reveals on this page track the scroll for longer than the site-wide
+    default. Elsewhere a reveal is a settle: it finishes early so a reader
+    who is skimming never waits for the page. Here the page is one
+    composition and the scroll is the instrument, so the same 12px settle is
+    stretched across a third of the element's travel and reads as scrubbed
+    rather than triggered. Only the range changes; the keyframes, the
+    reduced-motion policy and the no-support fallback are the site's own.
+  */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .movement :global([data-reveal]) {
+        animation-range: entry 12% cover 45%;
+      }
+    }
+  }
+
+  /* ------------------------------------------------------------------
+     Arrival: the first chapter.
+
+     The resting state below is the whole design for browsers that cannot
+     scrub it: one pre-dawn viewport of ordinary flow with everything
+     visible, the handoff line included. The scrub, further down, is the
+     only place the track grows tall and the stage pins.
+     ------------------------------------------------------------------ */
+
   .arrival {
-    padding-block: clamp(3rem, 1rem + 9vw, 8rem) var(--space-movement);
+    padding-block: 0;
+  }
+
+  .arrival__stage {
+    position: relative;
+    overflow: clip;
+    min-block-size: 100svb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Sticky-header clearance: the stage owns the top of the page and the
+       type must start below the bar, not under it. */
+    padding-block: calc(var(--header-height, 4rem) + var(--space-xl)) var(--space-2xl);
+    /* Pre-dawn: the deepest neutral easing towards the brand slate at the
+       foot, so the exit into the light canvas is a chapter cut, not a cliff
+       from pure black. */
+    background-color: var(--color-neutral-950);
+    background-image: linear-gradient(
+      to bottom,
+      var(--color-neutral-950) 0%,
+      var(--color-neutral-950) 58%,
+      var(--color-primary) 100%
+    );
+    color: var(--color-text-inverse);
+  }
+
+  /* The dawn. A field of warmth behind the trailing side of the type,
+     opening as the page is scrolled. At rest it is simply there, at full;
+     under the scrub it starts closed and opens. */
+  .arrival__dawn {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(
+        52% 58% at 74% 24%,
+        color-mix(in oklab, var(--color-ember) 26%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        80% 60% at 20% 96%,
+        color-mix(in oklab, var(--color-heritage) 36%, transparent),
+        transparent 72%
+      );
+    transform-origin: 74% 24%;
   }
 
   .arrival__inner {
+    position: relative;
+    inline-size: 100%;
     display: flex;
     flex-direction: column;
     gap: var(--space-m);
@@ -437,7 +558,7 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--color-neutral-400);
   }
 
   .arrival__heading {
@@ -456,21 +577,29 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     overflow-wrap: break-word;
   }
 
+  /* One sentence per line on wide screens: the authored break. */
+  .arrival__sentence {
+    display: block;
+  }
+
   /*
     The accent, on the final word only. The handover caps the accent at roughly
     ten per cent of a typographic composition, and one word of two lines is
-    about eight.
+    about eight. On this dark stage it is the light cut of ember, the token
+    that exists for exactly this ground; the accessible cut is tuned for
+    porcelain and reads as rust here.
   */
   .arrival__heading em {
     font-style: normal;
-    color: var(--color-accent-display);
+    color: var(--color-ember-light);
   }
 
   /* On narrow screens the authored breaks are dropped so the two sentences can
-     reflow rather than overflow. */
+     reflow rather than overflow. Inline, with the explicit space between the
+     spans doing the joining. */
   @media (max-width: 45rem) {
-    .arrival__heading br {
-      display: none;
+    .arrival__sentence {
+      display: inline;
     }
     .arrival__heading {
       text-wrap: balance;
@@ -489,13 +618,19 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     font-weight: var(--weight-semibold);
     letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--color-neutral-400);
   }
 
   .arrival__facts dd {
     margin: 0;
     font-size: var(--text-2);
     font-family: var(--font-display);
+  }
+
+  /* The map link keeps its underline for affordance and takes the stage's
+     ink: the accent link colour is tuned for porcelain, not for this ground. */
+  .arrival__facts a {
+    color: inherit;
   }
 
   .arrival__action {
@@ -508,26 +643,134 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 
   .arrival__reassurance {
     max-inline-size: min(46ch, 100%);
-    color: var(--color-text-muted);
+    color: var(--color-neutral-300);
     /* Body size, not micro. This answers "will I be singled out" and "what
        happens to my children", which is not a supporting label. */
     font-size: var(--text-0);
   }
 
-  /* The handoff. Reads as an unfinished sentence, because it is one. */
+  /* The primary action restated in the stage's own light: a slate button
+     sinks into a slate ground. These are the dark-scheme action tokens, so
+     the button is identical in both schemes here. */
+  .arrival__action :global(.btn--primary) {
+    background-color: var(--color-neutral-100);
+    color: var(--color-neutral-900);
+  }
+
+  .arrival__action :global(.btn--primary:hover) {
+    background-color: var(--color-white);
+  }
+
+  /* The handoff. Reads as an unfinished sentence, because it is one. Under
+     the scrub it blooms as the hero recedes; at rest it simply closes the
+     chapter. */
   .arrival__handoff {
     margin-block-start: var(--space-2xl);
     font-family: var(--font-display);
     font-size: var(--text-3);
     line-height: var(--leading-snug);
-    color: var(--color-text-muted);
+    color: var(--color-text-inverse);
     max-inline-size: min(20ch, 100%);
+  }
+
+  /* ------------------------------------------------ arrival, the scrub */
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /*
+        The track. 220 viewport-heights of section for 100 of stage: the
+        stage pins for 120 of them, and those are what the choreography
+        spends. The cover percentages below live in the reachable band of
+        this track's view timeline: the page cannot scroll above its own
+        top, so at scroll zero the timeline already reads about 31%, and
+        every range starts beyond it.
+      */
+      .arrival {
+        block-size: 220svb;
+        view-timeline-name: --arrival;
+      }
+
+      /* min-block-size, never a fixed block-size: on a short viewport the
+         centred content is taller than one screen, and a fixed box clips it
+         against overflow: clip. The stage growing costs only pin travel. */
+      .arrival__stage {
+        position: sticky;
+        inset-block-start: 0;
+        min-block-size: 100svb;
+      }
+
+      /* Longhands throughout, never the `animation` shorthand: the minifier
+         folds a neighbouring animation-timeline into the shorthand and the
+         browser then rejects the whole declaration. */
+
+      /* Dawn opens: the first thing the first scroll does. */
+      .arrival__dawn {
+        animation-name: dawn-open;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --arrival;
+        animation-range: cover 33% cover 56%;
+      }
+
+      /* The hero yields. Opacity and a small lift on the group, one
+         composited layer for the four blocks. */
+      .arrival__inner {
+        animation-name: hero-yield;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --arrival;
+        animation-range: cover 40% cover 56%;
+      }
+
+      /* And the sentence takes its place, landing before the pin lets go
+         at about 69%. */
+      .arrival__handoff {
+        animation-name: handoff-bloom;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --arrival;
+        animation-range: cover 50% cover 64%;
+      }
+    }
+  }
+
+  @keyframes dawn-open {
+    from {
+      opacity: 0.12;
+      transform: scale(0.72);
+    }
+    to {
+      opacity: 0.95;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes hero-yield {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-28px);
+    }
+  }
+
+  @keyframes handoff-bloom {
+    from {
+      opacity: 0;
+      transform: translateY(34px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* ---------------------------------------------------------- welcome */
 
   .welcome {
-    padding-block-end: var(--space-movement);
+    padding-block: var(--space-movement) var(--space-movement);
   }
 
   .welcome__inner {
@@ -576,6 +819,55 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     line-height: var(--leading-snug);
     letter-spacing: var(--tracking-tight);
     text-wrap: pretty;
+  }
+
+  /* Each clause is a clipped row its own line rises into. The padding keeps
+     Fraunces ascenders and descenders inside the clip at rest; the negative
+     margin gives that padding no cost in the layout. */
+  .vision__mask {
+    display: block;
+    overflow: clip;
+    padding-block: 0.16em;
+    margin-block: -0.16em;
+  }
+
+  .vision__line {
+    display: block;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .vision__line {
+        animation-name: vision-rise;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+      }
+
+      /* Staggered by clause, so the statement is read at the pace it was
+         written: the rows sit within a line of each other, so their view
+         timelines are near-identical and the offsets are what stagger them. */
+      .vision__mask:nth-child(1) .vision__line {
+        animation-range: entry 25% cover 45%;
+      }
+
+      .vision__mask:nth-child(2) .vision__line {
+        animation-range: entry 35% cover 55%;
+      }
+
+      .vision__mask:nth-child(3) .vision__line {
+        animation-range: entry 45% cover 65%;
+      }
+    }
+  }
+
+  @keyframes vision-rise {
+    from {
+      transform: translateY(125%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
 
   .vision__tagline {
@@ -710,7 +1002,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
   /* ------------------------------------------------------ conference */
 
   .conference {
-    padding-block: var(--space-movement-tight);
+    /* Full bleed: the chapter owns its own ground and its own breathing
+       room. Canvas above and below comes from the neighbouring movements. */
+    padding-block: 0;
+    /* Never skipped. Deferring a pinned chapter and resolving it mid-scroll
+       would jump the scrollbar and re-anchor its timeline while the reader
+       is inside it; the estimate in contain-intrinsic-size is also a poor
+       fit for a 240svb track. */
+    content-visibility: visible;
   }
 
   .listen {

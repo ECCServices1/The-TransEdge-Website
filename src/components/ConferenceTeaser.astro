@@ -1,25 +1,23 @@
 ---
 /**
- * The Transformation Edge Conference 2026, tagged RAIN.
+ * The Transformation Edge Conference 2026, tagged RAIN. The events-page card;
+ * the home page stages the ConferenceChapter instead.
  *
- * Set typographically in the site's own system rather than as a copy of the
- * supplied poster. The poster uses a metallic display face that is not part of
- * the masterbrand, which is fine for a poster and wrong for a web page: an
- * approximation of it in Fraunces would look like a mistake rather than a
- * decision. When the artwork itself is added at src/assets/photos/E1-rain-2026,
- * it goes in as the image and this typographic setting becomes its caption.
+ * The artwork arrived in August 2026, so the hosts-and-speakers social leads
+ * the card and the typographic setting beneath it became what it was always
+ * going to be: the caption. The typography stays in the site's own system
+ * rather than imitating the poster's face, which belongs to the poster.
  *
- * It is the darkest thing on the home page, and deliberately so. The seam's
- * reveal curve peaks here: the whole page is light opening out of obscurity,
- * and this is the movement where that figure is not a metaphor. It is what the
- * poster shows.
- *
- * Announced, not open. There is no registration link because there is no
- * registration link to give, and a button that goes nowhere is worse on a
- * conference page than on any other kind.
+ * No registration link, because the poster says NO REGISTRATION REQUIRED in
+ * those words. The card says so too, and offers the visit page instead: the
+ * venue is the church's own address, so knowing how to come is the whole task.
  */
 import Button from './Button.astro';
+import Photo from './Photo.astro';
+import ministersArt from '../assets/photos/E1-rain-ministers.jpg';
 import { CONFERENCE } from '../data/conference.mjs';
+
+const sessionLine = CONFERENCE.sessions.map((s) => `${s.day} ${s.time}`).join(', ');
 
 interface Props {
   /** `section` on the home canvas, `article` in a list of events. */
@@ -44,6 +42,16 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
       {CONFERENCE.teaser}
     </Heading>
 
+    <Photo
+      ref="E1"
+      src={ministersArt}
+      alt={`The RAIN 2026 hosts and speakers artwork: the Senior Pastors mid-ministry under storm clouds, with additional ministers ${CONFERENCE.ministers.join(' and ')}.`}
+      brief="The conference artwork, hosts and speakers."
+      ratio="1672 / 941"
+      sizes="(min-width: 56rem) 38rem, 100vw"
+      class="rain__art"
+    />
+
     <p class="rain__name" data-reveal>
       {CONFERENCE.name}
       <span class="rain__tag">{CONFERENCE.tag}</span>
@@ -53,6 +61,12 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
       <time datetime={CONFERENCE.startsAt} class="ltr-embed">{CONFERENCE.displayDates}</time>
     </p>
 
+    <p class="rain__facts" data-reveal>
+      {sessionLine}. Open-air crusade, {CONFERENCE.crusade.day}, {CONFERENCE.crusade.time}.
+      <br />
+      {CONFERENCE.venue}.
+    </p>
+
     <p class="rain__actions" data-reveal>
       {
         CONFERENCE.registrationUrl ? (
@@ -60,7 +74,10 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
             Register
           </Button>
         ) : (
-          <Button href="/get-in-touch" tone="quiet">Tell me when registration opens</Button>
+          <>
+            <span class="rain__open">No registration required. The doors are open.</span>
+            <Button href="/new-here/plan-your-visit" tone="quiet">Plan your visit</Button>
+          </>
         )
       }
     </p>
@@ -119,7 +136,9 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
   .rain__eyebrow {
     font-size: var(--text--1);
     font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-widest);
+    /* Was --tracking-widest, which no token defines, so it silently resolved
+       to normal. The defined wide step is what was meant. */
+    letter-spacing: var(--tracking-wide);
     text-transform: uppercase;
     /* Full strength rather than dimmed. This sits on the inverse ground, which
        is a checked pairing; an opacity on top of it is not. */
@@ -147,7 +166,9 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
     padding: var(--space-3xs) var(--space-2xs);
     font-size: var(--text--1);
     font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-widest);
+    /* Was --tracking-widest, which no token defines, so it silently resolved
+       to normal. The defined wide step is what was meant. */
+    letter-spacing: var(--tracking-wide);
     /* An outline rather than a fill. Ember is capped at five per cent of a
        composition and the shaft has already spent most of it. */
     border: var(--border-hairline) solid currentColor;
@@ -160,8 +181,34 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
     font-size: var(--text-2);
   }
 
+  .rain__art {
+    margin-block: var(--space-l);
+  }
+
+  .rain__facts {
+    margin-block-start: var(--space-s);
+    max-inline-size: var(--measure);
+    line-height: var(--leading-normal);
+  }
+
   .rain__actions {
     margin-block-start: var(--space-l);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .rain__open {
+    font-weight: var(--weight-semibold);
+  }
+
+  /* The quiet button's default ink is tuned for the light canvas and sinks
+     into this ground. Axe cannot compute contrast over the gradient weather,
+     so this pairing is asserted here rather than left to the sweep. */
+  .rain__actions :global(.btn--quiet) {
+    color: var(--color-text-inverse);
+    border-color: var(--color-neutral-400);
   }
 
   @media (max-width: 48rem) {

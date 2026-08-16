@@ -285,11 +285,21 @@ a:hover {
   disabled and with no CSS scroll-driven animation support, content is simply
   visible. The pre-arrival state is only applied when the browser can also
   animate out of it, which is what keeps the no-JS path honest.
+
+  Longhands, never the `animation` shorthand, for every scroll-driven
+  animation in processed CSS. The CSS minifier folds a separate
+  `animation-timeline` into the shorthand it sits beside, producing
+  `animation: ... name view()`, which Chrome rejects as a whole declaration:
+  the animation silently never runs, and because the resting state is the
+  arrived state, nothing looks broken. It just stops moving. Longhands give
+  the minifier nothing to fold.
 */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     [data-reveal] {
-      animation: reveal-settle linear both;
+      animation-name: reveal-settle;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 10% cover 32%;
     }

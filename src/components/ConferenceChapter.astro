@@ -1,0 +1,486 @@
+---
+/**
+ * The Transformation Edge Conference 2026, as a chapter rather than a card.
+ *
+ * On the home canvas the conference is the one movement where light out of
+ * obscurity is not a metaphor: the artwork is light breaking through storm
+ * cloud onto water. So it is staged the way a launch page stages its hero
+ * product: a full-bleed dark scene that pins while the page scrolls, and the
+ * scroll itself performs the unveiling. The scene runs 240svb; the visible
+ * stage is sticky for the middle 140 of them, and while it holds the viewport
+ * the scroll is spent on the weather rather than on travel. In order: the
+ * bloom gathers, three shafts of light descend, the teaser line rises out of
+ * a masked row, and the name, dates and action settle. Then the pin releases
+ * and the canvas returns.
+ *
+ * HOW IT MEETS THE CONSTRAINTS
+ *
+ * Scroll-driven CSS only. The scene reads its own position through a named
+ * view timeline on the tall track; there is no JavaScript, no observer and no
+ * measurement. Every animation is transform or opacity, so it all stays on
+ * the compositor. The shafts descend by scaleY from a top origin, and the
+ * teaser rises by translateY inside an overflow-clipped row, which is a mask
+ * made of geometry rather than a mask-image.
+ *
+ * The resting state is the arrived state. Without scroll-driven animation
+ * support, or with motion reduced, the track collapses to a single viewport of
+ * flow, nothing pins, and every element is simply present: the pre-arrival
+ * states exist only inside the @supports and motion queries.
+ *
+ * Ember budget: this stage spends nearly all of it, deliberately, and it can,
+ * because the surrounding movements spend nearly none. Light is the subject
+ * here, and every use of it is a gradient that is mostly transparent, never a
+ * filled plane.
+ *
+ * Announced, not open. There is no registration link because there is no
+ * registration link to give; the quiet action routes to a person instead.
+ * The card variant of this same announcement lives in ConferenceTeaser.astro
+ * and stays in use on the events page; both read src/data/conference.mjs, so
+ * the facts cannot fork.
+ */
+import Button from './Button.astro';
+import Photo from './Photo.astro';
+import posterArt from '../assets/photos/E1-rain-2026.jpg';
+import { CONFERENCE } from '../data/conference.mjs';
+
+interface Props {
+  headingId?: string;
+}
+
+const { headingId = 'conference-heading' } = Astro.props;
+
+const sessionLine = CONFERENCE.sessions.map((s) => `${s.day} ${s.time}`).join(', ');
+---
+
+<div class="chapter">
+  <div class="chapter__stage">
+    <div class="chapter__weather" aria-hidden="true">
+      <span class="chapter__bloom"></span>
+      <span class="chapter__shaft chapter__shaft--a"></span>
+      <span class="chapter__shaft chapter__shaft--b"></span>
+      <span class="chapter__shaft chapter__shaft--c"></span>
+    </div>
+
+    <div class="page-shell chapter__inner">
+      <div class="chapter__copy">
+        <p class="chapter__eyebrow">This November</p>
+
+        <h2 id={headingId} class="chapter__teaser">
+          <span class="chapter__mask">
+            <span class="chapter__line">{CONFERENCE.teaser}</span>
+          </span>
+        </h2>
+
+        <p class="chapter__name">
+          {CONFERENCE.name}
+          <span class="chapter__tag">{CONFERENCE.tag}</span>
+        </p>
+
+        <p class="chapter__dates">
+          <time datetime={CONFERENCE.startsAt} class="ltr-embed">{CONFERENCE.displayDates}</time>
+        </p>
+
+        <p class="chapter__facts">
+          {sessionLine}. Open-air crusade, {CONFERENCE.crusade.day}, {CONFERENCE.crusade.time}.
+        </p>
+
+        <p class="chapter__actions">
+          {
+            CONFERENCE.registrationUrl ? (
+              <Button href={CONFERENCE.registrationUrl} size="large" external>
+                Register
+              </Button>
+            ) : (
+              <>
+                <span class="chapter__open">No registration required.</span>
+                <Button href="/new-here/plan-your-visit" tone="quiet">Plan your visit</Button>
+              </>
+            )
+          }
+        </p>
+      </div>
+
+      <!-- The master poster, wide screens only: the artwork the whole stage
+           was staged from, arriving after the light has done its work. On a
+           phone the chapter stays typographic and the artwork lives on the
+           events card instead, because a poster stacked under the copy would
+           double the stage's height and spend the pin. -->
+      <div class="chapter__artwork">
+        <Photo
+          ref="E1"
+          src={posterArt}
+          alt={`The RAIN 2026 master poster: the Senior Pastors mid-ministry under storm clouds, with ministers ${CONFERENCE.ministers.join(' and ')}, the dates and session times, and the venue.`}
+          brief="The conference master poster."
+          ratio="1672 / 941"
+          sizes="(min-width: 64rem) 34rem, 45vw"
+          class="chapter__art"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ------------------------------------------------------------------
+     The resting state, which is also the whole design for browsers that
+     cannot scrub it: one dark viewport with everything present.
+     ------------------------------------------------------------------ */
+
+  .chapter__stage {
+    position: relative;
+    overflow: clip;
+    min-block-size: 100svb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: var(--color-neutral-950);
+    color: var(--color-text-inverse);
+  }
+
+  .chapter__weather {
+    position: absolute;
+    inset: 0;
+  }
+
+  /* The gathering light behind everything. Faint before the scene arrives,
+     which is the promise; full once it holds. */
+  .chapter__bloom {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(
+        58% 52% at 70% 0%,
+        color-mix(in oklab, var(--color-ember) 30%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        90% 62% at 24% 100%,
+        color-mix(in oklab, var(--color-heritage) 42%, transparent),
+        transparent 72%
+      );
+    transform-origin: 70% 0%;
+  }
+
+  /* Three shafts, not one, staggered in weight and depth. They descend from a
+     top origin by scaleY, so the descent is a transform rather than a wipe. */
+  .chapter__shaft {
+    position: absolute;
+    inset-block: 0;
+    transform-origin: top center;
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-ember-light) 85%, transparent),
+      color-mix(in oklab, var(--color-ember-light) 22%, transparent) 64%,
+      transparent
+    );
+  }
+
+  .chapter__shaft--a {
+    inset-inline-end: 24%;
+    inline-size: clamp(2px, 0.5vw, 5px);
+  }
+
+  /* The wide, faint one behind the narrow ones: the spill, not the beam. */
+  .chapter__shaft--b {
+    inset-inline-end: 20%;
+    inline-size: clamp(8px, 2vw, 22px);
+    opacity: 0.28;
+  }
+
+  .chapter__shaft--c {
+    inset-inline-end: 31%;
+    inline-size: clamp(1px, 0.25vw, 3px);
+    opacity: 0.6;
+  }
+
+  .chapter__inner {
+    position: relative;
+    inline-size: 100%;
+    padding-block: var(--space-2xl);
+  }
+
+  /* The artwork joins the copy on wide screens only; the stage must not grow
+     past a viewport on a phone, where the pin would pay for it. */
+  .chapter__artwork {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .chapter__inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 34rem);
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+
+    .chapter__artwork {
+      display: block;
+    }
+  }
+
+  .chapter__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-neutral-400);
+  }
+
+  .chapter__teaser {
+    margin-block: var(--space-s) var(--space-l);
+    max-inline-size: 14ch;
+    font-family: var(--font-display);
+    font-size: var(--text-5);
+    line-height: var(--text-5-leading);
+    letter-spacing: var(--text-5-tracking);
+    font-variation-settings: 'SOFT' 30, 'WONK' 0, 'opsz' 144;
+    text-wrap: balance;
+  }
+
+  /* The masked row. Overflow is clipped so the line can rise into view; the
+     padding keeps Fraunces ascenders and descenders inside the clip at rest,
+     and the negative margin gives that padding no cost in the layout. */
+  .chapter__mask {
+    display: block;
+    overflow: clip;
+    padding-block: 0.18em;
+    margin-block: -0.18em;
+  }
+
+  .chapter__line {
+    display: block;
+  }
+
+  .chapter__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    font-size: var(--text-1);
+  }
+
+  .chapter__tag {
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    /* An outline rather than a fill: ember never fills a plane, and this
+       stage has already spent the accent budget on the weather. */
+    border: var(--border-hairline) solid currentColor;
+    border-radius: var(--radius-s);
+  }
+
+  .chapter__dates {
+    margin-block-start: var(--space-s);
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .chapter__facts {
+    margin-block-start: var(--space-2xs);
+    max-inline-size: var(--measure);
+    color: var(--color-neutral-300);
+  }
+
+  .chapter__actions {
+    margin-block-start: var(--space-l);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .chapter__open {
+    font-weight: var(--weight-semibold);
+  }
+
+  /* The quiet button's default ink is tuned for the light canvas and would
+     sink into this ground, so the stage restates it in its own light. */
+  .chapter__actions :global(.btn--quiet) {
+    color: var(--color-text-inverse);
+    border-color: var(--color-neutral-400);
+  }
+
+  /* ------------------------------------------------------------------
+     The scrub. Only here does the track grow tall, the stage pin, and the
+     pre-arrival states exist at all.
+     ------------------------------------------------------------------ */
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .chapter {
+        block-size: 240svb;
+        view-timeline-name: --rain;
+      }
+
+      /* min-block-size, never a fixed block-size: on a short viewport the
+         centred content is taller than one screen, and a fixed box clips it
+         against overflow: clip. The stage growing costs only pin travel. */
+      .chapter__stage {
+        position: sticky;
+        inset-block-start: 0;
+        min-block-size: 100svb;
+      }
+
+      /*
+        The choreography, in cover percentages of the 240svb track. The stage
+        is pinned from roughly 29% to 71%; everything lands before 70%, so the
+        scene is complete before it lets go.
+
+        Longhands, never the `animation` shorthand: the minifier folds a
+        neighbouring animation-timeline into the shorthand and the browser
+        then rejects the whole declaration.
+      */
+      .chapter__bloom,
+      .chapter__shaft--a,
+      .chapter__shaft--b,
+      .chapter__shaft--c,
+      .chapter__eyebrow,
+      .chapter__line,
+      .chapter__name,
+      .chapter__dates,
+      .chapter__facts,
+      .chapter__artwork,
+      .chapter__actions {
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: --rain;
+      }
+
+      .chapter__bloom {
+        animation-name: rain-bloom;
+        animation-range: cover 10% cover 46%;
+      }
+
+      .chapter__shaft--a {
+        animation-name: rain-shaft;
+        animation-range: cover 32% cover 50%;
+      }
+
+      .chapter__shaft--b {
+        animation-name: rain-shaft-spill;
+        animation-range: cover 36% cover 56%;
+      }
+
+      .chapter__shaft--c {
+        animation-name: rain-shaft-thin;
+        animation-range: cover 40% cover 58%;
+      }
+
+      .chapter__eyebrow {
+        animation-name: rain-settle;
+        animation-range: cover 30% cover 40%;
+      }
+
+      .chapter__line {
+        animation-name: rain-rise;
+        animation-range: cover 38% cover 56%;
+      }
+
+      .chapter__name {
+        animation-name: rain-settle;
+        animation-range: cover 52% cover 62%;
+      }
+
+      .chapter__dates {
+        animation-name: rain-settle;
+        animation-range: cover 56% cover 66%;
+      }
+
+      .chapter__facts {
+        animation-name: rain-settle;
+        animation-range: cover 58% cover 68%;
+      }
+
+      /* The poster is the last arrival: the drawn light hands over to the
+         real artwork just before the pin releases. */
+      .chapter__artwork {
+        animation-name: rain-settle;
+        animation-range: cover 56% cover 70%;
+      }
+
+      .chapter__actions {
+        animation-name: rain-settle;
+        animation-range: cover 60% cover 70%;
+      }
+    }
+  }
+
+  @keyframes rain-bloom {
+    from {
+      opacity: 0.15;
+      transform: scale(0.82);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes rain-shaft {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  /* The spill and the thin shaft end at their resting opacity rather than
+     full, so the three keep their depth once landed. */
+  @keyframes rain-shaft-spill {
+    from {
+      opacity: 0;
+      transform: scaleY(0);
+    }
+    to {
+      opacity: 0.28;
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes rain-shaft-thin {
+    from {
+      opacity: 0;
+      transform: scaleY(0);
+    }
+    to {
+      opacity: 0.6;
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes rain-rise {
+    from {
+      transform: translateY(130%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes rain-settle {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 48rem) {
+    /* The shafts move off the type on a narrow screen rather than falling
+       across it. */
+    .chapter__shaft--a {
+      inset-inline-end: 9%;
+    }
+    .chapter__shaft--b {
+      inset-inline-end: 5%;
+    }
+    .chapter__shaft--c {
+      inset-inline-end: 16%;
+    }
+  }
+</style>

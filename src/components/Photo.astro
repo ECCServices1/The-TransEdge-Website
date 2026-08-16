@@ -56,6 +56,14 @@ interface Props {
   priority?: boolean;
   /** Rendered widths, for the srcset. Defaults suit a content-column image. */
   sizes?: string;
+  /**
+   * A subject cut out on transparency, blending with the page ground rather
+   * than sitting in a frame. The fallback format becomes PNG because JPEG has
+   * no alpha channel, the frame styling is dropped, and the base of the image
+   * dissolves through a static mask so the crop line never shows. The client
+   * approved replacing or removing photo backgrounds in August 2026.
+   */
+  cutout?: boolean;
   class?: string;
 }
 
@@ -68,6 +76,7 @@ const {
   bleed = 'none',
   priority = false,
   sizes = '(min-width: 56rem) 40rem, 100vw',
+  cutout = false,
   class: className = '',
 } = Astro.props;
 
@@ -86,14 +95,18 @@ if (src && (!alt || !alt.trim())) {
 
 {
   src ? (
-    <figure class:list={['photo', `photo--bleed-${bleed}`, className]} style={`--ratio: ${ratio}`} data-shot={ref}>
+    <figure
+      class:list={['photo', `photo--bleed-${bleed}`, { 'photo--cutout': cutout }, className]}
+      style={`--ratio: ${ratio}`}
+      data-shot={ref}
+    >
       <Picture
         src={src}
         alt={alt!}
         widths={[480, 800, 1200, 1600]}
         sizes={sizes}
         formats={['avif', 'webp']}
-        fallbackFormat="jpeg"
+        fallbackFormat={cutout ? 'png' : 'jpeg'}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
       />
@@ -122,6 +135,24 @@ if (src && (!alt || !alt.trim())) {
        off the bottom rather than off the top. */
     object-position: center 40%;
     display: block;
+  }
+
+  /* A cutout has no frame: the page is its ground. The mask is static, so it
+     is presentation, not motion, and costs nothing on scroll. */
+  .photo--cutout {
+    background-color: transparent;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .photo--cutout :global(img) {
+    object-fit: contain;
+    object-position: center bottom;
+    /* The CLS backstop paints a sunken box behind every img; behind alpha it
+       reads as a grey card and defeats the cutout. */
+    background-color: transparent;
+    -webkit-mask-image: linear-gradient(to bottom, #000 84%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 84%, transparent 100%);
   }
 
   .photo--bleed-inline-end {

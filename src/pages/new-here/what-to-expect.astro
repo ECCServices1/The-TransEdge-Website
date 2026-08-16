@@ -19,6 +19,7 @@ import afterwards from '../../assets/photos/S6-afterwards.jpg';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 
 const shape = [
   {
@@ -104,6 +105,13 @@ const wontHappen = [
       <ul class="wont" role="list">
         {wontHappen.map((line) => <li>{line}</li>)}
       </ul>
+    </section>
+
+    <section aria-labelledby="midweek-heading">
+      <h2 id="midweek-heading">Not only Sundays</h2>
+      <p class="prose">
+        We also gather on Wednesday evenings at {midweek.time}. The door is just as open.
+      </p>
     </section>
 
     <section aria-labelledby="kids-heading">

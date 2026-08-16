@@ -28,14 +28,36 @@ and graded.
 | **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
-| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, on the pastoral team cards. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces |
+| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. S7a replaced in August 2026 with the client-supplied `Dr_Michaels_(august2026).jpg` from the Drive August folder, graded with the standard recipe |
 | **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
-| **S12** | **Done.** `S12-worship.jpg`, supplied as "Singer_worship.jpg" | On Watch and Listen. The strongest worship frame in the set, on the one page whose subject is the singing |
+| **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows |
+
+**Reassigned:** `S12-worship.jpg` (supplied as "Singer_worship.jpg") held this
+slot first and is kept in the repository unused. It remains the strongest
+worship frame in the set and should get a home when a slot suits it.
 
 **Deliberately unused:** `Ps Osas Michaels.jpg`. Despite the name it is a
 second solo frame of Pastor Osas, and `S7-osas.jpg` is better framed. A site
 does not need two portraits of the same person, and using it to fill a slot
 would be padding rather than choosing.
+
+**E1, the conference artwork.** Both supplied frames arrived in August 2026
+and are in: `E1-rain-2026.jpg` (the master poster, on the home chapter, wide
+screens) and `E1-rain-ministers.jpg` (the hosts-and-speakers social, on the
+events card). Converted from the supplied PNGs at quality 84, not re-graded:
+designed artwork keeps its own colour. The poster's facts (sessions, crusade,
+ministers, venue, no registration required) live in `src/data/conference.mjs`.
+
+**Cutouts.** The client approved replacing or removing photo backgrounds where
+it presents people better. The pipeline that produced `S12-pastors.png`:
+Higgsfield's background remover works through its MCP tools (import the image
+from the deployed preview URL with `media_import_url`, run `remove_background`)
+but its CDN is unreachable from this build environment, so results cannot come
+back whole. The local route works end to end: `pip install rembg onnxruntime`
+in a scratch venv (PyPI bypasses the proxy), model `isnet-general-use`, then
+erase any furniture from the alpha channel with Pillow and downscale to 1600
+wide. Quality on stage-lit frames is excellent because the subjects sit far
+from the backdrop in tone.
 
 **Still missing**, and these are the ones the New Here pages run on: S1 the wide
 congregation shot (named in Drive, too large to transfer so far), S2 the

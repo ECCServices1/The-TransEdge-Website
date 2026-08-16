@@ -36,7 +36,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/pastoral\\-team|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
+          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
           "assertions": {
             "categories:performance": [
               "error",
@@ -112,7 +112,7 @@
           }
         },
         {
-          "matchingUrlPattern": "(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/pastoral\\-team|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
+          "matchingUrlPattern": "(?:/ar/|/(?:who\\-we\\-are/what\\-we\\-believe|who\\-we\\-are/core\\-course|who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
           "assertions": {
             "categories:performance": [
               "error",

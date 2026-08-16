@@ -15,7 +15,9 @@ import { nextOccurrence, toGoogleCalendarUrl } from '../../lib/dates.mjs';
 import { gatheringSchema } from '../../lib/structured-data.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 const nextSunday = nextOccurrence(sunday.isoDay);
+const nextMidweek = nextOccurrence(midweek.isoDay);
 
 const calendarEvent = {
   title: 'Sunday gathering, The Transformation Edge',
@@ -31,8 +33,8 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
 const steps = [
   {
     n: '1',
-    title: 'Pick a Sunday',
-    body: `We gather every Sunday at ${sunday.time}. Nothing is booked and nothing is needed. Turn up.`,
+    title: 'Pick a day',
+    body: `We gather Sundays at ${sunday.time} and Wednesdays at ${midweek.time}. Nothing is booked and nothing is needed. Turn up.`,
   },
   {
     n: '2',
@@ -42,7 +44,7 @@ const steps = [
   {
     n: '3',
     title: 'Say it is your first time',
-    body: 'The welcome desk is just inside the main entrance. Tell them it is your first Sunday and someone will walk you in and sit with you if you would like.',
+    body: 'The welcome desk is just inside the main entrance. Tell them it is your first day and someone will walk you in and sit with you if you would like.',
   },
   {
     n: '4',
@@ -55,11 +57,11 @@ const steps = [
 
 <PageLayout
   title="Plan your visit"
-  description={`Everything you need for your first Sunday at The Transformation Edge in ${CHURCH.place}. We gather Sundays at ${sunday.time}.`}
+  description={`Everything you need for your first visit to The Transformation Edge in ${CHURCH.place}. We gather Sundays at ${sunday.time} and Wednesdays at ${midweek.time}.`}
   route="new-here/plan-your-visit"
   crumbs={[{ name: 'New Here', href: '/new-here' }]}
   standfirst="Four steps, and none of them involve filling anything in."
-  schema={[gatheringSchema(sunday, nextSunday)]}
+  schema={[gatheringSchema(sunday, nextSunday), gatheringSchema(midweek, nextMidweek)]}
 >
   <!-- The three facts, then the one action. Nothing else at this height. -->
   <section class="essentials" aria-labelledby="essentials-heading">
@@ -67,7 +69,7 @@ const steps = [
     <dl class="essentials__facts">
       <div>
         <dt>When</dt>
-        <dd class="ltr-embed">Sundays, {sunday.time}</dd>
+        <dd class="ltr-embed">Sundays {sunday.time}, Wednesdays {midweek.time}</dd>
       </div>
       <div>
         <dt>Where</dt>

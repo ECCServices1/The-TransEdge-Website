@@ -15,7 +15,7 @@
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/Button.astro';
 import Photo from '../components/Photo.astro';
-import worship from '../assets/photos/S12-worship.jpg';
+import pastors from '../assets/photos/S12-pastors.png';
 import { CHURCH } from '../data/church.mjs';
 import { getSermons } from '../lib/connect.mjs';
 
@@ -24,6 +24,7 @@ const latest = sermons[0] ?? null;
 const rest = sermons.slice(1, 13);
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
+const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 ---
 
 <PageLayout
@@ -62,19 +63,28 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
       )
     }
 
-    <Photo
-      ref="S12"
-      src={worship}
-      alt="A singer leading worship on a Sunday, microphone in hand, mid-song."
-      brief="Worship, mid-song, from the floor rather than the wings."
-      ratio="4 / 3"
-    />
+    <!-- The Senior Pastors, cut out from the stage backdrop at the client's
+         request so the figures sit on the page's own ground. The wash behind
+         them is drawn with the site's tokens, so it follows the colour scheme
+         rather than fighting it. -->
+    <div class="wl__pastors">
+      <Photo
+        ref="S12"
+        src={pastors}
+        cutout
+        alt="The Senior Pastors, Dr Michaels Aibangbee and Pastor Osas Aibangbee, side by side. Dr Michaels is speaking, microphone in hand."
+        brief="The Senior Pastors together, speaking to the room."
+        ratio="1600 / 894"
+        sizes="(min-width: 56rem) 42rem, 100vw"
+      />
+    </div>
 
     <section aria-labelledby="live-heading">
       <h2 id="live-heading">Joining live</h2>
       <p class="prose">
-        We gather Sundays at {sunday.time} and the gathering is streamed. If you would rather
-        be in the room, the door is open and nobody will single you out.
+        We gather Sundays at {sunday.time} and Wednesdays at {midweek.time}, and Sundays are
+        streamed. If you would rather be in the room, the door is open and nobody will
+        single you out.
       </p>
       <p class="actions">
         <Button href={`${CHURCH.connectUrl}/live`} external size="large">Watch live</Button>
@@ -165,6 +175,24 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
   .latest__player {
     inline-size: 100%;
     margin-block-start: var(--space-m);
+  }
+
+  /* The ground the cutout stands on: a soft wash in the site's own colours,
+     open at the top, gathering at the base where the figures dissolve. */
+  .wl__pastors {
+    padding: var(--space-xl) var(--space-l) 0;
+    border-radius: var(--radius-l);
+    background-image:
+      radial-gradient(
+        85% 95% at 68% 18%,
+        color-mix(in oklab, var(--color-heritage) 16%, transparent),
+        transparent 72%
+      ),
+      radial-gradient(
+        60% 70% at 22% 88%,
+        color-mix(in oklab, var(--color-ember) 9%, transparent),
+        transparent 70%
+      );
   }
 
   .library {

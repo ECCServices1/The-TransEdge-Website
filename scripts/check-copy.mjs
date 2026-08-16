@@ -90,7 +90,7 @@ const RULES = [
     id: 'clinical-claim-for-pastoral-care',
     pattern: /\b(?:therapy|therapeutic|treatment|counsell?ing|clinical|diagnos)\w*\b/i,
     message:
-      'Possible clinical or therapeutic claim. Pastoral care is not clinical treatment. Renovate Health is a separate practice and is linked, not absorbed. Section 7 and section 22.',
+      'Possible clinical or therapeutic claim. Pastoral care is not clinical treatment, and the site carries no reference to any therapeutic service by the client’s instruction of August 2026. Section 22.',
     level: 'warn',
   },
   {
