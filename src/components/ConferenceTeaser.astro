@@ -42,16 +42,6 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
       {CONFERENCE.teaser}
     </Heading>
 
-    <Photo
-      ref="E1"
-      src={ministersArt}
-      alt={`The RAIN 2026 hosts and speakers artwork: the Senior Pastors mid-ministry under storm clouds, with additional ministers ${CONFERENCE.ministers.join(' and ')}.`}
-      brief="The conference artwork, hosts and speakers."
-      ratio="1672 / 941"
-      sizes="(min-width: 56rem) 38rem, 100vw"
-      class="rain__art"
-    />
-
     <p class="rain__name" data-reveal>
       {CONFERENCE.name}
       <span class="rain__tag">{CONFERENCE.tag}</span>
@@ -81,6 +71,22 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
         )
       }
     </p>
+
+    <!-- The artwork closes the card rather than opening it, and stays lazy.
+         Leading with it made it the page's LCP element, and on the CI
+         throttle a poster this rich cannot arrive inside the 2000ms budget
+         no matter how eagerly it loads: lazy measured 2037ms, eager 2254ms.
+         Below the facts it sits outside the first mobile viewport, the LCP
+         element is the headline again, and the budget holds. -->
+    <Photo
+      ref="E1"
+      src={ministersArt}
+      alt={`The RAIN 2026 hosts and speakers artwork: the Senior Pastors mid-ministry under storm clouds, with additional ministers ${CONFERENCE.ministers.join(' and ')}.`}
+      brief="The conference artwork, hosts and speakers."
+      ratio="1672 / 941"
+      sizes="(min-width: 56rem) 38rem, 100vw"
+      class="rain__art"
+    />
   </div>
 </Tag>
 
@@ -182,7 +188,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
   }
 
   .rain__art {
-    margin-block: var(--space-l);
+    margin-block-start: var(--space-l);
   }
 
   .rain__facts {
