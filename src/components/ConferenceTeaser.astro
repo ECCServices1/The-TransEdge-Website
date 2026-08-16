@@ -42,6 +42,10 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
       {CONFERENCE.teaser}
     </Heading>
 
+    <!-- priority: on the events page this artwork is the largest thing in the
+         first viewport, which makes it the LCP element. Lazy-loading an LCP
+         image defers the page's own milestone; CI caught it at 2037ms against
+         the 2000ms budget the moment the artwork landed. -->
     <Photo
       ref="E1"
       src={ministersArt}
@@ -49,6 +53,7 @@ const Heading = `h${headingLevel}` as 'h2' | 'h3';
       brief="The conference artwork, hosts and speakers."
       ratio="1672 / 941"
       sizes="(min-width: 56rem) 38rem, 100vw"
+      priority
       class="rain__art"
     />
 

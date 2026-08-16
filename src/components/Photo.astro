@@ -109,6 +109,7 @@ if (src && (!alt || !alt.trim())) {
         fallbackFormat={cutout ? 'png' : 'jpeg'}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
+        fetchpriority={priority ? 'high' : undefined}
       />
     </figure>
   ) : (
