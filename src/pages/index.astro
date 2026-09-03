@@ -41,6 +41,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import Photo from '../components/Photo.astro';
+import welcome from '../assets/photos/S1-welcome.jpg';
+import edgedin from '../assets/photos/S2-edgedin.jpg';
 import EdgeMark from '../components/EdgeMark.astro';
 import Waypoint from '../components/Waypoint.astro';
 import ConferenceChapter from '../components/ConferenceChapter.astro';
@@ -176,8 +178,14 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
            column. A wide shot of a full room is the single most useful
            photograph on this site, and squeezing it into a portrait slot beside
            the text throws away the room, which is the whole subject. -->
+      <!-- A bridging frame from the Sunday of 30 August 2026: the room from
+           the back rows, mid-message. The brief's ideal, faces visible across a
+           full room, is the wide export still waiting in the Drive; this holds
+           the place with a real gathering rather than a dashed box. -->
       <Photo
         ref="S1"
+        src={welcome}
+        alt="The gathering from the back of the room: Dr Michaels Aibangbee preaching from the platform, seen over the heads of the congregation."
         brief="Wide, from the back of the room, mid-gathering. Faces visible, no single hero, no empty seats. Room at top right for the seam to cross."
         ratio="16 / 9"
         bleed="inline-end"
@@ -325,8 +333,13 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
         </p>
       </div>
 
+      <!-- The voice behind the network, as his biography puts it, rather than
+           the recording desk the brief first imagined. A person with a
+           microphone says what EdgedIn is faster than equipment does. -->
       <Photo
         ref="S2"
+        src={edgedin}
+        alt="Dr Michaels Aibangbee, microphone in hand, smiling mid-sentence on the platform."
         brief="Recording setup mid-session, hands and microphone, shallow depth. Portrait or square. Warm key light."
         ratio="1 / 1"
         class="edgedin__photo"

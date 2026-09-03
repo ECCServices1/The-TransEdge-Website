@@ -16,6 +16,7 @@ import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
 import afterwards from '../../assets/photos/S6-afterwards.jpg';
+import room from '../../assets/photos/S10-room.jpg';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -90,6 +91,15 @@ const wontHappen = [
           several accents in the row you sit in. The gathering itself is in English.
         </p>
       </div>
+      <Photo
+        ref="S10"
+        src={room}
+        alt="Our room during a gathering: the congregation seated in rows beneath the words The Transformation Edge, A change is inevitable, and our mission painted on the wall."
+        brief="The room mid-gathering, with the tagline and mission on the wall behind."
+        ratio="9 / 10"
+        sizes="(min-width: 56rem) 26rem, 100vw"
+        class="expect__room"
+      />
     </section>
 
     <Photo
@@ -198,5 +208,10 @@ const wontHappen = [
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2xs);
+  }
+
+  .expect__room {
+    max-inline-size: 26rem;
+    margin-block-start: var(--space-l);
   }
 </style>

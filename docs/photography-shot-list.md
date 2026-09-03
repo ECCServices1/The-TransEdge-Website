@@ -59,11 +59,30 @@ erase any furniture from the alpha channel with Pillow and downscale to 1600
 wide. Quality on stage-lit frames is excellent because the subjects sit far
 from the backdrop in tone.
 
-**Still missing**, and these are the ones the New Here pages run on: S1 the wide
-congregation shot (named in Drive, too large to transfer so far), S2 the
-recording setup, S3 the entrance from the street, S4 the welcome desk, S5 the
-EdgeKids room, S9 the empty room in morning light, S10 the congregation in
-prayer.
+**Placed in September 2026 from the Drive's phone folders** (decoded from HEIC
+with pillow-heif, graded with the standard recipe):
+
+- **S1** `S1-welcome.jpg`, from "Sunday 30/8/2026" IMG_1583: the room from the
+  back rows, mid-message. A bridging frame. The brief's ideal, faces visible
+  across a full room, is `S1_Congregation.jpg` in Momentum 2025, which at
+  10.4MB has never transferred; a 3000px export under 7MB replaces this.
+- **S2** `S2-edgedin.jpg`, from "Sunday 30/8/2026" IMG_1566: Dr Michaels with
+  a microphone, smiling, square. The voice behind the network rather than the
+  recording desk the brief first imagined; a person says EdgedIn faster than
+  equipment does.
+- **S10** `S10-room.jpg`, from "TTE_Church photos" IMG_0304: the congregation
+  seated beneath the tagline and the mission on the wall, on What to Expect.
+  Cropped below the lighting rig and desaturated harder than usual to tame a
+  purple wash.
+
+Frames set aside from those folders because a child or teenager appears
+(IMG_1492, IMG_1575, IMG_1610) or because the setting is a retreat rather than
+the church (the January 2025 JPEGs).
+
+**Still missing**, and nothing in the Drive can supply them: S3 the entrance
+from the street, S4 the welcome desk, S5 the EdgeKids room, S9 the empty room
+in morning light. These need a phone on a weekday morning, not an event
+photographer.
 
 ## How photographs reach the repository
 
