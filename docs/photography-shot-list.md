@@ -23,13 +23,13 @@ and graded.
 
 | Slot | The frame | Why |
 |---|---|---|
-| **S1** | Row of the congregation standing in worship, side-on, keyboard and worship leader at right, open door and daylight behind | Faces, ages and backgrounds all legible. The welcome movement's copy is "a congregation of many languages and many countries", and this is that sentence as a photograph |
+| **S1** | **Done.** `S1-welcome.jpg`, supplied as "A wide Congregation Frame.jpg" (September 2026) | The room from the back during worship, the congregation standing and the singers on the platform beneath the screens. A 5183 by 2380 panorama cropped to 16:9 with the dark ceiling kept clear at top right for the seam, graded with the standard recipe. Adults, mostly from behind; no child in frame. It replaces the bridging frame from 30 August |
 | **S5** | **Done.** `S5-edgekids.jpg`, a render made at Higgsfield in September 2026 | The client's instruction: a child-friendly room with no children in it. It is an illustration, not a photograph of our room, and the alt text says so. See "Generated imagery" below |
 | **S6** | **Done.** `S6-afterwards.jpg`, supplied as "Buffett_Queue.jpg" | Hospitality rather than performance, lit by the room rather than the stage, and the only frame where a stranger could picture themselves. On What to Expect |
 | **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
-| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. Both replaced in September 2026 with the client's hi-res profile portraits from the Drive profile folder (`Dr Michaels_profile.jpg`, `Ps Osas_profile`, 2400×3600 daylight frames), cropped to 4:5 from the top with head room kept, graded a touch lighter than the stage frames (saturation 0.86) because daylight does not need the same taming. The same folder's `PM and PO_informal.jpg` is held back: it is a dinner-table frame with other guests identifiable behind the pastors, and section 17 has no consent for them |
+| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. Both replaced in September 2026 with the client's hi-res profile portraits from the Drive profile folder (`Dr Michaels_profile.jpg`, `Ps Osas_profile`, 2400×3600 daylight frames), cropped to 4:5 from the top with head room kept, graded a touch lighter than the stage frames (saturation 0.86) because daylight does not need the same taming. Later the same day the client asked for `Ps Osas New Profile.jpeg` on the profile page instead: a stage frame, mid-message with a microphone, and small (1277 by 832, landscape). It is cropped to 4:5 centred on her, graded with the standard recipe, and resampled up to 1200 wide so the browser is not doing the enlarging; it will still read softer than the other portraits on a phone, and a camera original of the same frame would fix that. The daylight portrait stays in the repository as `S7-osas-daylight.jpg`, unused, for the next slot that suits it. The same folder's `PM and PO_informal.jpg` is held back: it is a dinner-table frame with other guests identifiable behind the pastors, and section 17 has no consent for them |
 | **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
 | **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows |
 
@@ -69,10 +69,10 @@ from the backdrop in tone.
 **Placed in September 2026 from the Drive's phone folders** (decoded from HEIC
 with pillow-heif, graded with the standard recipe):
 
-- **S1** `S1-welcome.jpg`, from "Sunday 30/8/2026" IMG_1583: the room from the
-  back rows, mid-message. A bridging frame. The brief's ideal, faces visible
-  across a full room, is `S1_Congregation.jpg` in Momentum 2025, which at
-  10.4MB has never transferred; a 3000px export under 7MB replaces this.
+- **S1** was first filled from "Sunday 30/8/2026" IMG_1583 as a bridging
+  frame, then replaced in September 2026 by the client's "A wide Congregation
+  Frame.jpg" (see the table above). `S1_Congregation.jpg` in Momentum 2025 is no
+  longer needed.
 - **S2** `S2-edgedin.jpg`, from "Sunday 30/8/2026" IMG_1566: Dr Michaels with
   a microphone, smiling, square. The voice behind the network rather than the
   recording desk the brief first imagined; a person says EdgedIn faster than
@@ -86,9 +86,19 @@ Frames set aside from those folders because a child or teenager appears
 (IMG_1492, IMG_1575, IMG_1610) or because the setting is a retreat rather than
 the church (the January 2025 JPEGs).
 
-**Still missing**, and nothing in the Drive can supply them: S3 the entrance
-from the street, S4 the welcome desk, S9 the empty room in morning light. These
-need a phone on a weekday morning, not an event photographer.
+**S3, supplied and held.** The client added "The entrance.JPG" (3520 by 1980)
+in September 2026: the outside of the building with the banner on the wall, a
+barbecue under way, and the street beyond. It is held for two reasons. Several
+children are clearly identifiable in it (a toddler being carried, two small
+children at the table), and section 17 allows no image of a child without a
+recorded parent or guardian consent; the client has been asked to confirm one
+exists for each, or to supply a frame without children. And the brief for S3 is
+the entrance and its step-free approach in daylight, which this frame does not
+quite show. The file is kept out of the repository until both are settled.
+
+**Still missing**, and nothing in the Drive can supply them: S4 the welcome desk
+and S9 the empty room in morning light. These need a phone on a weekday morning,
+not an event photographer.
 
 ## Generated imagery
 

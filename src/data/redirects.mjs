@@ -8,12 +8,12 @@
  *        Elvanto routes, so search engines transfer their equity.
  *   302  temporary. Use only while a destination is still being built.
  *
- * INCOMPLETE UNTIL THE WIX EXPORT LANDS. The families below cover Wix's route
- * conventions and the IA in section 9. The live route list has not been
- * enumerated from the current site. Before launch, run the extraction described
- * in docs/sitemap-and-redirects.md and add every route that is not already
- * matched here. A route that appears in the export and is missing here is a
- * launch blocker, per section 23.
+ * THE WIX EXPORT IS WAIVED. The families below cover Wix's route conventions
+ * and the IA in section 9. The client ruled on 3 September 2026 that this is a
+ * clean build and the live Wix route list is not needed, so nothing further is
+ * extracted; the rules stay as a courtesy net for printed bulletins and QR
+ * codes. docs/sitemap-and-redirects.md keeps the procedure in case that is
+ * ever revisited.
  */
 
 /** @typedef {{ from: string, to: string, status?: number, note?: string }} Redirect */

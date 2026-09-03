@@ -96,16 +96,15 @@ Current state: **86 rules, 9 dynamic, 77 static.**
 | Wix blog | `/post/*` | `/edgedin` |
 | Wix events | `/event-details/*` | `/events` |
 
-### Not yet covered, and this is a launch blocker
+### The live Wix route list, waived
 
-**The live Wix route list has not been enumerated.** The map covers Wix's route
-conventions and the families above. That is not the same as the actual list of
-pages on the current site.
+**The live Wix route list has not been enumerated, and by decision it will not
+be.** The client ruled on 3 September 2026 that this is a clean build and the
+old address list is not needed. The families above stay as a courtesy net for
+printed bulletins and QR codes. The procedure below is kept in case that
+decision is ever revisited.
 
-Egress to `www.thetransedge.com` was blocked from the build environment, so the
-sitemap could not be read.
-
-### How to finish it
+### How it would be finished, if ever
 
 Ten minutes with access to the current site.
 
@@ -148,9 +147,9 @@ Ten minutes with access to the current site.
 
    Anything that is not a 301 is a route that has not been mapped.
 
-The definition of done requires every Wix, portal and Elvanto route to redirect,
-with no orphan pages and no broken links. Until step 6 comes back clean, that is
-not met.
+The definition of done once required every Wix, portal and Elvanto route to
+redirect. The client waived the Wix list on 3 September 2026; the portal and
+Elvanto rules stand, and the broken-link check still runs on every push.
 
 ## Generated sitemaps
 

@@ -89,8 +89,9 @@ change can be looked at before it is merged.
 **Do not do this yet.** Two things have to be true first, both on the launch
 checklist:
 
-- the bank account details on the Give page are real
-- every old Wix address has been listed and redirects correctly
+- the bank account details on the Give page are real (confirmed 3 September 2026)
+- the old Wix address list has been waived by the client (3 September 2026); the
+  route-family redirects stand as a courtesy net
 
 When both are done, add `thetransedge.com` as a custom domain in the Pages
 project and change the DNS. Keep the Wix site running for thirty days
