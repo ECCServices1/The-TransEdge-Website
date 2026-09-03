@@ -101,7 +101,8 @@ export const FAMILY_ORGS = {
     relationship: 'Sister organisation and community outreach arm',
     separateEntity: true,
     dgrEndorsed: true,
-    url: 'https://www.edgecommunitycare.org.au',
+    /** Confirmed by the client, 3 September 2026. */
+    url: 'https://www.edgecommunitycareservices.org.au',
   },
   edgedin: {
     name: 'EdgedIn Network',

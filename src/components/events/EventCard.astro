@@ -1,0 +1,29 @@
+---
+/**
+ * One event, in the template chosen for it.
+ *
+ * The choice is made by templateFor() in src/lib/event-templates.mjs, from
+ * the record itself: Connect can name a template, and otherwise the shape of
+ * the record decides. This component only dispatches.
+ */
+import Marquee from './Marquee.astro';
+import Series from './Series.astro';
+import Poster from './Poster.astro';
+import Ticket from './Ticket.astro';
+import Numeral from './Numeral.astro';
+import Line from './Line.astro';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  template: string;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, template, headingLevel = 2, headingId } = Astro.props;
+
+const templates = { marquee: Marquee, series: Series, poster: Poster, ticket: Ticket, numeral: Numeral, line: Line };
+const Template = templates[template as keyof typeof templates] ?? Numeral;
+---
+
+<Template event={event} headingLevel={headingLevel} headingId={headingId} />

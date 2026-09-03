@@ -30,11 +30,10 @@ export const DRAFT_PAGES = [
      supplied the nine articles of faith, reproduced verbatim.
      who-we-are/pastoral-team left in August 2026: the client supplied both
      biographies and the approved photograph. */
-  {
-    route: 'who-we-are/core-course',
-    reason: 'awaiting-content',
-    needs: 'What CORE stands for, the sessions, the next intake, and the cost.',
-  },
+  /* who-we-are/core-course left the register in September 2026: the client
+     supplied the description and the three stages and approved the page. The
+     next intake and the cost still wait for the pastoral team; the page points
+     to a person for those. */
   {
     route: 'who-we-are/safeguarding',
     reason: 'awaiting-content',

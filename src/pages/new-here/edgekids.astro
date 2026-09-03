@@ -86,15 +86,11 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
       <h2 id="safe-heading">Who is with your child</h2>
       <div class="prose">
         <p>
-          Every leader in EdgeKids holds a current New South Wales Working With Children
-          Check, and no adult is ever alone with a child. Leaders are trained before they
-          start and are supervised by the pastoral team. We keep to one leader for every five
-          children, with the ratio set by the age of the group.
+          Every EdgeKids leader holds a current NSW Working With Children Check, no adult is
+          ever alone with a child, and there is one leader for every five children, set by
+          the age of the group.
         </p>
-        <p>
-          You are welcome in the EdgeKids room at any time. You do not need a reason and you
-          do not need to ask.
-        </p>
+        <p>You are welcome in the EdgeKids room at any time, without a reason.</p>
       </div>
       <p class="actions">
         <Button href="/who-we-are/safeguarding" tone="quiet">Our child safe policy</Button>
@@ -104,19 +100,16 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
     <section aria-labelledby="younger-heading">
       <h2 id="younger-heading">Younger children and babies</h2>
       <p class="prose">
-        Babies and younger children are welcome to stay with you in the gathering. There is
-        space at the back if you need to stand, walk about or step out, and nobody minds
-        noise. If you would rather be out of the room for a while, ask at the welcome desk
-        and someone will show you where to go.
+        Babies and younger children are welcome to stay with you. There is space at the back
+        to stand or step out, and nobody minds noise.
       </p>
     </section>
 
     <section aria-labelledby="first-heading">
       <h2 id="first-heading">Your first Sunday</h2>
       <p class="prose">
-        Come about ten minutes early, so signing in is unhurried and your child has a moment
-        to look at the room before you leave. We gather Sundays at {sunday.time}. If it would
-        help to talk to someone before you come, call{' '}
+        Come about ten minutes early so signing in is unhurried. We gather Sundays at{' '}
+        {sunday.time}. To talk to someone first, call{' '}
         <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>.
       </p>
       <p class="actions">

@@ -1,0 +1,227 @@
+---
+/**
+ * Template one, the marquee: the flagship presentation.
+ *
+ * Inverse ground, a shaft of light drawn rather than photographed, the theme
+ * word as a tag, the teaser line as the heading, the dates, the sessions in
+ * one line, and the artwork closing the card. It began life as the RAIN card
+ * and is now the shape any featured event or conference arrives in.
+ *
+ * The artwork stays after the actions and lazy: leading with it made it the
+ * events page's LCP element, and no poster this rich arrives inside the 2000ms
+ * budget on the CI throttle.
+ */
+import Button from '../Button.astro';
+import EventArtwork from './EventArtwork.astro';
+import { formatRange, formatTime, sydneyParts } from '../../lib/event-templates.mjs';
+import { CHURCH } from '../../data/church.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+
+const start = sydneyParts(event.startsAt);
+const sessionLine = event.sessions.length
+  ? event.sessions
+      .map((s) => `${s.label} ${formatTime(s.startsAt)}${s.note ? ` (${s.note.toLowerCase()})` : ''}`)
+      .join(', ')
+  : `${start.weekday} ${start.time}`;
+const venue =
+  event.locationName ??
+  `${CHURCH.address.unit}, ${CHURCH.address.street}, ${CHURCH.address.suburb} ${CHURCH.address.state}`;
+---
+
+<article class="marquee" aria-labelledby={headingId}>
+  <div class="marquee__weather" aria-hidden="true">
+    <span class="marquee__shaft"></span>
+  </div>
+
+  <div class="marquee__inner">
+    <p class="marquee__eyebrow">{start.month} {start.year}</p>
+
+    <Heading id={headingId} class="marquee__teaser">{event.teaser ?? event.title}</Heading>
+
+    {
+      (event.teaser || event.tag) && (
+        <p class="marquee__name">
+          {event.teaser && event.title}
+          {event.tag && <span class="marquee__tag">{event.tag}</span>}
+        </p>
+      )
+    }
+
+    <p class="marquee__dates">
+      <time datetime={event.startsAt} class="ltr-embed">{formatRange(event.startsAt, event.endsAt)}</time>
+    </p>
+
+    <p class="marquee__facts">
+      {sessionLine}.
+      <br />
+      {venue}.
+    </p>
+
+    <p class="marquee__actions">
+      {
+        event.registrationUrl ? (
+          <Button href={event.registrationUrl} size="large" external>
+            Register
+          </Button>
+        ) : event.registrationRequired ? (
+          <>
+            <span class="marquee__open">Registration details to come.</span>
+            <Button href={`/events/${event.slug}`} tone="quiet">Details</Button>
+          </>
+        ) : (
+          <>
+            <span class="marquee__open">No registration required. The doors are open.</span>
+            <Button href="/new-here/plan-your-visit" tone="quiet">Plan your visit</Button>
+          </>
+        )
+      }
+    </p>
+
+    <EventArtwork
+      event={event}
+      ratio="16 / 9"
+      quality={50}
+      sizes="(min-width: 56rem) 38rem, 100vw"
+      class="marquee__art"
+    />
+  </div>
+</article>
+
+<style>
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    padding: var(--space-3xl) var(--space-l);
+    background-color: var(--color-canvas-inverse);
+    color: var(--color-text-inverse);
+    border-radius: var(--radius-l);
+    isolation: isolate;
+  }
+
+  /* Two gradients: a wide soft bloom and a narrow column reaching down. The
+     same figure as the artwork and none of its pixels. */
+  .marquee__weather {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      radial-gradient(
+        60% 55% at 72% 0%,
+        color-mix(in oklab, var(--color-ember) 34%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        90% 70% at 20% 100%,
+        color-mix(in oklab, var(--color-heritage) 40%, transparent),
+        transparent 72%
+      );
+  }
+
+  .marquee__shaft {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 22%;
+    inline-size: clamp(2px, 0.6vw, 6px);
+    background: linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-ember-light) 85%, transparent),
+      color-mix(in oklab, var(--color-ember-light) 25%, transparent) 62%,
+      transparent
+    );
+  }
+
+  .marquee__inner {
+    position: relative;
+    max-inline-size: 40rem;
+  }
+
+  .marquee__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-inverse);
+  }
+
+  .marquee__teaser {
+    margin-block: var(--space-s) var(--space-m);
+    font-family: var(--font-display);
+    font-size: var(--text-4);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--text-4-tracking);
+    text-wrap: balance;
+  }
+
+  .marquee__name {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    font-size: var(--text-1);
+  }
+
+  /* An outline rather than a fill. Ember is capped at five per cent of a
+     composition and the shaft has already spent most of it. */
+  .marquee__tag {
+    padding: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    border: var(--border-hairline) solid currentColor;
+    border-radius: var(--radius-s);
+  }
+
+  .marquee__dates {
+    margin-block-start: var(--space-s);
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .marquee__facts {
+    margin-block-start: var(--space-s);
+    max-inline-size: var(--measure);
+    line-height: var(--leading-normal);
+  }
+
+  .marquee__actions {
+    margin-block-start: var(--space-l);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-m);
+  }
+
+  .marquee__open {
+    font-weight: var(--weight-semibold);
+  }
+
+  .marquee__art {
+    margin-block-start: var(--space-l);
+  }
+
+  /* The quiet button's default ink is tuned for the light canvas and sinks
+     into this ground. Axe cannot compute contrast over the gradient weather,
+     so this pairing is asserted here rather than left to the sweep. */
+  .marquee__actions :global(.btn--quiet) {
+    color: var(--color-text-inverse);
+    border-color: var(--color-neutral-400);
+  }
+
+  @media (max-width: 48rem) {
+    .marquee {
+      padding: var(--space-2xl) var(--space-m);
+    }
+
+    .marquee__shaft {
+      inset-inline-end: 8%;
+    }
+  }
+</style>

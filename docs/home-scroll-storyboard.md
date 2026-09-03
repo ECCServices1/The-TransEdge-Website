@@ -91,8 +91,12 @@ No boxed cards. Each item is separated by a single heavy rule that starts at the
 seam side and runs out, so the group reads as a rhythm rather than a row of
 containers.
 
-**Never empty.** With no events, the standing gatherings render instead, which
-are always true.
+**Hidden when nothing is on.** The client's rule of September 2026: nothing is
+presented unless something is upcoming. With no events beyond the flagship the
+movement is omitted altogether (the standing gatherings are already stated in
+the arrival chapter), and a script removes anything that ends between builds.
+Each event arrives in one of six templates chosen for it; see
+`docs/connect-api-contract.md`.
 
 **Handoff out:** the trailing rule aligns with the opening edge of EdgedIn.
 
@@ -276,8 +280,11 @@ obscurity figure is not a metaphor.
 
 ## The conference
 
-`src/data/conference.mjs`. Everything in it came from the supplied artwork and
-nothing was inferred. The teaser gave the name, the tag, the line and the dates
+Since September 2026 the conference is a Connect event record, the RAIN entry
+in `src/data/connect/events.snapshot.json`, and the chapter stages whichever
+event the content layer returns as featured; with none upcoming the movement is
+omitted. Everything in the record came from the supplied artwork and nothing
+was inferred. The teaser gave the name, the tag, the line and the dates
 13 to 15 November 2026. The master poster of August 2026 added the session
 times (Friday 6pm, Saturday 4pm, Sunday 4pm), the open-air crusade (Saturday
 14 November, 4pm), the guest ministers (Min. Nelly Ewelike and Min. Eseosa

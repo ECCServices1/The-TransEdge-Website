@@ -1,0 +1,149 @@
+---
+/**
+ * Template four, the ticket: registration-led.
+ *
+ * A stub carries the date; the body carries the title and one action, which
+ * is to register. Registration happens in Connect and the card says so. For
+ * anything with a list to be on: a dinner, a course intake, a retreat.
+ */
+import Button from '../Button.astro';
+import { sydneyParts } from '../../lib/event-templates.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const start = sydneyParts(event.startsAt);
+---
+
+<article class="ticket" aria-labelledby={headingId}>
+  <p class="ticket__stub">
+    <span class="ticket__day">{start.day}</span>
+    <span class="ticket__month">{start.monthShort}</span>
+    <time datetime={event.startsAt} class="ticket__time ltr-embed">{start.time}</time>
+  </p>
+
+  <div class="ticket__body">
+    <Heading id={headingId} class="ticket__title">
+      <a href={`/events/${event.slug}`}>{event.title}</a>
+    </Heading>
+    <p class="ticket__meta">
+      {start.weekday}
+      {event.locationName && <span class="ticket__where">{event.locationName}</span>}
+    </p>
+    {event.summary && <p class="ticket__summary">{event.summary}</p>}
+    <p class="ticket__actions">
+      {
+        event.registrationUrl ? (
+          <>
+            <Button href={event.registrationUrl} external>
+              Register
+            </Button>
+            <span class="ticket__note">Registration happens in the TTE Connect Hub.</span>
+          </>
+        ) : (
+          <>
+            <Button href={`/events/${event.slug}`} tone="quiet">
+              Details
+            </Button>
+            <span class="ticket__note">Registration details to come.</span>
+          </>
+        )
+      }
+    </p>
+  </div>
+</article>
+
+<style>
+  .ticket {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    background-color: var(--color-canvas-raised);
+  }
+
+  /* The stub: a perforation drawn as a dashed rule, and the date stacked in
+     the display face. */
+  .ticket__stub {
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: var(--space-3xs);
+    min-inline-size: 5.5rem;
+    padding: var(--space-m) var(--space-s);
+    border-inline-end: 2px dashed var(--color-border-strong);
+    line-height: 1;
+    text-align: center;
+  }
+
+  .ticket__day {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+  }
+
+  .ticket__month {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .ticket__time {
+    margin-block-start: var(--space-2xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .ticket__body {
+    padding: var(--space-m);
+  }
+
+  .ticket__title {
+    font-size: var(--text-1);
+    line-height: var(--leading-snug);
+  }
+
+  .ticket__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .ticket__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .ticket__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    margin-block-start: var(--space-3xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .ticket__summary {
+    margin-block-start: var(--space-xs);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .ticket__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2xs) var(--space-s);
+    margin-block-start: var(--space-m);
+  }
+
+  .ticket__note {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+</style>

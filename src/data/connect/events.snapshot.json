@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "id": "evt_rain_2026",
+    "slug": "rain-2026",
+    "title": "The Transformation Edge Conference",
+    "kind": "conference",
+    "featured": true,
+    "template": "marquee",
+    "tag": "RAIN",
+    "teaser": "The Rain is Coming",
+    "summary": "Three sessions and an open-air crusade, at our own address. No registration required.",
+    "startsAt": "2026-11-13T18:00:00+11:00",
+    "endsAt": "2026-11-15T19:00:00+11:00",
+    "sessions": [
+      {
+        "label": "Friday",
+        "startsAt": "2026-11-13T18:00:00+11:00",
+        "note": null
+      },
+      {
+        "label": "Saturday",
+        "startsAt": "2026-11-14T16:00:00+11:00",
+        "note": "Open-air crusade"
+      },
+      {
+        "label": "Sunday",
+        "startsAt": "2026-11-15T16:00:00+11:00",
+        "note": null
+      }
+    ],
+    "guests": [
+      "Min. Nelly Ewelike",
+      "Min. Eseosa Ohenhen"
+    ],
+    "locationName": null,
+    "locationAddress": null,
+    "image": null,
+    "imageAlt": null,
+    "artwork": "E1-rain-ministers",
+    "artworkAlt": "The RAIN 2026 hosts and speakers artwork: the Senior Pastors mid-ministry under storm clouds, with additional ministers Min. Nelly Ewelike and Min. Eseosa Ohenhen.",
+    "posterArtwork": "E1-rain-2026",
+    "posterArtworkAlt": "The RAIN 2026 master poster: the Senior Pastors mid-ministry under storm clouds, with ministers Min. Nelly Ewelike and Min. Eseosa Ohenhen, the dates and session times, and the venue.",
+    "registrationRequired": false,
+    "registrationUrl": null
+  }
+]

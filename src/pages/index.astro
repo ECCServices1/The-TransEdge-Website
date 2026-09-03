@@ -46,10 +46,11 @@ import edgedin from '../assets/photos/S2-edgedin.jpg';
 import EdgeMark from '../components/EdgeMark.astro';
 import Waypoint from '../components/Waypoint.astro';
 import ConferenceChapter from '../components/ConferenceChapter.astro';
+import EventList from '../components/events/EventList.astro';
 
 import { CHURCH, VISION, TAGLINE, FAMILY_ORGS, GIVING } from '../data/church.mjs';
 import { gatheringSchema } from '../lib/structured-data.mjs';
-import { getUpcomingEvents } from '../lib/connect.mjs';
+import { getFeaturedEvent, getUpcomingEvents } from '../lib/connect.mjs';
 import { nextOccurrence } from '../lib/dates.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -65,7 +66,13 @@ if (visionClauses.join(' ') !== VISION) {
   throw new Error('Vision clause split no longer reassembles the locked text.');
 }
 
-const events = (await getUpcomingEvents()).slice(0, 3);
+/*
+  The flagship gets its own chapter, so the diary that follows lists everything
+  else. Both movements are omitted when there is nothing upcoming: the client's
+  rule of September 2026 is that nothing is presented unless something is on.
+*/
+const featured = await getFeaturedEvent();
+const events = (await getUpcomingEvents()).filter((event) => event.id !== featured?.id).slice(0, 3);
 
 const schema = CHURCH.gatherings.map((g) => gatheringSchema(g, nextOccurrence(g.isoDay)));
 
@@ -232,59 +239,44 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
        it holds; the seam's reveal curve peaks just past its exit, carrying
        the chapter's light back onto the canvas.
        Handoff out: the weather clears and the diary follows.
+       The chapter stages whichever Connect event is featured, and is left
+       out altogether when none is upcoming.
        ================================================================== -->
-  <section class="movement conference" aria-labelledby="conference-heading">
-    <Waypoint step={4} />
-    <ConferenceChapter />
-  </section>
+  {
+    featured && (
+      <section class="movement conference" aria-labelledby="conference-heading">
+        <Waypoint step={4} />
+        <ConferenceChapter event={featured} />
+      </section>
+    )
+  }
 
   <!-- ==================================================================
-       MOVEMENT 5: THIS WEEK
-       Events from Connect. Falls back to the last successful payload, and
-       to the standing gatherings if there is nothing at all, so this
-       movement is never empty.
+       MOVEMENT 5: WHAT IS ON
+       Events from Connect, each in the template chosen for it, minus the
+       flagship, which has the chapter above. Hidden entirely when nothing
+       is upcoming (the client's rule, September 2026): the standing
+       gatherings are already stated in the arrival chapter, so an empty
+       diary has nothing to add here.
        Handoff out: the last card's trailing edge aligns with the opening
        rule of the EdgedIn movement.
        ================================================================== -->
-  <section class="movement week" aria-labelledby="week-heading">
-    <Waypoint step={5} />
-    <div class="page-shell page-shell--wide">
-      <div class="week__head">
-        <h2 id="week-heading" data-reveal>What is on</h2>
-        <p data-reveal><Button href="/events" tone="plain">All events</Button></p>
-      </div>
-
-      {
-        events.length > 0 ? (
-          <ul class="week__list" role="list">
-            {events.map((event) => (
-              <li class="week__card" data-reveal>
-                <p class="week__when">
-                  <time datetime={event.startsAt} class="ltr-embed">
-                    {event.displayDate}
-                  </time>
-                </p>
-                <h3 class="week__title">
-                  <a href={`/events/${event.slug}`}>{event.title}</a>
-                </h3>
-                <p class="week__summary">{event.summary}</p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <ul class="week__list" role="list">
-            {CHURCH.gatherings.map((g) => (
-              <li class="week__card" data-reveal>
-                <p class="week__when">Every {g.day}</p>
-                <h3 class="week__title">{g.day} gathering</h3>
-                <p class="week__summary ltr-embed">{g.time}</p>
-              </li>
-            ))}
-          </ul>
-        )
-      }
-    </div>
-  </section>
+  {
+    events.length > 0 && (
+      <section class="movement week" aria-labelledby="week-heading" data-events-section>
+        <Waypoint step={5} />
+        <div class="page-shell page-shell--wide">
+          <div class="week__head">
+            <h2 id="week-heading" data-reveal>What is on</h2>
+            <p data-reveal>
+              <Button href="/events" tone="plain">All events</Button>
+            </p>
+          </div>
+          <EventList events={events} headingLevel={3} idPrefix="week" />
+        </div>
+      </section>
+    )
+  }
 
 
   <!-- ==================================================================
@@ -299,9 +291,9 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
       <h2 id="outreach-heading" data-reveal>Beyond the room</h2>
       <div class="prose" data-reveal>
         <p>
-          {FAMILY_ORGS.eccs.name} is our sister organisation and community outreach arm. It is a
-          separate entity with its own team, and its services are open to anyone in the
-          community. You do not need to be part of our church, or any church, to use them.
+          {FAMILY_ORGS.eccs.name} is our sister organisation and community outreach arm: a
+          separate entity whose services are open to anyone, whether or not they come to our
+          church.
         </p>
       </div>
       <p data-reveal>
@@ -904,50 +896,6 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     justify-content: space-between;
     gap: var(--space-s);
     margin-block-end: var(--space-l);
-  }
-
-  .week__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-    gap: var(--space-l);
-    margin: 0;
-    padding: 0;
-  }
-
-  /* No boxed cards, section 5. Each item is separated by a single rule that
-     starts at the seam side and runs out, so the group reads as a rhythm
-     rather than a row of containers. */
-  .week__card {
-    padding-block-start: var(--space-s);
-    border-block-start: var(--border-thick) solid var(--color-border-strong);
-  }
-
-  .week__when {
-    font-size: var(--text--1);
-    font-weight: var(--weight-semibold);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-
-  .week__title {
-    margin-block: var(--space-3xs) var(--space-2xs);
-    font-size: var(--text-1);
-  }
-
-  .week__title a {
-    color: inherit;
-    text-decoration-color: var(--color-border-strong);
-  }
-
-  .week__title a:hover {
-    text-decoration-color: currentColor;
-  }
-
-  .week__summary {
-    color: var(--color-text-muted);
-    font-size: var(--text--1);
-    max-inline-size: min(42ch, 100%);
   }
 
   /* ---------------------------------------------------------- edgedin */

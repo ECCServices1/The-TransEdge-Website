@@ -1,0 +1,82 @@
+---
+/**
+ * The picture that belongs to an event, from either home it can have.
+ *
+ * Artwork that lives in this repository (the RAIN social and poster) is named
+ * on the record by file and goes through Photo, so it gets the responsive set,
+ * the alt-text guard and a quality suited to designed artwork. Artwork that
+ * lives in Connect arrives as a URL and is rendered as a plain lazy image; the
+ * content layer has already refused any URL that came without alt text.
+ */
+import Photo from '../Photo.astro';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  /** `artwork` is the card image; `poster` the larger one for the home chapter. */
+  which?: 'artwork' | 'poster';
+  ratio?: string;
+  sizes?: string;
+  quality?: number;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  event,
+  which = 'artwork',
+  ratio = '16 / 9',
+  sizes = '(min-width: 56rem) 38rem, 100vw',
+  quality = 50,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const local = import.meta.glob<ImageMetadata>('../../assets/photos/*.{jpg,png}', {
+  eager: true,
+  import: 'default',
+});
+
+const name = which === 'poster' ? event.posterArtwork : event.artwork;
+const asset = name
+  ? (local[`../../assets/photos/${name}.jpg`] ?? local[`../../assets/photos/${name}.png`] ?? null)
+  : null;
+const alt =
+  (which === 'poster' ? event.posterArtworkAlt : event.artworkAlt) ?? `Artwork for ${event.title}.`;
+---
+
+{
+  asset ? (
+    <Photo
+      ref="E1"
+      src={asset}
+      alt={alt}
+      brief="Event artwork."
+      ratio={ratio}
+      sizes={sizes}
+      quality={quality}
+      class={className}
+      {...rest}
+    />
+  ) : event.image ? (
+    <figure class:list={['remote', className]} style={`--ratio: ${ratio}`} {...rest}>
+      <img src={event.image} alt={event.imageAlt ?? alt} loading="lazy" decoding="async" />
+    </figure>
+  ) : null
+}
+
+<style>
+  .remote {
+    margin: 0;
+    aspect-ratio: var(--ratio);
+    overflow: hidden;
+    border-radius: var(--radius-l);
+    background-color: var(--color-canvas-raised);
+  }
+
+  .remote img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+</style>

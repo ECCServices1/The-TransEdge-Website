@@ -4,16 +4,19 @@
  *
  * Pages are generated from whatever Connect returned at build time. If Connect
  * is unreachable, they are generated from the snapshot, so an event that was
- * live yesterday does not 404 today.
+ * live yesterday does not 404 today. Past events keep their page for the same
+ * reason; only the lists hide them.
  */
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import { getAllEvents } from '../../lib/connect.mjs';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
+import EventArtwork from '../../components/events/EventArtwork.astro';
+import { getAllEvents, eventEnds } from '../../lib/connect.mjs';
 import { eventSchema } from '../../lib/structured-data.mjs';
 import { toGoogleCalendarUrl, toOutlookCalendarUrl } from '../../lib/dates.mjs';
 import { directionsOptions } from '../../lib/directions.mjs';
-import ChoiceMenu from '../../components/ChoiceMenu.astro';
+import { formatRange, formatTime, isMultiDay } from '../../lib/event-templates.mjs';
 import { CHURCH } from '../../data/church.mjs';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -31,10 +34,12 @@ const { event } = Astro.props;
 
 const location = event.locationName ?? CHURCH.name;
 const address = event.locationAddress ? '' : CHURCH.address.full;
+const when = isMultiDay(event) ? formatRange(event.startsAt, event.endsAt) : event.displayDate;
 
-const durationMinutes = event.endsAt
-  ? Math.max(15, Math.round((new Date(event.endsAt).getTime() - new Date(event.startsAt).getTime()) / 60000))
-  : 90;
+const durationMinutes = Math.max(
+  15,
+  Math.round((new Date(eventEnds(event)).getTime() - new Date(event.startsAt).getTime()) / 60000)
+);
 
 const calendarEvent = {
   title: event.title,
@@ -59,11 +64,20 @@ const calendarOptions = [
   schema={[eventSchema(event)]}
 >
   <div class="detail">
+    {
+      (event.teaser || event.tag) && (
+        <p class="detail__teaser">
+          {event.teaser}
+          {event.tag && <span class="detail__tag">{event.tag}</span>}
+        </p>
+      )
+    }
+
     <dl class="detail__facts">
       <div>
         <dt>When</dt>
         <dd>
-          <time datetime={event.startsAt} class="ltr-embed">{event.displayDate}</time>
+          <time datetime={event.startsAt} class="ltr-embed">{when}</time>
         </dd>
       </div>
       <div>
@@ -72,7 +86,24 @@ const calendarOptions = [
       </div>
     </dl>
 
+    {
+      event.sessions.length > 0 && (
+        <ol class="detail__sessions" role="list">
+          {event.sessions.map((s) => (
+            <li>
+              <span class="detail__session-label">{s.label}</span>
+              <time datetime={s.startsAt} class="ltr-embed">
+                {formatTime(s.startsAt)}
+              </time>
+              {s.note && <span class="detail__session-note">{s.note}</span>}
+            </li>
+          ))}
+        </ol>
+      )
+    }
+
     {event.summary && <p class="detail__summary">{event.summary}</p>}
+    {event.guests.length > 0 && <p class="detail__guests">With {event.guests.join(' and ')}.</p>}
 
     <div class="detail__actions">
       {
@@ -83,6 +114,8 @@ const calendarOptions = [
             </Button>
             <p class="detail__handoff">Registration happens in the TTE Connect Hub.</p>
           </>
+        ) : event.registrationRequired ? (
+          <p class="detail__handoff">Registration details to come.</p>
         ) : (
           <p class="detail__handoff">No registration needed. Turn up.</p>
         )
@@ -93,12 +126,34 @@ const calendarOptions = [
       <ChoiceMenu label="Add to calendar" tone="quiet" options={calendarOptions} />
       <ChoiceMenu label="Get directions" tone="quiet" options={directionsOptions(address || location)} />
     </div>
+
+    <EventArtwork event={event} ratio="16 / 9" quality={60} sizes="(min-width: 56rem) 46rem, 100vw" class="detail__art" />
   </div>
 </PageLayout>
 
 <style>
   .detail {
     max-inline-size: 46rem;
+  }
+
+  .detail__teaser {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    margin-block-end: var(--space-m);
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .detail__tag {
+    padding: var(--space-3xs) var(--space-2xs);
+    font-family: var(--font-text);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    border: var(--border-hairline) solid currentColor;
+    border-radius: var(--radius-s);
   }
 
   .detail__facts {
@@ -122,9 +177,52 @@ const calendarOptions = [
     font-size: var(--text-2);
   }
 
+  .detail__sessions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin: 0 0 var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+
+  .detail__sessions li {
+    display: grid;
+    gap: var(--space-3xs);
+    min-inline-size: 8.5rem;
+    padding: var(--space-xs) var(--space-s);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  .detail__session-label {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .detail__sessions time {
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: 1;
+  }
+
+  .detail__session-note {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
   .detail__summary {
     max-inline-size: var(--measure);
     font-size: var(--text-1);
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-s);
+  }
+
+  .detail__guests {
+    max-inline-size: var(--measure);
     color: var(--color-text-muted);
     margin-block-end: var(--space-l);
   }
@@ -147,5 +245,9 @@ const calendarOptions = [
     gap: var(--space-2xs);
     padding-block-start: var(--space-l);
     border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .detail__art {
+    margin-block-start: var(--space-2xl);
   }
 </style>

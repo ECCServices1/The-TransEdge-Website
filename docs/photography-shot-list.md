@@ -52,7 +52,8 @@ and are in: `E1-rain-2026.jpg` (the master poster, on the home chapter, wide
 screens) and `E1-rain-ministers.jpg` (the hosts-and-speakers social, on the
 events card). Converted from the supplied PNGs at quality 84, not re-graded:
 designed artwork keeps its own colour. The poster's facts (sessions, crusade,
-ministers, venue, no registration required) live in `src/data/conference.mjs`.
+ministers, venue, no registration required) live in the RAIN record in
+`src/data/connect/events.snapshot.json`, the shape every Connect event arrives in.
 
 **Cutouts.** The client approved replacing or removing photo backgrounds where
 it presents people better. The pipeline that produced `S12-pastors.png`:

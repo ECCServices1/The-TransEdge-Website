@@ -125,9 +125,9 @@ payee is, and set the string to that.
 
 ### 10. The ECCS domain
 
-`https://www.edgecommunitycare.org.au` is used in `FAMILY_ORGS`. It has not been
-confirmed and needs checking before launch, because it is linked from the footer
-of every page.
+Resolved. The client confirmed `https://www.edgecommunitycareservices.org.au`
+on 3 September 2026 and it is set in `FAMILY_ORGS`, from which the footer, the
+Outreach page and the giving hand-off all read.
 
 ### 11. Content the pastoral team has to write
 
