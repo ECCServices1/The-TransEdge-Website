@@ -4,20 +4,37 @@
  * of the site.
  *
  * Section 7 names Life-Link, Champions, EdgeKids and CORE Course as ministries
- * and endorsed sub-brands, and section 9 adds serve teams and 1B2GaS. Those
- * names are given. What each one actually is, who it is for and when it meets
- * are not, so this page presents them honestly as an index and does not invent
- * a description for any of them.
+ * and endorsed sub-brands, and section 9 adds serve teams and 1B2GaS.
  *
- * EdgeKids is the exception: it has its own page, written from what a parent
- * needs to know, so this page links rather than repeats.
+ * Life-Link and Champions are the client's copy, supplied in September 2026 and
+ * given a section each below because both carry more than an index line can
+ * hold. EdgeKids and the CORE Course have their own pages and are linked rather
+ * than repeated. 1B2GaS is still a name with nothing behind it, which is why
+ * this page stays out of the index: an index entry reading "description to
+ * come" is honest on a page a visitor was sent to, and dishonest in a search
+ * result.
+ *
+ * CHAMPIONS AND THE GIVING RULES
+ *
+ * Champions is a giving commitment, so section 13 governs it: no urgency, no
+ * guilt, no implication that a gift to our church is tax deductible, because
+ * it is not.
+ *
+ * The client set the two calls to action in September 2026: become a Champion,
+ * and make a one-off donation. They go to different places because they are
+ * different acts. Becoming a Champion is a standing commitment, so it goes to
+ * the Connect Hub where card giving lives and a recurring gift is set up; a
+ * one-off donation goes to the Give page, which carries both methods, the bank
+ * details and the receipting position in full. Neither button is the one that
+ * answers a question, so asking is a text link rather than a third button:
+ * one primary action per moment, section 20.
  */
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/Button.astro';
 import DraftNotice from '../components/DraftNotice.astro';
 import Photo from '../components/Photo.astro';
 import serving from '../assets/photos/S8-serving.jpg';
-import { CHURCH } from '../data/church.mjs';
+import { CHURCH, GIVING } from '../data/church.mjs';
 
 /*
   `href` only where a page exists. Everything else carries no link, because a
@@ -36,11 +53,13 @@ const ministries = [
   },
   {
     name: 'Life-Link',
-    body: 'Description to come.',
+    href: '#life-link',
+    body: 'The Transformation Edge in your neighbourhood: groups that meet where people already live.',
   },
   {
     name: 'Champions',
-    body: 'Description to come.',
+    href: '#champions',
+    body: 'The League of Champions, our Kingdom Building Partners, who give consistently to three areas of the work.',
   },
   {
     name: 'CORE Course',
@@ -50,6 +69,22 @@ const ministries = [
   {
     name: '1B2GaS',
     body: 'Description to come.',
+  },
+];
+
+/* The three areas Champions giving supports, in the client's words and order. */
+const champions = [
+  {
+    name: 'Building and administration',
+    body: 'Our facility continues to evolve to meet the growing needs of the community while fostering a supportive environment for our volunteers and staff.',
+  },
+  {
+    name: 'Community initiatives',
+    body: "Our church is dedicated to engaging with the community and meeting its needs, serving as an extension of God's hands in action.",
+  },
+  {
+    name: 'Missions',
+    body: 'We support international initiatives that reach vulnerable children in other nations, providing for their basic needs whenever opportunities arise.',
   },
 ];
 
@@ -64,7 +99,7 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
   standfirst="What happens between Sundays, and how to be part of it."
   noindex
 >
-  <DraftNotice what="Each ministry needs a description, who it is for, and when and where it meets. The names are confirmed; nothing else on this page is written yet." />
+  <DraftNotice what="1B2GaS needs a description, and Life-Link needs the nights its groups meet. Everything else on this page is confirmed." />
 
   <div class="life">
     <section aria-labelledby="ministries-heading">
@@ -81,6 +116,104 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
           ))
         }
       </ul>
+    </section>
+
+    <!-- The client's copy of September 2026. The opening line is their own
+         framing of what Life-Link is, so it leads. -->
+    <section class="feature" aria-labelledby="life-link">
+      <h2 id="life-link">Life-Link</h2>
+      <p class="feature__lede">The Transformation Edge in your neighbourhood.</p>
+      <div class="prose">
+        <p>
+          Life-Link is a vibrant network that brings people together in meaningful
+          geographical groups to foster genuine connection, trust and spiritual growth.
+        </p>
+        <p>
+          Each gathering encourages life-changing conversations that cultivate love, unity
+          and a deeper sense of fulfilment in Christ.
+        </p>
+      </div>
+
+      <!--
+        The finder the client asked for. There is no suburb-to-group list yet,
+        so rather than a search box that returns nothing, the suburb goes to
+        the same Cloudflare Worker the contact form uses and a person replies
+        with the nearest group. One field, because one field is all it needs.
+        When the group list exists this becomes a lookup and the form goes.
+        See docs/forms-and-privacy.md for the Worker.
+      -->
+      <form class="finder" method="post" action="/api/contact" novalidate aria-labelledby="finder-heading">
+        <h3 id="finder-heading" class="finder__heading">Find a Life-Link group in your neighbourhood</h3>
+        <input type="hidden" name="subject" value="Life-Link group enquiry" />
+        <div class="field">
+          <label for="suburb">Your suburb</label>
+          <input id="suburb" name="suburb" type="text" autocomplete="address-level2" required />
+          <p class="field__hint">
+            We will tell you which group is closest and when it meets.
+          </p>
+        </div>
+        <div class="field">
+          <label for="finder-contact">Email or phone</label>
+          <input id="finder-contact" name="email" type="text" required />
+        </div>
+
+        <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+
+        <p class="finder__privacy">
+          Your suburb and one contact detail, nothing else, and you are not added to a list.
+          Read the <a href="/privacy-policy">privacy policy</a>.
+        </p>
+
+        <Button type="submit">Find my group</Button>
+      </form>
+    </section>
+
+    <!-- The client's copy of September 2026. Section 13 governs it, because
+         Champions is a giving commitment: what it pays for, plainly, and the
+         receipting position lives on the Give page. -->
+    <section class="feature" aria-labelledby="champions">
+      <h2 id="champions">Champions</h2>
+      <p class="feature__lede">
+        Short for the League of Champions, our Kingdom Building Partners.
+      </p>
+      <div class="prose">
+        <p>
+          Champions are sacrificial, consistent and committed donors to the ministry of The
+          Transformation Edge. Their giving supports three areas of the work.
+        </p>
+      </div>
+
+      <ol class="champions" role="list">
+        {
+          champions.map((area, index) => (
+            <li data-reveal>
+              <span class="champions__number" aria-hidden="true">
+                {index + 1}
+              </span>
+              <div>
+                <h3>{area.name}</h3>
+                <p>{area.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="prose">
+        <p>
+          A Champion's giving is a standing commitment, set up once in the TTE Connect Hub.
+          A one-off donation needs no commitment at all.
+        </p>
+        <p>
+          Giving to our church is not a deductible gift, and the Give page says so plainly
+          alongside both ways to give. If you would like to talk it through first,{' '}
+          <a href="/get-in-touch">ask us about Champions</a>.
+        </p>
+      </div>
+      <p class="actions">
+        <Button href={GIVING.card.href} size="large" external>Become a Champion</Button>
+        <Button href="/give" tone="quiet">Make a one-off donation</Button>
+      </p>
     </section>
 
     <section aria-labelledby="gather-heading">
@@ -198,6 +331,98 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
     margin: 0;
     font-family: var(--font-display);
     font-size: var(--text-2);
+  }
+
+  .feature__lede {
+    margin-block-end: var(--space-m);
+    max-inline-size: var(--measure);
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    line-height: var(--leading-snug);
+    text-wrap: pretty;
+  }
+
+  /* The finder sits on a raised ground so it reads as a thing to use rather
+     than more prose, without becoming a boxed card. */
+  .finder {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-m);
+    margin-block-start: var(--space-l);
+    padding: var(--space-l);
+    max-inline-size: 34rem;
+    background-color: var(--color-canvas-raised);
+    border-inline-start: var(--border-thick) solid var(--color-text-accent);
+    border-radius: var(--radius-m);
+  }
+
+  .finder__heading {
+    font-size: var(--text-1);
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-3xs);
+    inline-size: 100%;
+  }
+
+  .field label {
+    font-weight: var(--weight-semibold);
+  }
+
+  .field input {
+    inline-size: 100%;
+    padding: var(--space-2xs) var(--space-xs);
+    min-block-size: 2.75rem;
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  /* Never micro: rule 4 keeps every hint at body size. */
+  .field__hint,
+  .finder__privacy {
+    font-size: var(--text-0);
+    color: var(--color-text-muted);
+  }
+
+  .finder__privacy {
+    max-inline-size: var(--measure);
+  }
+
+  .champions {
+    display: grid;
+    gap: var(--space-l);
+    margin: var(--space-l) 0 var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+
+  .champions li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-m);
+    align-items: start;
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .champions__number {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  .champions h3 {
+    font-size: var(--text-1);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .champions p {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
   }
 
   .life__photo {
