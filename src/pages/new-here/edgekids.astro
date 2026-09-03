@@ -9,11 +9,16 @@
  * Age bands, room names and the check-in method are drafted. Those are facts
  * about how this church actually runs its children's work, and getting one
  * wrong on a public page is a safeguarding problem rather than a copy problem.
+ *
+ * The picture of the room is a render made to the client's instruction of
+ * September 2026 (a child-friendly space with nobody in it), not a photograph
+ * of the actual room. The alt text says so. See docs/photography-shot-list.md.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
+import room from '../../assets/photos/S5-edgekids.jpg';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -65,10 +70,16 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
       </ol>
     </section>
 
+    <!-- A render, not a photograph, by the client's instruction: a room with
+         nobody in it, so there is no consent to hold and no child to protect.
+         The alt text calls it an illustration rather than passing it off. -->
     <Photo
       ref="S5"
+      src={room}
+      alt="An illustration of a room set up for EdgeKids before anyone arrives: small tables and chairs, a rug with cushions, shelves of picture books and building blocks, and a felt story board on the wall."
       brief="EdgeKids space, empty of children, set up and ready."
       ratio="3 / 2"
+      sizes="(min-width: 56rem) 46rem, 100vw"
     />
 
     <section aria-labelledby="safe-heading">
