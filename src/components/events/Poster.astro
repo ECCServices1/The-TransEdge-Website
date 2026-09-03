@@ -1,0 +1,133 @@
+---
+/**
+ * Template three, the poster: artwork-led.
+ *
+ * The card opens with the picture, a day badge sits in its corner, and the
+ * words beneath are kept to what the picture does not say: when, where, and
+ * one line. For events whose artwork is the announcement.
+ */
+import Button from '../Button.astro';
+import EventArtwork from './EventArtwork.astro';
+import { sydneyParts } from '../../lib/event-templates.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const start = sydneyParts(event.startsAt);
+---
+
+<article class="poster" aria-labelledby={headingId}>
+  <div class="poster__art">
+    <EventArtwork event={event} ratio="16 / 9" quality={60} sizes="(min-width: 56rem) 30rem, 100vw" />
+    <p class="poster__badge" aria-hidden="true">
+      <span class="poster__day">{start.day}</span>
+      <span class="poster__month">{start.monthShort}</span>
+    </p>
+  </div>
+
+  <div class="poster__body">
+    <p class="poster__when">
+      <time datetime={event.startsAt} class="ltr-embed">
+        {start.weekday} {start.day} {start.month}, {start.time}
+      </time>
+      {event.locationName && <span class="poster__where">{event.locationName}</span>}
+    </p>
+    <Heading id={headingId} class="poster__title">
+      <a href={`/events/${event.slug}`}>{event.title}</a>
+    </Heading>
+    {event.summary && <p class="poster__summary">{event.summary}</p>}
+    <p class="poster__actions">
+      {
+        event.registrationUrl ? (
+          <Button href={event.registrationUrl} external>
+            Register
+          </Button>
+        ) : (
+          <Button href={`/events/${event.slug}`} tone="quiet">
+            Details
+          </Button>
+        )
+      }
+    </p>
+  </div>
+</article>
+
+<style>
+  .poster {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .poster__art {
+    position: relative;
+  }
+
+  /* The day, set in the display face on a raised chip in the picture's
+     corner. Decorative: the same date is written out beneath. */
+  .poster__badge {
+    position: absolute;
+    inset-block-start: var(--space-s);
+    inset-inline-start: var(--space-s);
+    display: grid;
+    justify-items: center;
+    min-inline-size: 3.25rem;
+    padding: var(--space-2xs) var(--space-xs);
+    background-color: var(--color-canvas);
+    color: var(--color-text);
+    border-radius: var(--radius-s);
+    line-height: 1;
+  }
+
+  .poster__day {
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .poster__month {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+
+  .poster__when {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .poster__title {
+    margin-block: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-2);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+  }
+
+  .poster__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .poster__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .poster__summary {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .poster__actions {
+    margin-block-start: var(--space-s);
+  }
+</style>

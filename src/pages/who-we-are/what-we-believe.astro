@@ -2,73 +2,91 @@
 /**
  * What we believe, section 9 under Who We Are.
  *
- * This page is drafted, not written. A statement of faith is the one piece of
- * content on a church website that absolutely cannot be inferred, and inferring
- * it from the name, the mission and the general shape of the tradition would
- * produce something that reads exactly like a real one while being nobody's
- * actual conviction.
+ * The nine articles below are the client's statement of faith, supplied in
+ * September 2026 and reproduced verbatim (a stray second full stop at the end
+ * of the ninth article removed). That is what took this page off the draft
+ * register: a statement of faith is the one piece of content on a church
+ * website that cannot be inferred, and until the client supplied it the page
+ * said so instead of guessing.
  *
- * So the articles below are a starting structure in plain language, drawn from
- * what the locked vision and mission already commit to, and the page carries
- * `noindex` until the pastoral team has rewritten them in their own words.
- *
- * What is not drafted: the vision and the mission, which are locked and
- * reproduced from src/data/church.mjs.
+ * The vision and the mission remain locked and are reproduced from
+ * src/data/church.mjs.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import DraftNotice from '../../components/DraftNotice.astro';
 import { VISION, MISSION, CHURCH } from '../../data/church.mjs';
 
-/*
- * Each article states only what the locked mission and vision already commit us
- * to, in plain language. Nothing here settles a question the pastoral team has
- * not settled in public: there is deliberately no article on baptism,
- * communion, church government, spiritual gifts or eschatology, because those
- * are the positions that differ between churches in the same tradition, and
- * guessing one is how a website misrepresents its own congregation.
- */
+/* The client's headings and wording, in the client's order. Numbered on the
+   page because the client numbered them. */
 const articles = [
   {
+    title: 'About the Bible',
+    body: "We believe that the Bible is God's Word. It is accurate, authoritative and applicable to our everyday lives.",
+  },
+  {
     title: 'God',
-    body: 'We believe in one God, who made everything that exists, who is good, and who is knowable rather than distant.',
+    body: 'We believe in one eternal God who is the Creator of all things. He exists in three Persons: God the Father, God the Son and God the Holy Spirit. He is totally loving and completely holy.',
   },
   {
-    title: 'Jesus',
-    body: 'We believe Jesus Christ is the Son of God, that he lived, died and rose again, and that following him is what a Christian life is built on. Our mission puts it plainly: to discover, develop and empower individuals to become faithful disciples of Jesus Christ.',
+    title: 'Sin',
+    body: 'We believe that sin has separated each of us from God and His purpose for our lives.',
   },
   {
-    title: 'The Bible',
-    body: "We believe the Bible is God's word, that it carries authority over how we live, and that the knowledge and wisdom it holds is meant to shape every area of life rather than a religious corner of it.",
+    title: 'Jesus Christ',
+    body: 'We believe that the Lord Jesus Christ as both God and man is the only One who can reconcile us to God. He lived a sinless and exemplary life, died on the cross in our place, and rose again to prove His victory and empower us for life.',
   },
   {
-    title: 'The Gospel',
-    body: 'We believe the Gospel has power to change a person and, through changed people, a community. That is why our mission is to equip believers to influence their communities through the power of the Gospel.',
+    title: 'New Birth',
+    body: "We believe that in order to receive forgiveness and the 'new birth' we must repent of our sins, believe in the Lord Jesus Christ, and submit to His will for our lives.",
   },
   {
-    title: 'People',
-    body: 'We believe every person is made in the image of God and carries that dignity whatever their circumstances, their documents, their history or their language.',
+    title: 'Baptism',
+    body: 'We believe that in order to live the holy and fruitful lives that God intends for us, we need to be baptised in water and be filled with the power of the Holy Spirit. The Holy Spirit enables us to use spiritual gifts, including speaking in tongues which is the initial evidence of baptism in the Holy Spirit.',
   },
   {
-    // Both lines mean the church universal, which is the one sense the
-    // "our church" rule deliberately leaves alone.
-    title: 'The church', // check-copy-ignore
-    body: 'We believe the church is people rather than a building, and that it exists for the sake of those outside it as much as those inside it.', // check-copy-ignore
+    // "The Church" here is the church universal, the one sense the "our
+    // church" rule deliberately leaves alone.
+    title: 'Member of the Church', // check-copy-ignore
+    body: 'We believe that God has individually equipped us so that we can successfully achieve His purpose for our lives which is to worship God, fulfil our role in the Church and serve the community in which we live.', // check-copy-ignore
+  },
+  {
+    title: 'Second Coming',
+    body: 'We believe that the Lord Jesus Christ is coming back again as He promised.',
+  },
+  {
+    title: 'Eternity',
+    body: 'We believe that our eternal destination of either Heaven or hell is determined by our response to the Lord Jesus Christ.',
   },
 ];
 ---
 
 <PageLayout
   title="What we believe"
-  description={`The convictions The Transformation Edge is built on, in plain language. A church in ${CHURCH.place}.`}
+  description={`What The Transformation Edge believes: nine articles of faith, in plain words. A church in ${CHURCH.place}.`}
   route="who-we-are/what-we-believe"
   crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
-  standfirst="Six convictions, in plain words, with nothing hidden behind them."
-  noindex
+  standfirst="Nine articles of faith, stated plainly."
 >
-  <DraftNotice what="The pastoral team needs to write the articles below in their own words. What is here is a structure drawn from the locked vision and mission, not an approved statement of faith." />
-
   <div class="believe">
+    <section aria-labelledby="articles-heading">
+      <h2 id="articles-heading">Our statement of faith</h2>
+      <ol class="articles" role="list">
+        {
+          articles.map((article, index) => (
+            <li class="articles__item" data-reveal>
+              <span class="articles__number" aria-hidden="true">
+                {index + 1}
+              </span>
+              <div>
+                <h3>{article.title}</h3>
+                <p>{article.body}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
     <section aria-labelledby="vision-heading">
       <h2 id="vision-heading">Our vision</h2>
       <blockquote class="statement"><p>{VISION}</p></blockquote>
@@ -79,26 +97,12 @@ const articles = [
       <blockquote class="statement"><p>{MISSION}</p></blockquote>
     </section>
 
-    <section aria-labelledby="articles-heading">
-      <h2 id="articles-heading">What that means</h2>
-      <dl class="articles">
-        {
-          articles.map((article) => (
-            <div data-reveal>
-              <dt>{article.title}</dt>
-              <dd>{article.body}</dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
     <section aria-labelledby="questions-heading">
       <h2 id="questions-heading">If you are working out what you think</h2>
       <p class="prose">
-        You are welcome here while you do it. Nobody is asked to sign anything, agree to
-        anything or declare anything to come on a Sunday. If you would like to go through it
-        properly rather than in passing, the CORE Course is where people start.
+        You are welcome here while you do it. Nobody is asked to sign or declare anything to
+        come on a Sunday. If you would like to go through it properly, the CORE Course is
+        where people start.
       </p>
       <p class="actions">
         <Button href="/who-we-are/core-course" tone="quiet">The CORE Course</Button>
@@ -136,22 +140,34 @@ const articles = [
     display: grid;
     gap: var(--space-l);
     margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .articles > div {
+  .articles__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-m);
+    align-items: start;
     padding-block-start: var(--space-m);
     border-block-start: var(--border-hairline) solid var(--color-border);
   }
 
-  .articles dt {
+  .articles__number {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  .articles__item h3 {
     font-family: var(--font-display);
     font-size: var(--text-1);
     font-weight: var(--weight-semibold);
     margin-block-end: var(--space-3xs);
   }
 
-  .articles dd {
-    margin: 0;
+  .articles__item p {
     max-inline-size: var(--measure);
     color: var(--color-text-muted);
   }

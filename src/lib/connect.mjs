@@ -42,8 +42,28 @@ import sermons from '../data/connect/sermons.snapshot.json';
  * @property {string} displayDate   pre-formatted for Australia/Sydney
  * @property {string|null} locationName
  * @property {object|null} locationAddress
- * @property {string|null} image
+ * @property {string|null} image        a Connect media URL, consent recorded in Connect
+ * @property {string|null} imageAlt     what the image shows; required when image is set
  * @property {string|null} registrationUrl  a Connect URL, registration happens there
+ * @property {boolean} registrationRequired
+ * @property {string} kind              gathering | conference | course | outreach | celebration | prayer | youth | other
+ * @property {string|null} template     one of the six in event-templates.mjs, or null to let the record decide
+ * @property {boolean} featured         the flagship; gets the home chapter and the marquee
+ * @property {string|null} tag          a theme word set on the artwork, e.g. RAIN
+ * @property {string|null} teaser       a headline line, e.g. The Rain is Coming
+ * @property {ConnectSession[]} sessions
+ * @property {string[]} guests          billed guests, as printed on the artwork
+ * @property {string|null} artwork      name of a file in src/assets/photos that carries the event's artwork
+ * @property {string|null} artworkAlt   what that artwork shows
+ * @property {string|null} posterArtwork  a second, larger artwork for the home chapter
+ * @property {string|null} posterArtworkAlt
+ */
+
+/**
+ * @typedef {object} ConnectSession
+ * @property {string} label      "Friday", "Session one"
+ * @property {string} startsAt   ISO 8601 with offset
+ * @property {string|null} note  "Open-air crusade"
  */
 
 /**
@@ -168,19 +188,74 @@ function normaliseEvent(raw) {
     return null;
   }
 
+  const ends = raw.endsAt ? new Date(raw.endsAt) : null;
+  if (ends && Number.isNaN(ends.getTime())) {
+    alert('warn', `Event "${title}": endsAt "${raw.endsAt}" is not a valid date and was ignored.`);
+  }
+
+  // Sessions with an unreadable time are dropped one at a time, not the event.
+  const sessions = Array.isArray(raw.sessions)
+    ? raw.sessions
+        .filter((s) => s && s.label && s.startsAt && !Number.isNaN(new Date(s.startsAt).getTime()))
+        .map((s) => ({
+          label: String(s.label),
+          startsAt: new Date(s.startsAt).toISOString(),
+          note: s.note ? String(s.note) : null,
+        }))
+    : [];
+
+  const image = raw.image ? String(raw.image) : null;
+  if (image && !raw.imageAlt) {
+    // Section 17: no image without alt text. The image is kept out rather than
+    // published blind; the record itself still renders.
+    alert('warn', `Event "${title}" has an image without imageAlt. The image is not published.`);
+  }
+
   return {
     id: String(id),
     slug: String(slug),
     title: String(title),
     summary: raw.summary ? String(raw.summary) : '',
     startsAt: starts.toISOString(),
-    endsAt: raw.endsAt ?? null,
+    endsAt: ends && !Number.isNaN(ends.getTime()) ? ends.toISOString() : null,
     displayDate: formatSydney(starts),
     locationName: raw.locationName ?? null,
     locationAddress: raw.locationAddress ?? null,
-    image: raw.image ?? null,
+    image: image && raw.imageAlt ? image : null,
+    imageAlt: raw.imageAlt ? String(raw.imageAlt) : null,
     registrationUrl: raw.registrationUrl ?? null,
+    registrationRequired: raw.registrationRequired === true || Boolean(raw.registrationUrl),
+    kind: raw.kind ? String(raw.kind) : 'other',
+    template: raw.template ? String(raw.template) : null,
+    featured: raw.featured === true,
+    tag: raw.tag ? String(raw.tag) : null,
+    teaser: raw.teaser ? String(raw.teaser) : null,
+    sessions,
+    guests: Array.isArray(raw.guests) ? raw.guests.map(String) : [],
+    artwork: raw.artwork ? String(raw.artwork) : null,
+    artworkAlt: raw.artworkAlt ? String(raw.artworkAlt) : null,
+    posterArtwork: raw.posterArtwork ? String(raw.posterArtwork) : null,
+    posterArtworkAlt: raw.posterArtworkAlt ? String(raw.posterArtworkAlt) : null,
   };
+}
+
+/**
+ * When an event stops being "on". Connect may not send an end, so an event
+ * without one is treated as lasting three hours: long enough that a gathering
+ * still shows while it is happening, short enough that it is gone by evening.
+ * @param {ConnectEvent} event
+ */
+export function eventEnds(event) {
+  if (event.endsAt) return event.endsAt;
+  const last = event.sessions.length
+    ? event.sessions[event.sessions.length - 1].startsAt
+    : event.startsAt;
+  return new Date(new Date(last).getTime() + 3 * 60 * 60_000).toISOString();
+}
+
+/** Active now, or still to come. The rule the client set: nothing past is shown. */
+export function isActiveOrUpcoming(event, now = Date.now()) {
+  return new Date(eventEnds(event)).getTime() >= now;
 }
 
 /** Australian formatting, Sydney time, regardless of where the build runs. */
@@ -196,15 +271,30 @@ export function formatSydney(date) {
   }).format(date);
 }
 
-/** @returns {Promise<ConnectEvent[]>} */
+/**
+ * Everything active or still to come, soonest first. An event that is on right
+ * now stays listed until it ends; a static build between deploys is caught by
+ * the same rule on the client (see components/events/EventList.astro).
+ * @returns {Promise<ConnectEvent[]>}
+ */
 export async function getUpcomingEvents() {
   const raw = await fetchCollection('events');
   const now = Date.now();
   return raw
     .map(normaliseEvent)
     .filter((event) => event !== null)
-    .filter((event) => new Date(event.startsAt).getTime() >= now)
+    .filter((event) => isActiveOrUpcoming(event, now))
     .sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+}
+
+/**
+ * The flagship, if one is upcoming: the record marked featured, else the
+ * soonest conference. It gets the home chapter and leads the events page.
+ * @returns {Promise<ConnectEvent|null>}
+ */
+export async function getFeaturedEvent() {
+  const events = await getUpcomingEvents();
+  return events.find((e) => e.featured) ?? events.find((e) => e.kind === 'conference') ?? null;
 }
 
 /** @returns {Promise<ConnectEvent[]>} */

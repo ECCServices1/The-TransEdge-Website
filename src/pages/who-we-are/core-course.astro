@@ -3,64 +3,82 @@
  * CORE Course, section 9 under Who We Are and an endorsed sub-brand per
  * section 7.
  *
- * Almost everything on this page is drafted. What CORE stands for, how many
- * sessions it runs, when the next one starts and what each session covers are
- * facts about a course this church actually runs, and none of them can be
- * derived from anything supplied. Guessing the curriculum of somebody's
- * discipleship course would be inventing their theology one week at a time.
- *
- * So the page is built and clearly unfinished, which is more useful than a page
- * that does not exist: the shape is here and the gaps are named.
+ * The description and the three stages are the client's, supplied in September
+ * 2026, and their arrival is what took this page off the draft register. The
+ * stages are the verbs of the locked mission statement (discover, develop,
+ * empower), so the page leans on the mission's own words rather than
+ * paraphrasing them. What is still not here, because nothing supplied says it:
+ * how many sessions, when the next intake starts, and what it costs. Those wait
+ * for the pastoral team, and the page points to a person in the meantime.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
-import DraftNotice from '../../components/DraftNotice.astro';
 import { CHURCH } from '../../data/church.mjs';
+
+/* The client's three stages, in the client's order, each glossed with the
+   client's own words for the course and the mission's words for the outcome. */
+const stages = [
+  { name: 'Discover', line: "God's word, and the potential you carry." },
+  { name: 'Develop', line: 'Growing in your faith and your walk with God.' },
+  { name: 'Empower', line: 'Prepared to influence your community with the Gospel.' },
+];
 ---
 
 <PageLayout
   title="CORE Course"
-  description="Where to start at The Transformation Edge if you want to understand what we hold to and why."
+  description="The CORE Course at The Transformation Edge: a learning and discipleship space in three stages, Discover, Develop and Empower."
   route="who-we-are/core-course"
   crumbs={[{ name: 'Who we are', href: '/who-we-are' }]}
-  standfirst="Where people start when they want to go through it properly rather than in passing."
-  noindex
+  standfirst="A learning and discipleship space, in three stages."
 >
-  <DraftNotice what="The pastoral team needs to supply what CORE stands for, how many sessions it runs, what each session covers, when the next intake starts, and whether it costs anything." />
-
   <div class="core">
     <section aria-labelledby="what-heading">
       <h2 id="what-heading">What it is</h2>
-      <div class="prose">
-        <p>
-          The CORE Course is where people start at our church when they want to understand
-          what we hold to, ask the questions they have been carrying, and work out what they
-          think without being hurried.
-        </p>
-        <p>
-          It is for anyone: people who have decided, people who have not, and people who came
-          along with someone else and stayed.
-        </p>
-      </div>
+      <p class="prose">
+        The CORE Course is a learning and discipleship space: a place to learn more about
+        God's word, discover your potential, and grow in your faith and walk with God.
+      </p>
+    </section>
+
+    <section aria-labelledby="stages-heading">
+      <h2 id="stages-heading">Three stages</h2>
+      <p class="prose">
+        Discover, Develop and Empower are the pillars of our mission, and the course runs in
+        that order.
+      </p>
+      <ol class="stages" role="list">
+        {
+          stages.map((stage, index) => (
+            <li class="stages__item" data-reveal>
+              <span class="stages__number" aria-hidden="true">
+                {index + 1}
+              </span>
+              <div>
+                <h3 class="stages__name">{stage.name}</h3>
+                <p>{stage.line}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
     </section>
 
     <section aria-labelledby="expect-heading">
       <h2 id="expect-heading">What to expect</h2>
       <ul class="expect" role="list">
-        <li>You can ask anything, including the questions that sound rude.</li>
-        <li>You are not asked to pray, read aloud or say anything you would rather not.</li>
-        <li>Nobody is asked to sign up to anything at the end of it.</li>
-        <li>Missing a week is fine. People do.</li>
+        <li>Ask anything.</li>
+        <li>Nobody is asked to pray or read aloud.</li>
+        <li>Missing a week is fine.</li>
       </ul>
     </section>
 
     <section aria-labelledby="next-heading">
       <h2 id="next-heading">The next course</h2>
       <p class="prose">
-        Dates for the next intake are being confirmed. To be told when it opens, call{' '}
+        Dates for the next intake are being confirmed. Call{' '}
         <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>, email{' '}
-        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, or ask anyone on the welcome
-        desk on a Sunday.
+        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, or ask at the welcome desk on a
+        Sunday.
       </p>
       <p class="actions">
         <Button href="/get-in-touch" size="large">Tell me when it starts</Button>
@@ -80,6 +98,46 @@ import { CHURCH } from '../../data/church.mjs';
   .core h2 {
     font-size: var(--text-2);
     margin-block-end: var(--space-s);
+  }
+
+  .stages {
+    display: grid;
+    gap: var(--space-l);
+    margin: var(--space-l) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stages__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--space-m);
+    align-items: start;
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .stages__number {
+    font-family: var(--font-display);
+    font-size: var(--text-3);
+    line-height: 1;
+    color: var(--color-text-accent);
+  }
+
+  /* The client wrote the stages in capitals. The display face carries that
+     as a tracked small setting rather than shouting. */
+  .stages__name {
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    margin-block-end: var(--space-3xs);
+  }
+
+  .stages__item p {
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
   }
 
   .expect {

@@ -1,0 +1,61 @@
+# Keep the events feed current without anyone touching the site.
+#
+# The site is static and Connect is the system of record. Once the Connect read
+# API exists and its URL and token are repository secrets, this job refreshes
+# the committed snapshot every night (and on demand), commits any change, and
+# the push triggers a Cloudflare build. A change in Connect is on the site by
+# morning without a manual step. Pushes made with the workflow token do not
+# trigger other workflows, so this cannot loop.
+#
+# Until the secrets exist the job exits quietly. Nothing is invented.
+name: Connect refresh
+
+on:
+  schedule:
+    - cron: '30 17 * * *' # 03:30 or 04:30 Sydney, depending on daylight saving
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Stop early without Connect
+        id: gate
+        env:
+          CONNECT_API_URL: ${{ secrets.CONNECT_API_URL }}
+        run: |
+          if [ -z "$CONNECT_API_URL" ]; then
+            echo "CONNECT_API_URL is not set; the read API does not exist yet. Nothing to refresh."
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Refresh the snapshot
+        if: steps.gate.outputs.run == 'true'
+        env:
+          CONNECT_API_URL: ${{ secrets.CONNECT_API_URL }}
+          CONNECT_API_TOKEN: ${{ secrets.CONNECT_API_TOKEN }}
+        run: |
+          npm ci
+          npm run connect:snapshot
+
+      - name: Commit if anything changed
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/data/connect
+          git commit -m "Refresh the Connect snapshot" || { echo "snapshot unchanged"; exit 0; }
+          git push

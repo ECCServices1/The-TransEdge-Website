@@ -9,11 +9,16 @@
  * Age bands, room names and the check-in method are drafted. Those are facts
  * about how this church actually runs its children's work, and getting one
  * wrong on a public page is a safeguarding problem rather than a copy problem.
+ *
+ * The picture of the room is a render made to the client's instruction of
+ * September 2026 (a child-friendly space with nobody in it), not a photograph
+ * of the actual room. The alt text says so. See docs/photography-shot-list.md.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
 import Photo from '../../components/Photo.astro';
+import room from '../../assets/photos/S5-edgekids.jpg';
 import { CHURCH } from '../../data/church.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -24,7 +29,7 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
   description="What your children do while you are in the Sunday gathering at The Transformation Edge, and how we keep them safe."
   route="new-here/edgekids"
   crumbs={[{ name: 'New Here', href: '/new-here' }]}
-  standfirst="Screened leaders, a sign-in that matches a child to one adult, and a room you can walk into at any time."
+  standfirst="Screened leaders, one leader to every five children, and a room you can walk into at any time."
   noindex
 >
   <DraftNotice what="The pastoral team needs to confirm the age bands, the room names and the check-in method described below." />
@@ -65,24 +70,27 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
       </ol>
     </section>
 
+    <!-- A render, not a photograph, by the client's instruction: a room with
+         nobody in it, so there is no consent to hold and no child to protect.
+         The alt text calls it an illustration rather than passing it off. -->
     <Photo
       ref="S5"
+      src={room}
+      alt="An illustration of a room set up for EdgeKids before anyone arrives: small tables and chairs, a rug with cushions, shelves of picture books and building blocks, and a felt story board on the wall."
       brief="EdgeKids space, empty of children, set up and ready."
       ratio="3 / 2"
+      sizes="(min-width: 56rem) 46rem, 100vw"
     />
 
     <section aria-labelledby="safe-heading">
       <h2 id="safe-heading">Who is with your child</h2>
       <div class="prose">
         <p>
-          Every leader in EdgeKids holds a current New South Wales Working With Children
-          Check, and no adult is ever alone with a child. Leaders are trained before they
-          start and are supervised by the pastoral team.
+          Every EdgeKids leader holds a current NSW Working With Children Check, no adult is
+          ever alone with a child, and there is one leader for every five children, set by
+          the age of the group.
         </p>
-        <p>
-          You are welcome in the EdgeKids room at any time. You do not need a reason and you
-          do not need to ask.
-        </p>
+        <p>You are welcome in the EdgeKids room at any time, without a reason.</p>
       </div>
       <p class="actions">
         <Button href="/who-we-are/safeguarding" tone="quiet">Our child safe policy</Button>
@@ -92,19 +100,16 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
     <section aria-labelledby="younger-heading">
       <h2 id="younger-heading">Younger children and babies</h2>
       <p class="prose">
-        Babies and younger children are welcome to stay with you in the gathering. There is
-        space at the back if you need to stand, walk about or step out, and nobody minds
-        noise. If you would rather be out of the room for a while, ask at the welcome desk
-        and someone will show you where to go.
+        Babies and younger children are welcome to stay with you. There is space at the back
+        to stand or step out, and nobody minds noise.
       </p>
     </section>
 
     <section aria-labelledby="first-heading">
       <h2 id="first-heading">Your first Sunday</h2>
       <p class="prose">
-        Come about ten minutes early, so signing in is unhurried and your child has a moment
-        to look at the room before you leave. We gather Sundays at {sunday.time}. If it would
-        help to talk to someone before you come, call{' '}
+        Come about ten minutes early so signing in is unhurried. We gather Sundays at{' '}
+        {sunday.time}. To talk to someone first, call{' '}
         <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>.
       </p>
       <p class="actions">

@@ -12,15 +12,16 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import Photo from '../../components/Photo.astro';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
 import { CHURCH } from '../../data/church.mjs';
 import { nextOccurrence } from '../../lib/dates.mjs';
+import { directionsOptions } from '../../lib/directions.mjs';
 import { gatheringSchema } from '../../lib/structured-data.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
 const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
-const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CHURCH.address.full)}`;
 ---
 
 <PageLayout
@@ -40,7 +41,7 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
         <span class="ltr-embed">{CHURCH.address.postcode}</span>
       </address>
       <p class="actions">
-        <Button href={directionsHref} size="large" external>Get directions</Button>
+        <ChoiceMenu label="Get directions" size="large" options={directionsOptions(CHURCH.address.full)} />
         <Button href={mapHref} tone="quiet" external>Open the map</Button>
       </p>
     </section>
@@ -68,9 +69,8 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
     <section aria-labelledby="parking-heading">
       <h2 id="parking-heading">Parking</h2>
       <p class="prose">
-        There is parking on site and on the street around Harford Street. On a Sunday it
-        fills from about ten minutes before the start, so arriving a little early gives you
-        your pick of it. Accessible parking is closest to the main entrance.
+        There is parking on site and on Harford Street. It fills from about ten minutes
+        before the start. Accessible parking is closest to the main entrance.
       </p>
     </section>
 
@@ -82,9 +82,8 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
           just inside it. Tell them it is your first day and someone will walk you in.
         </p>
         <p>
-          The auditorium is step-free from the entrance and there is an accessible toilet. If
-          you need something specific arranged before you come, call us and we will sort it
-          out rather than leave you to work it out on the day.
+          The auditorium is step-free and there is an accessible toilet. If you need something
+          arranged before you come, call us.
         </p>
       </div>
       <p class="actions">
@@ -95,11 +94,9 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
     <section aria-labelledby="transport-heading">
       <h2 id="transport-heading">Public transport</h2>
       <p class="prose">
-        The nearest railway station is Penrith, and there are bus services between the
-        station and Jamisontown. Routes and timetables change, so check{' '}
-        <a href="https://transportnsw.info" rel="noopener">transportnsw.info</a> for the
-        current service on the day you are coming. If you would rather someone met you, call
-        ahead and we will arrange it.
+        The nearest station is Penrith, with buses to Jamisontown. Check{' '}
+        <a href="https://transportnsw.info" rel="noopener">transportnsw.info</a> for the service
+        on the day. If you would like to be met, call ahead.
       </p>
     </section>
 

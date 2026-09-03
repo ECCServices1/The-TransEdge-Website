@@ -119,6 +119,13 @@ const trail = [
     margin-block-end: var(--space-xl);
   }
 
+  /* The title measure is deliberately narrow, and an event can be named after
+     a fourteen-letter word. When a word must break, it breaks with a hyphen
+     rather than bare: "Transforma-tion", never "Transforma tion". */
+  .page-head h1 {
+    hyphens: auto;
+  }
+
   .page-head__standfirst {
     max-inline-size: var(--measure);
     margin-block-start: var(--space-s);

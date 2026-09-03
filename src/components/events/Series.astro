@@ -1,0 +1,159 @@
+---
+/**
+ * Template two, the series: several sessions, or several days.
+ *
+ * The schedule is the point, so it is the biggest thing on the card: a row of
+ * session chips under the title, each with its day and time and any note. A
+ * conference that is not the flagship, a course, a week of prayer.
+ */
+import Button from '../Button.astro';
+import { formatRange, formatTime, sydneyParts } from '../../lib/event-templates.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const start = sydneyParts(event.startsAt);
+const sessions = event.sessions.length
+  ? event.sessions
+  : [{ label: start.weekday, startsAt: event.startsAt, note: null }];
+---
+
+<article class="series" aria-labelledby={headingId}>
+  <p class="series__eyebrow">{event.tag ?? `${start.month} ${start.year}`}</p>
+  <Heading id={headingId} class="series__title">
+    <a href={`/events/${event.slug}`}>{event.title}</a>
+  </Heading>
+  <p class="series__range">
+    <time datetime={event.startsAt} class="ltr-embed">{formatRange(event.startsAt, event.endsAt)}</time>
+    {event.locationName && <span class="series__where">{event.locationName}</span>}
+  </p>
+
+  <ol class="series__sessions" role="list">
+    {
+      sessions.map((s) => (
+        <li class="series__session">
+          <span class="series__label">{s.label}</span>
+          <time datetime={s.startsAt} class="series__time ltr-embed">
+            {formatTime(s.startsAt)}
+          </time>
+          {s.note && <span class="series__note">{s.note}</span>}
+        </li>
+      ))
+    }
+  </ol>
+
+  {event.summary && <p class="series__summary">{event.summary}</p>}
+
+  <p class="series__actions">
+    {
+      event.registrationUrl ? (
+        <Button href={event.registrationUrl} external>
+          Register
+        </Button>
+      ) : (
+        <Button href={`/events/${event.slug}`} tone="quiet">
+          Details
+        </Button>
+      )
+    }
+  </p>
+</article>
+
+<style>
+  .series {
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .series__eyebrow {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-accent);
+  }
+
+  .series__title {
+    margin-block: var(--space-3xs) var(--space-2xs);
+    font-size: var(--text-3);
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+  }
+
+  .series__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .series__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .series__range {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+  }
+
+  .series__where {
+    color: var(--color-text-muted);
+  }
+
+  /* The schedule strip. It scrolls sideways on a phone rather than wrapping,
+     so a week of sessions stays one legible row. */
+  .series__sessions {
+    display: flex;
+    gap: var(--space-2xs);
+    margin: var(--space-m) 0 0;
+    padding: 0 0 var(--space-3xs);
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .series__session {
+    flex: 0 0 auto;
+    display: grid;
+    gap: var(--space-3xs);
+    min-inline-size: 8.5rem;
+    padding: var(--space-xs) var(--space-s);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  .series__label {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .series__time {
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: 1;
+  }
+
+  .series__note {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .series__summary {
+    margin-block-start: var(--space-m);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+
+  .series__actions {
+    margin-block-start: var(--space-m);
+  }
+</style>

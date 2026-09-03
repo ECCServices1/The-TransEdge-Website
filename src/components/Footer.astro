@@ -9,6 +9,7 @@
 import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import { CHURCH, FAMILY_ORGS, TAGLINE } from '../data/church.mjs';
+import { directionsOptions } from '../lib/directions.mjs';
 import { localeHref } from '../i18n/locales.mjs';
 import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
 import { useTranslations } from '../i18n/ui.mjs';
@@ -24,8 +25,6 @@ const t = useTranslations(locale);
    navigation on a translated page never points at a 404. */
 const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
 
-const mapQuery = encodeURIComponent(CHURCH.address.full);
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 ---
 
 <footer class="site-footer no-print">
@@ -57,7 +56,16 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
           {CHURCH.address.suburb} {CHURCH.address.state}{' '}
           <span class="ltr-embed">{CHURCH.address.postcode}</span>
         </address>
-        <a href={mapHref} rel="noopener">{t('visit.getDirections')}</a>
+        <p class="site-footer__label">{t('visit.getDirections')}</p>
+        <ul role="list" class="site-footer__apps">
+          {
+            directionsOptions(CHURCH.address.full).map((app) => (
+              <li>
+                <a href={app.href} rel="noopener">{app.label}</a>
+              </li>
+            ))
+          }
+        </ul>
       </section>
 
       <section class="site-footer__block">
@@ -220,5 +228,17 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
 
   .site-footer__legal {
     opacity: 0.75;
+  }
+  .site-footer__label {
+    margin-block-start: var(--space-2xs);
+  }
+
+  .site-footer__apps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 </style>

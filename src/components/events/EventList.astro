@@ -1,0 +1,85 @@
+---
+/**
+ * The diary, laid out: each event in the template chosen for it, in a grid
+ * that lets the marquee and the series span and the rest share rows.
+ *
+ * ONLY WHAT IS ON
+ *
+ * The content layer already drops anything that has ended by build time. A
+ * static site can be a day or a week old, though, so every item also carries
+ * the moment it ends and one small script removes whatever has since passed.
+ * If that empties a list, the section it lives in is hidden and any empty
+ * state marked data-events-empty is shown. The client's rule, September
+ * 2026: only active and future events are displayed, and the presentation is
+ * hidden unless something is upcoming.
+ */
+import EventCard from './EventCard.astro';
+import { templateFor } from '../../lib/event-templates.mjs';
+import { eventEnds } from '../../lib/connect.mjs';
+
+interface Props {
+  events: import('../../lib/connect.mjs').ConnectEvent[];
+  headingLevel?: 2 | 3;
+  limit?: number;
+  /** Keeps heading ids unique when the same event appears twice on a page. */
+  idPrefix?: string;
+  class?: string;
+}
+
+const { events, headingLevel = 2, limit, idPrefix = 'event', class: className = '' } = Astro.props;
+const shown = limit ? events.slice(0, limit) : events;
+---
+
+<ul class:list={['list', className]} role="list" data-events>
+  {
+    shown.map((event, index) => {
+      const template = templateFor(event, index);
+      return (
+        <li class:list={['item', `item--${template}`]} data-event-ends={eventEnds(event)} data-reveal>
+          <EventCard
+            event={event}
+            template={template}
+            headingLevel={headingLevel}
+            headingId={`${idPrefix}-${event.slug}`}
+          />
+        </li>
+      );
+    })
+  }
+</ul>
+
+<script>
+  /* Remove anything that ended after the site was built, and hide the
+     section if nothing is left. Runs once; there is nothing to observe. */
+  const now = Date.now();
+  for (const list of document.querySelectorAll<HTMLElement>('[data-events]')) {
+    let live = 0;
+    for (const item of list.querySelectorAll<HTMLElement>('[data-event-ends]')) {
+      const ends = Date.parse(item.dataset.eventEnds ?? '');
+      if (!Number.isNaN(ends) && ends < now) item.remove();
+      else live += 1;
+    }
+    if (live === 0) {
+      const section = list.closest<HTMLElement>('[data-events-section]');
+      (section ?? list).hidden = true;
+      for (const empty of document.querySelectorAll<HTMLElement>('[data-events-empty]')) empty.hidden = false;
+    }
+  }
+</script>
+
+<style>
+  .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-l);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item--marquee,
+  .item--series,
+  .item--line {
+    grid-column: 1 / -1;
+  }
+</style>

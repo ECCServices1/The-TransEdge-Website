@@ -47,7 +47,7 @@ export const FAQS = [
   },
   {
     question: 'How long does it go for?',
-    answer: 'About an hour and three quarters, including time afterwards for a cup of tea.',
+    answer: 'About an hour and a half, including time afterwards for a cup of tea.',
     group: 'visit',
     lead: true,
   },

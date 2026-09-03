@@ -62,7 +62,7 @@ export const en = {
   'visit.getDirections': 'Get directions',
   'visit.whatToExpect': 'What to expect',
   'visit.forYourKids': 'For your kids',
-  'visit.howLong': 'About an hour and three quarters, including time afterwards for a cup of tea.',
+  'visit.howLong': 'About an hour and a half, including time afterwards for a cup of tea.',
   'visit.singledOut': 'You will not be singled out, asked to stand, or asked to give.',
   'visit.lookFor': 'Look for the welcome desk inside the main entrance.',
 

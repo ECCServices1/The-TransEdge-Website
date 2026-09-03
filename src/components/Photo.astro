@@ -24,6 +24,13 @@
  * photograph on a page can opt into eager loading, which is the only way an
  * image can be the LCP element and still come in under two seconds on a
  * throttled phone.
+ *
+ * Encoder quality is set explicitly. Left to the defaults, AVIF is written at
+ * quality 50 and it shows on faces and fabric; the client noticed in September
+ * 2026 that the site looked softer than the files in the Drive. Measured on a
+ * 1200-wide portrait: AVIF is 107KB at 50, 264KB at 80, 280KB at 85, so 80
+ * buys nearly all of the sharpness and the last five points buy bytes. Every
+ * photograph but the first is lazy, so LCP is untouched.
  */
 import { Picture } from 'astro:assets';
 import PhotoSlot from './PhotoSlot.astro';
@@ -64,6 +71,15 @@ interface Props {
    * approved replacing or removing photo backgrounds in August 2026.
    */
   cutout?: boolean;
+  /**
+   * Encoder quality for all three formats. 80 suits photographs (see the
+   * DELIVERY note). Designed artwork with flat colour and hard edges reads
+   * clean far lower. On the Events page the RAIN social sits inside Chrome's
+   * lazy-load distance on a phone, so its bytes share the line with the fonts
+   * before first paint; 50 is what shipped before quality was set at all and
+   * keeps the LCP margin there. Artwork passes its own number.
+   */
+  quality?: number;
   class?: string;
   /**
    * Anything else, and in practice one thing in particular: when a page passes
@@ -86,6 +102,7 @@ const {
   priority = false,
   sizes = '(min-width: 56rem) 40rem, 100vw',
   cutout = false,
+  quality = 80,
   class: className = '',
   ...rest
 } = Astro.props;
@@ -118,6 +135,7 @@ if (src && (!alt || !alt.trim())) {
         sizes={sizes}
         formats={['avif', 'webp']}
         fallbackFormat={cutout ? 'png' : 'jpeg'}
+        quality={quality}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
         fetchpriority={priority ? 'high' : undefined}

@@ -1,0 +1,108 @@
+---
+/**
+ * Template five, the numeral: typographic, and the default.
+ *
+ * A large day numeral in the display face beside the title, time and place.
+ * No picture, no box, one rule above. For the ordinary run of things that
+ * happen at the church.
+ */
+import { sydneyParts } from '../../lib/event-templates.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const start = sydneyParts(event.startsAt);
+---
+
+<article class="numeral" aria-labelledby={headingId}>
+  <p class="numeral__date">
+    <span class="numeral__day" aria-hidden="true">{start.day}</span>
+    <span class="numeral__month" aria-hidden="true">
+      {start.monthShort}
+      <br />
+      {start.weekdayShort}
+    </span>
+  </p>
+
+  <div class="numeral__body">
+    <Heading id={headingId} class="numeral__title">
+      <a href={`/events/${event.slug}`}>{event.title}</a>
+    </Heading>
+    <p class="numeral__meta">
+      <time datetime={event.startsAt} class="ltr-embed">
+        {start.weekday} {start.day} {start.month}, {start.time}
+      </time>
+      {event.locationName && <span class="numeral__where">{event.locationName}</span>}
+    </p>
+    {event.summary && <p class="numeral__summary">{event.summary}</p>}
+  </div>
+</article>
+
+<style>
+  .numeral {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-m);
+    align-items: start;
+    padding-block-start: var(--space-m);
+    border-block-start: var(--border-thick) solid var(--color-border-strong);
+  }
+
+  .numeral__date {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2xs);
+    line-height: 1;
+  }
+
+  .numeral__day {
+    font-family: var(--font-display);
+    font-size: var(--text-4);
+    line-height: 0.9;
+    letter-spacing: var(--text-4-tracking);
+  }
+
+  .numeral__month {
+    padding-block-start: 0.35em;
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    line-height: 1.3;
+  }
+
+  .numeral__title {
+    font-size: var(--text-1);
+    line-height: var(--leading-snug);
+  }
+
+  .numeral__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .numeral__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .numeral__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-s);
+    margin-block-start: var(--space-3xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .numeral__summary {
+    margin-block-start: var(--space-xs);
+    max-inline-size: var(--measure);
+    color: var(--color-text-muted);
+  }
+</style>

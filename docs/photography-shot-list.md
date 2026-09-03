@@ -24,6 +24,7 @@ and graded.
 | Slot | The frame | Why |
 |---|---|---|
 | **S1** | Row of the congregation standing in worship, side-on, keyboard and worship leader at right, open door and daylight behind | Faces, ages and backgrounds all legible. The welcome movement's copy is "a congregation of many languages and many countries", and this is that sentence as a photograph |
+| **S5** | **Done.** `S5-edgekids.jpg`, a render made at Higgsfield in September 2026 | The client's instruction: a child-friendly room with no children in it. It is an illustration, not a photograph of our room, and the alt text says so. See "Generated imagery" below |
 | **S6** | **Done.** `S6-afterwards.jpg`, supplied as "Buffett_Queue.jpg" | Hospitality rather than performance, lit by the room rather than the stage, and the only frame where a stranger could picture themselves. On What to Expect |
 | **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
@@ -51,7 +52,8 @@ and are in: `E1-rain-2026.jpg` (the master poster, on the home chapter, wide
 screens) and `E1-rain-ministers.jpg` (the hosts-and-speakers social, on the
 events card). Converted from the supplied PNGs at quality 84, not re-graded:
 designed artwork keeps its own colour. The poster's facts (sessions, crusade,
-ministers, venue, no registration required) live in `src/data/conference.mjs`.
+ministers, venue, no registration required) live in the RAIN record in
+`src/data/connect/events.snapshot.json`, the shape every Connect event arrives in.
 
 **Cutouts.** The client approved replacing or removing photo backgrounds where
 it presents people better. The pipeline that produced `S12-pastors.png`:
@@ -85,9 +87,36 @@ Frames set aside from those folders because a child or teenager appears
 the church (the January 2025 JPEGs).
 
 **Still missing**, and nothing in the Drive can supply them: S3 the entrance
-from the street, S4 the welcome desk, S5 the EdgeKids room, S9 the empty room
-in morning light. These need a phone on a weekday morning, not an event
-photographer.
+from the street, S4 the welcome desk, S9 the empty room in morning light. These
+need a phone on a weekday morning, not an event photographer.
+
+## Generated imagery
+
+One slot holds a render rather than a photograph: S5, the EdgeKids room, made
+at Higgsfield (nano_banana_pro, 3:2) to the client's instruction of September
+2026 that the page should show a child-friendly set-up without showing
+children. The rules for it:
+
+- It never shows a person. A room with nobody in it needs no consent and
+  misrepresents nobody. A generated person would breach section 22 as surely
+  as a stock photograph.
+- It is not passed off as our room. The alt text calls it an illustration, and
+  the page comment says what it is. When a real photograph of the EdgeKids
+  space exists, it replaces the render.
+- It carries no text, signage or lettering, because generated lettering is
+  where these images give themselves away.
+- Grade lightly (saturation 0.92). A render is already balanced; the stage
+  recipe would drain colour it never had to lose.
+
+**How a render gets in.** The build sandbox sits behind an allowlisting proxy
+that admits GitHub and little else, and Higgsfield's results live on CloudFront,
+so the file cannot be pulled in directly. Commit a request file under
+`.github/fetch-requests/` (`url=`, `name=`, `width=` lines) and the
+`fetch-asset` workflow fetches it on a GitHub runner, shrinks it to a JPEG at
+the requested width and commits it under `src/assets/incoming/` on the same
+branch, removing the request in the same commit. Crop, grade and place from
+there, then delete the incoming copy. Two candidates were brought in this way
+and the warmer, daylit one chosen.
 
 ## How photographs reach the repository
 
@@ -103,6 +132,14 @@ Every supplied frame is graded the same way on the way in: saturation to about
 0.82 and a slight easing of contrast. The stage lighting at this venue throws
 hard magenta, green and orange, and left alone it fights Deep Slate and the warm
 neutrals the site is built on.
+
+**Encoder quality is set, not defaulted.** Astro's image service encodes the
+responsive set at whatever quality it is told, and told nothing it writes AVIF
+at 50, which is visibly soft on faces and fabric. The client noticed in
+September 2026 that the site looked softer than the files in the Drive.
+Photo.astro now asks for 80 across AVIF, WebP and JPEG; measured on a 1200-wide
+portrait the AVIF goes from 107KB to 264KB, and the last five points to 85 buy
+bytes rather than sharpness.
 
 **No child appears in any supplied frame.** That keeps the consent position
 simple, and it leaves the EdgeKids page with no photograph of children at all. A

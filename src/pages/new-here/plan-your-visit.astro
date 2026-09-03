@@ -11,7 +11,9 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { CHURCH } from '../../data/church.mjs';
 import { LEAD_FAQS } from '../../data/faqs.mjs';
-import { nextOccurrence, toGoogleCalendarUrl } from '../../lib/dates.mjs';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
+import { nextOccurrence, toGoogleCalendarUrl, toOutlookCalendarUrl } from '../../lib/dates.mjs';
+import { directionsOptions } from '../../lib/directions.mjs';
 import { gatheringSchema } from '../../lib/structured-data.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
@@ -28,7 +30,20 @@ const calendarEvent = {
 };
 
 const googleCalendar = toGoogleCalendarUrl(calendarEvent);
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
+const outlookCalendar = toOutlookCalendarUrl(calendarEvent);
+
+/*
+  One button, several calendars; one button, several map apps. The client asked
+  in September 2026 that a visitor choose the app rather than be sent to Google.
+  Apple Calendar opens the .ics file directly (Safari hands text/calendar to
+  Calendar); the last option downloads the same file for anything else.
+*/
+const calendarOptions = [
+  { label: 'Apple Calendar', href: '/api/sunday.ics' },
+  { label: 'Google Calendar', href: googleCalendar, external: true },
+  { label: 'Outlook', href: outlookCalendar, external: true },
+  { label: 'Other calendar (.ics file)', href: '/api/sunday.ics', download: 'tte-sunday.ics' },
+];
 
 const steps = [
   {
@@ -46,11 +61,6 @@ const steps = [
     title: 'Say it is your first time',
     body: 'The welcome desk is just inside the main entrance. Tell them it is your first day and someone will walk you in and sit with you if you would like.',
   },
-  {
-    n: '4',
-    title: 'Leave when you like',
-    body: 'The gathering runs about an hour and three quarters, and there is tea and coffee afterwards. You are free to go whenever suits you.',
-  },
 ];
 
 ---
@@ -60,7 +70,7 @@ const steps = [
   description={`Everything you need for your first visit to The Transformation Edge in ${CHURCH.place}. We gather Sundays at ${sunday.time} and Wednesdays at ${midweek.time}.`}
   route="new-here/plan-your-visit"
   crumbs={[{ name: 'New Here', href: '/new-here' }]}
-  standfirst="Four steps, and none of them involve filling anything in."
+  standfirst="Three steps, and none of them involve filling anything in."
   schema={[gatheringSchema(sunday, nextSunday), gatheringSchema(midweek, nextMidweek)]}
 >
   <!-- The three facts, then the one action. Nothing else at this height. -->
@@ -77,14 +87,13 @@ const steps = [
       </div>
       <div>
         <dt>How long</dt>
-        <dd>About 1 hour 45</dd>
+        <dd>About 1 hour 30</dd>
       </div>
     </dl>
 
     <div class="essentials__actions">
-      <Button href="/api/sunday.ics" size="large" download>Add to calendar</Button>
-      <Button href={googleCalendar} tone="quiet" external>Google Calendar</Button>
-      <Button href={mapHref} tone="quiet" external>Get directions</Button>
+      <ChoiceMenu label="Add to calendar" size="large" options={calendarOptions} />
+      <ChoiceMenu label="Get directions" tone="quiet" options={directionsOptions(CHURCH.address.full)} />
     </div>
   </section>
 

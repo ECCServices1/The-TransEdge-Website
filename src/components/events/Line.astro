@@ -1,0 +1,86 @@
+---
+/**
+ * Template six, the line: one quiet row.
+ *
+ * Date, title, place, in one line where the width allows and two where it
+ * does not. For the recurring and the minor, and for anything past the
+ * fourth position in a long list, so a full diary reads as a list and not as
+ * a wall of cards.
+ */
+import { sydneyParts } from '../../lib/event-templates.mjs';
+
+interface Props {
+  event: import('../../lib/connect.mjs').ConnectEvent;
+  headingLevel?: 2 | 3;
+  headingId?: string;
+}
+
+const { event, headingLevel = 2, headingId = `event-${event.slug}` } = Astro.props;
+const Heading = `h${headingLevel}` as 'h2' | 'h3';
+const start = sydneyParts(event.startsAt);
+---
+
+<article class="line" aria-labelledby={headingId}>
+  <p class="line__date">
+    <time datetime={event.startsAt} class="ltr-embed">
+      {start.weekdayShort} {start.day} {start.monthShort}
+    </time>
+    <span class="line__time">{start.time}</span>
+  </p>
+  <Heading id={headingId} class="line__title">
+    <a href={`/events/${event.slug}`}>{event.title}</a>
+  </Heading>
+  {event.locationName && <p class="line__where">{event.locationName}</p>}
+</article>
+
+<style>
+  .line {
+    display: grid;
+    grid-template-columns: minmax(9rem, auto) minmax(0, 1fr) auto;
+    gap: var(--space-2xs) var(--space-m);
+    align-items: baseline;
+    padding-block: var(--space-s);
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .line__date {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    font-family: var(--font-display);
+    font-size: var(--text-1);
+    white-space: nowrap;
+  }
+
+  .line__time {
+    color: var(--color-text-muted);
+  }
+
+  .line__title {
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    letter-spacing: normal;
+  }
+
+  .line__title a {
+    color: inherit;
+    text-decoration-color: var(--color-border-strong);
+  }
+
+  .line__title a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .line__where {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 40rem) {
+    .line {
+      grid-template-columns: 1fr;
+      gap: var(--space-3xs);
+    }
+  }
+</style>

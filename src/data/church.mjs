@@ -101,7 +101,8 @@ export const FAMILY_ORGS = {
     relationship: 'Sister organisation and community outreach arm',
     separateEntity: true,
     dgrEndorsed: true,
-    url: 'https://www.edgecommunitycare.org.au',
+    /** Confirmed by the client, 3 September 2026. */
+    url: 'https://www.edgecommunitycareservices.org.au',
   },
   edgedin: {
     name: 'EdgedIn Network',
@@ -124,14 +125,14 @@ export const GIVING = {
     a wrong digit here sends someone's gift to a stranger, so these are never
     retyped from memory or reformatted for tidiness.
 
-    accountName is not on the supplied slip and is inferred from the legal
-    entity. Confirm it against the bank's own record before launch: several
-    Australian banks now run confirmation of payee, and a name that does not
-    match the account warns the giver mid-transfer.
+    accountName was confirmed by the client on 3 September 2026 as the trading
+    name, without "Ltd". Several Australian banks now run confirmation of
+    payee, and a name that does not match the account warns the giver
+    mid-transfer, so this string is the one the bank holds, not the legal name.
   */
   bank: {
-    accountName: 'The Transformation Edge Ltd',
-    accountNameConfirmed: false,
+    accountName: 'The Transformation Edge',
+    accountNameConfirmed: true,
     reference: 'Your name, or OFFERING',
     accounts: [
       { bsb: '633-000', accountNumber: '159 596 881' },
@@ -139,8 +140,9 @@ export const GIVING = {
     ],
   },
   card: {
-    /** Stripe lives inside Connect. There is no card capture on this site. */
-    href: `${CHURCH.connectUrl}/give`,
+    /** Stripe lives inside Connect. There is no card capture on this site.
+        The address is the client's, supplied 3 September 2026. */
+    href: 'https://connect.thetransedge.com/giving',
     provider: 'Stripe, inside the TTE Connect Hub',
   },
   taxDeductible: false,

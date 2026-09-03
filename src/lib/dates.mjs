@@ -109,3 +109,26 @@ export function toGoogleCalendarUrl(event) {
 
   return `https://calendar.google.com/calendar/render?${params}`;
 }
+
+/**
+ * An Outlook.com template link, the third calendar a visitor may carry.
+ * Outlook takes ISO 8601 instants; UTC keeps the arithmetic identical to the
+ * Google link and the .ics file.
+ * @param {{ title: string, description: string, location: string, start: string, durationMinutes: number }} event
+ */
+export function toOutlookCalendarUrl(event) {
+  const start = new Date(event.start);
+  const end = new Date(start.getTime() + event.durationMinutes * 60_000);
+
+  const params = new URLSearchParams({
+    path: '/calendar/action/compose',
+    rru: 'addevent',
+    subject: event.title,
+    startdt: start.toISOString(),
+    enddt: end.toISOString(),
+    location: event.location,
+    body: event.description,
+  });
+
+  return `https://outlook.live.com/calendar/0/action/compose?${params}`;
+}

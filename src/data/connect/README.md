@@ -1,36 +1,39 @@
 # Connect snapshots
 
 These files are the fallback payload for the Connect content layer
-(`src/lib/connect.mjs`). They are deliberately empty.
+(`src/lib/connect.mjs`), and until the Connect read API exists they are also
+the source: the site builds from them.
 
 ## What they are for
 
 Connect is the system of record. When `CONNECT_API_URL` is set, the build reads
-from Connect and these files are not used. When it is not set, or when Connect
-is unreachable at build time, these files are served instead, so the site never
-ships an empty section.
+from Connect and these files are the fallback for an outage. When it is not set,
+they are served, so the site never ships an empty section.
 
-They are also the launch mechanism. Part C names a hard dependency: Connect must
-expose its read API before week 2, or events and EdgedIn ship as static content
-at launch and switch over in phase 2. "Static content" means these files,
-edited through the CMS.
+## What is in them
 
-## Why they are empty rather than seeded
+`events.snapshot.json` holds one real record: the 2026 conference, RAIN. Every
+field came from the supplied artwork (the teaser, the master poster) and nothing
+was inferred; see `docs/photography-shot-list.md` for the artwork and
+`docs/connect-api-contract.md` for the field meanings. It is the shape every
+Connect event should arrive in, including the fields that choose one of the six
+presentations (`kind`, `featured`, `template`, `tag`, `teaser`, `sessions`,
+`guests`, `artwork`).
 
-Nothing invented ships. A plausible-looking sample event is indistinguishable
-from a real one once it is on a public page, and a visitor who turns up to it is
-the worst possible outcome of a redesign.
+The other two files are empty. Nothing invented ships: a plausible-looking
+sample is indistinguishable from a real one once it is on a public page.
 
-While `events.snapshot.json` is empty the home canvas falls back to the standing
-gatherings, which are true, so the movement is never blank.
+## Adding an event by hand, before Connect answers
 
-## Populating them
+Copy the RAIN record, change every field, keep the shape. Only active and
+future events render, so a past record can stay in the file harmlessly, and an
+event with no `endsAt` is treated as three hours long. Commit; the push
+deploys.
 
-Refresh from a live Connect once the API exists:
+## Populating them from Connect
 
     CONNECT_API_URL=... CONNECT_API_TOKEN=... npm run connect:snapshot
 
-That writes the current payload back to these files, which is what keeps the
-fallback current rather than letting it rot at whatever shipped on day one.
-
-The schema each file must match is in `docs/connect-api-contract.md`.
+`.github/workflows/connect-refresh.yml` runs that nightly once the two secrets
+exist in the repository, commits any change, and the push rebuilds the site. Until
+the secrets exist the job exits without doing anything.

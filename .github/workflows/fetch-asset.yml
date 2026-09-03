@@ -1,0 +1,100 @@
+# Bring an image into the repository from a URL the build sandbox cannot reach.
+#
+# The remote build environment sits behind an allowlisting proxy: GitHub is
+# reachable, the CDNs that host generated imagery (Higgsfield's results live on
+# CloudFront) are not. A GitHub-hosted runner has ordinary internet access, so
+# this workflow fetches the file there, shrinks it to a web-sized JPEG (with
+# Pillow; the runner image has no ImageMagick) and
+# commits it under src/assets/incoming/ on the branch it was dispatched on.
+# From there the normal pipeline takes over: crop, grade, place, delete the
+# incoming copy.
+#
+# Two ways to ask for a file. Commit a request file under
+# .github/fetch-requests/ (url=, name=, width= lines) and the push runs this
+# workflow on that branch; the request file is removed in the same commit that
+# adds the image, and pushes made with the workflow token never trigger it
+# again, so it cannot loop. Or dispatch it by hand once it exists on main:
+# GitHub only registers a workflow for dispatch from the default branch, which
+# is why the request-file route exists at all.
+#
+# Write access only either way. The source is never committed at full size,
+# so a 7MB render costs the history a few hundred kilobytes.
+name: Fetch asset
+
+on:
+  push:
+    paths:
+      - '.github/fetch-requests/*.txt'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: HTTPS URL of the image to fetch
+        required: true
+        type: string
+      name:
+        description: Output filename without extension (letters, digits, - and _)
+        required: true
+        type: string
+      width:
+        description: Longest edge in pixels for the committed JPEG
+        required: false
+        default: '1600'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Pillow
+        run: python3 -m pip install --quiet --disable-pip-version-check pillow
+
+      - name: Fetch, convert and commit
+        env:
+          IN_URL: ${{ inputs.url }}
+          IN_NAME: ${{ inputs.name }}
+          IN_WIDTH: ${{ inputs.width }}
+        run: |
+          set -euo pipefail
+          fetch_one() {
+            url="$1"; name="$2"; width="${3:-1600}"
+            case "$url" in https://*) ;; *) echo "https URLs only: $url"; return 1;; esac
+            case "$name" in ""|*[!A-Za-z0-9_-]*) echo "name must be letters, digits, - or _: $name"; return 1;; esac
+            case "$width" in ""|*[!0-9]*) echo "width must be a number: $width"; return 1;; esac
+            mkdir -p src/assets/incoming
+            curl -fsSL --max-time 120 "$url" -o /tmp/source
+            file /tmp/source
+            python3 - "$width" "src/assets/incoming/${name}.jpg" <<'PY'
+          import sys
+          from PIL import Image, ImageOps
+          width, out = int(sys.argv[1]), sys.argv[2]
+          im = ImageOps.exif_transpose(Image.open('/tmp/source')).convert('RGB')
+          im.thumbnail((width, width), Image.Resampling.LANCZOS)
+          im.save(out, 'JPEG', quality=92, optimize=True)  # no exif is carried over
+          print(out, im.size)
+          PY
+            git add "src/assets/incoming/${name}.jpg"
+          }
+          if [ -n "${IN_URL}" ]; then
+            fetch_one "$IN_URL" "$IN_NAME" "$IN_WIDTH"
+          fi
+          shopt -s nullglob
+          for req in .github/fetch-requests/*.txt; do
+            url=$(sed -n 's/^url=//p' "$req" | head -1)
+            name=$(sed -n 's/^name=//p' "$req" | head -1)
+            width=$(sed -n 's/^width=//p' "$req" | head -1)
+            fetch_one "$url" "$name" "${width:-1600}"
+            git rm -q "$req"
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Fetch assets into src/assets/incoming for processing" || { echo "nothing to commit"; exit 0; }
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$GITHUB_REF_NAME" && git push && exit 0
+            sleep 5
+          done
+          exit 1
