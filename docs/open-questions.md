@@ -104,13 +104,11 @@ Noto fallback stack is unaffected.
 
 ### 8. The live Wix route list has not been enumerated
 
-**Blocks:** the definition of done, which requires every Wix, portal and Elvanto
-route to redirect with no orphan pages and no broken links.
-
-The redirect map covers the route families and Wix's own conventions, which is
-86 rules. It is not the same as the actual list. The extraction procedure is in
-`docs/sitemap-and-redirects.md` and takes about ten minutes with access to the
-current site.
+Resolved by decision. The client ruled on 3 September 2026 that this is a clean
+build and the old Wix address list is not needed. The redirect map keeps its
+route-family rules (member area, Elvanto, Wix conventions) as a courtesy net for
+printed bulletins and QR codes; nothing further is extracted, and the launch
+checklist no longer waits on it.
 
 ### 9. The bank account name on the Give page
 

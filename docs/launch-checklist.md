@@ -114,20 +114,19 @@ generated: the header, footer, locale switcher and breadcrumb each prefixed the
 current locale onto routes that exist in English only, so almost every link on a
 translated page pointed at a page that was never built. All are fixed.
 
-**Redirects: still blocked.** 86 rules cover the route families and Wix's
-conventions. The live Wix route list has not been enumerated, because egress to
-the current site was blocked from the build environment. Procedure and
-verification script in `docs/sitemap-and-redirects.md`, about ten minutes with
-access.
+**Redirects: closed by decision.** 86 rules cover the route families and Wix's
+conventions, and the client ruled on 3 September 2026 that this is a clean build
+and the live Wix route list is not needed. The rules stay as a courtesy net for
+printed bulletins and QR codes.
 
 ## Before the DNS switch
 
-- [ ] Bank details real, and the linter's placeholder warning gone
+- [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)
 - [ ] Turnstile keys set, and the contact and prayer Workers deployed
 - [ ] `CONNECT_API_URL` and token set, or the static-content decision recorded
 - [ ] CMS OAuth Worker deployed and an editor has logged in successfully
-- [ ] Wix route list extracted and every route mapped
-- [ ] Redirect verification loop returns clean
+- [x] Wix route list: not required, by the client's decision of 3 September 2026
+- [x] Redirect verification loop: not required with the route list waived; the family rules stand
 - [ ] Privacy policy and terms written and linked
 - [ ] Child safe policy and complaints pathway linked, consistent with NSW Child
       Safe Standards and existing Safer Churches obligations
