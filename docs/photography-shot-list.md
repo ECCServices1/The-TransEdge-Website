@@ -31,7 +31,7 @@ and graded.
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
 | **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. Both replaced in September 2026 with the client's hi-res profile portraits from the Drive profile folder (`Dr Michaels_profile.jpg`, `Ps Osas_profile`, 2400×3600 daylight frames), cropped to 4:5 from the top with head room kept, graded a touch lighter than the stage frames (saturation 0.86) because daylight does not need the same taming. Later the same day the client asked for `Ps Osas New Profile.jpeg` on the profile page instead: a stage frame, mid-message with a microphone, and small (1277 by 832, landscape). It is cropped to 4:5 centred on her, graded with the standard recipe, and resampled up to 1200 wide so the browser is not doing the enlarging; it will still read softer than the other portraits on a phone, and a camera original of the same frame would fix that. The daylight portrait stays in the repository as `S7-osas-daylight.jpg`, unused, for the next slot that suits it. The same folder's `PM and PO_informal.jpg` is held back: it is a dinner-table frame with other guests identifiable behind the pastors, and section 17 has no consent for them |
 | **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
-| **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows |
+| **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows. Regraded in September 2026 after the client said it was too dark: see "The two-light problem" below |
 
 **Momentum 2025 is a conference set, and its unlabelled frames show guests.**
 The client confirmed in September 2026 that the speakers and singers in the
@@ -54,6 +54,39 @@ events card). Converted from the supplied PNGs at quality 84, not re-graded:
 designed artwork keeps its own colour. The poster's facts (sessions, crusade,
 ministers, venue, no registration required) live in the RAIN record in
 `src/data/connect/events.snapshot.json`, the shape every Connect event arrives in.
+
+**The two-light problem, and how S12 was fixed.** The client reported in
+September 2026 that the Watch and Listen photograph was too dark. Measured, it
+was not uniformly dark: the two figures stand under different stage lights.
+Dr Michaels sat at 39 mean luminance with blue at 2.19 times red, a heavy
+purple cast; Pastor Osas sat at 89 and near neutral. Any global brighten would
+have blown her out to fix him.
+
+What was done instead, and how to repeat it on any two-light frame:
+
+- **Mask on the gap, not on content.** The two figures are separate shapes in
+  the alpha channel with 66 fully transparent columns between them (x 748 to
+  813). The correction runs at full strength left of the gap and zero right of
+  it, so the transition falls where there is no picture at all. An earlier
+  attempt used a blurred luminance mask and put a visible seam down his jacket:
+  a blur follows the body, and a body is not a lighting region.
+- **Correct in linear light.** Convert out of sRGB before touching exposure, so
+  doubling a value doubles the light and skin stays skin. A gamma-space
+  multiply turns dark skin chalky.
+- **Roll the highlights off.** A Reinhard shoulder keeps his shirt and the
+  microphone from clipping to paper white under a push this size.
+- **Denoise what the push reveals.** Stage shadows lifted two and a half stops
+  show sensor noise, so the lifted region is blended with a median-filtered
+  copy of itself.
+- **Leave some of the stage in it.** Blue was cut to 1.28 times red, not to
+  neutral. This is a photograph taken under coloured light, and her side keeps
+  its warmth; neutralising him completely would have made the pair look
+  assembled from two different days.
+
+He now sits at 72 luminance, she is untouched at 88. Re-save the PNG at
+compression level 9 and effort 10 afterwards: lifted shadows carry far more
+entropy than crushed blacks, and the file went from 1383KB to 2233KB before
+recompression brought it to 405KB.
 
 **Cutouts.** The client approved replacing or removing photo backgrounds where
 it presents people better. The pipeline that produced `S12-pastors.png`:
