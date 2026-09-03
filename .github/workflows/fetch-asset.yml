@@ -3,7 +3,8 @@
 # The remote build environment sits behind an allowlisting proxy: GitHub is
 # reachable, the CDNs that host generated imagery (Higgsfield's results live on
 # CloudFront) are not. A GitHub-hosted runner has ordinary internet access, so
-# this workflow fetches the file there, shrinks it to a web-sized JPEG and
+# this workflow fetches the file there, shrinks it to a web-sized JPEG (with
+# Pillow; the runner image has no ImageMagick) and
 # commits it under src/assets/incoming/ on the branch it was dispatched on.
 # From there the normal pipeline takes over: crop, grade, place, delete the
 # incoming copy.
@@ -49,6 +50,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Pillow
+        run: python3 -m pip install --quiet --disable-pip-version-check pillow
+
       - name: Fetch, convert and commit
         env:
           IN_URL: ${{ inputs.url }}
@@ -64,8 +68,15 @@ jobs:
             mkdir -p src/assets/incoming
             curl -fsSL --max-time 120 "$url" -o /tmp/source
             file /tmp/source
-            convert /tmp/source -auto-orient -strip -resize "${width}x${width}>" -quality 92 "src/assets/incoming/${name}.jpg"
-            identify "src/assets/incoming/${name}.jpg"
+            python3 - "$width" "src/assets/incoming/${name}.jpg" <<'PY'
+          import sys
+          from PIL import Image, ImageOps
+          width, out = int(sys.argv[1]), sys.argv[2]
+          im = ImageOps.exif_transpose(Image.open('/tmp/source')).convert('RGB')
+          im.thumbnail((width, width), Image.Resampling.LANCZOS)
+          im.save(out, 'JPEG', quality=92, optimize=True)  # no exif is carried over
+          print(out, im.size)
+          PY
             git add "src/assets/incoming/${name}.jpg"
           }
           if [ -n "${IN_URL}" ]; then
