@@ -19,7 +19,8 @@
  */
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
-import Button from '../../components/Button.astro';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
+import { directionsOptions } from '../../lib/directions.mjs';
 import { TRANSLATED_LOCALES, localeHref } from '../../i18n/locales.mjs';
 import { ESSENTIAL_PAGES } from '../../i18n/essential-pages.mjs';
 import { useTranslations, isPublishable } from '../../i18n/ui.mjs';
@@ -47,7 +48,6 @@ const reviewed = isPublishable(localePath);
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
 const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
 
 const title = t(page.titleKey);
 ---
@@ -92,7 +92,7 @@ const title = t(page.titleKey);
         <span class="ltr-embed">{CHURCH.address.postcode}</span>
       </address>
       <p class="actions">
-        <Button href={mapHref} tone="quiet" external>{t('visit.getDirections')}</Button>
+        <ChoiceMenu label={t('visit.getDirections')} tone="quiet" options={directionsOptions(CHURCH.address.full)} />
       </p>
     </section>
 

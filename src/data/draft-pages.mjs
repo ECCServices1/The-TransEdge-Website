@@ -26,13 +26,10 @@
 
 /** @type {DraftPage[]} */
 export const DRAFT_PAGES = [
-  {
-    route: 'who-we-are/what-we-believe',
-    reason: 'awaiting-content',
-    needs: 'The pastoral team rewrites the articles in their own words.',
-  },
-  /* who-we-are/pastoral-team left the register in August 2026: the client
-     supplied both biographies and the approved photograph. */
+  /* who-we-are/what-we-believe left the register in September 2026: the client
+     supplied the nine articles of faith, reproduced verbatim.
+     who-we-are/pastoral-team left in August 2026: the client supplied both
+     biographies and the approved photograph. */
   {
     route: 'who-we-are/core-course',
     reason: 'awaiting-content',

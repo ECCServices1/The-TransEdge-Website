@@ -12,15 +12,16 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import Photo from '../../components/Photo.astro';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
 import { CHURCH } from '../../data/church.mjs';
 import { nextOccurrence } from '../../lib/dates.mjs';
+import { directionsOptions } from '../../lib/directions.mjs';
 import { gatheringSchema } from '../../lib/structured-data.mjs';
 
 const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
 const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
 
 const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH.address.full)}`;
-const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(CHURCH.address.full)}`;
 ---
 
 <PageLayout
@@ -40,7 +41,7 @@ const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${enc
         <span class="ltr-embed">{CHURCH.address.postcode}</span>
       </address>
       <p class="actions">
-        <Button href={directionsHref} size="large" external>Get directions</Button>
+        <ChoiceMenu label="Get directions" size="large" options={directionsOptions(CHURCH.address.full)} />
         <Button href={mapHref} tone="quiet" external>Open the map</Button>
       </p>
     </section>

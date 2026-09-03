@@ -11,7 +11,9 @@ import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { getAllEvents } from '../../lib/connect.mjs';
 import { eventSchema } from '../../lib/structured-data.mjs';
-import { toGoogleCalendarUrl } from '../../lib/dates.mjs';
+import { toGoogleCalendarUrl, toOutlookCalendarUrl } from '../../lib/dates.mjs';
+import { directionsOptions } from '../../lib/directions.mjs';
+import ChoiceMenu from '../../components/ChoiceMenu.astro';
 import { CHURCH } from '../../data/church.mjs';
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -34,15 +36,19 @@ const durationMinutes = event.endsAt
   ? Math.max(15, Math.round((new Date(event.endsAt).getTime() - new Date(event.startsAt).getTime()) / 60000))
   : 90;
 
-const googleCalendar = toGoogleCalendarUrl({
+const calendarEvent = {
   title: event.title,
   description: event.summary,
   location: address || location,
   start: event.startsAt,
   durationMinutes,
-});
+};
 
-const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address || location)}`;
+/* No .ics for individual events yet; the two web calendars cover most phones. */
+const calendarOptions = [
+  { label: 'Google Calendar', href: toGoogleCalendarUrl(calendarEvent), external: true },
+  { label: 'Outlook', href: toOutlookCalendarUrl(calendarEvent), external: true },
+];
 ---
 
 <PageLayout
@@ -84,8 +90,8 @@ const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComp
     </div>
 
     <div class="detail__secondary">
-      <Button href={googleCalendar} tone="quiet" external>Add to Google Calendar</Button>
-      <Button href={mapHref} tone="quiet" external>Get directions</Button>
+      <ChoiceMenu label="Add to calendar" tone="quiet" options={calendarOptions} />
+      <ChoiceMenu label="Get directions" tone="quiet" options={directionsOptions(address || location)} />
     </div>
   </div>
 </PageLayout>

@@ -1,0 +1,244 @@
+---
+/**
+ * A button that opens a short list of equivalent destinations.
+ *
+ * "Get directions" used to mean Google Maps and "Add to calendar" used to
+ * mean a file, which decided for the visitor which app they use. The client
+ * asked in September 2026 that the visitor choose: Apple Maps, Google Maps or
+ * Waze; Apple Calendar, Google Calendar, Outlook or a plain .ics file.
+ *
+ * WHY A <details> ELEMENT
+ *
+ * A native disclosure is a real button with a real expanded state, keyboard
+ * behaviour the browser already knows, and no JavaScript needed to open or
+ * close it. The links inside are ordinary links. The one script on the page
+ * closes an open list when the visitor clicks elsewhere or presses Escape,
+ * keeps one list open at a time, and flips the list to the inline end when
+ * it would run off the screen. Without the script everything still works.
+ *
+ * The summary is styled to match Button.astro rather than reusing it, because
+ * a summary cannot be an anchor or a button and Astro's scoped styles do not
+ * cross component boundaries. The tokens are the same, so the two stay in
+ * step when the tokens change.
+ */
+interface Option {
+  label: string;
+  href: string;
+  /** Outbound handoff: rel and target as Button.astro does it. */
+  external?: boolean;
+  /** Save the target as a file, with this filename. */
+  download?: string;
+}
+
+interface Props {
+  /** The button's label. What the visitor wants, not the app. */
+  label: string;
+  options: Option[];
+  tone?: 'primary' | 'quiet';
+  size?: 'medium' | 'large';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  label,
+  options,
+  tone = 'primary',
+  size = 'medium',
+  class: className = '',
+  ...rest
+} = Astro.props;
+---
+
+<details class:list={['choice', className]} data-choice {...rest}>
+  <summary class:list={['choice__summary', `choice__summary--${tone}`, `choice__summary--${size}`]}>
+    <span>{label}</span>
+    <svg class="choice__chevron" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" focusable="false">
+      <path
+        d="M3.5 6 8 10.5 12.5 6"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.75"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </summary>
+  <ul class="choice__list" role="list">
+    {
+      options.map((option) => (
+        <li>
+          <a
+            href={option.href}
+            rel={option.external ? 'noopener' : undefined}
+            target={option.external ? '_blank' : undefined}
+            download={option.download}
+          >
+            {option.label}
+            {option.external && <span class="visually-hidden">, opens in a new tab</span>}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</details>
+
+<script>
+  /* Close on outside click or Escape, one list open at a time, and flip the
+     list to the inline end when it would run off the screen. `toggle` does not
+     bubble, so it is caught in the capture phase. */
+  const OPEN = 'details[data-choice][open]';
+
+  document.addEventListener(
+    'toggle',
+    (event) => {
+      const details = event.target;
+      if (!(details instanceof HTMLDetailsElement) || !details.hasAttribute('data-choice')) return;
+      if (!details.open) return;
+      for (const other of document.querySelectorAll<HTMLDetailsElement>(OPEN)) {
+        if (other !== details) other.open = false;
+      }
+      details.classList.remove('choice--end');
+      const list = details.querySelector('ul');
+      if (list && list.getBoundingClientRect().right > document.documentElement.clientWidth) {
+        details.classList.add('choice--end');
+      }
+    },
+    true
+  );
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Node)) return;
+    for (const details of document.querySelectorAll<HTMLDetailsElement>(OPEN)) {
+      if (!details.contains(target)) details.open = false;
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const details = document.querySelector<HTMLDetailsElement>(OPEN);
+    if (!details) return;
+    details.open = false;
+    details.querySelector('summary')?.focus();
+  });
+</script>
+
+<style>
+  .choice {
+    position: relative;
+    display: inline-block;
+  }
+
+  .choice__summary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-m);
+    border: var(--border-thick) solid transparent;
+    border-radius: var(--radius-full);
+    font-family: var(--font-text);
+    font-size: var(--text-0);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+    text-align: center;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+    /* Comfortably past the 24 by 24 minimum in SC 2.5.8. */
+    min-block-size: 2.75rem;
+    transition-property: transform, border-color, background-color;
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  .choice__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .choice__summary--large {
+    padding-block: var(--space-s);
+    padding-inline: var(--space-l);
+    font-size: var(--text-1);
+    min-block-size: 3.25rem;
+  }
+
+  .choice__summary--primary {
+    background-color: var(--color-action-bg);
+    color: var(--color-action-fg);
+  }
+
+  .choice__summary--primary:hover {
+    background-color: var(--color-action-bg-hover);
+  }
+
+  .choice__summary--quiet {
+    background-color: var(--color-action-quiet-bg);
+    color: var(--color-action-quiet-fg);
+    border-color: var(--color-action-quiet-border);
+  }
+
+  .choice__summary--quiet:hover {
+    border-color: var(--color-action-quiet-fg);
+  }
+
+  .choice__summary:active {
+    transform: translateY(1px);
+  }
+
+  .choice__chevron {
+    flex-shrink: 0;
+    transition: transform var(--motion-fast) var(--ease-standard);
+  }
+
+  .choice[open] .choice__chevron {
+    transform: rotate(180deg);
+  }
+
+  .choice__list {
+    position: absolute;
+    inset-block-start: calc(100% + var(--space-3xs));
+    inset-inline-start: 0;
+    z-index: 5;
+    min-inline-size: 15rem;
+    margin: 0;
+    padding: var(--space-3xs);
+    list-style: none;
+    background-color: var(--color-canvas-raised);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-l);
+    box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 0.16);
+  }
+
+  .choice--end .choice__list {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+  }
+
+  .choice__list a {
+    display: block;
+    padding-block: var(--space-xs);
+    padding-inline: var(--space-s);
+    border-radius: calc(var(--radius-l) - var(--space-3xs));
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+    color: inherit;
+    min-block-size: 2.75rem;
+  }
+
+  .choice__list a:hover,
+  .choice__list a:focus-visible {
+    background-color: var(--color-action-quiet-bg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .choice__summary:active,
+    .choice__chevron,
+    .choice[open] .choice__chevron {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
