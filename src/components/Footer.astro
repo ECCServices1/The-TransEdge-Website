@@ -10,6 +10,7 @@ import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import { CHURCH, FAMILY_ORGS, TAGLINE } from '../data/church.mjs';
 import { directionsOptions } from '../lib/directions.mjs';
+import { FOLLOW } from '../data/edgedin.mjs';
 import { localeHref } from '../i18n/locales.mjs';
 import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
 import { useTranslations } from '../i18n/ui.mjs';
@@ -96,6 +97,19 @@ const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
             <span class="site-footer__note">{FAMILY_ORGS.eccs.relationship}</span>
           </li>
           <li><a href={h('edgedin')}>{FAMILY_ORGS.edgedin.shortName}</a></li>
+        </ul>
+      </section>
+
+      <section class="site-footer__block">
+        <h2>Follow</h2>
+        <ul role="list">
+          {
+            FOLLOW.map((place) => (
+              <li>
+                <a href={place.href} rel="noopener">{place.name}</a>
+              </li>
+            ))
+          }
         </ul>
       </section>
     </div>
