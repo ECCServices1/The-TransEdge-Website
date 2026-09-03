@@ -65,6 +65,15 @@ interface Props {
    */
   cutout?: boolean;
   class?: string;
+  /**
+   * Anything else, and in practice one thing in particular: when a page passes
+   * `class`, Astro also passes its scoped-style attribute (data-astro-cid-*)
+   * so that the page's rules for that class can reach this element. Dropping
+   * it here is what made every page-level photo rule (a max width, a margin)
+   * silently dead for months, while the class name sat on the figure looking
+   * as if it worked. It is spread onto the root below.
+   */
+  [key: string]: unknown;
 }
 
 const {
@@ -78,6 +87,7 @@ const {
   sizes = '(min-width: 56rem) 40rem, 100vw',
   cutout = false,
   class: className = '',
+  ...rest
 } = Astro.props;
 
 /*
@@ -99,6 +109,7 @@ if (src && (!alt || !alt.trim())) {
       class:list={['photo', `photo--bleed-${bleed}`, { 'photo--cutout': cutout }, className]}
       style={`--ratio: ${ratio}`}
       data-shot={ref}
+      {...rest}
     >
       <Picture
         src={src}
@@ -113,7 +124,7 @@ if (src && (!alt || !alt.trim())) {
       />
     </figure>
   ) : (
-    <PhotoSlot ref={ref} brief={brief} ratio={ratio} bleed={bleed} class={className} />
+    <PhotoSlot ref={ref} brief={brief} ratio={ratio} bleed={bleed} class={className} {...rest} />
   )
 }
 

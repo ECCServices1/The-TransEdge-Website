@@ -28,13 +28,18 @@ and graded.
 | **S8** | **Done.** `S8-serving.jpg`, supplied as "S8_Buffet_Queue.jpg" | Hands mid-serve, square, on Life at TTE under Serving |
 | **S10** | Congregation standing in prayer, mission statement and the tagline on the wall behind | Several generations in one frame, and the identity is legible without a caption |
 | **S7** | **Done.** `S7-senior-pastors.jpg`, supplied as "Our senior pastors.jpg" | The agreed shot: both Senior Pastors together, at the lectern, environmental. Landscape 3:2, because a portrait crop would have to choose between them |
-| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. S7a replaced in August 2026 with the client-supplied `Dr_Michaels_(august2026).jpg` from the Drive August folder, graded with the standard recipe |
+| **S7a/b** | **Done.** `S7-michaels.jpg` and `S7-osas.jpg` | One portrait each, beside each biography on Our Pastors. Keyed by name in the page rather than by array position, so reordering the pastors cannot swap their faces. Both replaced in September 2026 with the client's hi-res profile portraits from the Drive profile folder (`Dr Michaels_profile.jpg`, `Ps Osas_profile`, 2400×3600 daylight frames), cropped to 4:5 from the top with head room kept, graded a touch lighter than the stage frames (saturation 0.86) because daylight does not need the same taming. The same folder's `PM and PO_informal.jpg` is held back: it is a dinner-table frame with other guests identifiable behind the pastors, and section 17 has no consent for them |
 | **S11** | **Done.** `S11-together.jpg`, supplied as "Team.jpg" | On Who We Are, which had no photograph at all and is the page a stranger lands on to find out who we are |
 | **S12** | **Done.** `S12-pastors.png`, cut out from `S7-senior-pastors.jpg` | On Watch and Listen, by the client's instruction of August 2026: the Senior Pastors, background removed, standing on the page's own ground with a token-drawn wash behind them. The lectern, a cup and a screen-seam sliver were erased from the cutout; the base dissolves through a static CSS mask so the crop line never shows |
 
-**Reassigned:** `S12-worship.jpg` (supplied as "Singer_worship.jpg") held this
-slot first and is kept in the repository unused. It remains the strongest
-worship frame in the set and should get a home when a slot suits it.
+**Momentum 2025 is a conference set, and its unlabelled frames show guests.**
+The client confirmed in September 2026 that the speakers and singers in the
+IMG_66xx to IMG_78xx files are visiting ministers, not the congregation, so
+none of them may be used for any slot; section 22's rule about people who are
+not part of this congregation applies to them exactly. Only the files the
+client named for a slot (the pastors, the team, the meal frames) are ours to
+use. `S12-worship.jpg` (supplied as "Singer_worship.jpg") is kept in the
+repository but is not to be placed: it is a guest worship leader.
 
 **Deliberately unused:** `Ps Osas Michaels.jpg`. Despite the name it is a
 second solo frame of Pastor Osas, and `S7-osas.jpg` is better framed. A site
@@ -59,11 +64,30 @@ erase any furniture from the alpha channel with Pillow and downscale to 1600
 wide. Quality on stage-lit frames is excellent because the subjects sit far
 from the backdrop in tone.
 
-**Still missing**, and these are the ones the New Here pages run on: S1 the wide
-congregation shot (named in Drive, too large to transfer so far), S2 the
-recording setup, S3 the entrance from the street, S4 the welcome desk, S5 the
-EdgeKids room, S9 the empty room in morning light, S10 the congregation in
-prayer.
+**Placed in September 2026 from the Drive's phone folders** (decoded from HEIC
+with pillow-heif, graded with the standard recipe):
+
+- **S1** `S1-welcome.jpg`, from "Sunday 30/8/2026" IMG_1583: the room from the
+  back rows, mid-message. A bridging frame. The brief's ideal, faces visible
+  across a full room, is `S1_Congregation.jpg` in Momentum 2025, which at
+  10.4MB has never transferred; a 3000px export under 7MB replaces this.
+- **S2** `S2-edgedin.jpg`, from "Sunday 30/8/2026" IMG_1566: Dr Michaels with
+  a microphone, smiling, square. The voice behind the network rather than the
+  recording desk the brief first imagined; a person says EdgedIn faster than
+  equipment does.
+- **S10** `S10-room.jpg`, from "TTE_Church photos" IMG_0304: the congregation
+  seated beneath the tagline and the mission on the wall, on What to Expect.
+  Cropped below the lighting rig and desaturated harder than usual to tame a
+  purple wash.
+
+Frames set aside from those folders because a child or teenager appears
+(IMG_1492, IMG_1575, IMG_1610) or because the setting is a retreat rather than
+the church (the January 2025 JPEGs).
+
+**Still missing**, and nothing in the Drive can supply them: S3 the entrance
+from the street, S4 the welcome desk, S5 the EdgeKids room, S9 the empty room
+in morning light. These need a phone on a weekday morning, not an event
+photographer.
 
 ## How photographs reach the repository
 
