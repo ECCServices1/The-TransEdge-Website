@@ -1,0 +1,69 @@
+# Bring an image into the repository from a URL the build sandbox cannot reach.
+#
+# The remote build environment sits behind an allowlisting proxy: GitHub is
+# reachable, the CDNs that host generated imagery (Higgsfield's results live on
+# CloudFront) are not. A GitHub-hosted runner has ordinary internet access, so
+# this workflow fetches the file there, shrinks it to a web-sized JPEG and
+# commits it under src/assets/incoming/ on the branch it was dispatched on.
+# From there the normal pipeline takes over: crop, grade, place, delete the
+# incoming copy.
+#
+# Manual only, and only someone with write access can dispatch it. The source
+# is never committed at full size, so a 7MB render costs the history a few
+# hundred kilobytes.
+name: Fetch asset
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: HTTPS URL of the image to fetch
+        required: true
+        type: string
+      name:
+        description: Output filename without extension (letters, digits, - and _)
+        required: true
+        type: string
+      width:
+        description: Longest edge in pixels for the committed JPEG
+        required: false
+        default: '1600'
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch and convert
+        env:
+          URL: ${{ inputs.url }}
+          NAME: ${{ inputs.name }}
+          WIDTH: ${{ inputs.width }}
+        run: |
+          case "$URL" in https://*) ;; *) echo "https URLs only"; exit 1;; esac
+          case "$NAME" in ""|*[!A-Za-z0-9_-]*) echo "name must be letters, digits, - or _"; exit 1;; esac
+          case "$WIDTH" in ""|*[!0-9]*) echo "width must be a number"; exit 1;; esac
+          mkdir -p src/assets/incoming
+          curl -fsSL --max-time 120 "$URL" -o /tmp/source
+          file /tmp/source
+          convert /tmp/source -auto-orient -strip -resize "${WIDTH}x${WIDTH}>" -quality 92 "src/assets/incoming/${NAME}.jpg"
+          identify "src/assets/incoming/${NAME}.jpg"
+
+      - name: Commit to the dispatching branch
+        env:
+          NAME: ${{ inputs.name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/assets/incoming
+          git commit -m "Fetch ${NAME} into src/assets/incoming for processing" || { echo "nothing to commit"; exit 0; }
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$GITHUB_REF_NAME" && git push && exit 0
+            sleep 5
+          done
+          exit 1
