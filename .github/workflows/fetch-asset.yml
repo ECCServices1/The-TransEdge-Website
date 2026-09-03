@@ -8,12 +8,22 @@
 # From there the normal pipeline takes over: crop, grade, place, delete the
 # incoming copy.
 #
-# Manual only, and only someone with write access can dispatch it. The source
-# is never committed at full size, so a 7MB render costs the history a few
-# hundred kilobytes.
+# Two ways to ask for a file. Commit a request file under
+# .github/fetch-requests/ (url=, name=, width= lines) and the push runs this
+# workflow on that branch; the request file is removed in the same commit that
+# adds the image, and pushes made with the workflow token never trigger it
+# again, so it cannot loop. Or dispatch it by hand once it exists on main:
+# GitHub only registers a workflow for dispatch from the default branch, which
+# is why the request-file route exists at all.
+#
+# Write access only either way. The source is never committed at full size,
+# so a 7MB render costs the history a few hundred kilobytes.
 name: Fetch asset
 
 on:
+  push:
+    paths:
+      - '.github/fetch-requests/*.txt'
   workflow_dispatch:
     inputs:
       url:
@@ -39,29 +49,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Fetch and convert
+      - name: Fetch, convert and commit
         env:
-          URL: ${{ inputs.url }}
-          NAME: ${{ inputs.name }}
-          WIDTH: ${{ inputs.width }}
+          IN_URL: ${{ inputs.url }}
+          IN_NAME: ${{ inputs.name }}
+          IN_WIDTH: ${{ inputs.width }}
         run: |
-          case "$URL" in https://*) ;; *) echo "https URLs only"; exit 1;; esac
-          case "$NAME" in ""|*[!A-Za-z0-9_-]*) echo "name must be letters, digits, - or _"; exit 1;; esac
-          case "$WIDTH" in ""|*[!0-9]*) echo "width must be a number"; exit 1;; esac
-          mkdir -p src/assets/incoming
-          curl -fsSL --max-time 120 "$URL" -o /tmp/source
-          file /tmp/source
-          convert /tmp/source -auto-orient -strip -resize "${WIDTH}x${WIDTH}>" -quality 92 "src/assets/incoming/${NAME}.jpg"
-          identify "src/assets/incoming/${NAME}.jpg"
-
-      - name: Commit to the dispatching branch
-        env:
-          NAME: ${{ inputs.name }}
-        run: |
+          set -euo pipefail
+          fetch_one() {
+            url="$1"; name="$2"; width="${3:-1600}"
+            case "$url" in https://*) ;; *) echo "https URLs only: $url"; return 1;; esac
+            case "$name" in ""|*[!A-Za-z0-9_-]*) echo "name must be letters, digits, - or _: $name"; return 1;; esac
+            case "$width" in ""|*[!0-9]*) echo "width must be a number: $width"; return 1;; esac
+            mkdir -p src/assets/incoming
+            curl -fsSL --max-time 120 "$url" -o /tmp/source
+            file /tmp/source
+            convert /tmp/source -auto-orient -strip -resize "${width}x${width}>" -quality 92 "src/assets/incoming/${name}.jpg"
+            identify "src/assets/incoming/${name}.jpg"
+            git add "src/assets/incoming/${name}.jpg"
+          }
+          if [ -n "${IN_URL}" ]; then
+            fetch_one "$IN_URL" "$IN_NAME" "$IN_WIDTH"
+          fi
+          shopt -s nullglob
+          for req in .github/fetch-requests/*.txt; do
+            url=$(sed -n 's/^url=//p' "$req" | head -1)
+            name=$(sed -n 's/^name=//p' "$req" | head -1)
+            width=$(sed -n 's/^width=//p' "$req" | head -1)
+            fetch_one "$url" "$name" "${width:-1600}"
+            git rm -q "$req"
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/assets/incoming
-          git commit -m "Fetch ${NAME} into src/assets/incoming for processing" || { echo "nothing to commit"; exit 0; }
+          git commit -m "Fetch assets into src/assets/incoming for processing" || { echo "nothing to commit"; exit 0; }
           for attempt in 1 2 3; do
             git pull --rebase origin "$GITHUB_REF_NAME" && git push && exit 0
             sleep 5
