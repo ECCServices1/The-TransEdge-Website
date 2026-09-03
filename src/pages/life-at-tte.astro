@@ -18,15 +18,23 @@
  *
  * Champions is a giving commitment, so section 13 governs it: no urgency, no
  * guilt, no implication that a gift to our church is tax deductible, because
- * it is not. The section describes what the giving pays for and routes to the
- * Give page, which carries the receipting position in full.
+ * it is not.
+ *
+ * The client set the two calls to action in September 2026: become a Champion,
+ * and make a one-off donation. They go to different places because they are
+ * different acts. Becoming a Champion is a standing commitment, so it goes to
+ * the Connect Hub where card giving lives and a recurring gift is set up; a
+ * one-off donation goes to the Give page, which carries both methods, the bank
+ * details and the receipting position in full. Neither button is the one that
+ * answers a question, so asking is a text link rather than a third button:
+ * one primary action per moment, section 20.
  */
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/Button.astro';
 import DraftNotice from '../components/DraftNotice.astro';
 import Photo from '../components/Photo.astro';
 import serving from '../assets/photos/S8-serving.jpg';
-import { CHURCH } from '../data/church.mjs';
+import { CHURCH, GIVING } from '../data/church.mjs';
 
 /*
   `href` only where a page exists. Everything else carries no link, because a
@@ -191,13 +199,20 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
         }
       </ol>
 
-      <p class="prose">
-        Giving to our church is not a deductible gift, and the Give page says so plainly
-        along with the two ways to give.
-      </p>
+      <div class="prose">
+        <p>
+          A Champion's giving is a standing commitment, set up once in the TTE Connect Hub.
+          A one-off donation needs no commitment at all.
+        </p>
+        <p>
+          Giving to our church is not a deductible gift, and the Give page says so plainly
+          alongside both ways to give. If you would like to talk it through first,{' '}
+          <a href="/get-in-touch">ask us about Champions</a>.
+        </p>
+      </div>
       <p class="actions">
-        <Button href="/give">How to give</Button>
-        <Button href="/get-in-touch" tone="quiet">Ask about Champions</Button>
+        <Button href={GIVING.card.href} size="large" external>Become a Champion</Button>
+        <Button href="/give" tone="quiet">Make a one-off donation</Button>
       </p>
     </section>
 
