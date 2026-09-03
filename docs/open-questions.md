@@ -114,14 +114,10 @@ current site.
 
 ### 9. The bank account name on the Give page
 
-The two BSBs and account numbers are supplied and are on the page. The account
-*name* is inferred from the legal entity and is recorded as unconfirmed in
-`GIVING.bank.accountNameConfirmed`.
-
-Several Australian banks now run confirmation of payee. A name that does not
-match the account warns the giver mid-transfer, which is the moment a first-time
-giver abandons. Send a one dollar transfer, read what the banking app says the
-payee is, and set the string to that.
+Resolved. The client confirmed on 3 September 2026 that both accounts are held
+under the name "The Transformation Edge" (no "Ltd"), and that online giving
+runs through Stripe at https://connect.thetransedge.com/giving. Both are set in
+`GIVING` and `accountNameConfirmed` is true.
 
 ### 10. The ECCS domain
 
