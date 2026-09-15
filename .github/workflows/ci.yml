@@ -48,6 +48,13 @@ jobs:
       - name: Quiet text is only used at large sizes
         run: npm run check:quiet-text
 
+      # The shop catalogue, where a mistake costs real money on a page that
+      # otherwise looks finished: a malformed price, a photograph with no alt
+      # text, a duplicate stock code, or anything on sale whose price nobody
+      # has confirmed.
+      - name: Shop catalogue
+        run: npm run check:shop
+
       - name: Types
         run: npm run check
 
