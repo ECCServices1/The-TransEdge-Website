@@ -136,8 +136,19 @@ const retiredRoutes = [
   { from: '/plans-pricing', to: '/give', status: 301 },
   { from: '/bookings-checkout/*', to: '/events', status: 301 },
   { from: '/service-page/*', to: '/events', status: 301 },
-  { from: '/shop', to: '/', status: 301 },
-  { from: '/product-page/*', to: '/', status: 301 },
+  /*
+    /shop used to redirect to the home page, because the new site had no
+    equivalent for the Wix shop. It has one now, at the same address, so the
+    entry is gone: a redirect and a real page cannot both own a path, and the
+    redirect wins. This shadowed the new shop entirely, and check-links did not
+    catch it because it counts a redirect source as a destination that resolves.
+    It does now, per the shadowing guard in scripts/check-links.mjs.
+
+    The old product pages point at the range rather than the home page, which is
+    both a better destination for whatever equity they carry and closer to what
+    somebody following one of them was looking for.
+  */
+  { from: '/product-page/*', to: '/shop', status: 301 },
 ];
 
 /** @type {Redirect[]} */

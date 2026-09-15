@@ -207,6 +207,7 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 | **S10** | Congregation talking after a gathering, several groups in frame, nobody posed and nobody centred | Our community | Landscape 16:9 |
 | **S11** | Leaders and members together on stage at a celebration | Who we are | Landscape 16:9 |
 | **S12** | Worship, mid-song | Watch and listen | Landscape 4:3 |
+| **P1** | A single piece of merchandise, flat on a plain ground, filling the frame. One per product, more if a detail earns it | Shop, one product page each | Portrait 4:5 |
 
 ### Direction
 
@@ -225,6 +226,30 @@ honestly and it will show.
 consent. A photograph of children needs consent from every parent or guardian of
 every identifiable child, and it is not worth the risk of getting that wrong for
 a room shot.
+
+## Product photography
+
+P1 is a different job from everything above it, and the difference is worth
+stating rather than leaving somebody to work out.
+
+There are no people in it. That removes the whole consent question, which is
+what makes this the one set of frames anybody can shoot on a phone without
+raising a section 17 problem. It does not remove the alt text requirement:
+every product photograph names what it shows, and the build fails without it.
+
+Shoot them flat, on a plain ground, in daylight, with the item filling the
+frame. Portrait 4:5, because that is what the product page and the range grid
+both reserve. One photograph per product is enough to open with; a second
+earns its place only if it shows something the first cannot, a print detail or
+the inside of a hood.
+
+Files go in `src/assets/shop/` and are referenced from the catalogue by name
+without the extension. A product with no photograph yet renders the reserved
+frame at the right shape, so the page is already laid out and adding the file
+later moves nothing. `docs/shop.md` has the rest.
+
+**Not yet supplied.** Nothing in the range has been photographed, and nothing
+in it is on sale.
 
 ## Consent register
 

@@ -21,7 +21,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative } from 'node:path';
 
-import { DRAFT_PAGES, DRAFT_ROUTES } from '../src/data/draft-pages.mjs';
+import { DRAFT_PAGES, DRAFT_ROUTES, isDraftRoute } from '../src/data/draft-pages.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
@@ -76,7 +76,7 @@ for (const route of DRAFT_ROUTES) {
 for (const route of foundNoindex) {
   // 404 is noindex by nature and is not a draft.
   if (route === '404') continue;
-  if (!DRAFT_ROUTES.includes(route)) {
+  if (!isDraftRoute(route)) {
     problems.push(
       `${route} is noindex but is not on the draft register. ` +
         `Add it to src/data/draft-pages.mjs with the reason, so it is not hidden from search by accident and forever.`
@@ -107,7 +107,7 @@ if (!relaxed) {
   for (const url of urls) {
     const path = new URL(url).pathname;
     const route = path.replace(/^\//, '').replace(/\.html$/, '');
-    if (!DRAFT_ROUTES.includes(route)) continue;
+    if (!isDraftRoute(route)) continue;
     if (!pattern.test(url)) {
       problems.push(
         `${path} is a draft page in the Lighthouse target list, but does not match the relaxed ` +
@@ -130,8 +130,11 @@ const byReason = DRAFT_PAGES.reduce((acc, page) => {
   return acc;
 }, /** @type {Record<string, number>} */ ({}));
 
+/* Entries, not pages: a `foo/*` entry stands for however many pages the build
+   produced under it, so counting entries is the only number that is true. */
 console.log(
-  `Draft register: ${DRAFT_ROUTES.length} page(s) noindex and accounted for ` +
+  `Draft register: ${DRAFT_PAGES.length} entries covering ` +
+    `${[...foundNoindex].filter((route) => route !== '404').length} noindex page(s) ` +
     `(${Object.entries(byReason).map(([k, v]) => `${v} ${k}`).join(', ')}). ` +
     `${RELAXED_MARKER} pages are exempt from the SEO budget.`
 );

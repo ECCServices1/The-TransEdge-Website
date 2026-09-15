@@ -104,6 +104,33 @@ const collected = [
       </div>
     </section>
 
+    <!-- Buying something collects more than any other route on this site, so
+         it is described specifically rather than folded into the paragraph
+         above. What Stripe holds and what we hold are separated, because they
+         are different organisations with different obligations. -->
+    <section aria-labelledby="orders-heading">
+      <h2 id="orders-heading">If you buy something from the shop</h2>
+      <div class="prose">
+        <p>
+          An order collects your name and your email address, which is where the receipt
+          goes. If you ask us to post it, we also collect the delivery address and a phone
+          number, because the carrier needs both. If you are collecting your order at a
+          gathering, we do not ask for an address at all.
+        </p>
+        <p>
+          Payment is handled by Stripe on Stripe's own pages. Your payment details are never
+          entered on this site and we never see or hold them. Stripe holds the payment record
+          under its own privacy terms and acts as our processor for the order.
+        </p>
+        <p>
+          We read order details in Stripe in order to make up and send your order, and to
+          answer you if something goes wrong. We do not add you to a mailing list because you
+          bought something. Order records are kept for as long as our tax and consumer law
+          obligations require, which the review noted above will state exactly.
+        </p>
+      </div>
+    </section>
+
     <section aria-labelledby="cookies-heading">
       <h2 id="cookies-heading">Cookies and tracking</h2>
       <div class="prose">
@@ -114,6 +141,11 @@ const collected = [
         <p>
           Where we measure anything, it is aggregate: how many people opened a page, not who
           they were.
+        </p>
+        <p>
+          The shop basket is the one thing this site stores in your browser. It holds what you
+          have chosen and nothing about you, it stays on your own device, it is never sent to
+          us until you go to pay, and it is cleared when your order is done.
         </p>
       </div>
     </section>

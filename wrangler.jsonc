@@ -7,12 +7,15 @@
   // static files", which is accurate but unhelpful: nothing had been built and
   // nothing had been pointed at.
   //
-  // There is no "main" entry because this is an assets-only Worker. No
-  // server-side code runs. The site is static, exactly as it was designed to
-  // be, and this file only tells Cloudflare where to find it.
+  // This was an assets-only Worker with no "main" until the shop arrived. It
+  // now has one, for a single reason: creating a Stripe Checkout Session needs
+  // a secret key, and a secret key in a browser is not a secret. Everything
+  // that is not /api/* still goes straight to the built files, so the site is
+  // served exactly as it was. See worker/index.js.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "the-transedge-website",
   "compatibility_date": "2026-08-01",
+  "main": "./worker/index.js",
 
   // Wrangler runs this before deploying, so the site is built even when the
   // dashboard's build command is left empty. Cloudflare's Workers flow arrives
@@ -27,10 +30,21 @@
     // the deploy.
     "directory": "./dist",
 
+    // The Worker reaches the built site through this binding, which is how a
+    // request that is not /api/* is served without the Worker having to know
+    // anything about it.
+    "binding": "ASSETS",
+
     // Unmatched routes serve the real 404 page rather than a bare Cloudflare
     // error, so a visitor who follows a dead link still gets the header, the
     // service times and a way onward.
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+
+    // Assets are served before the Worker runs, so a request for a page never
+    // pays for an invocation. /api/* has no asset behind it and must reach the
+    // Worker rather than the 404 page, which is what this line guarantees
+    // rather than leaves to the default.
+    "run_worker_first": ["/api/*"]
   },
 
   "observability": {

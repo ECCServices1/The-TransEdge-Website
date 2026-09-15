@@ -12,6 +12,7 @@
  */
 import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
+import BasketLink from './shop/BasketLink.astro';
 import { CHURCH } from '../data/church.mjs';
 import { localeHref } from '../i18n/locales.mjs';
 import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
@@ -42,6 +43,11 @@ const primaryNav = [
 
 const current = Astro.url.pathname.replace(/\/$/, '');
 const isCurrent = (href: string) => current === href.replace(/\/$/, '');
+
+/* The basket appears inside the shop and nowhere else. On every other page it
+   would be a control inserted after a script had read localStorage, which is a
+   layout shift, and it would advertise a range that is not on sale yet. */
+const inShop = current === '/shop' || current.startsWith('/shop/');
 ---
 
 <header class="site-header no-print">
@@ -67,6 +73,7 @@ const isCurrent = (href: string) => current === href.replace(/\/$/, '');
     </nav>
 
     <div class="site-header__utility">
+      {inShop && <BasketLink />}
       <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
 
       <!-- Connect holds a persistent utility position, section 11. It is a

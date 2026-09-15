@@ -1,0 +1,14 @@
+{
+  "collect": {
+    "label": "Collect at our Sunday gathering",
+    "note": "Ask at the welcome desk. We hold orders for four weeks."
+  },
+  "post": {
+    "label": "Post within Australia",
+    "price": "0.00",
+    "priceConfirmed": false,
+    "estimate": "Allow five to ten business days.",
+    "note": "Australia Post, tracked. We post within Australia only."
+  },
+  "freeOver": null
+}

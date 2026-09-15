@@ -18,9 +18,15 @@
  */
 
 /**
+ * A route ending in `/*` covers everything beneath it. The shop's product
+ * pages are generated from the catalogue, so listing them one by one would mean
+ * the register went stale the first time somebody added a product at /admin,
+ * and the build would fail on a page nobody had done anything wrong to. An
+ * exact entry still wins where one exists, so /shop/terms keeps its own reason.
+ *
  * @typedef {object} DraftPage
- * @property {string} route     Route without a leading slash.
- * @property {'awaiting-content'|'awaiting-legal'|'working-page'} reason
+ * @property {string} route     Route without a leading slash. May end in `/*`.
+ * @property {'awaiting-content'|'awaiting-legal'|'working-page'|'transactional'} reason
  * @property {string} needs     What has to happen before it is indexed.
  */
 
@@ -71,10 +77,55 @@ export const DRAFT_PAGES = [
     reason: 'working-page',
     needs: 'Nothing. This is an internal working page and stays out of the index.',
   },
+  {
+    route: 'shop',
+    reason: 'awaiting-content',
+    needs:
+      'Photographs of the real merchandise, confirmed prices, and the postage rate. ' +
+      'The shop is built and works; nothing in it is on sale yet.',
+  },
+  {
+    route: 'shop/*',
+    reason: 'awaiting-content',
+    needs: 'Same as the shop itself. Product pages are generated from the catalogue.',
+  },
+  {
+    route: 'shop/terms',
+    reason: 'awaiting-legal',
+    needs: 'Legal review of the sale terms, the returns position and the tax invoice wording.',
+  },
+  /* These two are not waiting on anything. A basket and an order confirmation
+     have nothing a search engine should hold, and an indexed order page is how
+     somebody else's confirmation turns up in a search result. */
+  {
+    route: 'shop/basket',
+    reason: 'transactional',
+    needs: 'Nothing. A basket is one person’s working state and stays out of the index.',
+  },
+  {
+    route: 'shop/order-complete',
+    reason: 'transactional',
+    needs: 'Nothing. An order confirmation stays out of the index permanently.',
+  },
 ];
 
-/** Routes only, for the checker and the Lighthouse config generator. */
-export const DRAFT_ROUTES = DRAFT_PAGES.map((page) => page.route);
+/** Exactly named routes. A wildcard cannot be asserted to have been built. */
+export const DRAFT_ROUTES = DRAFT_PAGES.filter((page) => !page.route.endsWith('/*')).map(
+  (page) => page.route
+);
+
+/** Prefixes from `foo/*` entries, kept with their trailing slash. */
+export const DRAFT_PREFIXES = DRAFT_PAGES.filter((page) => page.route.endsWith('/*')).map((page) =>
+  page.route.slice(0, -1)
+);
+
+/**
+ * Whether a built route is accounted for on the register, by exact entry or by
+ * prefix.
+ * @param {string} route
+ */
+export const isDraftRoute = (route) =>
+  DRAFT_ROUTES.includes(route) || DRAFT_PREFIXES.some((prefix) => route.startsWith(prefix));
 
 /**
  * The Lighthouse URL shape for a route. The build uses `format: 'file'`, so

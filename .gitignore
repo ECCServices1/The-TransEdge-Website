@@ -2,6 +2,9 @@
 dist/
 .astro/
 
+# wrangler's local state and bundles, written by `wrangler dev`
+.wrangler/
+
 # dependencies
 node_modules/
 
@@ -12,6 +15,12 @@ public/pagefind/
 .env
 .env.*
 !.env.example
+
+# Wrangler reads local Worker secrets from here. The Stripe key belongs in
+# `wrangler secret put`, but anyone running `wrangler dev` will make this file,
+# and a test key committed by accident is still a key committed by accident.
+.dev.vars
+.dev.vars.*
 
 # Connect API snapshots hold the last successful payload used as build fallback.
 # The committed snapshot is the sanitised one; live pulls stay local.

@@ -1,0 +1,88 @@
+---
+/**
+ * Where Stripe sends somebody after they have paid.
+ *
+ * Nothing is fetched here and nothing is confirmed here. Stripe has the money
+ * and the order; this page's whole job is to say so, empty the basket, and tell
+ * a person what happens next. Treating a redirect as proof of payment would be
+ * wrong, and there is nothing on this page that depends on it being true.
+ *
+ * Permanently noindex. An order confirmation is not a search result.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { SHIPPING } from '../../lib/shop.mjs';
+---
+
+<PageLayout
+  title="Thank you"
+  description="Your order at The Transformation Edge."
+  route="shop/order-complete"
+  crumbs={[{ name: 'Shop', href: '/shop' }]}
+  standfirst="That is done. Stripe has emailed you a receipt."
+  noindex
+>
+  <div class="done" data-done>
+    <div class="prose">
+      <p>
+        Thank you. Your receipt is on its way from Stripe, and it carries our ABN and the GST.
+      </p>
+      <p>
+        If you chose to collect, ask at the welcome desk on a Sunday and we will have it ready.
+        {SHIPPING.collect.note}
+      </p>
+      <p>
+        If you asked us to post it, {SHIPPING.post.estimate.toLowerCase()} You will hear from us
+        if anything is held up.
+      </p>
+      <p>
+        Anything at all about the order, call
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
+        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>.
+      </p>
+    </div>
+
+    <p class="actions">
+      <Button href="/shop" tone="quiet">Back to the shop</Button>
+      <Button href="/">Home</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<script>
+  import { BASKET_KEY } from '../../lib/basket-key.mjs';
+
+  /*
+    The order is with Stripe, so the basket has done its job. Clearing it here
+    rather than before the redirect means somebody who backed out of Stripe's
+    page still has their basket waiting for them.
+
+    Only when Stripe actually sent them, though. The success_url carries a
+    session id, so its absence means this page was reached some other way: a
+    bookmark, a back button, a shared link. Emptying a basket somebody is still
+    filling, because they pressed back one time too many, is a small disaster
+    for them and an invisible one for us.
+  */
+  if (new URLSearchParams(window.location.search).has('session_id')) {
+    try {
+      localStorage.removeItem(BASKET_KEY);
+    } catch {
+      /* A browser blocking site data had nothing stored to begin with. */
+    }
+    window.dispatchEvent(new CustomEvent('tte:basket'));
+  }
+</script>
+
+<style>
+  .done {
+    max-inline-size: var(--measure);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-l);
+  }
+</style>

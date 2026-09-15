@@ -1,0 +1,65 @@
+{
+  "products": [
+    {
+      "sku": "TTE-TEE-001",
+      "slug": "logo-tee",
+      "name": "TTE logo t-shirt",
+      "category": "apparel",
+      "price": "0.00",
+      "priceConfirmed": false,
+      "available": false,
+      "order": 10,
+      "summary": "The masterbrand lockup on a heavyweight cotton tee.",
+      "description": "A plain heavyweight cotton t-shirt carrying the TTE lockup. Unisex fit.",
+      "careNotes": "Cold machine wash, inside out. Do not tumble dry.",
+      "limitPerOrder": 5,
+      "images": [],
+      "sizes": [
+        { "label": "XS", "available": false },
+        { "label": "S", "available": false },
+        { "label": "M", "available": false },
+        { "label": "L", "available": false },
+        { "label": "XL", "available": false },
+        { "label": "2XL", "available": false }
+      ]
+    },
+    {
+      "sku": "TTE-HOOD-001",
+      "slug": "hooded-jumper",
+      "name": "TTE hooded jumper",
+      "category": "apparel",
+      "price": "0.00",
+      "priceConfirmed": false,
+      "available": false,
+      "order": 20,
+      "summary": "Brushed fleece hood with the Edge mark at the chest.",
+      "description": "A brushed fleece hooded jumper with the Edge mark at the chest. Unisex fit, roomy through the body.",
+      "careNotes": "Cold machine wash, inside out. Do not tumble dry.",
+      "limitPerOrder": 5,
+      "images": [],
+      "sizes": [
+        { "label": "XS", "available": false },
+        { "label": "S", "available": false },
+        { "label": "M", "available": false },
+        { "label": "L", "available": false },
+        { "label": "XL", "available": false },
+        { "label": "2XL", "available": false }
+      ]
+    },
+    {
+      "sku": "TTE-PEN-001",
+      "slug": "pen",
+      "name": "TTE pen",
+      "category": "accessory",
+      "price": "0.00",
+      "priceConfirmed": false,
+      "available": false,
+      "order": 30,
+      "summary": "A metal-barrel pen, black ink.",
+      "description": "A metal-barrel ballpoint with the wordmark down the barrel. Black ink, refillable.",
+      "limitPerOrder": 20,
+      "images": [],
+      "sizes": []
+    }
+  ]
+}

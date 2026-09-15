@@ -57,9 +57,15 @@ if (!files.length) {
 /** @type {Set<string>} every path a visitor can successfully open */
 const routes = new Set();
 
+/** Routes backed by a real built page, kept apart from redirect sources so the
+    two can be compared. */
+const builtPages = new Set();
+
 for (const file of files) {
   const rel = '/' + relative(dist, file).split('\\').join('/');
   routes.add(rel);
+  if (rel.endsWith('.html')) builtPages.add(rel.slice(0, -'.html'.length) || '/');
+  if (rel.endsWith('/index.html')) builtPages.add(rel.slice(0, -'/index.html'.length) || '/');
   if (rel.endsWith('/index.html')) {
     routes.add(rel.slice(0, -'index.html'.length));
     routes.add(rel.slice(0, -'/index.html'.length) || '/');
@@ -70,14 +76,43 @@ for (const file of files) {
 routes.add('/');
 
 /* Redirect sources are real destinations from a visitor's point of view. */
+
+/** @type {{from: string, to: string}[]} every redirect, for the shadowing check below. */
+const redirectRules = [];
+
 try {
   const redirects = await readFile(join(dist, '_redirects'), 'utf8');
   for (const line of redirects.split('\n')) {
-    const from = line.trim().split(/\s+/)[0];
-    if (from && !from.startsWith('#')) routes.add(from.replace(/\/$/, '') || '/');
+    const [from, to] = line.trim().split(/\s+/);
+    if (!from || from.startsWith('#')) continue;
+    routes.add(from.replace(/\/$/, '') || '/');
+    if (to) redirectRules.push({ from, to });
   }
 } catch {
   /* No redirects file is not an error. */
+}
+
+/*
+  A redirect and a real page cannot both own a path. The redirect wins, and the
+  page becomes unreachable at its own address while every internal link to it
+  still passes the check below, because the loop above counted the redirect
+  source as a route that resolves.
+
+  That is not hypothetical. The Wix shop at /shop was retired to the home page
+  long before this site had a shop of its own. When one was built at the same
+  address, every link to it quietly landed on the home page instead, and this
+  checker reported that every internal link resolved. It was only visible by
+  running the real Worker and watching /shop answer 301.
+
+  A wildcard source is left alone: /product-page/* is meant to catch addresses
+  that no longer exist, and matching a built page is the point of it.
+*/
+const shadowed = [];
+for (const rule of redirectRules) {
+  if (rule.from.includes('*')) continue;
+  const path = rule.from.replace(/\/$/, '') || '/';
+  const built = builtPages.has(path);
+  if (built) shadowed.push(rule);
 }
 
 /* ------------------------------------------------------- what is linked */
@@ -108,6 +143,18 @@ for (const file of files) {
 }
 
 /* --------------------------------------------------------------- report */
+
+if (shadowed.length) {
+  console.log(`\n${shadowed.length} page(s) shadowed by a redirect:\n`);
+  for (const rule of shadowed) {
+    console.log(
+      `  ${rule.from} is a built page, but src/data/redirects.mjs sends it to ${rule.to}.\n` +
+        `  The redirect wins, so the page is unreachable at its own address.\n` +
+        `  Remove the redirect, or move the page.\n`
+    );
+  }
+  process.exit(1);
+}
 
 if (problems.length) {
   /* Grouped by target, because one dead link in a shared header is one fix,
