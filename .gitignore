@@ -2,6 +2,9 @@
 dist/
 .astro/
 
+# wrangler's local state and bundles, written by `wrangler dev`
+.wrangler/
+
 # dependencies
 node_modules/
 

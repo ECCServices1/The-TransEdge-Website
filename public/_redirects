@@ -75,13 +75,12 @@
 /live  /watch-and-listen/live  301
 /blog  /edgedin  301
 /eccs  /outreach  301
-/shop  /  301
 /new  /new-here  301
 /faq  /new-here/faq  301
 /bookings-checkout/*  /events  301
 /event-details/*  /events  301
 /service-page/*  /events  301
-/product-page/*  /  301
+/product-page/*  /shop  301
 /account/*  https://connect.thetransedge.com  301
 /elvanto/*  https://connect.thetransedge.com  301
 /portal/*  https://connect.thetransedge.com/:splat  301
