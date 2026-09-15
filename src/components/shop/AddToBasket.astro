@@ -1,0 +1,266 @@
+---
+/**
+ * Choose a size, choose a quantity, put it in the basket.
+ *
+ * WHAT HAPPENS WITHOUT JAVASCRIPT
+ *
+ * A basket is client state, so it needs a script. The honest version of that is
+ * a button which starts disabled and is enabled by the script, plus a <noscript>
+ * block giving the phone number and the email address. Nothing flickers between
+ * two layouts, and nobody clicks a button that was never going to work.
+ *
+ * The site's Content Security Policy has no 'unsafe-inline' for scripts, so the
+ * behaviour below is a bundled module rather than an inline handler. That is
+ * also why the enabling happens in script rather than in markup.
+ *
+ * Sold-out sizes are rendered rather than hidden. Someone who wears a medium is
+ * better served by being told the medium has gone than by a size list that
+ * quietly has a gap in it.
+ */
+import Button from '../Button.astro';
+import { orderableSizes, DEFAULT_LIMIT } from '../../lib/shop.mjs';
+import { CHURCH } from '../../data/church.mjs';
+
+interface Props {
+  product: import('../../lib/shop.mjs').Product;
+}
+
+const { product } = Astro.props;
+
+const needsSize = product.category === 'apparel';
+const sizes = product.sizes ?? [];
+const inStock = orderableSizes(product);
+const limit = product.limitPerOrder ?? DEFAULT_LIMIT;
+const quantities = Array.from({ length: Math.min(limit, 10) }, (_, i) => i + 1);
+const firstInStock = inStock[0]?.label;
+---
+
+<div class="buy" data-buy data-sku={product.sku} data-needs-size={needsSize ? 'true' : 'false'}>
+  {
+    needsSize && (
+      <fieldset class="buy__sizes">
+        <legend>Size</legend>
+        <div class="buy__size-list">
+          {sizes.map((size) => (
+            <label class:list={['buy__size', { 'buy__size--gone': !size.available }]}>
+              <input
+                type="radio"
+                name={`size-${product.sku}`}
+                value={size.label}
+                disabled={!size.available}
+                checked={size.label === firstInStock}
+                data-size
+              />
+              <span>{size.label}</span>
+              {!size.available && <span class="visually-hidden">, sold out</span>}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+  <div class="buy__row">
+    <label class="buy__qty">
+      <span>Quantity</span>
+      <select data-qty>
+        {quantities.map((n) => <option value={n}>{n}</option>)}
+      </select>
+    </label>
+
+    <Button type="button" size="large" disabled data-add>Add to basket</Button>
+  </div>
+
+  <p class="buy__said" role="status" aria-live="polite" data-said></p>
+
+  <noscript>
+    <p class="buy__offline">
+      Adding to a basket needs JavaScript, which is switched off. To order, call
+      <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
+      <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> and tell us the item and the size.
+    </p>
+  </noscript>
+</div>
+
+<script>
+  import { BASKET_KEY } from '../../lib/basket-key.mjs';
+
+  /**
+   * Reading and writing the basket. Wrapped, because localStorage throws rather
+   * than returning null in a browser set to block site data, and a shop that
+   * breaks entirely in a private window is a worse outcome than a shop that
+   * forgets.
+   */
+  function read() {
+    try {
+      const raw = localStorage.getItem(BASKET_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function write(items: unknown[]) {
+    try {
+      localStorage.setItem(BASKET_KEY, JSON.stringify(items));
+      window.dispatchEvent(new CustomEvent('tte:basket'));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  for (const buy of document.querySelectorAll<HTMLElement>('[data-buy]')) {
+    const add = buy.querySelector<HTMLButtonElement>('[data-add]');
+    const qty = buy.querySelector<HTMLSelectElement>('[data-qty]');
+    const said = buy.querySelector<HTMLElement>('[data-said]');
+    const sku = buy.dataset.sku;
+    const needsSize = buy.dataset.needsSize === 'true';
+    if (!add || !qty || !sku) continue;
+
+    /* The script is here, so the control works. */
+    add.disabled = false;
+
+    add.addEventListener('click', () => {
+      const chosen = buy.querySelector<HTMLInputElement>('[data-size]:checked');
+      if (needsSize && !chosen) {
+        if (said) said.textContent = 'Choose a size first.';
+        return;
+      }
+
+      const size = chosen?.value ?? null;
+      const want = Number(qty.value) || 1;
+      const items = read();
+      const existing = items.find(
+        (item: { sku?: string; size?: string | null }) => item.sku === sku && (item.size ?? null) === size
+      );
+
+      if (existing) existing.qty = (Number(existing.qty) || 0) + want;
+      else items.push({ sku, size, qty: want });
+
+      const stored = write(items);
+      if (!said) return;
+      said.textContent = stored
+        ? `Added. Your basket is on the basket page.`
+        : 'Your browser is not letting this site remember a basket, so ordering online will not work. Please call us instead.';
+    });
+  }
+</script>
+
+<style>
+  .buy {
+    display: grid;
+    gap: var(--space-m);
+    margin-block-start: var(--space-l);
+    padding-block-start: var(--space-l);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .buy__sizes {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .buy__sizes legend {
+    padding: 0;
+    margin-block-end: var(--space-2xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .buy__size-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .buy__size {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: 3.25rem;
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-xs);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+    cursor: pointer;
+  }
+
+  /* The input stays in the accessibility tree and keeps its own focus and
+     checked states; only its painted box is replaced by the label. */
+  .buy__size input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  .buy__size:has(input:checked) {
+    background-color: var(--color-action-bg);
+    border-color: var(--color-action-bg);
+    color: var(--color-action-fg);
+  }
+
+  .buy__size:has(input:focus-visible) {
+    outline: var(--border-thick) solid var(--color-focus);
+    outline-offset: var(--color-focus-offset);
+  }
+
+  .buy__size--gone {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    text-decoration: line-through;
+    border-style: dashed;
+  }
+
+  .buy__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: var(--space-s);
+  }
+
+  .buy__qty {
+    display: grid;
+    gap: var(--space-3xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .buy__qty select {
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-xs);
+    font: inherit;
+    font-size: var(--text-0);
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--color-text);
+    background-color: var(--color-canvas);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  .buy__said:empty {
+    display: none;
+  }
+
+  .buy__said {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .buy__offline {
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+</style>

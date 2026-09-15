@@ -65,8 +65,12 @@ repository is public.
 **Blocks:** the form endpoints.
 
 **Built in the meantime:** both forms exist, ask the minimum, and post to a
-Cloudflare Worker path. The Worker is not written, because where it delivers
-depends on this answer.
+Cloudflare Worker path. The Worker now exists, because the shop needed one, and
+it handles `/api/checkout`. It deliberately does not handle `/api/contact`:
+writing a delivery route before this question is answered would mean guessing
+where somebody's prayer request goes, which is worse than the current behaviour.
+With the Worker in place, finishing these two forms is about an hour's work once
+the answer arrives.
 
 **The recommendation:** prayer requests on the site, delivered to a pastoral
 inbox and never stored. Newcomer capture into Connect, because Connect is the
@@ -157,3 +161,28 @@ That is honest but it is not finished. The decision to make is whether the
 visitor-essential set stays at five pages at launch, or whether Find Us, the FAQ
 and Give are added to it, since those are the three a first-time visitor reaches
 for next.
+
+### 13. The shop, before it can open
+
+The shop is built, verified and reachable at `/shop`, with nothing on sale. Four
+things stand between that and opening, and none of them are code. They are set
+out in full in `docs/shop.md`; in short:
+
+- **Photographs of the real merchandise**, and confirmed prices. A product cannot
+  go on sale until somebody ticks that its price has been checked, which the build
+  enforces.
+- **The flat postage rate**, or a decision to stay collection-only. Posting is off
+  until the rate is set and confirmed, and a request to post falls back to
+  collection rather than charging a rate nobody checked.
+- **The Stripe secret key and the GST tax rate**, set on the Worker by the client.
+  Neither goes anywhere near this repository. Without the key the checkout replies
+  with a message asking people to call, which is the right way to fail.
+- **A legal review of `/shop/terms`**, and an accountant's look at a real Stripe
+  receipt to confirm it works as an Australian tax invoice.
+
+**The decision that is genuinely open:** whether merchandise income should run
+through the same Stripe account as giving, which is how it is built, or a second
+account of its own. The client chose the same account. It is worth revisiting with
+whoever keeps the books, because giving and trading income sitting in one payout
+stream is more work to separate later than to separate now. Changing it is one
+secret, not a rebuild.

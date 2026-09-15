@@ -1,0 +1,189 @@
+---
+/**
+ * The range.
+ *
+ * Editorial rather than retail. No badges, no strike-throughs, no counters
+ * telling somebody two are left. Section 22 rules out urgency in giving copy
+ * and the same restraint belongs here: a church selling a jumper should not
+ * sound like it is running a sale.
+ *
+ * Prices carry GST, which is stated once at the top rather than repeated
+ * against every figure. The Transformation Edge Ltd is registered, so a single
+ * inclusive price is both the Australian Consumer Law position and the plainest
+ * thing for a reader.
+ *
+ * While the shop is unpublished this page is noindex and is on the draft
+ * register. Publishing it is a data change plus two register edits, not a
+ * rebuild.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import ProductImage from '../../components/shop/ProductImage.astro';
+import { CHURCH } from '../../data/church.mjs';
+import {
+  listedProducts,
+  shopHasStock,
+  isOrderable,
+  priceCents,
+  formatMoney,
+  postingAvailable,
+  SHIPPING,
+} from '../../lib/shop.mjs';
+
+const products = listedProducts();
+const anythingToSell = shopHasStock();
+---
+
+<PageLayout
+  title="Shop"
+  description={`Merchandise from The Transformation Edge, a church in ${CHURCH.place}. Collect at our Sunday gathering or have it posted.`}
+  route="shop"
+  standfirst="A few well made things, carrying the mark."
+  noindex
+>
+  <div class="shop">
+    <section class="shop__terms" aria-labelledby="how-heading">
+      <h2 id="how-heading" class="visually-hidden">How the shop works</h2>
+      <ul class="shop__facts" role="list">
+        <li>Prices include GST.</li>
+        <li>{SHIPPING.collect.label}, free.</li>
+        {postingAvailable() && <li>{SHIPPING.post.label}.</li>}
+        <li>Payment is handled by Stripe, away from this site.</li>
+      </ul>
+    </section>
+
+    {
+      anythingToSell ? (
+        <ul class="range" role="list">
+          {products.map((product, index) => {
+            const cents = priceCents(product);
+            const orderable = isOrderable(product);
+            return (
+              <li class="range__item" data-reveal>
+                <a class="card" href={`/shop/${product.slug}`}>
+                  <ProductImage
+                    product={product}
+                    ratio="4 / 5"
+                    sizes="(min-width: 60rem) 20rem, (min-width: 40rem) 45vw, 100vw"
+                    quality={55}
+                    priority={index === 0}
+                    class="card__image"
+                  />
+                  <div class="card__words">
+                    <h2 class="card__name">{product.name}</h2>
+                    <p class="card__summary">{product.summary}</p>
+                    <p class="card__price">
+                      {cents ? formatMoney(cents) : 'Price to come'}
+                      {!orderable && <span class="card__status">Not available yet</span>}
+                    </p>
+                  </div>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <section class="empty" aria-labelledby="empty-heading">
+          <h2 id="empty-heading">Nothing to order just yet</h2>
+          <div class="prose">
+            <p>
+              The range is being made up. When it is ready it will be here, and there will be
+              a table at our Sunday gathering as well.
+            </p>
+          </div>
+          <p class="actions">
+            <Button href="/get-in-touch" tone="quiet">Ask us about merchandise</Button>
+          </p>
+        </section>
+      )
+    }
+  </div>
+</PageLayout>
+
+<style>
+  .shop {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+
+  .shop__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs) var(--space-m);
+    margin: 0;
+    padding: 0;
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .range {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: var(--space-xl) var(--space-l);
+    margin: 0;
+    padding: 0;
+  }
+
+  .card {
+    display: grid;
+    gap: var(--space-s);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .card__image {
+    transition: opacity var(--motion-fast) var(--ease-standard);
+  }
+
+  .card:hover .card__image {
+    opacity: 0.88;
+  }
+
+  .card__words {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .card__name {
+    font-size: var(--text-1);
+    line-height: var(--text-1-leading);
+  }
+
+  .card:hover .card__name {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .card__summary {
+    max-inline-size: var(--measure-narrow);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  /* The price is set at body weight in the text face. It is information, not a
+     shout. */
+  .card__price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card__status {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .empty {
+    max-inline-size: var(--measure);
+  }
+
+  .empty h2 {
+    font-size: var(--text-2);
+    margin-block-end: var(--space-s);
+  }
+
+  .actions {
+    margin-block-start: var(--space-m);
+  }
+</style>

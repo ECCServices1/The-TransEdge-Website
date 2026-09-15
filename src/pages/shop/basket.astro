@@ -1,0 +1,490 @@
+---
+/**
+ * The basket.
+ *
+ * Everything on this page is drawn by script, because a basket is one person's
+ * state in one browser and this site is built once for everybody. What the
+ * server sends is the empty state, which is what most visits to this URL
+ * genuinely are, plus the catalogue the script needs to price what it finds.
+ *
+ * The catalogue travels in a data attribute rather than an inline script tag.
+ * The Content Security Policy carries no 'unsafe-inline' for scripts, and an
+ * attribute is data under any reading of it.
+ *
+ * Prices here are for the reader. The figure anybody is actually charged is
+ * computed again inside the Worker from its own copy of the catalogue, so a
+ * basket edited in a browser console gets the real price or an error.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { PRODUCTS, postingAvailable, toCents, SHIPPING } from '../../lib/shop.mjs';
+
+/* Only what the script needs to draw and price a line. */
+const catalogue = PRODUCTS.map((product) => ({
+  sku: product.sku,
+  slug: product.slug,
+  name: product.name,
+  category: product.category,
+  cents: toCents(product.price) ?? 0,
+  limit: product.limitPerOrder ?? 10,
+}));
+
+const canPost = postingAvailable();
+const postRate = toCents(SHIPPING.post.price) ?? 0;
+---
+
+<PageLayout
+  title="Basket"
+  description="What you have chosen from The Transformation Edge shop."
+  route="shop/basket"
+  crumbs={[{ name: 'Shop', href: '/shop' }]}
+  noindex
+>
+  <div
+    class="basket"
+    data-basket
+    data-catalogue={JSON.stringify(catalogue)}
+    data-can-post={canPost ? 'true' : 'false'}
+    data-post-rate={String(postRate)}
+  >
+    <p class="basket__empty" data-basket-empty>
+      There is nothing in your basket yet. <a href="/shop">See the range</a>.
+    </p>
+
+    <div class="basket__full" data-basket-full hidden>
+      <ul class="lines" role="list" data-lines></ul>
+
+      <fieldset class="how">
+        <legend>Getting it to you</legend>
+        <label class="how__option">
+          <input type="radio" name="fulfilment" value="collect" checked data-fulfilment />
+          <span>
+            <strong>{SHIPPING.collect.label}</strong>
+            <span class="how__note">{SHIPPING.collect.note} No postal address needed.</span>
+          </span>
+        </label>
+        {
+          canPost ? (
+            <label class="how__option">
+              <input type="radio" name="fulfilment" value="post" data-fulfilment />
+              <span>
+                <strong>{SHIPPING.post.label}</strong>
+                <span class="how__note">
+                  {SHIPPING.post.note} {SHIPPING.post.estimate}
+                </span>
+              </span>
+            </label>
+          ) : (
+            <p class="how__note">
+              Posting is not set up yet, so orders are collected at our Sunday gathering for now.
+            </p>
+          )
+        }
+      </fieldset>
+
+      <dl class="totals">
+        <div>
+          <dt>Items</dt>
+          <dd data-subtotal></dd>
+        </div>
+        <div data-delivery-row>
+          <dt>Getting it to you</dt>
+          <dd data-delivery></dd>
+        </div>
+        <div class="totals__total">
+          <dt>Total</dt>
+          <dd data-total></dd>
+        </div>
+      </dl>
+      <p class="totals__gst" data-gst></p>
+
+      <Button type="button" size="large" data-pay>Pay with Stripe</Button>
+
+      <p class="basket__said" role="alert" data-said></p>
+
+      <p class="basket__reassure">
+        Payment happens on Stripe's own pages. No payment details are entered on this site.
+        Buying something here is a purchase, not a gift, so it is not deductible.
+      </p>
+
+      <noscript>
+        <p>
+          A basket needs JavaScript, which is switched off. To order, call
+          <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
+          <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>.
+        </p>
+      </noscript>
+    </div>
+  </div>
+</PageLayout>
+
+<script>
+  import { BASKET_KEY } from '../../lib/basket-key.mjs';
+
+  type Item = { sku: string; size: string | null; qty: number };
+  type Entry = {
+    sku: string;
+    slug: string;
+    name: string;
+    category: string;
+    cents: number;
+    limit: number;
+  };
+
+  const root = document.querySelector<HTMLElement>('[data-basket]');
+  if (root) {
+    const catalogue: Entry[] = JSON.parse(root.dataset.catalogue ?? '[]');
+    const canPost = root.dataset.canPost === 'true';
+    const postRate = Number(root.dataset.postRate) || 0;
+
+    const emptyEl = root.querySelector<HTMLElement>('[data-basket-empty]')!;
+    const fullEl = root.querySelector<HTMLElement>('[data-basket-full]')!;
+    const linesEl = root.querySelector<HTMLElement>('[data-lines]')!;
+    const subtotalEl = root.querySelector<HTMLElement>('[data-subtotal]')!;
+    const deliveryEl = root.querySelector<HTMLElement>('[data-delivery]')!;
+    const deliveryRow = root.querySelector<HTMLElement>('[data-delivery-row]')!;
+    const totalEl = root.querySelector<HTMLElement>('[data-total]')!;
+    const gstEl = root.querySelector<HTMLElement>('[data-gst]')!;
+    const payEl = root.querySelector<HTMLButtonElement>('[data-pay]')!;
+    const saidEl = root.querySelector<HTMLElement>('[data-said]')!;
+
+    const money = (cents: number) =>
+      new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(cents / 100);
+
+    const read = (): Item[] => {
+      try {
+        const raw = localStorage.getItem(BASKET_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const write = (items: Item[]) => {
+      try {
+        localStorage.setItem(BASKET_KEY, JSON.stringify(items));
+      } catch {
+        /* Nothing to do. The page below still reflects what is in memory. */
+      }
+      window.dispatchEvent(new CustomEvent('tte:basket'));
+    };
+
+    const chosenFulfilment = () =>
+      root.querySelector<HTMLInputElement>('[data-fulfilment]:checked')?.value ?? 'collect';
+
+    /** Drop anything the catalogue no longer knows about, so a stale basket
+        cannot linger and fail at the last step instead of the first. */
+    const known = (items: Item[]) =>
+      items.filter((item) => catalogue.some((entry) => entry.sku === item.sku));
+
+    function paint() {
+      const items = known(read());
+      linesEl.replaceChildren();
+
+      if (items.length === 0) {
+        emptyEl.hidden = false;
+        fullEl.hidden = true;
+        return;
+      }
+      emptyEl.hidden = true;
+      fullEl.hidden = false;
+
+      let subtotal = 0;
+
+      items.forEach((item, index) => {
+        const entry = catalogue.find((e) => e.sku === item.sku)!;
+        const qty = Math.min(Math.max(Number(item.qty) || 1, 1), entry.limit);
+        const lineTotal = entry.cents * qty;
+        subtotal += lineTotal;
+
+        const li = document.createElement('li');
+        li.className = 'line';
+
+        const words = document.createElement('div');
+        const name = document.createElement('a');
+        name.className = 'line__name';
+        name.href = `/shop/${entry.slug}`;
+        name.textContent = entry.name;
+        words.append(name);
+
+        if (item.size) {
+          const size = document.createElement('p');
+          size.className = 'line__size';
+          size.textContent = `Size ${item.size}`;
+          words.append(size);
+        }
+
+        const each = document.createElement('p');
+        each.className = 'line__each';
+        each.textContent = `${money(entry.cents)} each`;
+        words.append(each);
+
+        const controls = document.createElement('div');
+        controls.className = 'line__controls';
+
+        const qtyLabel = document.createElement('label');
+        qtyLabel.className = 'line__qty';
+        const qtyText = document.createElement('span');
+        qtyText.className = 'visually-hidden';
+        qtyText.textContent = `Quantity of ${entry.name}${item.size ? `, size ${item.size}` : ''}`;
+        const select = document.createElement('select');
+        for (let n = 1; n <= Math.min(entry.limit, 10); n += 1) {
+          const option = document.createElement('option');
+          option.value = String(n);
+          option.textContent = String(n);
+          if (n === qty) option.selected = true;
+          select.append(option);
+        }
+        select.addEventListener('change', () => {
+          const next = known(read());
+          if (next[index]) next[index].qty = Number(select.value) || 1;
+          write(next);
+          paint();
+        });
+        qtyLabel.append(qtyText, select);
+
+        const remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'line__remove';
+        remove.textContent = 'Remove';
+        const label = `Remove ${entry.name}${item.size ? `, size ${item.size}` : ''}`;
+        remove.setAttribute('aria-label', label);
+        remove.addEventListener('click', () => {
+          const next = known(read());
+          next.splice(index, 1);
+          write(next);
+          paint();
+        });
+
+        controls.append(qtyLabel, remove);
+
+        const price = document.createElement('p');
+        price.className = 'line__total';
+        price.textContent = money(lineTotal);
+
+        li.append(words, controls, price);
+        linesEl.append(li);
+      });
+
+      const post = chosenFulfilment() === 'post';
+      const delivery = post ? postRate : 0;
+
+      subtotalEl.textContent = money(subtotal);
+      deliveryRow.hidden = false;
+      deliveryEl.textContent = delivery === 0 ? 'Free' : money(delivery);
+      totalEl.textContent = money(subtotal + delivery);
+      gstEl.textContent = `Includes GST of ${money(Math.round((subtotal + delivery) / 11))}.`;
+    }
+
+    for (const radio of root.querySelectorAll<HTMLInputElement>('[data-fulfilment]')) {
+      radio.addEventListener('change', paint);
+    }
+
+    payEl.addEventListener('click', async () => {
+      const items = known(read());
+      if (items.length === 0) return;
+
+      payEl.disabled = true;
+      saidEl.textContent = 'Taking you to Stripe.';
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            items: items.map((item) => ({ sku: item.sku, size: item.size, qty: item.qty })),
+            fulfilment: canPost ? chosenFulfilment() : 'collect',
+          }),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && typeof data.url === 'string') {
+          window.location.href = data.url;
+          return;
+        }
+
+        payEl.disabled = false;
+        saidEl.textContent =
+          typeof data.error === 'string'
+            ? data.error
+            : 'Something went wrong starting the payment. Please try again, or call us.';
+      } catch {
+        payEl.disabled = false;
+        saidEl.textContent =
+          'We could not reach the payment service. Please check your connection and try again.';
+      }
+    });
+
+    paint();
+    window.addEventListener('storage', paint);
+  }
+</script>
+
+<style>
+  .basket {
+    max-inline-size: var(--measure-wide);
+  }
+
+  .basket__empty {
+    font-size: var(--text-1);
+  }
+
+  .basket__full {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .lines {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .lines :global(.line) {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: var(--space-2xs) var(--space-m);
+    padding-block: var(--space-m);
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .lines :global(.line:first-child) {
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .lines :global(.line__name) {
+    font-weight: var(--weight-semibold);
+    color: inherit;
+  }
+
+  .lines :global(.line__size),
+  .lines :global(.line__each) {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .lines :global(.line__total) {
+    grid-column: 2;
+    grid-row: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lines :global(.line__controls) {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+  }
+
+  .lines :global(.line__qty select) {
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-xs);
+    font: inherit;
+    color: var(--color-text);
+    background-color: var(--color-canvas);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-s);
+  }
+
+  .lines :global(.line__remove) {
+    min-block-size: 2.75rem;
+    padding: 0;
+    font: inherit;
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+    background: none;
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .lines :global(.line__remove:hover) {
+    color: var(--color-text);
+  }
+
+  .how {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .how legend {
+    padding: 0;
+    margin-block-end: var(--space-xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .how__option {
+    display: flex;
+    gap: var(--space-xs);
+    align-items: flex-start;
+    padding-block: var(--space-2xs);
+    cursor: pointer;
+  }
+
+  .how__option > span {
+    display: grid;
+    gap: var(--space-3xs);
+  }
+
+  .how__note {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .totals {
+    display: grid;
+    gap: var(--space-2xs);
+    margin: 0;
+    max-inline-size: 22rem;
+  }
+
+  .totals > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-m);
+  }
+
+  .totals dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .totals__total {
+    padding-block-start: var(--space-2xs);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+    font-weight: var(--weight-semibold);
+  }
+
+  .totals__gst {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .basket__said:empty {
+    display: none;
+  }
+
+  .basket__said {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .basket__reassure {
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  [data-pay] {
+    justify-self: start;
+  }
+</style>

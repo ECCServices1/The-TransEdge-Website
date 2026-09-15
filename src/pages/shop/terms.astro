@@ -1,0 +1,150 @@
+---
+/**
+ * Terms of sale.
+ *
+ * Separate from /terms-of-use, which governs reading the site. This governs
+ * buying something, which brings the Australian Consumer Law with it: consumer
+ * guarantees that cannot be contracted out of, a single price inclusive of GST,
+ * and an accurate account of delivery and returns.
+ *
+ * Drafted, not approved. It carries the draft notice and sits on the register
+ * as awaiting-legal alongside the privacy policy and the terms of use. The shop
+ * should not open to the public until a lawyer has read this page.
+ *
+ * Two things on it need a person rather than a developer: the returns window,
+ * which is a decision and not a law, and the tax invoice wording, which the
+ * accountant should confirm against what Stripe actually sends.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import DraftNotice from '../../components/DraftNotice.astro';
+import { CHURCH } from '../../data/church.mjs';
+import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
+---
+
+<PageLayout
+  title="Shop terms"
+  description="Terms of sale for merchandise from The Transformation Edge: prices, GST, delivery, exchanges and refunds."
+  route="shop/terms"
+  crumbs={[{ name: 'Shop', href: '/shop' }]}
+  standfirst="What you are agreeing to when you buy something here."
+  noindex
+>
+  <DraftNotice what="These sale terms need a legal review before the shop opens, plus two decisions: how long the change-of-mind window runs, and the exact tax invoice wording the accountant wants Stripe to send." />
+
+  <div class="terms prose">
+    <h2>Who you are buying from</h2>
+    <p>
+      {CHURCH.legalName}, ABN <span class="ltr-embed">{CHURCH.abn}</span>, of{' '}
+      {CHURCH.address.unit}, {CHURCH.address.street}, {CHURCH.address.suburb}{' '}
+      {CHURCH.address.state} <span class="ltr-embed">{CHURCH.address.postcode}</span>.
+    </p>
+
+    <h2>Prices and GST</h2>
+    <p>
+      Every price shown includes GST. The figure on the product page is the figure you pay for
+      that item, and delivery, where it applies, is shown separately before you pay.
+    </p>
+    <p>
+      We are registered for GST, so your receipt from Stripe shows the GST component and carries
+      our ABN. Keep it: that is your tax invoice.
+    </p>
+
+    <h2>Paying</h2>
+    <p>
+      Payment is handled by Stripe on Stripe's own pages. No payment details are entered on this
+      site and we never see or hold them. Your order is placed when Stripe confirms the payment,
+      not when you add something to a basket.
+    </p>
+    <p>
+      If an item is listed at an obviously wrong price, we will contact you and either refund you
+      in full or ask whether you want it at the right price. We will not simply charge you more.
+    </p>
+
+    <h2>Getting your order</h2>
+    <p>
+      <strong>{SHIPPING.collect.label}.</strong> Free. {SHIPPING.collect.note} Ask at the welcome
+      desk. We do not need a postal address for a collection, so we do not ask for one.
+    </p>
+    {
+      postingAvailable() ? (
+        <p>
+          <strong>{SHIPPING.post.label}.</strong> {SHIPPING.post.note} {SHIPPING.post.estimate}{' '}
+          Postage is charged at a flat rate shown before you pay. We post within Australia only.
+        </p>
+      ) : (
+        <p>
+          <strong>Posting.</strong> Not available yet. Orders are collected at our Sunday
+          gathering for now.
+        </p>
+      )
+    }
+    <p>
+      Delivery estimates are estimates. Once an order is with the carrier, its timing is not
+      something we control, though we will chase anything that goes astray.
+    </p>
+
+    <h2>Sizes, exchanges and changing your mind</h2>
+    <p>
+      Apparel can be exchanged for a different size where we have it, unworn and unwashed, with
+      the receipt. Get in touch first so we can put the size aside rather than you making a trip
+      for nothing.
+    </p>
+    <p>
+      We are not required to refund a change of mind, and for a small range like this one we
+      generally offer an exchange rather than a refund. That does not affect anything in the next
+      section.
+    </p>
+
+    <h2>If something is faulty, damaged or wrong</h2>
+    <p>
+      Tell us and we will put it right. Depending on how serious the problem is, that means a
+      repair, a replacement or a refund, and we pay the cost of returning it.
+    </p>
+    <p>
+      Our goods come with guarantees that cannot be excluded under the Australian Consumer Law.
+      You are entitled to a replacement or a refund for a major failure and to compensation for
+      any other reasonably foreseeable loss or damage. You are also entitled to have the goods
+      repaired or replaced if they fail to be of acceptable quality and the failure does not
+      amount to a major failure. Nothing on this page limits those rights.
+    </p>
+    <p>Refunds go back to the card or account used to pay, through Stripe.</p>
+
+    <h2>What we hold about an order</h2>
+    <p>
+      For a collection we hold your name and your email address. For a posted order we also hold
+      the delivery address and a phone number for the carrier. Stripe holds the payment record.
+      Our <a href="/privacy-policy">privacy policy</a> says how long we keep things and who to
+      ask about them.
+    </p>
+
+    <h2>This is a purchase, not a gift</h2>
+    <p>
+      Buying merchandise supports our church, but it is a purchase. It is not a deductible gift
+      and no gift receipt is issued for it. If you meant to give, the{' '}
+      <a href="/give">giving page</a> is the place, and it explains how receipting works there.
+    </p>
+
+    <h2>Getting hold of us</h2>
+    <p>
+      Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>, email{' '}
+      <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>, or use the{' '}
+      <a href="/get-in-touch">contact page</a>. Somebody reads everything that comes in and
+      replies within two working days.
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .terms {
+    max-inline-size: var(--measure);
+  }
+
+  .terms h2 {
+    font-size: var(--text-1);
+    margin-block-start: var(--space-xl);
+  }
+
+  .terms h2:first-child {
+    margin-block-start: 0;
+  }
+</style>

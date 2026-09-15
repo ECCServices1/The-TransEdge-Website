@@ -1,0 +1,223 @@
+---
+/**
+ * One product.
+ *
+ * A page is built for every product in the catalogue, including ones not yet
+ * on sale, so that an item can be written, photographed and reviewed before it
+ * is listed. The range page shows only what is marked available; this page
+ * carries the honest state for everything else.
+ *
+ * Images stack rather than sitting in a carousel. A carousel is a script, a set
+ * of keyboard behaviours and an accessibility surface, bought in exchange for
+ * hiding photographs a visitor came to look at.
+ */
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import ProductImage from '../../components/shop/ProductImage.astro';
+import AddToBasket from '../../components/shop/AddToBasket.astro';
+import { CHURCH } from '../../data/church.mjs';
+import {
+  PRODUCTS,
+  isOrderable,
+  priceCents,
+  formatMoney,
+  postingAvailable,
+  SHIPPING,
+} from '../../lib/shop.mjs';
+
+/* Astro hoists getStaticPaths above the rest of the frontmatter, so PRODUCTS
+   has to be imported rather than declared here. It is, at the top. */
+export const getStaticPaths = (() =>
+  PRODUCTS.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }))) satisfies GetStaticPaths;
+
+const { product } = Astro.props;
+const cents = priceCents(product);
+const orderable = isOrderable(product);
+const images = product.images ?? [];
+---
+
+<PageLayout
+  title={product.name}
+  description={product.summary}
+  route={`shop/${product.slug}`}
+  crumbs={[{ name: 'Shop', href: '/shop' }]}
+  noindex
+>
+  <div class="product">
+    <div class="product__pictures">
+      {
+        images.length > 0 ? (
+          images.map((_image, index) => (
+            <ProductImage
+              product={product}
+              index={index}
+              ratio="4 / 5"
+              sizes="(min-width: 56rem) 30rem, 100vw"
+              quality={index === 0 ? 75 : 60}
+              priority={index === 0}
+            />
+          ))
+        ) : (
+          <ProductImage product={product} ratio="4 / 5" sizes="(min-width: 56rem) 30rem, 100vw" />
+        )
+      }
+    </div>
+
+    <div class="product__words">
+      <p class="product__price">
+        {cents ? formatMoney(cents) : 'Price to come'}
+        <span class="product__gst">includes GST</span>
+      </p>
+
+      {product.description && <p class="product__description">{product.description}</p>}
+
+      {
+        orderable ? (
+          <AddToBasket product={product} />
+        ) : (
+          <div class="product__held">
+            <p>
+              This one is not on sale yet. Ask at the welcome desk on a Sunday, or get in touch
+              and we will tell you when it lands.
+            </p>
+            <p class="actions">
+              <Button href="/get-in-touch" tone="quiet">
+                Get in touch
+              </Button>
+            </p>
+          </div>
+        )
+      }
+
+      <dl class="product__detail">
+        <div>
+          <dt>Getting it</dt>
+          <dd>
+            {SHIPPING.collect.label}, free. {SHIPPING.collect.note}
+            {postingAvailable() && ` Or ${SHIPPING.post.label.toLowerCase()}: ${SHIPPING.post.estimate}`}
+          </dd>
+        </div>
+        {
+          product.careNotes && (
+            <div>
+              <dt>Looking after it</dt>
+              <dd>{product.careNotes}</dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>If it is not right</dt>
+          <dd>
+            Sizes can be exchanged, and anything faulty is put right. The
+            <a href="/shop/terms"> shop terms</a> say how, and your rights under Australian
+            Consumer Law sit on top of them.
+          </dd>
+        </div>
+        <div>
+          <dt>Questions</dt>
+          <dd>
+            Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
+            <a href={`mailto:${CHURCH.email}`}> {CHURCH.email}</a>.
+          </dd>
+        </div>
+      </dl>
+
+      <p class="product__notgift">
+        Buying something here is a purchase, not a gift, so it is not deductible and no gift
+        receipt is issued. If you meant to give, the <a href="/give">giving page</a> is the place.
+      </p>
+    </div>
+  </div>
+</PageLayout>
+
+<style>
+  .product {
+    display: grid;
+    gap: var(--space-xl);
+    max-inline-size: var(--width-wide);
+  }
+
+  @media (min-width: 56rem) {
+    .product {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: var(--space-2xl);
+      align-items: start;
+    }
+  }
+
+  .product__pictures {
+    display: grid;
+    gap: var(--space-s);
+  }
+
+  .product__words {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .product__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs);
+    font-size: var(--text-2);
+    line-height: var(--text-2-leading);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .product__gst {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .product__description {
+    max-inline-size: var(--measure);
+  }
+
+  .product__held {
+    padding: var(--space-m);
+    background-color: var(--color-canvas-sunken);
+    border-radius: var(--radius-m);
+  }
+
+  .product__held p {
+    max-inline-size: var(--measure);
+  }
+
+  .product__held .actions {
+    margin-block-start: var(--space-s);
+  }
+
+  .product__detail {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding-block-start: var(--space-l);
+    border-block-start: var(--border-hairline) solid var(--color-border);
+  }
+
+  .product__detail dt {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-3xs);
+  }
+
+  .product__detail dd {
+    margin: 0;
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+  }
+
+  .product__notgift {
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+</style>

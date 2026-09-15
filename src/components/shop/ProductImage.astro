@@ -1,0 +1,66 @@
+---
+/**
+ * A product photograph, or the reserved space for one.
+ *
+ * Mirrors src/components/events/EventArtwork.astro: the catalogue names a file
+ * rather than importing it, because the catalogue is edited at /admin by
+ * somebody who is not writing import statements. The glob resolves the name to
+ * a real asset at build time and hands it to Photo, which carries the alt-text
+ * guard and the responsive set.
+ *
+ * A product with no photography yet falls through to the reserved slot, so the
+ * range page is laid out correctly before the shoot happens and dropping the
+ * files in later costs no layout shift.
+ */
+import Photo from '../Photo.astro';
+
+interface Props {
+  product: import('../../lib/shop.mjs').Product;
+  /** Which of the product's images. 0 is the one used on the range page. */
+  index?: number;
+  ratio?: string;
+  sizes?: string;
+  /** Grid thumbnails go out lighter than the main product image. */
+  quality?: number;
+  priority?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  product,
+  index = 0,
+  ratio = '4 / 5',
+  sizes = '(min-width: 56rem) 28rem, 100vw',
+  quality = 60,
+  priority = false,
+  class: className = '',
+  ...rest
+} = Astro.props;
+
+const local = import.meta.glob<ImageMetadata>('../../assets/shop/*.{jpg,png,webp}', {
+  eager: true,
+  import: 'default',
+});
+
+const image = product.images?.[index];
+const asset = image
+  ? (local[`../../assets/shop/${image.file}.jpg`] ??
+    local[`../../assets/shop/${image.file}.png`] ??
+    local[`../../assets/shop/${image.file}.webp`] ??
+    undefined)
+  : undefined;
+---
+
+<Photo
+  ref="P1"
+  src={asset}
+  alt={image?.alt}
+  brief={`${product.name}, on a plain ground.`}
+  ratio={ratio}
+  sizes={sizes}
+  quality={quality}
+  priority={priority}
+  class={className}
+  {...rest}
+/>

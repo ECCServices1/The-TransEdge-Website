@@ -14,7 +14,9 @@
         "http://localhost/ar/new-here/plan-your-visit.html",
         "http://localhost/who-we-are/safeguarding.html",
         "http://localhost/new-here/faq.html",
-        "http://localhost/outreach.html"
+        "http://localhost/outreach.html",
+        "http://localhost/shop.html",
+        "http://localhost/shop/logo-tee.html"
       ],
       "settings": {
         "throttlingMethod": "simulate",
@@ -36,7 +38,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
+          "matchingUrlPattern": "^(?!.*(?:/ar/|/shop(?:\\.html$|/)|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
           "assertions": {
             "categories:performance": [
               "error",
@@ -112,7 +114,7 @@
           }
         },
         {
-          "matchingUrlPattern": "(?:/ar/|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
+          "matchingUrlPattern": "(?:/ar/|/shop(?:\\.html$|/)|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|new\\-here/edgekids|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
           "assertions": {
             "categories:performance": [
               "error",

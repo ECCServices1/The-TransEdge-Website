@@ -133,3 +133,178 @@ collections:
               - { name: time, label: Time as written, widget: string, hint: 'For example 9:30am' }
               - { name: isoTime, label: Time in 24 hour form, widget: string, pattern: ['^\d{2}:\d{2}$', 'Use HH:MM, for example 09:30'] }
               - { name: durationMinutes, label: How long, in minutes, widget: number, value_type: int, min: 15, max: 300 }
+
+  # ---------------------------------------------------------------------
+  # The shop.
+  #
+  # This is the whole product backend. A price lives here and nowhere else:
+  # nothing is set up in Stripe, so there is no second figure to keep in step
+  # and no way for the two to disagree. What you save here is what the site
+  # shows and what Stripe charges.
+  #
+  # Saving opens a pull request rather than changing the live site, which is
+  # deliberate. A mistyped price is real money, and a second pair of eyes on
+  # it costs a minute.
+  # ---------------------------------------------------------------------
+  - name: shop
+    label: Shop
+    files:
+      - name: products
+        label: Products
+        file: src/data/shop/products.json
+        description: >-
+          Everything for sale, and everything being prepared for sale. A product
+          is not on sale until "On sale" and "Price confirmed" are both ticked.
+        fields:
+          - name: products
+            label: Products
+            label_singular: product
+            widget: list
+            summary: '{{fields.name}}, {{fields.price}}'
+            fields:
+              - name: name
+                label: Name
+                widget: string
+                hint: What it is called on the page. For example, TTE hooded jumper.
+              - name: sku
+                label: Stock code
+                widget: string
+                pattern:
+                  - '^[A-Z0-9]+(-[A-Z0-9]+)*$'
+                  - 'Capitals, numbers and hyphens, for example TTE-HOOD-001'
+                hint: >-
+                  A short code that never changes. Orders are matched on it, so
+                  changing it later breaks anything already in somebody's basket.
+              - name: slug
+                label: Web address
+                widget: string
+                pattern:
+                  - '^[a-z0-9]+(-[a-z0-9]+)*$'
+                  - 'Lower case letters, numbers and hyphens only'
+                hint: The end of the address, for example hooded-jumper.
+              - name: category
+                label: Kind
+                widget: select
+                options:
+                  - { label: 'Clothing (has sizes)', value: apparel }
+                  - { label: 'Accessory (no sizes)', value: accessory }
+                  - { label: 'Print (no sizes)', value: print }
+              - name: price
+                label: Price in Australian dollars, GST included
+                widget: string
+                pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 45.00']
+                hint: >-
+                  Always two decimal places. This is the amount a buyer pays,
+                  GST included. We are registered for GST, so do not add it on top.
+              - name: priceConfirmed
+                label: Price confirmed
+                widget: boolean
+                default: false
+                hint: >-
+                  Tick this only once somebody has checked the figure. Nothing can
+                  go on sale without it, because the cost of getting it wrong is
+                  charging a real person the wrong money.
+              - name: available
+                label: On sale
+                widget: boolean
+                default: false
+                hint: Untick to take something off the range without deleting it.
+              - name: summary
+                label: One line for the range page
+                widget: string
+                pattern: ['^.{1,160}$', 'Keep it under 160 characters']
+              - name: description
+                label: The fuller description
+                widget: text
+                required: false
+                hint: Plain and direct. Australian English. No em-dashes.
+              - name: careNotes
+                label: How to look after it
+                widget: string
+                required: false
+                hint: For example, cold machine wash, inside out.
+              - name: limitPerOrder
+                label: Most one person can order at once
+                widget: number
+                value_type: int
+                min: 1
+                max: 50
+                default: 10
+              - name: order
+                label: Where it sits on the page
+                widget: number
+                value_type: int
+                default: 50
+                hint: Lower numbers come first.
+              - name: images
+                label: Photographs
+                label_singular: photograph
+                widget: list
+                required: false
+                summary: '{{fields.file}}'
+                fields:
+                  - name: file
+                    label: File name, without the extension
+                    widget: string
+                    hint: >-
+                      The file must be in src/assets/shop. Ask whoever manages the
+                      site to add it if it is not there yet.
+                  - name: alt
+                    label: What the photograph shows
+                    widget: string
+                    hint: >-
+                      Required. Describe it for somebody who cannot see it, for
+                      example "a navy hooded jumper laid flat, the Edge mark at the
+                      chest". The site will not build without this.
+              - name: sizes
+                label: Sizes
+                label_singular: size
+                widget: list
+                required: false
+                summary: '{{fields.label}}'
+                hint: >-
+                  Clothing needs the whole size run listed, including sizes that
+                  have sold out. Untick a size rather than deleting it, so the page
+                  can say it has gone rather than quietly leaving a gap.
+                fields:
+                  - { name: label, label: Size, widget: string }
+                  - { name: available, label: In stock, widget: boolean, default: true }
+
+      - name: shipping
+        label: Delivery and postage
+        file: src/data/shop/shipping.json
+        description: >-
+          Collection is always free. Posting stays switched off until the rate
+          below is set and confirmed.
+        fields:
+          - name: collect
+            label: Collecting at church
+            widget: object
+            fields:
+              - { name: label, label: What it is called, widget: string }
+              - { name: note, label: The explanation under it, widget: string }
+          - name: post
+            label: Posting
+            widget: object
+            fields:
+              - { name: label, label: What it is called, widget: string }
+              - name: price
+                label: Flat postage rate in Australian dollars, GST included
+                widget: string
+                pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 12.50']
+              - name: priceConfirmed
+                label: Postage rate confirmed
+                widget: boolean
+                default: false
+                hint: >-
+                  Until this is ticked the shop offers collection only. Nobody is
+                  charged a postage rate that has not been checked.
+              - { name: estimate, label: How long it takes, widget: string }
+              - { name: note, label: The explanation under it, widget: string }
+          - name: freeOver
+            label: Free postage above this amount
+            widget: string
+            required: false
+            hint: >-
+              Dollars and cents, for example 120.00. Leave empty for no free
+              postage threshold.

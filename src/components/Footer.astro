@@ -100,6 +100,18 @@ const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
         </ul>
       </section>
 
+      <!-- The shop is reachable from here rather than from the primary
+           navigation. Nothing is on sale yet, and a tenth item in the header
+           for an empty range would be advertising. Moving it up is one line in
+           Header.astro once there is stock. -->
+      <section class="site-footer__block">
+        <h2>Shop</h2>
+        <ul role="list">
+          <li><a href={h('shop')}>Merchandise</a></li>
+          <li><a href={h('shop/terms')}>Shop terms</a></li>
+        </ul>
+      </section>
+
       <section class="site-footer__block">
         <h2>Follow</h2>
         <ul role="list">
