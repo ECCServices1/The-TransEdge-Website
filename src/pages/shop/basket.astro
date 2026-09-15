@@ -179,6 +179,16 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
     const known = (items: Item[]) =>
       items.filter((item) => catalogue.some((entry) => entry.sku === item.sku));
 
+    /*
+      Lines are identified by what they are, not by where they sit. Matching on
+      array position looks equivalent and is not: another tab, or a second
+      window on the same phone, can rewrite the basket between this page being
+      drawn and a button on it being pressed, and then position 2 is somebody
+      else's jumper. A stock code and a size cannot drift like that.
+    */
+    const sameLine = (item: Item) => (other: Item) =>
+      other.sku === item.sku && (other.size ?? null) === (item.size ?? null);
+
     function paint() {
       const items = known(read());
       linesEl.replaceChildren();
@@ -193,7 +203,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
 
       let subtotal = 0;
 
-      items.forEach((item, index) => {
+      items.forEach((item) => {
         const entry = catalogue.find((e) => e.sku === item.sku)!;
         const qty = Math.min(Math.max(Number(item.qty) || 1, 1), entry.limit);
         const lineTotal = entry.cents * qty;
@@ -239,7 +249,8 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
         }
         select.addEventListener('change', () => {
           const next = known(read());
-          if (next[index]) next[index].qty = Number(select.value) || 1;
+          const line = next.find(sameLine(item));
+          if (line) line.qty = Number(select.value) || 1;
           write(next);
           paint();
         });
@@ -252,8 +263,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
         const label = `Remove ${entry.name}${item.size ? `, size ${item.size}` : ''}`;
         remove.setAttribute('aria-label', label);
         remove.addEventListener('click', () => {
-          const next = known(read());
-          next.splice(index, 1);
+          const next = known(read()).filter((other) => !sameLine(item)(other));
           write(next);
           paint();
         });

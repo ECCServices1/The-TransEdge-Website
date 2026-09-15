@@ -53,15 +53,25 @@ import { SHIPPING } from '../../lib/shop.mjs';
 <script>
   import { BASKET_KEY } from '../../lib/basket-key.mjs';
 
-  /* The order is with Stripe, so the basket has done its job. Clearing it here
-     rather than before the redirect means somebody who backed out of Stripe's
-     page still has their basket waiting for them. */
-  try {
-    localStorage.removeItem(BASKET_KEY);
-  } catch {
-    /* A browser blocking site data had nothing stored to begin with. */
+  /*
+    The order is with Stripe, so the basket has done its job. Clearing it here
+    rather than before the redirect means somebody who backed out of Stripe's
+    page still has their basket waiting for them.
+
+    Only when Stripe actually sent them, though. The success_url carries a
+    session id, so its absence means this page was reached some other way: a
+    bookmark, a back button, a shared link. Emptying a basket somebody is still
+    filling, because they pressed back one time too many, is a small disaster
+    for them and an invisible one for us.
+  */
+  if (new URLSearchParams(window.location.search).has('session_id')) {
+    try {
+      localStorage.removeItem(BASKET_KEY);
+    } catch {
+      /* A browser blocking site data had nothing stored to begin with. */
+    }
+    window.dispatchEvent(new CustomEvent('tte:basket'));
   }
-  window.dispatchEvent(new CustomEvent('tte:basket'));
 </script>
 
 <style>
