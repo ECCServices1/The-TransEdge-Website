@@ -1,0 +1,34 @@
+---
+/**
+ * The shop's one script.
+ *
+ * The basket count in the header, adding to the basket on a product page,
+ * drawing the basket page and emptying the basket after payment are one
+ * bundle. Each part starts only when its own markup is on the page, so the same
+ * file serves every page of the shop.
+ *
+ * WHY ONE FILE
+ *
+ * Astro bundles each component's script separately, and a module that two of
+ * them import is split out into a file of its own. The browser only finds that
+ * file once the script importing it has arrived, so each split costs a network
+ * round trip on a slow connection. A product page with something on sale loaded
+ * two scripts and two split files behind them. Under the CI's Lighthouse
+ * settings its largest paint went from 2039ms to 1912ms when the four scripts
+ * became one, against a budget of 2000ms.
+ *
+ * So the modules beside this file are imported here and by each other, and
+ * nowhere else in client code. `npm run check:bundles` fails if any script a
+ * built page loads imports a file of its own.
+ *
+ * Render it from anything that needs the shop's behaviour. Astro includes a
+ * component's script once per page, however many times the component is used.
+ */
+---
+
+<script>
+  import './basket-count';
+  import './add-to-basket';
+  import './basket-page';
+  import './order-complete';
+</script>

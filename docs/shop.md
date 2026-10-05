@@ -170,6 +170,22 @@ off those pages, and add Shop to the primary navigation in `Header.astro`.
 is done. The two transactional entries, `shop/basket` and `shop/order-complete`,
 stay on the register permanently.
 
+### Speed, on the day something goes on sale
+
+The RAIN jumper page is in the Lighthouse budget, which allows 2.0s for the
+largest paint on a simulated phone connection. Today, with nothing on sale, it
+measures about 1.9s. Putting something on sale adds the basket and the shop's
+script to every product page, and measured locally with the CI's settings the
+jumper page on sale comes to about 1.97s. So the pull request that opens the
+shop may fail the Lighthouse check on that page.
+
+The script is already one file that loads nothing else; `npm run check:bundles`
+keeps it that way, and `src/components/shop/ShopScript.astro` explains why. The
+real headroom is in the web fonts: about 139KB of the 200KB a page loads, on
+every page, home and Events included. Making them lighter is a site-wide
+decision about the typefaces, not a shop change, and is the thing to do if the
+budget is to hold with room to spare.
+
 ## What the build refuses to let through
 
 `npm run check:shop`, part of `npm run verify`, fails on:

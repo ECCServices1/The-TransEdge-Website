@@ -14,6 +14,7 @@ import BrandLockup from './BrandLockup.astro';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import BasketLink from './shop/BasketLink.astro';
 import { CHURCH } from '../data/church.mjs';
+import { shopHasStock } from '../lib/shop.mjs';
 import { localeHref } from '../i18n/locales.mjs';
 import { resolvedLocaleHref } from '../i18n/essential-pages.mjs';
 import { useTranslations } from '../i18n/ui.mjs';
@@ -41,13 +42,22 @@ const primaryNav = [
   { label: t('nav.getInTouch'), href: h('get-in-touch') },
 ];
 
-const current = Astro.url.pathname.replace(/\/$/, '');
+/* The build writes /give as give.html (build.format 'file'), so a built page's
+   pathname ends in .html while every link is written without it. Both forms are
+   brought to the link's form, or no page is ever marked as the current one. */
+const current = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '');
 const isCurrent = (href: string) => current === href.replace(/\/$/, '');
 
 /* The basket appears inside the shop and nowhere else. On every other page it
    would be a control inserted after a script had read localStorage, which is a
-   layout shift, and it would advertise a range that is not on sale yet. */
+   layout shift, and it would advertise a range that is not on sale yet.
+
+   Inside the shop it waits until something is on sale. Until then there is
+   nothing to put in it, and its script would be one more request on every shop
+   page for no purpose, on pages that sit close to their 2.0s LCP budget on a
+   simulated phone connection. */
 const inShop = current === '/shop' || current.startsWith('/shop/');
+const showBasket = inShop && shopHasStock();
 ---
 
 <header class="site-header no-print">
@@ -73,7 +83,7 @@ const inShop = current === '/shop' || current.startsWith('/shop/');
     </nav>
 
     <div class="site-header__utility">
-      {inShop && <BasketLink />}
+      {showBasket && <BasketLink />}
       <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
 
       <!-- Connect holds a persistent utility position, section 11. It is a
