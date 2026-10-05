@@ -51,11 +51,6 @@ export const DRAFT_PAGES = [
     needs: 'Confirmation of the order of a Sunday and how long the message runs.',
   },
   {
-    route: 'new-here/edgekids',
-    reason: 'awaiting-content',
-    needs: 'The age bands, the room names and the check-in method.',
-  },
-  {
     route: 'life-at-tte',
     reason: 'awaiting-content',
     needs:
@@ -82,7 +77,8 @@ export const DRAFT_PAGES = [
     route: 'shop',
     reason: 'awaiting-content',
     needs:
-      'Photographs of the real merchandise, confirmed prices, and the postage rate. ' +
+      'Photographs of the real merchandise and the book covers, the postage rate, ' +
+      'and the shop set up in Stripe. Every price is confirmed except Speak Life. ' +
       'The shop is built and works; nothing in it is on sale yet.',
   },
   {

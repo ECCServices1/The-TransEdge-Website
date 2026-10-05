@@ -17,7 +17,7 @@ These come first because everything downstream depends on them.
 | Nominated approver for weekly content | **blocked** | Client |
 | ~~Bank account details for the Give page~~ | **done**, name still unconfirmed | Two accounts supplied and on the page. Confirm the account *name* against the bank's record before launch |
 | Photo consent register location | **blocked** | Client |
-| Draft pages signed off | **blocked** | Pastoral team. Nine pages, listed in `docs/open-questions.md` question 11 |
+| Draft pages signed off | **blocked** | Pastoral team: Safeguarding, What to expect and Life at TTE, plus the privacy policy and terms awaiting legal review. Listed in `docs/open-questions.md` question 11. EdgeKids signed off 5 October 2026 |
 
 The brand gate is closed, so high-fidelity screen design is no longer blocked.
 Two brand items remain open and are in `docs/brand-audit.md`: the tagline case

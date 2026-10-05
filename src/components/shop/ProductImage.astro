@@ -11,13 +11,19 @@
  * A product with no photography yet falls through to the reserved slot, so the
  * range page is laid out correctly before the shoot happens and dropping the
  * files in later costs no layout shift.
+ *
+ * Which picture is the caller's choice, because a product sold in colours has a
+ * set per colour. Left out, it is the product's lead picture: the first colour's
+ * first photograph, or the product's own first.
  */
 import Photo from '../Photo.astro';
+import CoverToCome from './CoverToCome.astro';
+import { leadImage } from '../../lib/shop.mjs';
 
 interface Props {
   product: import('../../lib/shop.mjs').Product;
-  /** Which of the product's images. 0 is the one used on the range page. */
-  index?: number;
+  /** The picture to show. Left out, the product's lead picture. */
+  image?: import('../../lib/shop.mjs').ProductImage | null;
   ratio?: string;
   sizes?: string;
   /** Grid thumbnails go out lighter than the main product image. */
@@ -29,7 +35,7 @@ interface Props {
 
 const {
   product,
-  index = 0,
+  image = leadImage(product),
   ratio = '4 / 5',
   sizes = '(min-width: 56rem) 28rem, 100vw',
   quality = 60,
@@ -43,7 +49,6 @@ const local = import.meta.glob<ImageMetadata>('../../assets/shop/*.{jpg,png,webp
   import: 'default',
 });
 
-const image = product.images?.[index];
 const asset = image
   ? (local[`../../assets/shop/${image.file}.jpg`] ??
     local[`../../assets/shop/${image.file}.png`] ??
@@ -52,11 +57,15 @@ const asset = image
   : undefined;
 ---
 
+{
+  !asset && product.category === 'book' ? (
+    <CoverToCome title={product.name} author={product.author} ratio={ratio} class={className} />
+  ) : (
 <Photo
   ref="P1"
   src={asset}
   alt={image?.alt}
-  brief={`${product.name}, on a plain ground.`}
+  brief={product.category === 'book' ? `${product.name}, the front cover.` : `${product.name}, on a plain ground.`}
   ratio={ratio}
   sizes={sizes}
   quality={quality}
@@ -64,3 +73,5 @@ const asset = image
   class={className}
   {...rest}
 />
+  )
+}

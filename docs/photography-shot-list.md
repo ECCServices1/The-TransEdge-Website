@@ -207,7 +207,7 @@ One Sunday, one volunteer photographer. Ordered by how much the site needs them.
 | **S10** | Congregation talking after a gathering, several groups in frame, nobody posed and nobody centred | Our community | Landscape 16:9 |
 | **S11** | Leaders and members together on stage at a celebration | Who we are | Landscape 16:9 |
 | **S12** | Worship, mid-song | Watch and listen | Landscape 4:3 |
-| **P1** | A single piece of merchandise, flat on a plain ground, filling the frame. One per product, more if a detail earns it | Shop, one product page each | Portrait 4:5 |
+| **P1** | A single piece of merchandise, flat on a plain ground, filling the frame. One per product, more if a detail earns it. RAIN clothing has the client's design mockups for now (see Product photography); book covers are to come | Shop, one product page each | Portrait 4:5 |
 
 ### Direction
 
@@ -236,6 +236,15 @@ There are no people in it. That removes the whole consent question, which is
 what makes this the one set of frames anybody can shoot on a phone without
 raising a section 17 problem. It does not remove the alt text requirement:
 every product photograph names what it shows, and the build fails without it.
+
+**The RAIN 2026 clothing shows design mockups for now.** The client supplied
+them on 5 October 2026: four sheets, each a garment front and back in one
+colour. Each sheet was cut into single garments, lifted off its grey studio
+ground and set on a plain one at 4:5, the same scale for every picture of a
+garment. They follow the generated-imagery rules above: no people, and they are
+not passed off as photographs. The alt text and a line under the pictures both
+say they are mockups. When the garments are printed, a photograph of each
+replaces its mockup under the same file name.
 
 Shoot them flat, on a plain ground, in daylight, with the item filling the
 frame. Portrait 4:5, because that is what the product page and the range grid

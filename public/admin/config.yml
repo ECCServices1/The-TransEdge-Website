@@ -154,7 +154,8 @@ collections:
         file: src/data/shop/products.json
         description: >-
           Everything for sale, and everything being prepared for sale. A product
-          is not on sale until "On sale" and "Price confirmed" are both ticked.
+          is not on sale until "Where it shows" says on sale and "Price confirmed"
+          is ticked. Coming soon shows it on the shop without selling it.
         fields:
           - name: products
             label: Products
@@ -187,8 +188,14 @@ collections:
                 widget: select
                 options:
                   - { label: 'Clothing (has sizes)', value: apparel }
+                  - { label: 'Book', value: book }
                   - { label: 'Accessory (no sizes)', value: accessory }
                   - { label: 'Print (no sizes)', value: print }
+              - name: collection
+                label: Collection
+                widget: string
+                required: false
+                hint: Shown above the name, for example RAIN 2026.
               - name: price
                 label: Price in Australian dollars, GST included
                 widget: string
@@ -204,11 +211,23 @@ collections:
                   Tick this only once somebody has checked the figure. Nothing can
                   go on sale without it, because the cost of getting it wrong is
                   charging a real person the wrong money.
-              - name: available
-                label: On sale
-                widget: boolean
-                default: false
-                hint: Untick to take something off the range without deleting it.
+              - name: status
+                label: Where it shows
+                widget: select
+                default: hidden
+                options:
+                  - { label: 'Hidden (its own page only)', value: hidden }
+                  - { label: 'Coming soon (on the shop, not for sale)', value: coming-soon }
+                  - { label: 'On sale', value: on-sale }
+                hint: >-
+                  On sale also needs "Price confirmed" ticked. To take something off
+                  the shop without deleting it, set it back to hidden.
+              - name: statusNote
+                label: A few words beside the price while it is not on sale
+                widget: string
+                required: false
+                pattern: ['^.{1,60}$', 'Keep it under 60 characters']
+                hint: For example, Coming soon, or Launching 15 November at RAIN 2026.
               - name: summary
                 label: One line for the range page
                 widget: string
@@ -223,6 +242,29 @@ collections:
                 widget: string
                 required: false
                 hint: For example, cold machine wash, inside out.
+              - name: pictureNote
+                label: A note under the pictures
+                widget: string
+                required: false
+                hint: For example, that the pictures are design mockups.
+              - name: author
+                label: Author (books)
+                widget: string
+                required: false
+              - name: publisher
+                label: Publisher (books)
+                widget: string
+                required: false
+              - name: isbn
+                label: ISBN (books)
+                widget: string
+                required: false
+                pattern: ['^\d{13}$', 'The thirteen digits, no hyphens']
+              - name: format
+                label: Format (books)
+                widget: string
+                required: false
+                hint: For example, Paperback.
               - name: limitPerOrder
                 label: Most one person can order at once
                 widget: number
@@ -236,6 +278,78 @@ collections:
                 value_type: int
                 default: 50
                 hint: Lower numbers come first.
+              - name: colours
+                label: Colours
+                label_singular: colour
+                widget: list
+                required: false
+                summary: '{{fields.name}}'
+                hint: >-
+                  For clothing that comes in colours. Each colour has its own
+                  photographs, and choosing it on the page shows them. Up to eight.
+                fields:
+                  - name: name
+                    label: Colour name
+                    widget: string
+                    hint: >-
+                      What the buyer chooses and what the order says, for example
+                      Forest green. Changing it later breaks it in baskets.
+                  - name: swatch
+                    label: Swatch colour
+                    widget: string
+                    pattern: ['^#[0-9a-fA-F]{6}$', 'Written like #1f4d33']
+                  - name: available
+                    label: Available in this colour
+                    widget: boolean
+                    default: true
+                  - name: images
+                    label: Photographs in this colour
+                    label_singular: photograph
+                    widget: list
+                    required: false
+                    summary: '{{fields.file}}'
+                    fields:
+                      - name: file
+                        label: File name, without the extension
+                        widget: string
+                      - name: alt
+                        label: What the photograph shows
+                        widget: string
+                        hint: Required. The site will not build without it.
+              - name: fits
+                label: Fits
+                label_singular: fit
+                widget: list
+                required: false
+                summary: '{{fields.name}}'
+                hint: >-
+                  For clothing in more than one size run, such as Unisex, Women's
+                  and Kids. Each fit has its own sizes. Up to four. Clothing with a
+                  single run can use Sizes below instead.
+                fields:
+                  - name: name
+                    label: Fit
+                    widget: string
+                  - name: note
+                    label: One line for the size guide
+                    widget: string
+                    required: false
+                  - name: price
+                    label: Price for this fit, if different
+                    widget: string
+                    required: false
+                    pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 45.00']
+                    hint: >-
+                      For example, kids' sizes for less. Leave empty to use the
+                      product's price. "Price confirmed" covers this price too.
+                  - name: sizes
+                    label: Sizes
+                    label_singular: size
+                    widget: list
+                    summary: '{{fields.label}}'
+                    fields:
+                      - { name: label, label: Size, widget: string }
+                      - { name: available, label: In stock, widget: boolean, default: true }
               - name: images
                 label: Photographs
                 label_singular: photograph

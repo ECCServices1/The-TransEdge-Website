@@ -121,20 +121,25 @@ Outreach page and the giving hand-off all read.
 
 ### 11. Content the pastoral team has to write
 
-Seven pages are built and marked draft. Each carries a visible notice naming
-what is missing and is `noindex` until it is signed off. Removing the
-`DraftNotice` component from a page is the act of approving it, so approval is a
-line in a diff with a name against it.
+Three pages are built and marked draft for content. Each carries a visible
+notice naming what is missing and is `noindex` until it is signed off. Removing
+the `DraftNotice` component from a page is the act of approving it, so approval
+is a line in a diff with a name against it.
 
 | Page | What is needed |
 |---|---|
-| `/who-we-are/what-we-believe` | The articles rewritten by the pastoral team in their own words. What is there is a structure drawn from the locked vision and mission, not an approved statement of faith |
 | `/who-we-are/safeguarding` | The name and direct contact of the person who receives a concern, a link to the policy document, and who a complaint escalates to if it concerns a pastor |
-| `/who-we-are/pastoral-team` | A biography from each pastor, and an approved photograph |
-| `/who-we-are/core-course` | What CORE stands for, the number of sessions, what each covers, the next intake date, and whether it costs anything |
 | `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
-| `/new-here/edgekids` | The age bands, the room names and the check-in method. Now that the page invites children to bring a friend: who signs a visiting friend in, and with what permission from that child's parent or carer. The description was supplied on 5 October 2026 |
 | `/life-at-tte` | When Life-Link groups meet. Life-Link and Champions (September 2026) and 1B2GaS (5 October 2026) are supplied and on the page |
+
+Signed off, with the date the notice came off:
+
+- `/who-we-are/pastoral-team`, 16 August 2026, when the biographies arrived.
+- `/who-we-are/what-we-believe` and `/who-we-are/core-course`, 3 September 2026.
+- `/new-here/edgekids`, 5 October 2026, by Dr Michaels Aibangbee. One thing it
+  leaves to write down: the page invites children to bring a friend, so who
+  signs a visiting friend in, and with what permission from that child's parent
+  or carer.
 
 Two more need a non-pastoral decision:
 
@@ -156,25 +161,33 @@ for next.
 
 ### 13. The shop, before it can open
 
-The shop is built, verified and reachable at `/shop`, with nothing on sale. Four
-things stand between that and opening, and none of them are code. They are set
+The shop is built, verified and reachable at `/shop`, with nothing on sale: the
+RAIN 2026 hooded jumper and t-shirt and two books, Do Not Bow and Speak Life, are
+listed as coming soon. Four things stand between that and opening, and none of
+them are code. They are set
 out in full in `docs/shop.md`; in short:
 
-- **Photographs of the real merchandise**, and confirmed prices. A product cannot
-  go on sale until somebody ticks that its price has been checked, which the build
-  enforces.
+- **Photographs of the real merchandise**, and book covers. The RAIN clothing
+  shows the client's design mockups until the garments are printed, and the books
+  show "Cover to come". Prices were confirmed on 5 October 2026: the t-shirt $35
+  ($25 in kids' sizes), the hooded jumper $65 ($45 in kids' sizes) and Do Not Bow
+  $20. Speak Life has no price yet, and a product cannot go on sale until
+  somebody ticks that its price has been checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **The Stripe secret key and the GST tax rate**, set on the Worker by the client.
-  Neither goes anywhere near this repository. Without the key the checkout replies
-  with a message asking people to call, which is the right way to fail.
-- **A legal review of `/shop/terms`**, and an accountant's look at a real Stripe
-  receipt to confirm it works as an Australian tax invoice.
+- **The Stripe secret key and the GST tax rate**, set on the Worker by the client,
+  who will set up the shop's side of Stripe later. Neither goes anywhere near this
+  repository. Without the key the checkout replies with a message asking people
+  to call, which is the right way to fail.
+- **An accountant's look at a real Stripe receipt**, to confirm it works as an
+  Australian tax invoice.
 
-**The decision that is genuinely open:** whether merchandise income should run
-through the same Stripe account as giving, which is how it is built, or a second
-account of its own. The client chose the same account. It is worth revisiting with
-whoever keeps the books, because giving and trading income sitting in one payout
-stream is more work to separate later than to separate now. Changing it is one
-secret, not a rebuild.
+`/shop/terms` stands as a placeholder: the client decided on 5 October 2026
+that its legal review comes later and does not hold up opening.
+
+**Stripe account, decided:** merchandise runs through the same Stripe account as
+giving, the client confirmed on 5 October 2026. It is still worth a word with
+whoever keeps the books, because giving and trading income in one payout stream
+is more work to separate later than to separate now. Changing it is one secret,
+not a rebuild.

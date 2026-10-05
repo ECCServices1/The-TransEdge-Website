@@ -4,12 +4,22 @@
  *
  * A page is built for every product in the catalogue, including ones not yet
  * on sale, so that an item can be written, photographed and reviewed before it
- * is listed. The range page shows only what is marked available; this page
- * carries the honest state for everything else.
+ * is listed. The range page shows what is coming soon or on sale; this page
+ * carries the honest state for everything.
  *
  * Images stack rather than sitting in a carousel. A carousel is a script, a set
  * of keyboard behaviours and an accessibility surface, bought in exchange for
  * hiding photographs a visitor came to look at.
+ *
+ * COLOURS
+ *
+ * A product sold in colours has a set of pictures per colour, and choosing a
+ * colour shows its set. That is done in CSS with :has(), not in script: every
+ * set is in the page, and the checked colour hides the others. So the pictures
+ * follow the choice with JavaScript switched off, and a browser without :has()
+ * shows every set stacked, which is a long page rather than a wrong one. The
+ * colour chooser shows the name beside each swatch, so nobody has to tell a
+ * forest green from a navy by eye.
  */
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -20,9 +30,13 @@ import { CHURCH } from '../../data/church.mjs';
 import {
   PRODUCTS,
   isOrderable,
-  priceCents,
+  shownPriceCents,
   formatMoney,
   postingAvailable,
+  needsSize,
+  coloursOf,
+  fitsOf,
+  fitPriceNotes,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -35,9 +49,29 @@ export const getStaticPaths = (() =>
   }))) satisfies GetStaticPaths;
 
 const { product } = Astro.props;
-const cents = priceCents(product);
+const cents = shownPriceCents(product);
 const orderable = isOrderable(product);
+const colours = coloursOf(product);
+const fits = fitsOf(product);
+const sized = needsSize(product);
+const isBook = product.category === 'book';
+const otherPrices = fitPriceNotes(product);
 const images = product.images ?? [];
+
+/* The colour shown first: the first one that can be ordered, or the first. */
+const firstColour = Math.max(
+  0,
+  colours.findIndex((colour) => colour.available)
+);
+
+/* On a phone, a colour's pictures sit two to a row, so the colour chooser
+   stays near enough to them that choosing a colour is seen to do something. */
+const gallerySizes = (count: number) =>
+  count > 1 ? '(min-width: 56rem) 30rem, 50vw' : '(min-width: 56rem) 30rem, 100vw';
+
+/* A size run reads better as its ends than as every size in it. */
+const sizeRange = (labels: string[]) =>
+  labels.length > 2 ? `${labels[0]} to ${labels[labels.length - 1]}` : labels.join(' and ');
 ---
 
 <PageLayout
@@ -45,35 +79,92 @@ const images = product.images ?? [];
   description={product.summary}
   route={`shop/${product.slug}`}
   crumbs={[{ name: 'Shop', href: '/shop' }]}
+  standfirst={isBook && product.author ? `By ${product.author}` : product.summary}
   noindex
 >
-  <div class="product">
+  <div class="product" data-product>
     <div class="product__pictures">
       {
-        images.length > 0 ? (
-          images.map((_image, index) => (
-            <ProductImage
-              product={product}
-              index={index}
-              ratio="4 / 5"
-              sizes="(min-width: 56rem) 30rem, 100vw"
-              quality={index === 0 ? 75 : 60}
-              priority={index === 0}
-            />
+        colours.length > 0 ? (
+          colours.map((colour, c) => (
+            <div class="product__set" data-set={c}>
+              {(colour.images.length > 0 ? colour.images : [null]).map((image, index) => (
+                <ProductImage
+                  product={product}
+                  image={image}
+                  ratio="4 / 5"
+                  sizes={gallerySizes(colour.images.length)}
+                  quality={index === 0 ? 75 : 60}
+                  priority={c === firstColour && index === 0}
+                />
+              ))}
+            </div>
           ))
+        ) : images.length > 0 ? (
+          <div class="product__set">
+            {images.map((image, index) => (
+              <ProductImage
+                product={product}
+                image={image}
+                ratio="4 / 5"
+                sizes={gallerySizes(images.length)}
+                quality={index === 0 ? 75 : 60}
+                priority={index === 0}
+              />
+            ))}
+          </div>
         ) : (
-          <ProductImage product={product} ratio="4 / 5" sizes="(min-width: 56rem) 30rem, 100vw" />
+          <ProductImage product={product} image={null} ratio="4 / 5" sizes={gallerySizes(1)} />
         )
       }
+      {product.pictureNote && <p class="product__picture-note">{product.pictureNote}</p>}
     </div>
 
     <div class="product__words">
+      {product.collection && <p class="product__collection">{product.collection}</p>}
+
       <p class="product__price">
         {cents ? formatMoney(cents) : 'Price to come'}
-        <span class="product__gst">includes GST</span>
+        {cents && <span class="product__gst">includes GST</span>}
       </p>
+      {
+        otherPrices.length > 0 && (
+          <p class="product__fit-prices">
+            {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
+          </p>
+        )
+      }
+      {!orderable && product.statusNote && <p class="product__status">{product.statusNote}</p>}
 
       {product.description && <p class="product__description">{product.description}</p>}
+
+      {
+        colours.length > 0 && (
+          <fieldset class="colours">
+            <legend>Colour</legend>
+            <div class="colours__list">
+              {colours.map((colour, c) => (
+                <label
+                  class:list={['colours__choice', { 'colours__choice--gone': orderable && !colour.available }]}
+                  style={`--swatch: ${colour.swatch}`}
+                >
+                  <input
+                    type="radio"
+                    name={`colour-${product.sku}`}
+                    value={colour.name}
+                    checked={c === firstColour}
+                    disabled={orderable && !colour.available}
+                    data-colour-choice={c}
+                  />
+                  <span class="colours__swatch" aria-hidden="true" />
+                  <span>{colour.name}</span>
+                  {orderable && !colour.available && <span class="visually-hidden">, sold out</span>}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )
+      }
 
       {
         orderable ? (
@@ -81,8 +172,11 @@ const images = product.images ?? [];
         ) : (
           <div class="product__held">
             <p>
-              This one is not on sale yet. Ask at the welcome desk on a Sunday, or get in touch
-              and we will tell you when it lands.
+              {isBook
+                ? 'This book is not on sale here yet.'
+                : 'This one is not on sale yet.'}{' '}
+              Ask at the welcome desk on a Sunday, or get in touch and we will tell you when it
+              lands.
             </p>
             <p class="actions">
               <Button href="/get-in-touch" tone="quiet">
@@ -93,7 +187,70 @@ const images = product.images ?? [];
         )
       }
 
+      {
+        sized && fits.length > 0 && (
+          <details class="guide">
+            <summary>Size guide</summary>
+            <table class="guide__table">
+              <thead>
+                <tr>
+                  <th scope="col">Fit</th>
+                  <th scope="col">Sizes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {fits.map((fit) => (
+                  <tr>
+                    <th scope="row">{fit.name || 'One fit'}</th>
+                    <td>
+                      {sizeRange(fit.sizes.map((size) => size.label))}
+                      {fit.note && <span class="guide__note">{fit.note}</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p class="guide__help">
+              Between sizes, or not sure which fit? Ask us before you order and we will help you
+              choose.
+            </p>
+          </details>
+        )
+      }
+
       <dl class="product__detail">
+        {
+          isBook && product.author && (
+            <div>
+              <dt>Author</dt>
+              <dd>{product.author}</dd>
+            </div>
+          )
+        }
+        {
+          isBook && product.publisher && (
+            <div>
+              <dt>Publisher</dt>
+              <dd>{product.publisher}</dd>
+            </div>
+          )
+        }
+        {
+          isBook && product.format && (
+            <div>
+              <dt>Format</dt>
+              <dd>{product.format}</dd>
+            </div>
+          )
+        }
+        {
+          isBook && product.isbn && (
+            <div>
+              <dt>ISBN</dt>
+              <dd class="ltr-embed">{product.isbn}</dd>
+            </div>
+          )
+        }
         <div>
           <dt>Getting it</dt>
           <dd>
@@ -112,7 +269,7 @@ const images = product.images ?? [];
         <div>
           <dt>If it is not right</dt>
           <dd>
-            Sizes can be exchanged, and anything faulty is put right. The
+            {sized ? 'Sizes can be exchanged, and anything' : 'Anything'} faulty is put right. The
             <a href="/shop/terms"> shop terms</a> say how, and your rights under Australian
             Consumer Law sit on top of them.
           </dd>
@@ -149,14 +306,48 @@ const images = product.images ?? [];
     }
   }
 
-  .product__pictures {
+  .product__pictures,
+  .product__set {
     display: grid;
     gap: var(--space-s);
+  }
+
+  @media (max-width: 55.99rem) {
+    .product__set:has(> :nth-child(2)) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* The checked colour shows its own pictures and hides the rest. Eight rules,
+     because check-shop holds a product to eight colours at most. */
+  .product:has([data-colour-choice='0']:checked) .product__set:not([data-set='0']),
+  .product:has([data-colour-choice='1']:checked) .product__set:not([data-set='1']),
+  .product:has([data-colour-choice='2']:checked) .product__set:not([data-set='2']),
+  .product:has([data-colour-choice='3']:checked) .product__set:not([data-set='3']),
+  .product:has([data-colour-choice='4']:checked) .product__set:not([data-set='4']),
+  .product:has([data-colour-choice='5']:checked) .product__set:not([data-set='5']),
+  .product:has([data-colour-choice='6']:checked) .product__set:not([data-set='6']),
+  .product:has([data-colour-choice='7']:checked) .product__set:not([data-set='7']) {
+    display: none;
+  }
+
+  .product__picture-note {
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
   }
 
   .product__words {
     display: grid;
     gap: var(--space-m);
+  }
+
+  .product__collection {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
   }
 
   .product__price {
@@ -169,13 +360,92 @@ const images = product.images ?? [];
     font-variant-numeric: tabular-nums;
   }
 
-  .product__gst {
+  .product__fit-prices {
+    margin-block-start: calc(var(--space-s) * -1);
+  }
+
+  .product__gst,
+  .product__status {
     font-size: var(--text--1);
     color: var(--color-text-muted);
   }
 
   .product__description {
     max-inline-size: var(--measure);
+  }
+
+  .colours {
+    border: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .colours legend,
+  .guide summary {
+    padding: 0;
+    margin-block-end: var(--space-2xs);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .colours__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+  }
+
+  .colours__choice {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    min-block-size: 2.75rem;
+    padding-inline: var(--space-xs) var(--space-s);
+    border: var(--border-hairline) solid var(--color-border-strong);
+    border-radius: var(--radius-pill, 999px);
+    cursor: pointer;
+  }
+
+  /* The input stays in the accessibility tree and keeps its own focus and
+     checked states; only its painted circle is replaced by the swatch. */
+  .colours__choice input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+
+  /* A ring in the text colour, so a dark swatch still has an edge on a dark
+     ground. */
+  .colours__swatch {
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    border-radius: 50%;
+    background-color: var(--swatch);
+    box-shadow:
+      0 0 0 1px var(--color-canvas),
+      0 0 0 2px var(--color-border-strong);
+  }
+
+  .colours__choice:has(input:checked) {
+    border-color: var(--color-text);
+    box-shadow: inset 0 0 0 1px var(--color-text);
+    font-weight: var(--weight-semibold);
+  }
+
+  .colours__choice:has(input:focus-visible) {
+    outline: var(--border-thick) solid var(--color-focus);
+    outline-offset: var(--color-focus-offset);
+  }
+
+  .colours__choice--gone {
+    color: var(--color-text-muted);
+    cursor: not-allowed;
+    text-decoration: line-through;
+    border-style: dashed;
   }
 
   .product__held {
@@ -190,6 +460,47 @@ const images = product.images ?? [];
 
   .product__held .actions {
     margin-block-start: var(--space-s);
+  }
+
+  .guide summary {
+    display: list-item;
+    cursor: pointer;
+    margin-block-end: 0;
+  }
+
+  .guide[open] summary {
+    margin-block-end: var(--space-s);
+  }
+
+  .guide__table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font-size: var(--text--1);
+  }
+
+  .guide__table th,
+  .guide__table td {
+    padding: var(--space-2xs) var(--space-xs) var(--space-2xs) 0;
+    text-align: start;
+    vertical-align: top;
+    border-block-end: var(--border-hairline) solid var(--color-border);
+  }
+
+  .guide__table thead th {
+    font-weight: var(--weight-semibold);
+    color: var(--color-text-muted);
+  }
+
+  .guide__note {
+    display: block;
+    color: var(--color-text-muted);
+  }
+
+  .guide__help {
+    margin-block-start: var(--space-s);
+    max-inline-size: var(--measure);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
   }
 
   .product__detail {

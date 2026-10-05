@@ -1,6 +1,8 @@
 ---
 /**
- * Choose a size, choose a quantity, put it in the basket.
+ * Choose a fit and a size, choose a quantity, put it in the basket. The colour
+ * is chosen on the product page, beside the pictures it changes, and read from
+ * there.
  *
  * WHAT HAPPENS WITHOUT JAVASCRIPT
  *
@@ -13,12 +15,28 @@
  * behaviour below is a bundled module rather than an inline handler. That is
  * also why the enabling happens in script rather than in markup.
  *
+ * FITS AND SIZES
+ *
+ * Each fit has its own size run, and the run on show follows the fit chosen, in
+ * CSS with :has(), the same way the pictures follow the colour. Each run keeps
+ * its own choice, so switching from Women's to Unisex and back does not lose
+ * the size somebody picked. No size is chosen in advance: a jumper in the wrong
+ * size is a worse outcome than one more tap.
+ *
  * Sold-out sizes are rendered rather than hidden. Someone who wears a medium is
  * better served by being told the medium has gone than by a size list that
  * quietly has a gap in it.
  */
 import Button from '../Button.astro';
-import { orderableSizes, DEFAULT_LIMIT } from '../../lib/shop.mjs';
+import {
+  DEFAULT_LIMIT,
+  fitsOf,
+  needsSize,
+  coloursOf,
+  fitUnitCents,
+  priceCents,
+  formatMoney,
+} from '../../lib/shop.mjs';
 import { CHURCH } from '../../data/church.mjs';
 
 interface Props {
@@ -27,28 +45,75 @@ interface Props {
 
 const { product } = Astro.props;
 
-const needsSize = product.category === 'apparel';
-const sizes = product.sizes ?? [];
-const inStock = orderableSizes(product);
+const sized = needsSize(product);
+const fits = sized ? fitsOf(product) : [];
+/* A choice of fit is only offered when there is a choice to make. */
+const chooseFit = fits.length > 1;
 const limit = product.limitPerOrder ?? DEFAULT_LIMIT;
 const quantities = Array.from({ length: Math.min(limit, 10) }, (_, i) => i + 1);
-const firstInStock = inStock[0]?.label;
+/* A fit that costs something different from the product says so on its button. */
+const basePrice = priceCents(product);
+const fitPrice = (fit: (typeof fits)[number]) => {
+  const cents = fitUnitCents(product, fit);
+  return cents && cents !== basePrice ? formatMoney(cents) : null;
+};
+const firstFit = Math.max(
+  0,
+  fits.findIndex((fit) => fit.sizes.some((size) => size.available))
+);
 ---
 
-<div class="buy" data-buy data-sku={product.sku} data-needs-size={needsSize ? 'true' : 'false'}>
+<div
+  class="buy"
+  data-buy
+  data-sku={product.sku}
+  data-name={product.name}
+  data-needs-size={sized ? 'true' : 'false'}
+  data-has-colours={coloursOf(product).length > 0 ? 'true' : 'false'}
+  data-single-fit={!chooseFit && fits[0] ? fits[0].name : ''}
+>
   {
-    needsSize && (
-      <fieldset class="buy__sizes">
-        <legend>Size</legend>
-        <div class="buy__size-list">
-          {sizes.map((size) => (
-            <label class:list={['buy__size', { 'buy__size--gone': !size.available }]}>
+    chooseFit && (
+      <fieldset class="buy__group">
+        <legend>Fit</legend>
+        <div class="buy__choices">
+          {fits.map((fit, f) => (
+            <label class="buy__choice">
               <input
                 type="radio"
-                name={`size-${product.sku}`}
+                name={`fit-${product.sku}`}
+                value={fit.name}
+                checked={f === firstFit}
+                data-fit-choice={f}
+              />
+              <span>{fit.name}</span>
+              {/* The hidden comma keeps the name and the price apart when the
+                  choice is read aloud, as "Kids, $45.00" rather than one word. */}
+              {fitPrice(fit) && (
+                <span class="buy__fit-price">
+                  <span class="visually-hidden">, </span>
+                  {fitPrice(fit)}
+                </span>
+              )}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )
+  }
+
+  {
+    fits.map((fit, f) => (
+      <fieldset class="buy__group buy__sizes" data-fit-sizes={f}>
+        <legend>{chooseFit ? `${fit.name} size` : 'Size'}</legend>
+        <div class="buy__choices">
+          {fit.sizes.map((size) => (
+            <label class:list={['buy__choice', 'buy__size', { 'buy__choice--gone': !size.available }]}>
+              <input
+                type="radio"
+                name={`size-${product.sku}-${f}`}
                 value={size.label}
                 disabled={!size.available}
-                checked={size.label === firstInStock}
                 data-size
               />
               <span>{size.label}</span>
@@ -57,7 +122,7 @@ const firstInStock = inStock[0]?.label;
           ))}
         </div>
       </fieldset>
-    )
+    ))
   }
 
   <div class="buy__row">
@@ -77,13 +142,16 @@ const firstInStock = inStock[0]?.label;
     <p class="buy__offline">
       Adding to a basket needs JavaScript, which is switched off. To order, call
       <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
-      <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> and tell us the item and the size.
+      <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a> and tell us what you would like.
     </p>
   </noscript>
 </div>
 
 <script>
   import { BASKET_KEY } from '../../lib/basket-key.mjs';
+  import { variantLabel } from '../../lib/variant.mjs';
+
+  type Line = { sku: string; colour: string | null; fit: string | null; size: string | null; qty: number };
 
   /**
    * Reading and writing the basket. Wrapped, because localStorage throws rather
@@ -91,7 +159,7 @@ const firstInStock = inStock[0]?.label;
    * breaks entirely in a private window is a worse outcome than a shop that
    * forgets.
    */
-  function read() {
+  function read(): Line[] {
     try {
       const raw = localStorage.getItem(BASKET_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
@@ -101,7 +169,7 @@ const firstInStock = inStock[0]?.label;
     }
   }
 
-  function write(items: unknown[]) {
+  function write(items: Line[]) {
     try {
       localStorage.setItem(BASKET_KEY, JSON.stringify(items));
       window.dispatchEvent(new CustomEvent('tte:basket'));
@@ -115,35 +183,58 @@ const firstInStock = inStock[0]?.label;
     const add = buy.querySelector<HTMLButtonElement>('[data-add]');
     const qty = buy.querySelector<HTMLSelectElement>('[data-qty]');
     const said = buy.querySelector<HTMLElement>('[data-said]');
-    const sku = buy.dataset.sku;
+    const { sku, name = '' } = buy.dataset;
     const needsSize = buy.dataset.needsSize === 'true';
+    const hasColours = buy.dataset.hasColours === 'true';
     if (!add || !qty || !sku) continue;
+
+    /* The colour chooser sits beside the pictures, outside this block. */
+    const page = buy.closest('[data-product]') ?? document;
 
     /* The script is here, so the control works. */
     add.disabled = false;
 
+    const say = (text: string) => {
+      if (said) said.textContent = text;
+    };
+
     add.addEventListener('click', () => {
-      const chosen = buy.querySelector<HTMLInputElement>('[data-size]:checked');
-      if (needsSize && !chosen) {
-        if (said) said.textContent = 'Choose a size first.';
-        return;
+      const colour = hasColours
+        ? (page.querySelector<HTMLInputElement>('[data-colour-choice]:checked')?.value ?? null)
+        : null;
+      if (hasColours && !colour) return say('Choose a colour first.');
+
+      let fit: string | null = null;
+      let size: string | null = null;
+      if (needsSize) {
+        const fitInput = buy.querySelector<HTMLInputElement>('[data-fit-choice]:checked');
+        const fitIndex = fitInput?.dataset.fitChoice ?? '0';
+        fit = fitInput?.value ?? (buy.dataset.singleFit || null);
+        size =
+          buy.querySelector<HTMLInputElement>(`[data-fit-sizes="${fitIndex}"] [data-size]:checked`)
+            ?.value ?? null;
+        if (!size) return say('Choose a size first.');
       }
 
-      const size = chosen?.value ?? null;
       const want = Number(qty.value) || 1;
       const items = read();
       const existing = items.find(
-        (item: { sku?: string; size?: string | null }) => item.sku === sku && (item.size ?? null) === size
+        (item) =>
+          item.sku === sku &&
+          (item.colour ?? null) === colour &&
+          (item.fit ?? null) === fit &&
+          (item.size ?? null) === size
       );
 
       if (existing) existing.qty = (Number(existing.qty) || 0) + want;
-      else items.push({ sku, size, qty: want });
+      else items.push({ sku, colour, fit, size, qty: want });
 
-      const stored = write(items);
-      if (!said) return;
-      said.textContent = stored
-        ? `Added. Your basket is on the basket page.`
-        : 'Your browser is not letting this site remember a basket, so ordering online will not work. Please call us instead.';
+      const variant = variantLabel({ colour, fit, size });
+      say(
+        write(items)
+          ? `Added ${name}${variant ? `, ${variant}` : ''}. Your basket is on the basket page.`
+          : 'Your browser is not letting this site remember a basket, so ordering online will not work. Please call us instead.'
+      );
     });
   }
 </script>
@@ -152,18 +243,18 @@ const firstInStock = inStock[0]?.label;
   .buy {
     display: grid;
     gap: var(--space-m);
-    margin-block-start: var(--space-l);
+    margin-block-start: var(--space-s);
     padding-block-start: var(--space-l);
     border-block-start: var(--border-hairline) solid var(--color-border);
   }
 
-  .buy__sizes {
+  .buy__group {
     border: none;
     margin: 0;
     padding: 0;
   }
 
-  .buy__sizes legend {
+  .buy__group legend {
     padding: 0;
     margin-block-end: var(--space-2xs);
     font-size: var(--text--1);
@@ -173,13 +264,22 @@ const firstInStock = inStock[0]?.label;
     color: var(--color-text-muted);
   }
 
-  .buy__size-list {
+  /* The checked fit shows its own size run. Four rules, because check-shop
+     holds a product to four fits at most. */
+  .buy:has([data-fit-choice='0']:checked) .buy__sizes:not([data-fit-sizes='0']),
+  .buy:has([data-fit-choice='1']:checked) .buy__sizes:not([data-fit-sizes='1']),
+  .buy:has([data-fit-choice='2']:checked) .buy__sizes:not([data-fit-sizes='2']),
+  .buy:has([data-fit-choice='3']:checked) .buy__sizes:not([data-fit-sizes='3']) {
+    display: none;
+  }
+
+  .buy__choices {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2xs);
   }
 
-  .buy__size {
+  .buy__choice {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -194,25 +294,30 @@ const firstInStock = inStock[0]?.label;
 
   /* The input stays in the accessibility tree and keeps its own focus and
      checked states; only its painted box is replaced by the label. */
-  .buy__size input {
+  .buy__choice input {
     position: absolute;
     inset: 0;
     opacity: 0;
     cursor: inherit;
   }
 
-  .buy__size:has(input:checked) {
+  .buy__choice:has(input:checked) {
     background-color: var(--color-action-bg);
     border-color: var(--color-action-bg);
     color: var(--color-action-fg);
   }
 
-  .buy__size:has(input:focus-visible) {
+  .buy__choice:has(input:focus-visible) {
     outline: var(--border-thick) solid var(--color-focus);
     outline-offset: var(--color-focus-offset);
   }
 
-  .buy__size--gone {
+  .buy__fit-price {
+    margin-inline-start: var(--space-2xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .buy__choice--gone {
     color: var(--color-text-muted);
     cursor: not-allowed;
     text-decoration: line-through;

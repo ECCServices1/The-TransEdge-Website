@@ -1,6 +1,29 @@
 # The shop
 
-Merchandise, sold from the site, paid for through Stripe, managed at `/admin`.
+Clothing and books, sold from the site, paid for through Stripe, managed at
+`/admin`.
+
+## What is in it
+
+As of 5 October 2026, nothing is on sale yet and four things are on the range as
+coming soon. The client confirmed the prices that day, GST included, and they
+show on the range: the t-shirt $35 and $25 in kids' sizes, the hooded jumper $65
+and $45 in kids' sizes, and Do Not Bow $20. A fit can carry its own price; one
+without costs the product's price.
+
+| Product | Kind | Choices | Waiting on |
+|---|---|---|---|
+| RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Stock, photographs of the printed garment |
+| RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Stock, photographs of the printed garment |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The cover, the format |
+| Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
+
+A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
+
+The RAIN pictures are the client's design mockups of 5 October 2026, each cut
+from a sheet of four into one garment, one colour and one side, and set on a
+plain ground at 4:5. Each says it is a mockup, under the pictures and in its
+alt text. Photographs of the printed garments replace them, file for file.
 
 ## How it fits together
 
@@ -26,7 +49,8 @@ figure you type at `/admin` is the figure on the page and the figure Stripe
 charges. They cannot drift apart, because there is only one of them.
 
 **There is no orders database.** Stripe holds the order. The Checkout Session
-records the items, the size, whether it is being collected or posted, and for a
+records the items, the colour, fit and size of each, whether it is being
+collected or posted, and for a
 posted order the address and phone number. That is the packing list. A second copy
 here would be one more place for somebody's address to live and one more thing to
 keep in step.
@@ -45,15 +69,28 @@ keep in step.
    - **Photographs** need the file to already be in `src/assets/shop/`, named
      without its extension, and every one of them needs alt text. The build fails
      without it, on purpose.
-   - **Sizes**: list the whole run, including sizes that have sold out, and untick
-     rather than delete. The page then says a size has gone instead of quietly
-     leaving a gap.
+   - **Where it shows**: hidden (its own page only), coming soon (on the shop,
+     not for sale) or on sale. **A few words beside the price** says what a
+     coming-soon item is waiting for, such as "Launching 15 November at RAIN 2026".
+   - **Colours**, for clothing that comes in more than one: each has a name, a
+     swatch colour and its own photographs, and choosing it on the page shows
+     them. The name is what the order says, so do not change it once something
+     has sold. Up to eight.
+   - **Fits**, for clothing in more than one size run, such as Unisex, Women's and
+     Kids: each has its own sizes, and a line for the size guide. Up to four.
+     Clothing with a single run uses **Sizes** instead.
+   - **Sizes**, in either place: list the whole run, including sizes that have
+     sold out, and untick rather than delete. The page then says a size has gone
+     instead of quietly leaving a gap. Before something goes on sale, untick
+     every size that is not actually stocked.
+   - **Books** take an author, and a publisher, ISBN and format where known.
 3. Save. That opens a pull request. Somebody else merges it. The site is live about
    ninety seconds later.
 
-A product needs **On sale** and **Price confirmed** both ticked before anybody can
-buy it. Until then it has a page that says it is not available yet, which is what
-lets you write and photograph something before it goes on the range.
+A product needs **On sale** and **Price confirmed** both before anybody can buy
+it. Until then it has a page that says it is not available yet, which is what
+lets you write and photograph something before it goes on the range. A price is
+not shown anywhere until it is confirmed: the page says "Price to come".
 
 ### Photographs
 
@@ -95,7 +132,7 @@ stock, tick the size back on at `/admin`.
 
 ## What has to be set up before the shop opens
 
-Four things, none of which are code.
+Three things, none of which are code.
 
 1. **The Stripe secret key**, set on the Worker, never in this repository:
    ```
@@ -117,14 +154,21 @@ Four things, none of which are code.
    applied. A compliant Australian tax invoice also wants the words "tax invoice"
    and the ABN on it, which is Stripe receipt configuration. The accountant should
    look at a real receipt before the first sale rather than after.
-4. **Legal review of `/shop/terms`.** It is drafted and on the draft register as
-   `awaiting-legal`, alongside the privacy policy and the terms of use. The shop
-   should not open to the public until somebody has read it.
 
-Then remove `shop`, `shop/*`, `shop/terms` from `src/data/draft-pages.mjs`, take
-`noindex` off those pages, and add Shop to the primary navigation in
-`Header.astro`. The two transactional entries, `shop/basket` and
-`shop/order-complete`, stay on the register permanently.
+Stripe is the same account as giving, confirmed by the client on 5 October 2026.
+The client is setting up the shop's side of it, the key and the tax rate above,
+later; until then the checkout tells anybody who tries to pay to call.
+
+`/shop/terms` is drafted and on the draft register as `awaiting-legal`, alongside
+the privacy policy and the terms of use. The client decided on 5 October 2026
+that the draft stands as a placeholder and is reviewed later, so the review does
+not hold up opening.
+
+Then remove `shop` and `shop/*` from `src/data/draft-pages.mjs`, take `noindex`
+off those pages, and add Shop to the primary navigation in `Header.astro`.
+`shop/terms` keeps its entry, its `noindex` and its draft notice until the review
+is done. The two transactional entries, `shop/basket` and `shop/order-complete`,
+stay on the register permanently.
 
 ## What the build refuses to let through
 
@@ -133,9 +177,12 @@ Then remove `shop`, `shop/*`, `shop/terms` from `src/data/draft-pages.mjs`, take
 - a photograph with no alt text, or naming a file that is not there
 - a price that is not dollars and cents
 - a duplicate slug or stock code
-- clothing with no size run
-- a product on sale whose price is unconfirmed, or priced at zero, or whose every
-  size is sold out
+- clothing with no size run, or sizes on anything that is not clothing
+- a colour named twice, without a swatch, or more than eight colours; a fit named
+  twice, or more than four
+- a book with no author, or an ISBN that fails its check digit
+- a product on sale whose price is unconfirmed, or priced at zero, or with no
+  colour or no size left to sell
 - a postage rate left at its placeholder
 
 Every one of those is something that looks fine on a finished-looking page and

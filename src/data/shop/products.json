@@ -1,50 +1,419 @@
 {
   "products": [
     {
-      "sku": "TTE-TEE-001",
-      "slug": "logo-tee",
-      "name": "TTE logo t-shirt",
+      "sku": "TTE-RAIN-HOOD",
+      "slug": "rain-hooded-jumper",
+      "name": "RAIN hooded jumper",
       "category": "apparel",
-      "price": "0.00",
-      "priceConfirmed": false,
-      "available": false,
+      "collection": "RAIN 2026",
+      "price": "65.00",
+      "priceConfirmed": true,
+      "status": "coming-soon",
+      "statusNote": "Coming soon",
       "order": 10,
-      "summary": "The masterbrand lockup on a heavyweight cotton tee.",
-      "description": "A plain heavyweight cotton t-shirt carrying the TTE lockup. Unisex fit.",
-      "careNotes": "Cold machine wash, inside out. Do not tumble dry.",
-      "limitPerOrder": 5,
+      "summary": "The RAIN 2026 hooded jumper: our mark on the chest and Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. The Transformation Edge mark sits on the chest and RAIN runs down one sleeve. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. A pullover hood with drawcords, a front pouch pocket, and ribbed cuffs and hem.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the printed garment.",
+      "limitPerOrder": 10,
       "images": [],
-      "sizes": [
-        { "label": "XS", "available": false },
-        { "label": "S", "available": false },
-        { "label": "M", "available": false },
-        { "label": "L", "available": false },
-        { "label": "XL", "available": false },
-        { "label": "2XL", "available": false }
+      "colours": [
+        {
+          "name": "Forest green",
+          "swatch": "#103924",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-hoodie-forest-front",
+              "alt": "A mockup of the RAIN hooded jumper in forest green, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-hoodie-forest-back",
+              "alt": "A mockup of the RAIN hooded jumper in forest green, from the back: RAIN in tall cream letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        },
+        {
+          "name": "Chocolate",
+          "swatch": "#46291e",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-hoodie-chocolate-front",
+              "alt": "A mockup of the RAIN hooded jumper in chocolate, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-hoodie-chocolate-back",
+              "alt": "A mockup of the RAIN hooded jumper in chocolate, from the back: RAIN in tall gold letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        },
+        {
+          "name": "Rust",
+          "swatch": "#983714",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-hoodie-rust-front",
+              "alt": "A mockup of the RAIN hooded jumper in rust, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-hoodie-rust-back",
+              "alt": "A mockup of the RAIN hooded jumper in rust, from the back: RAIN in tall cream letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        },
+        {
+          "name": "Navy",
+          "swatch": "#141a22",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-hoodie-navy-front",
+              "alt": "A mockup of the RAIN hooded jumper in navy, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-hoodie-navy-back",
+              "alt": "A mockup of the RAIN hooded jumper in navy, from the back: RAIN in tall letters fading from pale blue to white, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        }
+      ],
+      "fits": [
+        {
+          "name": "Unisex",
+          "note": "A relaxed fit on men's sizing, roomier through the body.",
+          "sizes": [
+            {
+              "label": "XS",
+              "available": true
+            },
+            {
+              "label": "S",
+              "available": true
+            },
+            {
+              "label": "M",
+              "available": true
+            },
+            {
+              "label": "L",
+              "available": true
+            },
+            {
+              "label": "XL",
+              "available": true
+            },
+            {
+              "label": "2XL",
+              "available": true
+            },
+            {
+              "label": "3XL",
+              "available": true
+            },
+            {
+              "label": "4XL",
+              "available": true
+            },
+            {
+              "label": "5XL",
+              "available": true
+            },
+            {
+              "label": "6XL",
+              "available": true
+            }
+          ]
+        },
+        {
+          "name": "Women's",
+          "note": "Eased at the waist and a little shorter in the body.",
+          "sizes": [
+            {
+              "label": "XS",
+              "available": true
+            },
+            {
+              "label": "S",
+              "available": true
+            },
+            {
+              "label": "M",
+              "available": true
+            },
+            {
+              "label": "L",
+              "available": true
+            },
+            {
+              "label": "XL",
+              "available": true
+            },
+            {
+              "label": "2XL",
+              "available": true
+            }
+          ]
+        },
+        {
+          "name": "Kids",
+          "note": "Australian kids' sizes, which run roughly with age.",
+          "price": "45.00",
+          "sizes": [
+            {
+              "label": "4",
+              "available": true
+            },
+            {
+              "label": "6",
+              "available": true
+            },
+            {
+              "label": "8",
+              "available": true
+            },
+            {
+              "label": "10",
+              "available": true
+            },
+            {
+              "label": "12",
+              "available": true
+            },
+            {
+              "label": "14",
+              "available": true
+            },
+            {
+              "label": "16",
+              "available": true
+            }
+          ]
+        }
       ]
     },
     {
-      "sku": "TTE-HOOD-001",
-      "slug": "hooded-jumper",
-      "name": "TTE hooded jumper",
+      "sku": "TTE-RAIN-TEE",
+      "slug": "rain-t-shirt",
+      "name": "RAIN t-shirt",
       "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "35.00",
+      "priceConfirmed": true,
+      "status": "coming-soon",
+      "statusNote": "Coming soon",
+      "order": 20,
+      "summary": "The RAIN 2026 t-shirt: our mark on the chest and Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. The Transformation Edge mark on the chest, RAIN on one sleeve, and across the back RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. Crew neck, short sleeves.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the printed garment.",
+      "limitPerOrder": 10,
+      "images": [],
+      "colours": [
+        {
+          "name": "Forest green",
+          "swatch": "#103924",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-tee-forest-front",
+              "alt": "A mockup of the RAIN t-shirt in forest green, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-tee-forest-back",
+              "alt": "A mockup of the RAIN t-shirt in forest green, from the back: RAIN in tall cream letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        },
+        {
+          "name": "Chocolate",
+          "swatch": "#46291e",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-tee-chocolate-front",
+              "alt": "A mockup of the RAIN t-shirt in chocolate, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-tee-chocolate-back",
+              "alt": "A mockup of the RAIN t-shirt in chocolate, from the back: RAIN in tall gold letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        },
+        {
+          "name": "Rust",
+          "swatch": "#983714",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-tee-rust-front",
+              "alt": "A mockup of the RAIN t-shirt in rust, from the front: The Transformation Edge mark on the chest and RAIN down one sleeve."
+            },
+            {
+              "file": "rain-tee-rust-back",
+              "alt": "A mockup of the RAIN t-shirt in rust, from the back: RAIN in tall cream letters, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals running down like rain."
+            }
+          ]
+        }
+      ],
+      "fits": [
+        {
+          "name": "Men's",
+          "note": "Sized by chest width. In some Australian ranges an S is a 14, an M a 16 and an L an 18.",
+          "sizes": [
+            {
+              "label": "XS",
+              "available": true
+            },
+            {
+              "label": "S",
+              "available": true
+            },
+            {
+              "label": "M",
+              "available": true
+            },
+            {
+              "label": "L",
+              "available": true
+            },
+            {
+              "label": "XL",
+              "available": true
+            },
+            {
+              "label": "2XL",
+              "available": true
+            },
+            {
+              "label": "3XL",
+              "available": true
+            },
+            {
+              "label": "4XL",
+              "available": true
+            },
+            {
+              "label": "5XL",
+              "available": true
+            },
+            {
+              "label": "6XL",
+              "available": true
+            }
+          ]
+        },
+        {
+          "name": "Women's",
+          "sizes": [
+            {
+              "label": "XXS",
+              "available": true
+            },
+            {
+              "label": "XS",
+              "available": true
+            },
+            {
+              "label": "S",
+              "available": true
+            },
+            {
+              "label": "M",
+              "available": true
+            },
+            {
+              "label": "L",
+              "available": true
+            },
+            {
+              "label": "XL",
+              "available": true
+            },
+            {
+              "label": "2XL",
+              "available": true
+            },
+            {
+              "label": "3XL",
+              "available": true
+            }
+          ]
+        },
+        {
+          "name": "Kids",
+          "note": "Australian kids' sizes, which run roughly with age.",
+          "price": "25.00",
+          "sizes": [
+            {
+              "label": "2",
+              "available": true
+            },
+            {
+              "label": "4",
+              "available": true
+            },
+            {
+              "label": "6",
+              "available": true
+            },
+            {
+              "label": "8",
+              "available": true
+            },
+            {
+              "label": "10",
+              "available": true
+            },
+            {
+              "label": "12",
+              "available": true
+            },
+            {
+              "label": "14",
+              "available": true
+            },
+            {
+              "label": "16",
+              "available": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sku": "TTE-BOOK-DNB",
+      "slug": "do-not-bow",
+      "name": "Do Not Bow",
+      "category": "book",
+      "author": "Dr Michaels Aibangbee",
+      "publisher": "Ark House Press",
+      "isbn": "9781764750790",
+      "price": "20.00",
+      "priceConfirmed": true,
+      "status": "coming-soon",
+      "statusNote": "Launching 15 November at RAIN 2026",
+      "order": 30,
+      "summary": "Three young men on the plain of Dura, and the faith that would not bow.",
+      "description": "Do Not Bow returns to the plain of Dura, where three young Hebrew men stood firm while an empire bowed. It traces a six-stage progression of compromise, names the cultural pressures that quietly pull believers away from wholehearted devotion to God, and calls readers to a “But if not” faith: loyalty to God even if deliverance never comes. The book launches on Sunday 15 November, the last day of RAIN 2026.",
+      "limitPerOrder": 10,
+      "images": []
+    },
+    {
+      "sku": "TTE-BOOK-SL",
+      "slug": "speak-life",
+      "name": "Speak Life",
+      "category": "book",
+      "author": "Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee",
       "price": "0.00",
       "priceConfirmed": false,
-      "available": false,
-      "order": 20,
-      "summary": "Brushed fleece hood with the Edge mark at the chest.",
-      "description": "A brushed fleece hooded jumper with the Edge mark at the chest. Unisex fit, roomy through the body.",
-      "careNotes": "Cold machine wash, inside out. Do not tumble dry.",
-      "limitPerOrder": 5,
-      "images": [],
-      "sizes": [
-        { "label": "XS", "available": false },
-        { "label": "S", "available": false },
-        { "label": "M", "available": false },
-        { "label": "L", "available": false },
-        { "label": "XL", "available": false },
-        { "label": "2XL", "available": false }
-      ]
+      "status": "coming-soon",
+      "statusNote": "Coming soon",
+      "order": 40,
+      "summary": "A new book from our Senior Pastors.",
+      "limitPerOrder": 10,
+      "images": []
     },
     {
       "sku": "TTE-PEN-001",
@@ -53,13 +422,12 @@
       "category": "accessory",
       "price": "0.00",
       "priceConfirmed": false,
-      "available": false,
-      "order": 30,
+      "status": "hidden",
+      "order": 90,
       "summary": "A metal-barrel pen, black ink.",
       "description": "A metal-barrel ballpoint with the wordmark down the barrel. Black ink, refillable.",
       "limitPerOrder": 20,
-      "images": [],
-      "sizes": []
+      "images": []
     }
   ]
 }

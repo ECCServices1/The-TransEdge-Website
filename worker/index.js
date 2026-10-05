@@ -25,7 +25,13 @@
  * more place for personal information to live and one more thing to keep in
  * step with Stripe.
  */
-import { validateBasket, shippingOption, postingAvailable } from '../src/lib/shop.mjs';
+import {
+  validateBasket,
+  shippingOption,
+  postingAvailable,
+  lineName,
+  variantLabel,
+} from '../src/lib/shop.mjs';
 import { handleForm } from './forms.js';
 
 const STRIPE_API = 'https://api.stripe.com/v1/checkout/sessions';
@@ -129,8 +135,13 @@ async function handleCheckout(request, env) {
         currency: 'aud',
         unit_amount: line.unitCents,
         product_data: {
-          name: line.size ? `${line.product.name}, size ${line.size}` : line.product.name,
-          metadata: { sku: line.product.sku, size: line.size ?? '' },
+          name: lineName(line),
+          metadata: {
+            sku: line.product.sku,
+            colour: line.colour ?? '',
+            fit: line.fit ?? '',
+            size: line.size ?? '',
+          },
         },
       },
       /* The tax rate object in Stripe is configured as inclusive, matching the
@@ -154,7 +165,10 @@ async function handleCheckout(request, env) {
     metadata: {
       fulfilment,
       items: lines
-        .map((line) => `${line.qty} x ${line.product.sku}${line.size ? ` ${line.size}` : ''}`)
+        .map((line) => {
+          const variant = variantLabel(line);
+          return `${line.qty} x ${line.product.sku}${variant ? ` (${variant})` : ''}`;
+        })
         .join(', ')
         .slice(0, 480),
     },

@@ -1,0 +1,73 @@
+---
+/**
+ * The place for a book's cover before the cover file is here.
+ *
+ * Not a mock cover. A cover is the publisher's design, and an invented one in
+ * its place would be taken for the real thing. So this states which book it is
+ * and that the cover is to come, in the shape the picture will take, and the
+ * real file replaces it without moving anything.
+ *
+ * Hidden from assistive technology: the title and author are already the
+ * heading and the byline beside it, and reading them twice helps nobody.
+ */
+interface Props {
+  title: string;
+  author?: string;
+  ratio?: string;
+  class?: string;
+}
+
+const { title, author, ratio = '4 / 5', class: className = '' } = Astro.props;
+---
+
+<figure class:list={['cover-slot', className]} style={`--ratio: ${ratio}`} aria-hidden="true">
+  <div class="cover-slot__frame">
+    <p class="cover-slot__title">{title}</p>
+    {author && <p class="cover-slot__author">{author}</p>}
+    <p class="cover-slot__status">Cover to come</p>
+  </div>
+</figure>
+
+<style>
+  .cover-slot {
+    margin: 0;
+  }
+
+  .cover-slot__frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2xs);
+    aspect-ratio: var(--ratio);
+    padding: var(--space-l);
+    text-align: center;
+    background-color: var(--color-canvas-sunken);
+    border: var(--border-hairline) dashed var(--color-border-strong);
+    border-radius: var(--radius-m);
+  }
+
+  .cover-slot__title {
+    max-inline-size: 12ch;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+    line-height: var(--text-2-leading);
+    text-wrap: balance;
+  }
+
+  .cover-slot__author {
+    max-inline-size: 22ch;
+    font-size: var(--text--1);
+    text-wrap: balance;
+  }
+
+  /* Muted, not subtle: small text owes the full 4.5:1. */
+  .cover-slot__status {
+    margin-block-start: var(--space-s);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+</style>

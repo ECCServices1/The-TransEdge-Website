@@ -18,7 +18,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { CHURCH } from '../../data/church.mjs';
-import { PRODUCTS, postingAvailable, toCents, SHIPPING } from '../../lib/shop.mjs';
+import { PRODUCTS, postingAvailable, toCents, fitsOf, fitUnitCents, SHIPPING } from '../../lib/shop.mjs';
 
 /* Only what the script needs to draw and price a line. */
 const catalogue = PRODUCTS.map((product) => ({
@@ -27,6 +27,12 @@ const catalogue = PRODUCTS.map((product) => ({
   name: product.name,
   category: product.category,
   cents: toCents(product.price) ?? 0,
+  /* Fits with a price of their own, such as kids' sizes. */
+  fitCents: Object.fromEntries(
+    fitsOf(product)
+      .filter((fit) => fit.price !== undefined && fit.name)
+      .map((fit) => [fit.name, fitUnitCents(product, fit) ?? 0])
+  ),
   limit: product.limitPerOrder ?? 10,
 }));
 
@@ -121,14 +127,22 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
 
 <script>
   import { BASKET_KEY } from '../../lib/basket-key.mjs';
+  import { variantLabel } from '../../lib/variant.mjs';
 
-  type Item = { sku: string; size: string | null; qty: number };
+  type Item = {
+    sku: string;
+    colour?: string | null;
+    fit?: string | null;
+    size?: string | null;
+    qty: number;
+  };
   type Entry = {
     sku: string;
     slug: string;
     name: string;
     category: string;
     cents: number;
+    fitCents: Record<string, number>;
     limit: number;
   };
 
@@ -184,10 +198,18 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
       array position looks equivalent and is not: another tab, or a second
       window on the same phone, can rewrite the basket between this page being
       drawn and a button on it being pressed, and then position 2 is somebody
-      else's jumper. A stock code and a size cannot drift like that.
+      else's jumper. A stock code with its colour, fit and size cannot drift
+      like that.
     */
     const sameLine = (item: Item) => (other: Item) =>
-      other.sku === item.sku && (other.size ?? null) === (item.size ?? null);
+      other.sku === item.sku &&
+      (other.colour ?? null) === (item.colour ?? null) &&
+      (other.fit ?? null) === (item.fit ?? null) &&
+      (other.size ?? null) === (item.size ?? null);
+
+    /* "Forest green, Women's M", or nothing for a book. */
+    const describe = (item: Item) =>
+      variantLabel({ colour: item.colour ?? null, fit: item.fit ?? null, size: item.size ?? null });
 
     function paint() {
       const items = known(read());
@@ -206,7 +228,8 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
       items.forEach((item) => {
         const entry = catalogue.find((e) => e.sku === item.sku)!;
         const qty = Math.min(Math.max(Number(item.qty) || 1, 1), entry.limit);
-        const lineTotal = entry.cents * qty;
+        const unit = (item.fit && entry.fitCents[item.fit]) || entry.cents;
+        const lineTotal = unit * qty;
         subtotal += lineTotal;
 
         const li = document.createElement('li');
@@ -219,16 +242,17 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
         name.textContent = entry.name;
         words.append(name);
 
-        if (item.size) {
-          const size = document.createElement('p');
-          size.className = 'line__size';
-          size.textContent = `Size ${item.size}`;
-          words.append(size);
+        const variant = describe(item);
+        if (variant) {
+          const chosen = document.createElement('p');
+          chosen.className = 'line__size';
+          chosen.textContent = variant;
+          words.append(chosen);
         }
 
         const each = document.createElement('p');
         each.className = 'line__each';
-        each.textContent = `${money(entry.cents)} each`;
+        each.textContent = `${money(unit)} each`;
         words.append(each);
 
         const controls = document.createElement('div');
@@ -238,7 +262,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
         qtyLabel.className = 'line__qty';
         const qtyText = document.createElement('span');
         qtyText.className = 'visually-hidden';
-        qtyText.textContent = `Quantity of ${entry.name}${item.size ? `, size ${item.size}` : ''}`;
+        qtyText.textContent = `Quantity of ${entry.name}${variant ? `, ${variant}` : ''}`;
         const select = document.createElement('select');
         for (let n = 1; n <= Math.min(entry.limit, 10); n += 1) {
           const option = document.createElement('option');
@@ -260,7 +284,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
         remove.type = 'button';
         remove.className = 'line__remove';
         remove.textContent = 'Remove';
-        const label = `Remove ${entry.name}${item.size ? `, size ${item.size}` : ''}`;
+        const label = `Remove ${entry.name}${variant ? `, ${variant}` : ''}`;
         remove.setAttribute('aria-label', label);
         remove.addEventListener('click', () => {
           const next = known(read()).filter((other) => !sameLine(item)(other));
@@ -304,7 +328,13 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
           method: 'POST',
           headers: { 'content-type': 'application/json' },
           body: JSON.stringify({
-            items: items.map((item) => ({ sku: item.sku, size: item.size, qty: item.qty })),
+            items: items.map((item) => ({
+              sku: item.sku,
+              colour: item.colour ?? null,
+              fit: item.fit ?? null,
+              size: item.size ?? null,
+              qty: item.qty,
+            })),
             fulfilment: canPost ? chosenFulfilment() : 'collect',
           }),
         });
