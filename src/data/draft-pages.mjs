@@ -51,11 +51,6 @@ export const DRAFT_PAGES = [
     needs: 'Confirmation of the order of a Sunday and how long the message runs.',
   },
   {
-    route: 'new-here/edgekids',
-    reason: 'awaiting-content',
-    needs: 'The age bands, the room names and the check-in method.',
-  },
-  {
     route: 'life-at-tte',
     reason: 'awaiting-content',
     needs:

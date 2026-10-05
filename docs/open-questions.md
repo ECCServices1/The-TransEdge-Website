@@ -121,20 +121,25 @@ Outreach page and the giving hand-off all read.
 
 ### 11. Content the pastoral team has to write
 
-Seven pages are built and marked draft. Each carries a visible notice naming
-what is missing and is `noindex` until it is signed off. Removing the
-`DraftNotice` component from a page is the act of approving it, so approval is a
-line in a diff with a name against it.
+Three pages are built and marked draft for content. Each carries a visible
+notice naming what is missing and is `noindex` until it is signed off. Removing
+the `DraftNotice` component from a page is the act of approving it, so approval
+is a line in a diff with a name against it.
 
 | Page | What is needed |
 |---|---|
-| `/who-we-are/what-we-believe` | The articles rewritten by the pastoral team in their own words. What is there is a structure drawn from the locked vision and mission, not an approved statement of faith |
 | `/who-we-are/safeguarding` | The name and direct contact of the person who receives a concern, a link to the policy document, and who a complaint escalates to if it concerns a pastor |
-| `/who-we-are/pastoral-team` | A biography from each pastor, and an approved photograph |
-| `/who-we-are/core-course` | What CORE stands for, the number of sessions, what each covers, the next intake date, and whether it costs anything |
 | `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
-| `/new-here/edgekids` | The age bands, the room names and the check-in method. Now that the page invites children to bring a friend: who signs a visiting friend in, and with what permission from that child's parent or carer. The description was supplied on 5 October 2026 |
 | `/life-at-tte` | When Life-Link groups meet. Life-Link and Champions (September 2026) and 1B2GaS (5 October 2026) are supplied and on the page |
+
+Signed off, with the date the notice came off:
+
+- `/who-we-are/pastoral-team`, 16 August 2026, when the biographies arrived.
+- `/who-we-are/what-we-believe` and `/who-we-are/core-course`, 3 September 2026.
+- `/new-here/edgekids`, 5 October 2026, by Dr Michaels Aibangbee. One thing it
+  leaves to write down: the page invites children to bring a friend, so who
+  signs a visiting friend in, and with what permission from that child's parent
+  or carer.
 
 Two more need a non-pastoral decision:
 
