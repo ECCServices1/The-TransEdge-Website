@@ -58,8 +58,14 @@ and no cost line.
 
 - **Display:** Fraunces. Variable optical size and weight. Headings set at
   `opsz 48`; the home heading gets `SOFT 40, WONK 1, opsz 144`, the one place it
-  is allowed its full character.
-- **Text:** Inter. Variable weight.
+  is allowed its full character. The weight axis is cut to 400 to 600: the site
+  sets Fraunces at 450 and 600.
+- **Text:** Inter. Variable weight, cut to 400 to 700, the range the tokens use.
+
+The cuts took about 29KB off every page (October 2026). A weight outside a range
+is drawn at its nearest end, so widen the range in
+`scripts/subset-brand-fonts.mjs` and run `npm run fonts:subset` before designing
+with one.
 - **Non-Latin:** the Noto families, loaded per locale. A page links
   `latin.css` always and its own script on top, so an English page never carries
   a hundred and twenty CJK `@font-face` rules.

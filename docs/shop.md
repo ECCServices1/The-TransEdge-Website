@@ -173,15 +173,19 @@ stay on the register permanently.
 ### Speed, on the day something goes on sale
 
 The RAIN jumper page is in the Lighthouse budget, which allows 2.0s for the
-largest paint on a simulated phone connection. With nothing on sale, CI measured
-1.96s on 5 October 2026; locally, with the same settings, it measures about
-1.82s, because CI's runner paints later relative to the page's last requests and
-Lighthouse then counts them. Putting something on sale adds the basket and the
-shop's script to every product page, which measured about 0.08s more locally.
-In CI that would come to about 2.04s, so the pull request that opens the shop
-may well fail the Lighthouse check on that page unless more room is made first.
+largest paint on a simulated phone connection. CI's runner measures it slower
+than a local run with the same settings, by up to about 0.14s, because it often
+paints after the page's last requests and Lighthouse then counts them. Putting
+something on sale adds the basket and the shop's script to every product page.
 
-Three things keep it under the budget today, and each has a note where it lives:
+On 5 October 2026 the client decided to cut the web fonts to the weights the
+site uses, which took about 29KB off every page. Measured locally afterwards,
+the jumper page comes to about 1.74 to 1.81s with nothing on sale and 1.81 to
+1.83s on sale, against 1.82s and 1.90s before the cut. That leaves room for the
+basket when the shop opens. Still, watch the Lighthouse check on the pull
+request that opens it.
+
+Four things keep it there, and each has a note where it lives:
 
 - The shop's script is one file that loads nothing else
   (`src/components/shop/ShopScript.astro`; `npm run check:bundles` keeps it
@@ -191,11 +195,9 @@ Three things keep it under the budget today, and each has a note where it lives:
   file again.
 - Every product picture but the lead one is fetched at low priority
   (`secondary` in `src/components/Photo.astro`).
-
-The room is in the web fonts: about 139KB of the 200KB a page loads, on every
-page, home and Events included. Making them lighter is a site-wide decision
-about the typefaces, not a shop change, and is the thing to settle before the
-shop opens.
+- The web fonts carry only the weights the site uses: Inter 400 to 700,
+  Fraunces 400 to 600 (`scripts/subset-brand-fonts.mjs`). A design that needs a
+  weight outside those widens the range there first.
 
 ## What the build refuses to let through
 
