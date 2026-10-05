@@ -133,8 +133,8 @@ line in a diff with a name against it.
 | `/who-we-are/pastoral-team` | A biography from each pastor, and an approved photograph |
 | `/who-we-are/core-course` | What CORE stands for, the number of sessions, what each covers, the next intake date, and whether it costs anything |
 | `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
-| `/new-here/edgekids` | The age bands, the room names and the check-in method |
-| `/life-at-tte` | A description of Life-Link, Champions and 1B2GaS, who each is for, and when they meet |
+| `/new-here/edgekids` | The age bands, the room names and the check-in method. Now that the page invites children to bring a friend: who signs a visiting friend in, and with what permission from that child's parent or carer. The description was supplied on 5 October 2026 |
+| `/life-at-tte` | When Life-Link groups meet. Life-Link and Champions (September 2026) and 1B2GaS (5 October 2026) are supplied and on the page |
 
 Two more need a non-pastoral decision:
 

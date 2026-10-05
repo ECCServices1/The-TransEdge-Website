@@ -2,9 +2,11 @@
 /**
  * EdgeKids, section 9 under New Here and an endorsed sub-brand per section 7.
  *
- * A parent deciding whether to hand over their child needs three things on one
- * page: who is with them, how they get them back, and what happens if something
- * goes wrong. Warmth is not the job here. Specifics are.
+ * The client's description of 5 October 2026 leads, because it says what
+ * EdgeKids is for. After it, a parent deciding whether to hand over their child
+ * needs three things on one page: who is with them, how they get them back, and
+ * what happens if something goes wrong. Those sections are specifics, not
+ * warmth.
  *
  * Age bands, room names and the check-in method are drafted. Those are facts
  * about how this church actually runs its children's work, and getting one
@@ -35,6 +37,19 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
   <DraftNotice what="The pastoral team needs to confirm the age bands, the room names and the check-in method described below." />
 
   <div class="kids">
+    <!-- The client's words. 1B2GaS links to where it is explained, because a
+         parent visiting for the first time will not know the name. -->
+    <section aria-labelledby="what-heading">
+      <h2 id="what-heading">What EdgeKids is</h2>
+      <p class="prose">
+        EdgeKids is where our children learn <a href="/life-at-tte#1b2gas">1B2GaS</a> at their
+        own level. They bring a friend along, grow in faith through Bible stories, prayer and
+        play, and stay connected to a church family that knows them by name. Our leaders teach
+        kids to notice the people around them at school and at home, pray for them and be a
+        good friend. Every child is welcome, and so is every friend they bring.
+      </p>
+    </section>
+
     <section aria-labelledby="how-heading">
       <h2 id="how-heading">How it works</h2>
       <ol class="steps" role="list">
@@ -49,8 +64,8 @@ const sunday = CHURCH.gatherings.find((g) => g.key === 'sunday')!;
         <li data-reveal>
           <h3>They stay together</h3>
           <p>
-            Children are in age groups with their leaders for the length of the gathering.
-            There is singing, a story and something to make.
+            Children are in age groups with their leaders for the length of the gathering,
+            with Bible stories, prayer and play.
           </p>
         </li>
         <li data-reveal>

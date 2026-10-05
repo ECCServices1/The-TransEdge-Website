@@ -6,13 +6,11 @@
  * Section 7 names Life-Link, Champions, EdgeKids and CORE Course as ministries
  * and endorsed sub-brands, and section 9 adds serve teams and 1B2GaS.
  *
- * Life-Link and Champions are the client's copy, supplied in September 2026 and
- * given a section each below because both carry more than an index line can
- * hold. EdgeKids and the CORE Course have their own pages and are linked rather
- * than repeated. 1B2GaS is still a name with nothing behind it, which is why
- * this page stays out of the index: an index entry reading "description to
- * come" is honest on a page a visitor was sent to, and dishonest in a search
- * result.
+ * Life-Link and Champions are the client's copy, supplied in September 2026,
+ * and 1B2GaS theirs of 5 October 2026. Each has a section below because each
+ * carries more than an index line can hold. EdgeKids and the CORE Course have
+ * their own pages and are linked rather than repeated. The page stays out of
+ * the index until the nights Life-Link groups meet are confirmed.
  *
  * CHAMPIONS AND THE GIVING RULES
  *
@@ -70,7 +68,8 @@ const ministries = [
   },
   {
     name: '1B2GaS',
-    body: 'Description to come.',
+    href: '#1b2gas',
+    body: 'One Bring Two, Grow and Stay: our church-wide evangelism and discipleship strategy.',
   },
 ];
 
@@ -101,7 +100,7 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
   standfirst="What happens between Sundays, and how to be part of it."
   noindex
 >
-  <DraftNotice what="1B2GaS needs a description, and Life-Link needs the nights its groups meet. Everything else on this page is confirmed." />
+  <DraftNotice what="Life-Link needs the nights its groups meet. Everything else on this page is confirmed." />
 
   <div class="life">
     <section aria-labelledby="ministries-heading">
@@ -214,6 +213,44 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
       <p class="actions">
         <Button href={GIVING.card.href} size="large" external>Become a Champion</Button>
         <Button href="/give" tone="quiet">Make a one-off donation</Button>
+      </p>
+    </section>
+
+    <!-- The client's copy of 5 October 2026, in their words. Their heading
+         joined the name and its meaning with a dash; here the meaning is the
+         lede. The pathway is a list rather than a line of arrows, so a screen
+         reader announces three steps in order instead of reading out the
+         arrows. -->
+    <section class="feature" aria-labelledby="1b2gas">
+      <h2 id="1b2gas">1B2GaS</h2>
+      <p class="feature__lede">One Bring Two, Grow and Stay.</p>
+      <div class="prose">
+        <p>
+          1B2GaS (One Bring Two, Grow and Stay) is our church-wide evangelism and discipleship
+          strategy designed to help every believer reach others, build meaningful
+          relationships, nurture new believers, and help them become firmly rooted in Christ.
+        </p>
+        <p>At its heart is a simple pathway:</p>
+      </div>
+      <ol class="pathway" role="list">
+        <li>Bring</li>
+        <li>Grow</li>
+        <li>Stay</li>
+      </ol>
+      <div class="prose">
+        <p>
+          We encourage every member to bring others to Christ, intentionally invest in their
+          spiritual growth, and help them develop deep, lasting roots in the life of the
+          church and in their relationship with Jesus.
+        </p>
+        <p>
+          1B2GaS is powered by our COMPEL approach: Connect, Observe, Message, Pray, Empathise
+          and Love, a relational and intentional way of reaching people with the love of
+          Christ.
+        </p>
+      </div>
+      <p class="feature__close">
+        One person. Two people reached. Growing together. Staying rooted in Christ.
       </p>
     </section>
 
@@ -334,13 +371,41 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
     font-size: var(--text-2);
   }
 
-  .feature__lede {
+  .feature__lede,
+  .feature__close {
     margin-block-end: var(--space-m);
     max-inline-size: var(--measure);
     font-family: var(--font-display);
     font-size: var(--text-1);
     line-height: var(--leading-snug);
     text-wrap: pretty;
+  }
+
+  .feature__close {
+    margin-block: var(--space-l) 0;
+  }
+
+  /* Three steps in order. The arrows are drawn rather than written, so they
+     are not read out; the second declaration says so to browsers that
+     understand alternative text for generated content, and the first is the
+     fallback for those that do not. */
+  .pathway {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--space-2xs) var(--space-s);
+    margin: 0 0 var(--space-m);
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: var(--text-2);
+  }
+
+  .pathway li + li::before {
+    content: '→';
+    content: '→' / '';
+    margin-inline-end: var(--space-s);
+    color: var(--color-text-accent);
   }
 
   /* The finder sits on a raised ground so it reads as a thing to use rather
