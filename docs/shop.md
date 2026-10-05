@@ -181,7 +181,7 @@ shop's script to every product page, which measured about 0.08s more locally.
 In CI that would come to about 2.04s, so the pull request that opens the shop
 may well fail the Lighthouse check on that page unless more room is made first.
 
-Three things keep it there, and each has a note where it lives:
+Three things keep it under the budget today, and each has a note where it lives:
 
 - The shop's script is one file that loads nothing else
   (`src/components/shop/ShopScript.astro`; `npm run check:bundles` keeps it
