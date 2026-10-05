@@ -129,8 +129,9 @@ of records that have to come across with the DNS, are in
 
 - [x] Registrar account found: Hover, renewal paid to 23 July 2036 (5 October 2026)
 - [ ] Hover contact details name The Transformation Edge Ltd and a church email
-- [ ] DNS moved to Cloudflare, with email, Connect and the Wix site all
-      confirmed working on Cloudflare's nameservers
+- [x] DNS moved to Cloudflare, 5 October 2026; every record verified identical
+      on Cloudflare, Wix and three public resolvers
+- [ ] Email to and from `frontdesk@`, and a Connect sign-in, checked by hand
 - [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)
 - [ ] Turnstile keys set, and the contact and prayer Workers deployed
 - [ ] `CONNECT_API_URL` and token set, or the static-content decision recorded

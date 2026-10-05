@@ -157,6 +157,12 @@ Transformation Edge Ltd, with a church email address.
    Steps 1 to 3 were done on 5 October 2026. Cloudflare's two nameservers were
    then queried directly, before anything changed at Wix, and gave the same
    answer as Wix's for every record in the table.
+
+   Step 4 was done the same day. The `.com` registry was delegating to
+   Cloudflare by 06:56 UTC, and at that moment Cloudflare's nameservers, Wix's,
+   and the public resolvers of Cloudflare, Google and Quad9 all gave identical
+   answers for email, Connect, the Google addresses, the signing records and
+   the website.
 4. **In Hover, not Wix**: sign in, click `thetransedge.com` to open its
    **Overview** page, find **Nameservers** on the left and choose **Edit**.
    Remove both `wixdns.net` entries, enter Cloudflare's two, and **Save
