@@ -127,8 +127,8 @@ launch is pointing `www` at the new site. The steps for both, and the full list
 of records that have to come across with the DNS, are in
 `docs/cloudflare-setup.md`.
 
-- [ ] Registrar account for the domain found (Enom, or a reseller of Enom),
-      under the church's control, registrant The Transformation Edge Ltd
+- [x] Registrar account found: Hover, renewal paid to 23 July 2036 (5 October 2026)
+- [ ] Hover contact details name The Transformation Edge Ltd and a church email
 - [ ] DNS moved to Cloudflare, with email, Connect and the Wix site all
       confirmed working on Cloudflare's nameservers
 - [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)

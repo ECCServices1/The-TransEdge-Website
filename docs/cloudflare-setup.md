@@ -88,9 +88,11 @@ on the Wix DNS records page before switching.
 
 ### Where the domain is actually registered
 
-`thetransedge.com` is registered with **Enom**, not with Wix. Cloudflare's
-onboarding names Enom as the registrar, and Wix's own domains page lists the
-domain as "Managed by third party, Connected by DNS". At some point, probably
+`thetransedge.com` is registered at **Hover**, not with Wix, and renewal is
+paid until **23 July 2036** (confirmed by the client, 5 October 2026). Hover is
+the retail brand of Tucows, which also owns Enom, the wholesale registrar
+behind it; that is why Cloudflare's onboarding names Enom. Wix's own domains
+page lists the domain as "Managed by third party, Connected by DNS". At some point, probably
 when the Wix site was set up (the Wix DNS zone dates from April 2017), the
 nameservers were pointed at Wix at the registrar. That is how Wix came to host
 the DNS, and it is why Wix's DNS page shows the nameservers as not editable:
@@ -98,9 +100,6 @@ they are not Wix's to edit.
 
 So the nameservers are changed **at the registrar**. No transfer is needed to
 move the DNS.
-
-Enom sells domains directly and through resellers, so the account may be at
-Enom itself or at a company that resells Enom domains.
 
 **Do not click "Transfer to Wix"** on the Wix domains page. It would move the
 registration into Wix, and Wix does not let a domain it has registered use
@@ -118,7 +117,8 @@ The steps, kept apart so that if email stops, the cause is obvious:
 
 ### Step 0: find the account that holds the registration
 
-Any of these will name it:
+**Done, 5 October 2026: Hover.** Kept here in case the account ever has to be
+found again. Any of these will name it:
 
 - **ICANN Lookup** at `lookup.icann.org`: enter the domain. It shows the
   registrar, and for a domain sold through a reseller it often names the
@@ -157,10 +157,12 @@ Transformation Edge Ltd, with a church email address.
    Steps 1 to 3 were done on 5 October 2026. Cloudflare's two nameservers were
    then queried directly, before anything changed at Wix, and gave the same
    answer as Wix's for every record in the table.
-4. **In the registrar account, not Wix**, replace the two Wix nameservers with
-   Cloudflare's two. At Enom and most resellers this is the domain's nameserver
-   or "DNS server" setting, switched to custom nameservers. Then, in
-   Cloudflare, choose **I updated my nameservers**.
+4. **In Hover, not Wix**: sign in, click `thetransedge.com` to open its
+   **Overview** page, find **Nameservers** on the left and choose **Edit**.
+   Remove both `wixdns.net` entries, enter Cloudflare's two, and **Save
+   nameservers**. All of a domain's nameservers must belong to one provider, so
+   leave no Wix entry behind. Then, in Cloudflare, choose **I updated my
+   nameservers**.
 5. Wait for Cloudflare to report the domain **Active**. Usually under an hour.
    For up to a day afterwards some of the internet still asks Wix: the `.com`
    registry tells resolvers to remember nameservers for 6 hours, and Wix's own
@@ -202,18 +204,21 @@ Only when the launch checklist says so.
 If anything is wrong, removing the two custom domains and putting the Wix
 records back returns the old site within minutes. That is the whole rollback.
 
-### Later: Cloudflare Registrar, if wanted
+### Later: the registration itself
 
-Once the domain is active on Cloudflare, the registration can also move to
-Cloudflare Registrar: renewal at cost with no markup, and the domain and the
-site in one account. Unlock the domain at the current registrar, get the
-transfer authorisation code, and start the transfer in Cloudflare under
-**Domains**, **Transfers**. It takes about five days and adds a year to the
-registration. Optional.
+Nothing to do. The registration is paid until 23 July 2036 and Hover lets the
+nameservers point anywhere. Moving it to Cloudflare Registrar would put the
+domain and the site in one account, but the registration is already close to
+the ten-year maximum, so the year a transfer normally adds could not be added.
+It is not worth the bother before about 2034.
 
 Cloudflare's onboarding warns that Wix does not allow transfers to Cloudflare.
-That warning is triggered by the Wix nameservers, and applies to domains Wix
-registered itself. This one is registered with Enom, so it does not apply.
+That warning is triggered by the Wix nameservers and applies only to domains
+Wix registered itself. This one is not one of them.
+
+While in Hover, check the domain's contact details name The Transformation Edge
+Ltd and a church email address, so renewal notices in 2036 reach someone who
+will still be there.
 
 **Do not cancel the Wix plan until the new site has been live for thirty days**,
 per the launch checklist. Three records also lean on Wix. `_dmarc` points at
