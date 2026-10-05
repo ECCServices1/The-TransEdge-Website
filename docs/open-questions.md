@@ -167,10 +167,12 @@ listed as coming soon. Four things stand between that and opening, and none of
 them are code. They are set
 out in full in `docs/shop.md`; in short:
 
-- **Photographs of the real merchandise**, book covers, and confirmed prices. The
-  RAIN clothing shows the client's design mockups until the garments are printed,
-  and the books show "Cover to come". A product cannot go on sale until somebody
-  ticks that its price has been checked, which the build enforces.
+- **Photographs of the real merchandise**, and book covers. The RAIN clothing
+  shows the client's design mockups until the garments are printed, and the books
+  show "Cover to come". Prices were confirmed on 5 October 2026: the t-shirt $35,
+  the hooded jumper $65 and Do Not Bow $20. Speak Life has no price yet, and a
+  product cannot go on sale until somebody ticks that its price has been checked,
+  which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.

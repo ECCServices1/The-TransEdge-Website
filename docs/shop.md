@@ -6,13 +6,15 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 ## What is in it
 
 As of 5 October 2026, nothing is on sale yet and four things are on the range as
-coming soon:
+coming soon. The client confirmed three prices that day, and they show on the
+range: the t-shirt $35, the hooded jumper $65 and Do Not Bow $20, GST included,
+one price for every fit and size.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
-| RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Price, stock, photographs of the printed garment |
-| RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Price, stock, photographs of the printed garment |
-| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The church's price (the publisher's list price is $17.99), the cover, the format |
+| RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Stock, photographs of the printed garment |
+| RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Stock, photographs of the printed garment |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The cover, the format |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
