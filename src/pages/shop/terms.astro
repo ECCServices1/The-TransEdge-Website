@@ -14,6 +14,13 @@
  * Two things on it need a person rather than a developer: the returns window,
  * which is a decision and not a law, and the tax invoice wording, which the
  * accountant should confirm against what Stripe actually sends.
+ *
+ * Redrafted on 5 October 2026 when the range grew from placeholders to the
+ * RAIN 2026 clothing, in colours and fits, and books by our Senior Pastors. It
+ * says nothing about either that the shop does not actually do: there are no
+ * pre-orders, so there are no pre-order terms, and the change-of-mind wording
+ * stays as general as it was, because the window is still a decision for our
+ * church to make.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import DraftNotice from '../../components/DraftNotice.astro';
@@ -23,7 +30,7 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
 
 <PageLayout
   title="Shop terms"
-  description="Terms of sale for merchandise from The Transformation Edge: prices, GST, delivery, exchanges and refunds."
+  description="Terms of sale for clothing and books from The Transformation Edge: prices, GST, delivery, exchanges and refunds."
   route="shop/terms"
   crumbs={[{ name: 'Shop', href: '/shop' }]}
   standfirst="What you are agreeing to when you buy something here."
@@ -36,7 +43,15 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
     <p>
       {CHURCH.legalName}, ABN <span class="ltr-embed">{CHURCH.abn}</span>, of{' '}
       {CHURCH.address.unit}, {CHURCH.address.street}, {CHURCH.address.suburb}{' '}
-      {CHURCH.address.state} <span class="ltr-embed">{CHURCH.address.postcode}</span>.
+      {CHURCH.address.state} <span class="ltr-embed">{CHURCH.address.postcode}</span>. When these
+      terms say "we" or "us", they mean our church.
+    </p>
+
+    <h2>What we sell</h2>
+    <p>
+      Clothing, such as the RAIN 2026 range, and books, including titles by our Senior Pastors.
+      Some things are shown as coming soon before they can be ordered. Nothing can be bought until
+      it shows a price and an "Add to basket" button.
     </p>
 
     <h2>Prices and GST</h2>
@@ -59,11 +74,28 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
       If an item is listed at an obviously wrong price, we will contact you and either refund you
       in full or ask whether you want it at the right price. We will not simply charge you more.
     </p>
+    <p>
+      If, after you have paid, we find we cannot supply something you ordered, we will tell you and
+      refund that item in full. The rest of your order stands, unless you would rather cancel it,
+      in which case we refund all of it.
+    </p>
+
+    <h2>Colours, pictures and sizes</h2>
+    <p>
+      Pictures show the design. Some are mockups made before a garment is printed, and colours on
+      a screen can differ a little from the real thing. A small difference in shade is not a fault.
+      A garment that is not what we described is, and the section on faults below applies to it.
+    </p>
+    <p>
+      Clothing comes in fits, such as unisex, women's and kids, each with its own sizes. The size
+      guide on each product page says which sizes a fit comes in. If you are between sizes, ask us
+      before you order and we will help you choose.
+    </p>
 
     <h2>Getting your order</h2>
     <p>
-      <strong>{SHIPPING.collect.label}.</strong> Free. {SHIPPING.collect.note} Ask at the welcome
-      desk. We do not need a postal address for a collection, so we do not ask for one.
+      <strong>{SHIPPING.collect.label}.</strong> Free. {SHIPPING.collect.note} We do not need a
+      postal address for a collection, so we do not ask for one.
     </p>
     {
       postingAvailable() ? (
@@ -83,22 +115,23 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
       something we control, though we will chase anything that goes astray.
     </p>
 
-    <h2>Sizes, exchanges and changing your mind</h2>
+    <h2>Exchanges and changing your mind</h2>
     <p>
-      Apparel can be exchanged for a different size where we have it, unworn and unwashed, with
-      the receipt. Get in touch first so we can put the size aside rather than you making a trip
-      for nothing.
+      Clothing can be exchanged for a different size or fit where we have it, unworn and
+      unwashed, with the receipt. Get in touch first so we can put the size aside rather than you
+      making a trip for nothing.
     </p>
     <p>
       We are not required to refund a change of mind, and for a small range like this one we
-      generally offer an exchange rather than a refund. That does not affect anything in the next
-      section.
+      generally offer an exchange rather than a refund. For a book, talk to us. None of this
+      affects anything in the next section.
     </p>
 
     <h2>If something is faulty, damaged or wrong</h2>
     <p>
       Tell us and we will put it right. Depending on how serious the problem is, that means a
-      repair, a replacement or a refund, and we pay the cost of returning it.
+      repair, a replacement or a refund, and we pay the cost of returning it. That covers a book
+      with missing or damaged pages as much as a garment with a flawed print.
     </p>
     <p>
       Our goods come with guarantees that cannot be excluded under the Australian Consumer Law.
@@ -119,7 +152,7 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
 
     <h2>This is a purchase, not a gift</h2>
     <p>
-      Buying merchandise supports our church, but it is a purchase. It is not a deductible gift
+      Buying from our shop supports our church, but it is a purchase. It is not a deductible gift
       and no gift receipt is issued for it. If you meant to give, the{' '}
       <a href="/give">giving page</a> is the place, and it explains how receipting works there.
     </p>
@@ -131,6 +164,8 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
       <a href="/get-in-touch">contact page</a>. Somebody reads everything that comes in and
       replies within two working days.
     </p>
+
+    <p class="terms__dated">These terms were last changed on 5 October 2026.</p>
   </div>
 </PageLayout>
 
@@ -146,5 +181,11 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
 
   .terms h2:first-child {
     margin-block-start: 0;
+  }
+
+  .terms__dated {
+    margin-block-start: var(--space-xl);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
   }
 </style>
