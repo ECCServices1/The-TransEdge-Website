@@ -131,9 +131,16 @@ of records that have to come across with the DNS, are in
 - [ ] Hover contact details name The Transformation Edge Ltd and a church email
 - [x] DNS moved to Cloudflare, 5 October 2026; every record verified identical
       on Cloudflare, Wix and three public resolvers
-- [ ] Email to and from `frontdesk@`, and a Connect sign-in, checked by hand
+- [x] Email to and from `frontdesk@` checked by hand after the move (5 October 2026)
+- [ ] A Connect sign-in checked by hand after the move
 - [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)
-- [ ] Turnstile keys set, and the contact and prayer Workers deployed
+- [x] Forms deliver by email, built: contact and Life-Link to `frontdesk@`,
+      prayer to `admin@` (`docs/forms.md`)
+- [ ] Turnstile widget created, site key in `src/data/forms.mjs`, secret set
+      on the Worker
+- [ ] Email sending switched on for the domain, and `frontdesk@` and `admin@`
+      verified in Cloudflare
+- [ ] Each form sent once on the live site and received
 - [ ] `CONNECT_API_URL` and token set, or the static-content decision recorded
 - [ ] CMS OAuth Worker deployed and an editor has logged in successfully
 - [x] Wix route list: not required, by the client's decision of 3 September 2026

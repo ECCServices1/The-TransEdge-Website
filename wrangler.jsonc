@@ -47,6 +47,20 @@
     "run_worker_first": ["/api/*"]
   },
 
+  // Email from the website's forms, through Cloudflare's own email service.
+  // Locked to one sender and the two church inboxes the forms deliver to, so
+  // the Worker cannot email anyone else whatever its code says. Keep the lists
+  // in step with src/data/forms.mjs; scripts/check-forms.mjs fails the build
+  // if they differ. Both inboxes must be verified in Cloudflare before anything
+  // reaches them: docs/forms.md has the steps.
+  "send_email": [
+    {
+      "name": "EMAIL",
+      "allowed_sender_addresses": ["website@thetransedge.com"],
+      "allowed_destination_addresses": ["frontdesk@thetransedge.com", "admin@thetransedge.com"]
+    }
+  ],
+
   "observability": {
     // Request logs, so a broken redirect is visible rather than guessed at.
     "enabled": true

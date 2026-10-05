@@ -31,10 +31,12 @@
  */
 import PageLayout from '../layouts/PageLayout.astro';
 import Button from '../components/Button.astro';
+import FormProtection from '../components/FormProtection.astro';
 import DraftNotice from '../components/DraftNotice.astro';
 import Photo from '../components/Photo.astro';
 import serving from '../assets/photos/S8-serving.jpg';
 import { CHURCH, GIVING } from '../data/church.mjs';
+import { LIMITS } from '../data/forms.mjs';
 
 /*
   `href` only where a page exists. Everything else carries no link, because a
@@ -140,24 +142,23 @@ const midweek = CHURCH.gatherings.find((g) => g.key === 'midweek')!;
         the same Cloudflare Worker the contact form uses and a person replies
         with the nearest group. One field, because one field is all it needs.
         When the group list exists this becomes a lookup and the form goes.
-        See docs/forms-and-privacy.md for the Worker.
+        The Worker emails it to frontdesk@: docs/forms.md.
       -->
-      <form class="finder" method="post" action="/api/contact" novalidate aria-labelledby="finder-heading">
+      <form class="finder" method="post" action="/api/contact" aria-labelledby="finder-heading">
         <h3 id="finder-heading" class="finder__heading">Find a Life-Link group in your neighbourhood</h3>
-        <input type="hidden" name="subject" value="Life-Link group enquiry" />
         <div class="field">
           <label for="suburb">Your suburb</label>
-          <input id="suburb" name="suburb" type="text" autocomplete="address-level2" required />
+          <input id="suburb" name="suburb" type="text" autocomplete="address-level2" required maxlength={LIMITS.suburb} />
           <p class="field__hint">
             We will tell you which group is closest and when it meets.
           </p>
         </div>
         <div class="field">
           <label for="finder-contact">Email or phone</label>
-          <input id="finder-contact" name="email" type="text" required />
+          <input id="finder-contact" name="email" type="text" required maxlength={LIMITS.contact} />
         </div>
 
-        <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+        <FormProtection form="life-link" />
 
         <p class="finder__privacy">
           Your suburb and one contact detail, nothing else, and you are not added to a list.

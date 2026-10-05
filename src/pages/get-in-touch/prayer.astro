@@ -11,6 +11,8 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import FormProtection from '../../components/FormProtection.astro';
+import { LIMITS } from '../../data/forms.mjs';
 ---
 
 <PageLayout
@@ -28,24 +30,27 @@ import Button from '../../components/Button.astro';
       </p>
     </div>
 
-    <form class="form" method="post" action="/api/prayer" novalidate>
+    <!-- Delivered by the site's Worker (worker/forms.js) to admin@, never
+         stored, and never sent with general enquiries: prayer has its own
+         endpoint. docs/forms.md. -->
+    <form class="form" method="post" action="/api/prayer">
       <div class="field">
         <label for="request">What would you like prayer for?</label>
-        <textarea id="request" name="request" rows="7" required></textarea>
+        <textarea id="request" name="request" rows="7" required maxlength={LIMITS.message}></textarea>
       </div>
 
       <div class="field">
         <label for="name">Your name <span class="field__optional">optional</span></label>
-        <input id="name" name="name" type="text" autocomplete="name" />
+        <input id="name" name="name" type="text" autocomplete="name" maxlength={LIMITS.name} />
       </div>
 
       <div class="field">
         <label for="contact">Email or phone <span class="field__optional">optional</span></label>
-        <input id="contact" name="contact" type="text" />
+        <input id="contact" name="contact" type="text" maxlength={LIMITS.contact} />
         <p class="field__hint">Only if you would like someone to reply. Leave it blank to stay anonymous.</p>
       </div>
 
-      <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+      <FormProtection form="prayer" />
 
       <p class="form__privacy">
         Requests are read by the pastoral team only. They are not published, not shared with

@@ -1,0 +1,46 @@
+---
+/**
+ * Where the contact form and the Life-Link finder land once a message has
+ * gone. The Worker sends people here with a 303, so reloading this page cannot
+ * send anything twice.
+ *
+ * Permanently noindex: a thank-you page is not a search result.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+---
+
+<PageLayout
+  title="Thank you"
+  description="Your message has reached The Transformation Edge."
+  route="get-in-touch/sent"
+  crumbs={[{ name: 'Get in touch', href: '/get-in-touch' }]}
+  standfirst="Your message has reached us."
+  noindex
+>
+  <div class="done">
+    <div class="prose">
+      <p>
+        A person reads everything that comes in, and replies within two working days. Nothing
+        you sent was kept on this website.
+      </p>
+    </div>
+    <p class="actions">
+      <Button href="/new-here/plan-your-visit" tone="quiet">Plan a visit</Button>
+      <Button href="/">Home</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .done {
+    max-inline-size: var(--measure);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2xs);
+    margin-block-start: var(--space-l);
+  }
+</style>
