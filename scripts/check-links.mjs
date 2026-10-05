@@ -14,7 +14,8 @@
  * show up here as broken links.
  *
  * Redirects count as real destinations. The generator writes them into
- * `dist/_redirects`, so a link to an old path that is redirected is fine.
+ * `dist/_redirects`, so a link to an old path that is redirected is fine, as
+ * long as the redirect itself lands on a page that was built.
  *
  * Run: npm run check:links
  */
@@ -58,14 +59,14 @@ if (!files.length) {
 const routes = new Set();
 
 /** Routes backed by a real built page, kept apart from redirect sources so the
-    two can be compared. */
-const builtPages = new Set();
+    two can be compared, each with the file that holds it. */
+const builtPages = new Map();
 
 for (const file of files) {
   const rel = '/' + relative(dist, file).split('\\').join('/');
   routes.add(rel);
-  if (rel.endsWith('.html')) builtPages.add(rel.slice(0, -'.html'.length) || '/');
-  if (rel.endsWith('/index.html')) builtPages.add(rel.slice(0, -'/index.html'.length) || '/');
+  if (rel.endsWith('.html')) builtPages.set(rel.slice(0, -'.html'.length) || '/', file);
+  if (rel.endsWith('/index.html')) builtPages.set(rel.slice(0, -'/index.html'.length) || '/', file);
   if (rel.endsWith('/index.html')) {
     routes.add(rel.slice(0, -'index.html'.length));
     routes.add(rel.slice(0, -'/index.html'.length) || '/');
@@ -115,6 +116,41 @@ for (const rule of redirectRules) {
   if (built) shadowed.push(rule);
 }
 
+/*
+  Every redirect has to land on something. A redirect source counts as a route
+  above, so a link to an old address passes even when the rule sends it on to a
+  page that was never built, and the visitor meets the 404 page one hop later.
+
+  That is not hypothetical either. When the site went live on 5 October 2026,
+  eleven rules pointed at sub-pages planned for phase 2, /life-at-tte/champions
+  among them, and every one of those old addresses ended on "not found". A
+  target naming a section, /life-at-tte#champions, needs an element with that
+  id, or the visitor lands at the top of a long page instead of the section.
+
+  A target that is itself redirected works, one hop slower, so it is named
+  rather than passed. External targets are out of scope, and so is a target
+  built from the request (a splat or a placeholder), which has no single page
+  to look for.
+*/
+const redirectSources = new Set(redirectRules.map((rule) => rule.from.replace(/\/$/, '') || '/'));
+const deadEnds = [];
+for (const rule of redirectRules) {
+  if (/^https?:\/\//.test(rule.to) || /[:*]/.test(rule.to)) continue;
+  const [address, fragment] = rule.to.split('#');
+  const path = address.split('?')[0];
+  const normalised = path.length > 1 ? path.replace(/\/$/, '') : path;
+  const file = builtPages.get(normalised);
+  if (!file) {
+    deadEnds.push(
+      redirectSources.has(normalised)
+        ? `${rule.from} goes to ${rule.to}, which is itself redirected. Point it at where that one ends.`
+        : `${rule.from} goes to ${rule.to}, which is not a built page.`
+    );
+  } else if (fragment && !(await readFile(file, 'utf8')).includes(`id="${fragment}"`)) {
+    deadEnds.push(`${rule.from} goes to ${rule.to}, but that page has no element with the id "${fragment}".`);
+  }
+}
+
 /* ------------------------------------------------------- what is linked */
 
 const problems = [];
@@ -153,6 +189,15 @@ if (shadowed.length) {
         `  Remove the redirect, or move the page.\n`
     );
   }
+  process.exit(1);
+}
+
+if (deadEnds.length) {
+  console.log(`\n${deadEnds.length} redirect(s) lead nowhere:\n`);
+  for (const line of deadEnds) console.log(`  ${line}`);
+  console.log(
+    '\nPoint each one at a built page, or a section of one, in src/data/redirects.mjs.'
+  );
   process.exit(1);
 }
 
