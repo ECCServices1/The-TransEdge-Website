@@ -77,6 +77,24 @@ export default defineConfig({
   vite: {
     build: {
       cssCodeSplit: true,
+      // Never inline a script into the page. The Content Security Policy in
+      // public/_headers allows scripts from this site's own files only
+      // ('self', no 'unsafe-inline'), and by default Astro inlines any script
+      // under 4kB. Every small script on the site was therefore refused by the
+      // browser: the mobile menu's Escape and click-outside handling never ran
+      // on any page, and the Turnstile loader that every form depends on could
+      // not run either. Measured in Chromium against the real Workers runtime
+      // on 5 October 2026. Emitting every script as a file keeps the policy
+      // strict and makes the scripts actually run; module scripts are deferred,
+      // so the extra file does not hold up the first paint.
+      //
+      // Scripts only. Astro reads this same setting to decide which stylesheets
+      // `inlineStylesheets: 'auto'` inlines, so a flat 0 also pushed every small
+      // stylesheet into its own render-blocking file: eight of them on the home
+      // page, and 150ms of simulated LCP against a 2000ms budget. Returning
+      // undefined for everything that is not JavaScript keeps the default 4kB
+      // rule for stylesheets and images, exactly as before.
+      assetsInlineLimit: (filePath) => (filePath.endsWith('.js') ? false : undefined),
     },
   },
 });

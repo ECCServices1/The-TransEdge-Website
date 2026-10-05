@@ -55,6 +55,11 @@ jobs:
       - name: Shop catalogue
         run: npm run check:shop
 
+      # The forms' destinations must match the email binding's allowlist, or
+      # Cloudflare refuses the send and a visitor's message is silently lost.
+      - name: Website forms
+        run: npm run check:forms
+
       - name: Types
         run: npm run check
 

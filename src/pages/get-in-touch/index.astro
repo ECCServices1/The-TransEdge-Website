@@ -15,7 +15,9 @@
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import FormProtection from '../../components/FormProtection.astro';
 import { CHURCH } from '../../data/church.mjs';
+import { LIMITS } from '../../data/forms.mjs';
 ---
 
 <PageLayout
@@ -53,30 +55,33 @@ import { CHURCH } from '../../data/church.mjs';
       <h2 id="form-heading">Send us a message</h2>
 
       <!--
-        Posts to a Cloudflare Worker, not a third-party form service, so no
-        personal data leaves the Cloudflare account and no privacy assessment
-        for an offshore processor is needed. Turnstile handles spam without a
-        tracking cookie. The Worker is in workers/contact/ and must be deployed
-        before this form is live: see docs/forms-and-privacy.md.
+        Posts to the site's own Worker (worker/forms.js), not a third-party
+        form service. The Worker emails the message to frontdesk@ through
+        Cloudflare and keeps nothing. Turnstile handles spam without a tracking
+        cookie. Setting it up, and changing where it delivers: docs/forms.md.
+
+        The browser's own validation is left on: required fields and lengths
+        are checked before anything is sent, with limits read from the same
+        file the Worker uses.
       -->
-      <form class="form" method="post" action="/api/contact" novalidate>
+      <form class="form" method="post" action="/api/contact">
         <div class="field">
           <label for="name">Your name</label>
-          <input id="name" name="name" type="text" autocomplete="name" required />
+          <input id="name" name="name" type="text" autocomplete="name" required maxlength={LIMITS.name} />
         </div>
 
         <div class="field">
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" autocomplete="email" required />
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength={LIMITS.email} />
           <p class="field__hint" id="email-hint">So we can reply. Nothing else is done with it.</p>
         </div>
 
         <div class="field">
           <label for="message">What would you like to say?</label>
-          <textarea id="message" name="message" rows="6" required></textarea>
+          <textarea id="message" name="message" rows="6" required maxlength={LIMITS.message}></textarea>
         </div>
 
-        <div class="cf-turnstile" data-sitekey="TURNSTILE_SITE_KEY" data-theme="auto"></div>
+        <FormProtection form="contact" />
 
         <p class="form__privacy">
           We keep your message and your reply, and nothing more. We do not add you to a list.
@@ -176,24 +181,3 @@ import { CHURCH } from '../../data/church.mjs';
     color: var(--color-text-muted);
   }
 </style>
-
-<script>
-  /*
-    Turnstile is loaded only when the form is actually in view, so a visitor who
-    reads the contact details and leaves never contacts Cloudflare's challenge
-    endpoint at all. No third party is contacted before it is needed.
-  */
-  const widget = document.querySelector('.cf-turnstile');
-  if (widget) {
-    const observer = new IntersectionObserver((entries, obs) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      obs.disconnect();
-      const script = document.createElement('script');
-      script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-      script.async = true;
-      script.defer = true;
-      document.head.append(script);
-    });
-    observer.observe(widget);
-  }
-</script>

@@ -1,0 +1,53 @@
+---
+/**
+ * Where any form lands when its message could not be sent: the spam check
+ * failed or expired, the email service refused it, or the forms are not
+ * switched on yet.
+ *
+ * The page cannot say which, because it is a static page and the reason is
+ * only in the Worker's log, by design without anything the visitor wrote. So it
+ * says what is true in every case: nothing was sent, nothing was kept, the Back
+ * button returns them to their words, and a phone call always works.
+ *
+ * Permanently noindex.
+ */
+import PageLayout from '../../layouts/PageLayout.astro';
+import Button from '../../components/Button.astro';
+import { CHURCH } from '../../data/church.mjs';
+---
+
+<PageLayout
+  title="Not sent"
+  description="A message to The Transformation Edge did not go through."
+  route="get-in-touch/not-sent"
+  crumbs={[{ name: 'Get in touch', href: '/get-in-touch' }]}
+  standfirst="Your message did not go through."
+  noindex
+>
+  <div class="done">
+    <div class="prose">
+      <p>
+        Nothing was sent, and nothing you wrote was kept. Go back to the form, where what you
+        wrote should still be waiting, and try again in a moment.
+      </p>
+      <p>
+        If it keeps happening, call us on
+        <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a>, or email
+        <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>.
+      </p>
+    </div>
+    <p class="actions">
+      <Button href="/get-in-touch" tone="quiet">Get in touch</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .done {
+    max-inline-size: var(--measure);
+  }
+
+  .actions {
+    margin-block-start: var(--space-l);
+  }
+</style>

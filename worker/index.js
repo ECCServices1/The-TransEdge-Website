@@ -26,6 +26,7 @@
  * step with Stripe.
  */
 import { validateBasket, shippingOption, postingAvailable } from '../src/lib/shop.mjs';
+import { handleForm } from './forms.js';
 
 const STRIPE_API = 'https://api.stripe.com/v1/checkout/sessions';
 
@@ -202,13 +203,12 @@ export default {
 
     if (pathname === '/api/checkout') return handleCheckout(request, env);
 
-    /*
-      Everything else is the site. /api/contact is deliberately not handled
-      here: open question 5 has not been answered, so where a contact or prayer
-      message should be delivered is still undecided, and guessing would be
-      worse than the current behaviour. Those forms behave exactly as they did
-      before this Worker existed.
-    */
+    /* The contact form and the Life-Link finder share /api/contact; prayer
+       requests have their own address so they can never be routed with
+       general enquiries by mistake. Destinations live in src/data/forms.mjs. */
+    if (pathname === '/api/contact') return handleForm(request, env, 'contact');
+    if (pathname === '/api/prayer') return handleForm(request, env, 'prayer');
+
     return env.ASSETS.fetch(request);
   },
 };

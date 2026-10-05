@@ -1,0 +1,45 @@
+---
+/**
+ * Where a prayer request lands once it has gone. The promises here are the
+ * prayer page's own, repeated rather than added to: someone will pray, and a
+ * reply comes only to someone who asked for one.
+ *
+ * Permanently noindex.
+ */
+import PageLayout from '../../../layouts/PageLayout.astro';
+import Button from '../../../components/Button.astro';
+---
+
+<PageLayout
+  title="Thank you"
+  description="Your prayer request has reached The Transformation Edge."
+  route="get-in-touch/prayer/sent"
+  crumbs={[
+    { name: 'Get in touch', href: '/get-in-touch' },
+    { name: 'Ask for prayer', href: '/get-in-touch/prayer' },
+  ]}
+  standfirst="Your request has been passed on."
+  noindex
+>
+  <div class="done">
+    <div class="prose">
+      <p>
+        Someone will pray. If you asked to hear from us, someone will be in touch within two
+        working days. Your request was not kept on this website.
+      </p>
+    </div>
+    <p class="actions">
+      <Button href="/">Home</Button>
+    </p>
+  </div>
+</PageLayout>
+
+<style>
+  .done {
+    max-inline-size: var(--measure);
+  }
+
+  .actions {
+    margin-block-start: var(--space-l);
+  }
+</style>

@@ -62,20 +62,12 @@ repository is public.
 
 ## 5. Do newcomer capture and prayer requests live on the site or inside Connect?
 
-**Blocks:** the form endpoints.
-
-**Built in the meantime:** both forms exist, ask the minimum, and post to a
-Cloudflare Worker path. The Worker now exists, because the shop needed one, and
-it handles `/api/checkout`. It deliberately does not handle `/api/contact`:
-writing a delivery route before this question is answered would mean guessing
-where somebody's prayer request goes, which is worse than the current behaviour.
-With the Worker in place, finishing these two forms is about an hour's work once
-the answer arrives.
-
-**The recommendation:** prayer requests on the site, delivered to a pastoral
-inbox and never stored. Newcomer capture into Connect, because Connect is the
-system of record and a newcomer who is captured twice is a newcomer who gets
-contacted twice.
+**Answered, 5 October 2026.** On the site, delivered by email: everything to
+`frontdesk@thetransedge.com` unless specified, and prayer requests to
+`admin@thetransedge.com`. Nothing is stored on the site. Built in
+`worker/forms.js`, sent through Cloudflare's own email service, with setup
+steps in `docs/forms.md`. Newcomer capture into Connect can follow once
+Connect has an API to write to.
 
 ## 6. Who is the nominated approver for the weekly content pull requests?
 

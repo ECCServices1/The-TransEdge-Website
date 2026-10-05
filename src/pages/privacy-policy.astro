@@ -26,12 +26,17 @@ const collected = [
   {
     what: 'A contact form',
     detail:
-      'Your name and one contact method, plus whatever you choose to write. Nothing else is asked for and nothing else is stored.',
+      'Your name and one contact method, plus whatever you choose to write. It is emailed to our church office and kept nowhere else: not on this website, and not in any list.',
+  },
+  {
+    what: 'The Life-Link finder',
+    detail:
+      'Your suburb and one contact method, so we can tell you which group is nearest. It is emailed to our church office and kept nowhere else.',
   },
   {
     what: 'A prayer request',
     detail:
-      'Whatever you write, and a contact method only if you give one. Prayer requests go to the pastoral team and are not read by anyone else, not circulated, and not added to any list.',
+      'Whatever you write, and a contact method only if you give one. Prayer requests go to the pastoral team and are not read by anyone else, not circulated, and not added to any list. The email that reaches the pastoral team is the only copy: nothing is kept on this website.',
   },
   {
     what: 'Giving by bank transfer',
@@ -100,6 +105,12 @@ const collected = [
         <p>
           Being in touch with us does not put you on a mailing list. If you want to be on
           one, you have to ask.
+        </p>
+        <p>
+          Messages from the forms on this site are sent by email through Cloudflare, which
+          hosts the site, to our church's mailbox with Google Workspace. Neither is a new
+          place for them: Cloudflare already carries every visit to this site, and Google
+          already holds our email. No form service or other third party sees them.
         </p>
       </div>
     </section>

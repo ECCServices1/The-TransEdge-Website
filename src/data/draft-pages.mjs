@@ -107,6 +107,23 @@ export const DRAFT_PAGES = [
     reason: 'transactional',
     needs: 'Nothing. An order confirmation stays out of the index permanently.',
   },
+  /* Where the website's forms send people afterwards. A thank-you or a
+     not-sent page is never what somebody searching wanted to find. */
+  {
+    route: 'get-in-touch/sent',
+    reason: 'transactional',
+    needs: 'Nothing. A form confirmation stays out of the index permanently.',
+  },
+  {
+    route: 'get-in-touch/prayer/sent',
+    reason: 'transactional',
+    needs: 'Nothing. A prayer request confirmation stays out of the index permanently.',
+  },
+  {
+    route: 'get-in-touch/not-sent',
+    reason: 'transactional',
+    needs: 'Nothing. A form failure page stays out of the index permanently.',
+  },
 ];
 
 /** Exactly named routes. A wildcard cannot be asserted to have been built. */
