@@ -86,74 +86,55 @@ This list was gathered by asking for every likely name. A record on a name
 nobody would guess cannot be found that way, so check it against the full list
 on the Wix DNS records page before switching.
 
-### Wix will not let go of the nameservers
+### Where the domain is actually registered
 
-**A domain registered with Wix cannot use anyone else's nameservers.** Wix's
-own help centre files changing them as an unfulfilled feature request, and
-Cloudflare's documentation says the same of Wix, Shopify and Block. Wix lets
-you edit individual records, but Cloudflare can only attach a Worker to a
-domain whose DNS it runs, so editing records at Wix cannot put the new site on
-the domain.
+`thetransedge.com` is registered with **Enom**, not with Wix. Cloudflare's
+onboarding names Enom as the registrar, and Wix's own domains page lists the
+domain as "Managed by third party, Connected by DNS". At some point, probably
+when the Wix site was set up (the Wix DNS zone dates from April 2017), the
+nameservers were pointed at Wix at the registrar. That is how Wix came to host
+the DNS, and it is why Wix's DNS page shows the nameservers as not editable:
+they are not Wix's to edit.
 
-So the registration has to leave Wix first. That makes three steps:
+So the nameservers are changed **at the registrar**. No transfer is needed to
+move the DNS.
 
-0. **Move the registration from Wix to another registrar.** Three to five days.
-   Nothing visible changes while it runs.
-1. **Point the nameservers at Cloudflare, at the new registrar.** Cloudflare
-   already holds every record, so again nothing visible changes. If anything
-   does break, it can only be a DNS record, and the table above says which.
+Enom sells domains directly and through resellers, so the account may be at
+Enom itself or at a company that resells Enom domains.
+
+**Do not click "Transfer to Wix"** on the Wix domains page. It would move the
+registration into Wix, and Wix does not let a domain it has registered use
+another provider's nameservers. That would turn a ten-minute change into a
+week-long transfer back out.
+
+The steps, kept apart so that if email stops, the cause is obvious:
+
+0. **Find the account that holds the registration.**
+1. **Point the nameservers at Cloudflare, in that account.** Cloudflare already
+   holds every record, so nothing visible changes. If anything does break, it
+   can only be a DNS record, and the table above says which.
 2. **Point `www` at the new site.** This is the launch, and the launch checklist
    governs it.
 
-Keep them apart. If email stops on the day, the step that caused it should be
-obvious.
+### Step 0: find the account that holds the registration
 
-### Step 0: take the registration out of Wix
+Any of these will name it:
 
-**Before starting, in Wix, under Domains and `thetransedge.com`:**
+- **ICANN Lookup** at `lookup.icann.org`: enter the domain. It shows the
+  registrar, and for a domain sold through a reseller it often names the
+  reseller too.
+- **Renewal reminders.** Registrars must email the registrant before each
+  expiry, so a search of the likely inboxes for the domain name with "renewal"
+  or "expiry" usually finds the company and the account.
+- **Bank or card statements**, for an annual charge of a few tens of dollars.
+- **Whoever set up the Wix site** in 2017.
 
-- Check the **registrant contact email**. Wix sends the transfer code there, so
-  it has to be an inbox somebody can open today.
-- Turn **Private Registration** off. Wix recommends this before a transfer, so
-  the confirmation emails are not swallowed by the privacy service.
-- **Do not change the registrant's name or email at Wix first.** A contact
-  change can lock the domain against transfer for 60 days. Correct the details
-  at the new registrar afterwards, and while there, make sure the registrant is
-  The Transformation Edge Ltd with a church address, not an individual.
-
-Wix shows the mailbox on its DNS page as "OTHER", which means Google Workspace
-was not bought through Wix. The transfer does not touch it.
-
-**Choose the new registrar.** Any mainstream registrar that lets you change
-nameservers will do: Namecheap and Porkbun are inexpensive and make it a
-one-screen change, and VentraIP is an Australian company with local support.
-During the transfer, if the new registrar asks about nameservers or DNS,
-**keep the current ones**. Never let it move the domain onto its own empty DNS:
-that is the one choice in this whole process that would stop email at once.
-
-**Then:**
-
-1. In Wix: **Domains**, the **Domain Actions** menu (the three dots) beside
-   `thetransedge.com`, **Transfer away from Wix**, **Transfer Domain**, **I Still
-   Want to Transfer**. Wix emails the authorisation code to the registrant
-   contact.
-2. At the new registrar, start a transfer of `thetransedge.com`, paste the code
-   and pay. The price includes a year's renewal, added to the current expiry, so
-   nothing is lost.
-3. Approve any confirmation emails, from either side. The transfer then takes
-   three to five days. Email, Connect and the Wix site carry on as normal
-   throughout, because Wix keeps answering for the domain until it has gone.
-4. **The moment the new registrar confirms the transfer is complete, do Step 1.**
-   Once the domain has left Wix, Wix may stop answering for it, and every hour
-   between then and the nameserver change is an hour in which the domain could
-   go quiet. Mail sent in a short gap is normally held and retried by the
-   sender rather than lost, but the aim is minutes, not hours.
-
-**The old Wix site may drop off the domain when it leaves Wix.** Wix serves a
-domain registered elsewhere only once it has been connected to the site by
-"pointing". If the old site stops appearing, either reconnect it in Wix, which
-shows the exact records to set, or treat it as the moment to launch the new one.
-Email and Connect do not depend on this either way.
+If the account belongs to someone outside the church, such as a former
+volunteer or designer, bring it under the church's control now: either they
+change the account's owner and contact details, or they obtain the transfer
+authorisation code and the domain moves into a registrar account the church
+owns, which takes three to five days. Either way the registrant should be The
+Transformation Edge Ltd, with a church email address.
 
 ### Step 1: nameservers to Cloudflare
 
@@ -176,15 +157,27 @@ Email and Connect do not depend on this either way.
    Steps 1 to 3 were done on 5 October 2026. Cloudflare's two nameservers were
    then queried directly, before anything changed at Wix, and gave the same
    answer as Wix's for every record in the table.
-4. **At the new registrar, not Wix**, replace the nameservers with Cloudflare's
-   two. Cloudflare's page names Enom as the registrar; Enom is the wholesaler
-   behind Wix's domains, and nobody needs an Enom account.
-5. Wait for Cloudflare to report the domain **Active**. Usually under an hour,
-   occasionally up to two days. Nothing breaks while you wait, provided the
-   records match.
+4. **In the registrar account, not Wix**, replace the two Wix nameservers with
+   Cloudflare's two. At Enom and most resellers this is the domain's nameserver
+   or "DNS server" setting, switched to custom nameservers. Then, in
+   Cloudflare, choose **I updated my nameservers**.
+5. Wait for Cloudflare to report the domain **Active**. Usually under an hour.
+   For up to a day afterwards some of the internet still asks Wix: the `.com`
+   registry tells resolvers to remember nameservers for 6 hours, and Wix's own
+   copy of them says a day (both measured 5 October 2026). **Leave the domain
+   completely alone in Wix for two days**, to be safe: do not disconnect it,
+   remove it, or change how it is connected. Nothing breaks while both answer,
+   because the records match.
 6. Check, in this order: send an email to `frontdesk@thetransedge.com` from an
    outside address and reply to it; open `connect.thetransedge.com` and sign in;
    open `www.thetransedge.com`.
+
+**The old Wix site after the switch.** With the nameservers no longer pointing
+at Wix, Wix may treat the domain as disconnected. If, after the two days, the
+old site stops appearing, either change the domain's connection method in Wix
+to pointing and set the records Wix shows in Cloudflare, as DNS only, or treat
+it as the moment to launch. Email and Connect do not depend on this either
+way.
 
 ### Step 2: the new site on the domain
 
@@ -211,12 +204,16 @@ records back returns the old site within minutes. That is the whole rollback.
 
 ### Later: Cloudflare Registrar, if wanted
 
-Once the domain has sat at the new registrar for 60 days, which the registry
-requires after any transfer, it can move again to Cloudflare Registrar: renewal
-at cost with no markup, and the domain and the site in one account. Optional.
-Cloudflare could not take it straight from Wix only because Cloudflare insists
-on running a domain's nameservers before accepting its registration, and Wix
-would not allow that.
+Once the domain is active on Cloudflare, the registration can also move to
+Cloudflare Registrar: renewal at cost with no markup, and the domain and the
+site in one account. Unlock the domain at the current registrar, get the
+transfer authorisation code, and start the transfer in Cloudflare under
+**Domains**, **Transfers**. It takes about five days and adds a year to the
+registration. Optional.
+
+Cloudflare's onboarding warns that Wix does not allow transfers to Cloudflare.
+That warning is triggered by the Wix nameservers, and applies to domains Wix
+registered itself. This one is registered with Enom, so it does not apply.
 
 **Do not cancel the Wix plan until the new site has been live for thirty days**,
 per the launch checklist. Three records also lean on Wix. `_dmarc` points at
