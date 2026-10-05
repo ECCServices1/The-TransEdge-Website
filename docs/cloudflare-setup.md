@@ -147,13 +147,20 @@ records back returns the old site within minutes. That is the whole rollback.
 ### Later: the registration itself
 
 Moving the nameservers does not move the registration. The domain stays
-registered, and billed, wherever it is now, almost certainly Wix. That is fine.
+registered, and billed, at Wix. That is fine, and it is all the move needs.
 
-Once the new site has been live for a month, it is worth transferring the
-registration to Cloudflare Registrar, which renews at cost with no markup, and
-puts the domain and the site in one account. It needs the domain unlocked at
-Wix and a transfer code from Wix, it cannot happen within 60 days of the domain
-being registered or last transferred, and it adds a year to the registration.
+When the domain is added, Cloudflare recognises it as a Wix domain and offers
+"transfer options". **Close that and carry on adding the site.** The pop-up is
+about moving the registration, which is a separate and optional job.
+
+Moving the registration to Cloudflare Registrar later would mean renewals at
+cost with no markup, and the domain and the site in one account. But Cloudflare
+does not accept transfers directly from Wix (confirmed in Cloudflare's own
+onboarding, 5 October 2026). The route is Wix to another registrar first, then a
+60-day wait the registry imposes after any transfer, then Cloudflare. Each
+transfer adds a year to the registration, so nothing is lost, but it is two
+moves and two months. Worth doing only if the Wix renewal price is a real
+annoyance; leaving the registration at Wix costs nothing in function.
 
 **Do not cancel the Wix plan until the domain's renewal is safely somewhere
 other than a plan you are cancelling.** Check the renewal date in Wix
