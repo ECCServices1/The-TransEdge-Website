@@ -173,12 +173,13 @@ stay on the register permanently.
 ### Speed, on the day something goes on sale
 
 The RAIN jumper page is in the Lighthouse budget, which allows 2.0s for the
-largest paint on a simulated phone connection. Measured locally with the CI's
-settings, it comes to about 1.82s with nothing on sale. Putting something on
-sale adds the basket and the shop's script to every product page, and the
-jumper page then comes to about 1.90s. That is inside the budget, with less room
-than today, so watch the Lighthouse check on the pull request that opens the
-shop.
+largest paint on a simulated phone connection. With nothing on sale, CI measured
+1.96s on 5 October 2026; locally, with the same settings, it measures about
+1.82s, because CI's runner paints later relative to the page's last requests and
+Lighthouse then counts them. Putting something on sale adds the basket and the
+shop's script to every product page, which measured about 0.08s more locally.
+In CI that would come to about 2.04s, so the pull request that opens the shop
+may well fail the Lighthouse check on that page unless more room is made first.
 
 Three things keep it there, and each has a note where it lives:
 
@@ -191,9 +192,10 @@ Three things keep it there, and each has a note where it lives:
 - Every product picture but the lead one is fetched at low priority
   (`secondary` in `src/components/Photo.astro`).
 
-If more room is needed, it is in the web fonts: about 139KB of the 200KB a page
-loads, on every page, home and Events included. Making them lighter is a
-site-wide decision about the typefaces, not a shop change.
+The room is in the web fonts: about 139KB of the 200KB a page loads, on every
+page, home and Events included. Making them lighter is a site-wide decision
+about the typefaces, not a shop change, and is the thing to settle before the
+shop opens.
 
 ## What the build refuses to let through
 
