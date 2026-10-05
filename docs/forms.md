@@ -59,6 +59,10 @@ page, which gives the phone number. Nothing is lost silently.
 
 ### 1. Turnstile, the spam check
 
+The widget was created on 5 October 2026, and its site key is in
+`src/data/forms.mjs`. The steps stay here in case it ever has to be recreated;
+the secret key, step 4, is still needed on the Worker.
+
 1. **Turnstile**, **Add widget**. Name it "TTE website forms".
 2. Hostnames: `thetransedge.com`, and `michaels-aibangbee.workers.dev` so that
    preview links can be tested too.
@@ -98,6 +102,11 @@ above says, and that pressing Reply addresses the visitor rather than the
 website. If a form lands on the "did not go through" page instead, the
 Worker's log in Cloudflare (**Workers & Pages**, `the-transedge-website`,
 **Observability**) names the step that failed.
+
+If the spam-check box shows an error instead of confirming the visitor, the
+address in the browser is probably not one of the widget's hostnames. Add it
+in **Turnstile**, under the widget's settings. A hostname covers its
+subdomains, so `thetransedge.com` already covers `www`.
 
 ## Changing where a form delivers
 

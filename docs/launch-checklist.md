@@ -136,8 +136,8 @@ of records that have to come across with the DNS, are in
 - [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)
 - [x] Forms deliver by email, built: contact and Life-Link to `frontdesk@`,
       prayer to `admin@` (`docs/forms.md`)
-- [ ] Turnstile widget created, site key in `src/data/forms.mjs`, secret set
-      on the Worker
+- [x] Turnstile widget created, site key in `src/data/forms.mjs` (5 October 2026)
+- [ ] Turnstile secret set on the Worker as `TURNSTILE_SECRET_KEY`
 - [ ] Email sending switched on for the domain, and `frontdesk@` and `admin@`
       verified in Cloudflare
 - [ ] Each form sent once on the live site and received
