@@ -173,18 +173,27 @@ stay on the register permanently.
 ### Speed, on the day something goes on sale
 
 The RAIN jumper page is in the Lighthouse budget, which allows 2.0s for the
-largest paint on a simulated phone connection. Today, with nothing on sale, it
-measures about 1.9s. Putting something on sale adds the basket and the shop's
-script to every product page, and measured locally with the CI's settings the
-jumper page on sale comes to about 1.97s. So the pull request that opens the
-shop may fail the Lighthouse check on that page.
+largest paint on a simulated phone connection. Measured locally with the CI's
+settings, it comes to about 1.82s with nothing on sale. Putting something on
+sale adds the basket and the shop's script to every product page, and the
+jumper page then comes to about 1.90s. That is inside the budget, with less room
+than today, so watch the Lighthouse check on the pull request that opens the
+shop.
 
-The script is already one file that loads nothing else; `npm run check:bundles`
-keeps it that way, and `src/components/shop/ShopScript.astro` explains why. The
-real headroom is in the web fonts: about 139KB of the 200KB a page loads, on
-every page, home and Events included. Making them lighter is a site-wide
-decision about the typefaces, not a shop change, and is the thing to do if the
-budget is to hold with room to spare.
+Three things keep it there, and each has a note where it lives:
+
+- The shop's script is one file that loads nothing else
+  (`src/components/shop/ShopScript.astro`; `npm run check:bundles` keeps it
+  that way).
+- A product page's own styles are written into the page rather than fetched as
+  a file (`astro.config.mjs`). Keep that stylesheet under 10kB, or it becomes a
+  file again.
+- Every product picture but the lead one is fetched at low priority
+  (`secondary` in `src/components/Photo.astro`).
+
+If more room is needed, it is in the web fonts: about 139KB of the 200KB a page
+loads, on every page, home and Events included. Making them lighter is a
+site-wide decision about the typefaces, not a shop change.
 
 ## What the build refuses to let through
 

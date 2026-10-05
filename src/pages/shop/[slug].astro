@@ -96,6 +96,7 @@ const sizeRange = (labels: string[]) =>
                   sizes={gallerySizes(colour.images.length)}
                   quality={index === 0 ? 75 : 60}
                   priority={c === firstColour && index === 0}
+                  secondary={!(c === firstColour && index === 0)}
                 />
               ))}
             </div>
@@ -110,6 +111,7 @@ const sizeRange = (labels: string[]) =>
                 sizes={gallerySizes(images.length)}
                 quality={index === 0 ? 75 : 60}
                 priority={index === 0}
+                secondary={index !== 0}
               />
             ))}
           </div>
