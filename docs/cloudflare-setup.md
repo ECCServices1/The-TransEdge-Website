@@ -43,7 +43,8 @@ certificate; and there is no wildcard record.
 ### The records
 
 **Proxy status matters.** Everything in this table is **DNS only** (the grey
-cloud). Cloudflare's import marks every `A` and `CNAME` record **Proxied**, so
+cloud), except the two website records, which since the launch belong to the
+Worker and are proxied by design. Cloudflare's import marks every `A` and `CNAME` record **Proxied**, so
 every one has to be switched off by hand before activating. Proxied, the Google
 and Connect Hub addresses lose their certificates, and the email signing
 records stop answering altogether: a proxied name only returns Cloudflare's own
@@ -67,8 +68,15 @@ address, never the TXT record behind it, so DKIM and DMARC fail silently.
 | CNAME | `mail` | `ghs.google.com` | | Google Workspace |
 | CNAME | `calendar` | `ghs.google.com` | | Google Workspace |
 | CNAME | `docs` | `ghs.google.com` | | Google Workspace |
-| A | `@` | `185.230.63.171`, `185.230.63.107`, `185.230.63.186` | | The Wix site, **until launch** |
-| CNAME | `www` | `cdn3.wixdns.net` | | The Wix site, **until launch** |
+| Custom domain | `@` | the Worker `the-transedge-website` | | The website, redirected to `www`. Since 5 October 2026 |
+| Custom domain | `www` | the Worker `the-transedge-website` | | The website. Since 5 October 2026 |
+
+The two website records are created and managed by the Worker's custom
+domains: they show in the DNS list, but they are changed under the Worker's
+**Domains & Routes**, not in DNS. Until the launch they were the Wix site:
+three `A` records for `@` (`185.230.63.171`, `185.230.63.107`,
+`185.230.63.186`) and a CNAME for `www` to `cdn3.wixdns.net`, all DNS only.
+They are kept here because putting them back is the rollback (Step 2).
 
 `m` (a CNAME to `www48.wixdns.net`) is Wix's old mobile site and can be left
 behind.
@@ -113,7 +121,7 @@ The steps, kept apart so that if email stops, the cause is obvious:
    holds every record, so nothing visible changes. If anything does break, it
    can only be a DNS record, and the table above says which.
 2. **Point `www` at the new site.** This is the launch, and the launch checklist
-   governs it.
+   governs it. Done 5 October 2026.
 
 ### Step 0: find the account that holds the registration
 
@@ -180,35 +188,57 @@ Transformation Edge Ltd, with a church email address.
    outside address and reply to it; open `connect.thetransedge.com` and sign in;
    open `www.thetransedge.com`.
 
-**The old Wix site after the switch.** With the nameservers no longer pointing
-at Wix, Wix may treat the domain as disconnected. If, after the two days, the
-old site stops appearing, either change the domain's connection method in Wix
-to pointing and set the records Wix shows in Cloudflare, as DNS only, or treat
-it as the moment to launch. Email and Connect do not depend on this either
-way.
+**The old Wix site after the switch.** Superseded the same day: the new site
+launched on 5 October 2026 (Step 2). Wix may now report the domain as
+disconnected. Leave that alone: do not reconnect the domain in Wix, and do not
+select **Transfer to Wix**.
 
 ### Step 2: the new site on the domain
 
-Only when the launch checklist says so.
+**Done 5 October 2026.** Afterwards, Google's and Cloudflare's public resolvers
+both answered `104.21.15.13` and `172.67.161.1` (Cloudflare) for
+`www.thetransedge.com` and `thetransedge.com`, and the MX records were
+unchanged. The client confirmed by hand that the new site loads on `www`, that
+`thetransedge.com/give` lands on `www.thetransedge.com/give`, and that an old
+Wix address redirects to the shop. The site went live by the client's decision
+with launch checklist items still open; the checklist records which.
 
-1. In Cloudflare, **Workers & Pages**, `the-transedge-website`, **Settings**,
-   **Domains & Routes**, **Add**, **Custom domain**: `www.thetransedge.com`.
-   If Cloudflare refuses because a record already exists, delete the `www`
-   record that points at Wix, and add the custom domain again. Cloudflare
-   creates the replacement record and the certificate itself.
-2. Add `thetransedge.com` (no `www`) as a second custom domain the same way,
-   deleting the three Wix `A` records first if asked.
-3. **Rules**, **Redirect Rules**, create from the template **Redirect from root
-   to WWW**. The bare domain then sends everyone to `www`, which is the
-   canonical address the whole site is built around.
-4. Check `https://www.thetransedge.com` loads the new site,
+The steps as done, for the record and for any repeat:
+
+1. **SSL/TLS**, **Edge Certificates**: check the Universal certificate is
+   **Active**, and turn on **Always Use HTTPS**. The redirect rule in step 5
+   matches `https` only, so without this a plain `http://` address is served
+   as it is, unencrypted and not redirected.
+2. Work at a quiet time, with **DNS** open in a second tab. Between deleting a
+   record and adding its custom domain the name points nowhere, and a resolver
+   that asks in that gap can remember "no such name" for up to 30 minutes, the
+   zone's negative-caching time (the last number in its SOA record).
+3. In **DNS**, delete the `www` CNAME. Straight away, in **Workers & Pages**,
+   `the-transedge-website`, **Settings**, **Domains & Routes**, select **Add
+   Domain** (not Add Route) and enter `www.thetransedge.com`. Cloudflare
+   creates the record and the certificate itself. If it says a record already
+   exists, the old one has not been deleted yet.
+4. The same for the bare domain: delete the three `A` records for `@`, then
+   **Add Domain** `thetransedge.com`. Leave the MX and TXT records alone.
+5. **Rules**, **Redirect Rules**, template **Redirect from root to WWW**. It
+   should read: wildcard pattern, request URL `https://thetransedge.com/*`,
+   target URL `https://www.thetransedge.com/${1}`, 301, **Preserve query
+   string** ticked. Not the template beside it, **Redirect from WWW to root**,
+   which points the other way. With both rules live, the two addresses send
+   visitors back and forth and the site never loads.
+6. Check `https://www.thetransedge.com` loads the new site,
    `https://thetransedge.com/give` lands on `https://www.thetransedge.com/give`,
-   and an old Wix address such as `/product-page/anything` redirects rather than
-   showing a 404.
-5. Re-run the checks in the launch checklist's "On the day" list.
+   an old Wix address such as `/product-page/anything` redirects rather than
+   showing a 404, and `http://thetransedge.com` ends on
+   `https://www.thetransedge.com`. The last check was added after the launch
+   and is still to be done.
+7. Re-run the checks in the launch checklist's "On the day" list.
 
-If anything is wrong, removing the two custom domains and putting the Wix
-records back returns the old site within minutes. That is the whole rollback.
+**Rollback.** Delete the redirect rule, remove the two custom domains under
+**Domains & Routes**, and put back the three `A` records and the `www` CNAME
+listed under the records table, all **DNS only**. The old site returns within
+minutes, for as long as the Wix subscription is kept, which is why the launch
+checklist keeps Wix for thirty days.
 
 ### Later: the registration itself
 

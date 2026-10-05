@@ -127,6 +127,9 @@ launch is pointing `www` at the new site. The steps for both, and the full list
 of records that have to come across with the DNS, are in
 `docs/cloudflare-setup.md`.
 
+**Launched 5 October 2026**, by the client's decision, with the unticked items
+below still open. They are now post-launch work.
+
 - [x] Registrar account found: Hover, renewal paid to 23 July 2036 (5 October 2026)
 - [ ] Hover contact details name The Transformation Edge Ltd and a church email
 - [x] DNS moved to Cloudflare, 5 October 2026; every record verified identical
@@ -156,15 +159,21 @@ of records that have to come across with the DNS, are in
 
 ## On the day
 
-1. Confirm the DNS has already moved to Cloudflare and email still works.
-2. Attach `www.thetransedge.com` and `thetransedge.com` to the Worker as custom
-   domains, and add the root-to-www redirect rule (Step 2 in
+5 October 2026.
+
+1. **Done.** Confirm the DNS has already moved to Cloudflare and email still works.
+2. **Done.** Attach `www.thetransedge.com` and `thetransedge.com` to the Worker as
+   custom domains, and add the root-to-www redirect rule (Step 2 in
    `docs/cloudflare-setup.md`).
-3. Open an old Wix address and confirm it redirects rather than showing a 404.
-4. Confirm TLS, HSTS and the security headers are live.
-5. Re-run Lighthouse against the live domain.
-6. Watch the uptime monitor and the Cloudflare analytics for the first hour.
-7. Do not remove the Wix site for thirty days.
+3. **Done**, by hand. Open an old Wix address and confirm it redirects rather
+   than showing a 404.
+4. **Partly.** Confirm TLS, HSTS and the security headers are live. TLS is: the
+   site loads over `https`. HSTS, the other headers, and `http://` ending on
+   `https://www`, are still to be checked on the live domain.
+5. **Open.** Re-run Lighthouse against the live domain.
+6. **Open.** Watch the uptime monitor and the Cloudflare analytics for the first
+   hour. There is no uptime monitor yet.
+7. Do not remove the Wix site for thirty days: not before 4 November 2026.
 
 ## 30-day measurement plan
 
