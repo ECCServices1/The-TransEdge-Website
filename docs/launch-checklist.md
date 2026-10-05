@@ -119,8 +119,16 @@ conventions, and the client ruled on 3 September 2026 that this is a clean build
 and the live Wix route list is not needed. The rules stay as a courtesy net for
 printed bulletins and QR codes.
 
-## Before the DNS switch
+## Before launch
 
+Moving the domain's DNS from Wix to Cloudflare is not the launch, and none of
+the items below block it: done properly it changes nothing anybody can see. The
+launch is pointing `www` at the new site. The steps for both, and the full list
+of records that have to come across with the DNS, are in
+`docs/cloudflare-setup.md`.
+
+- [ ] DNS moved to Cloudflare, with email, Connect and the Wix site all
+      confirmed working on Cloudflare's nameservers
 - [x] Bank details real, and the linter's placeholder warning gone (confirmed 3 September 2026)
 - [ ] Turnstile keys set, and the contact and prayer Workers deployed
 - [ ] `CONNECT_API_URL` and token set, or the static-content decision recorded
@@ -138,9 +146,11 @@ printed bulletins and QR codes.
 
 ## On the day
 
-1. Deploy to production, DNS still on Wix.
-2. Run the redirect verification loop against the Pages URL.
-3. Switch `www` and the apex to Cloudflare.
+1. Confirm the DNS has already moved to Cloudflare and email still works.
+2. Attach `www.thetransedge.com` and `thetransedge.com` to the Worker as custom
+   domains, and add the root-to-www redirect rule (Move 2 in
+   `docs/cloudflare-setup.md`).
+3. Open an old Wix address and confirm it redirects rather than showing a 404.
 4. Confirm TLS, HSTS and the security headers are live.
 5. Re-run Lighthouse against the live domain.
 6. Watch the uptime monitor and the Cloudflare analytics for the first hour.
