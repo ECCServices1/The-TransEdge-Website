@@ -334,6 +334,14 @@ collections:
                     label: One line for the size guide
                     widget: string
                     required: false
+                  - name: price
+                    label: Price for this fit, if different
+                    widget: string
+                    required: false
+                    pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 45.00']
+                    hint: >-
+                      For example, kids' sizes for less. Leave empty to use the
+                      product's price. "Price confirmed" covers this price too.
                   - name: sizes
                     label: Sizes
                     label_singular: size

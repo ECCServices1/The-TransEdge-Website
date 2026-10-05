@@ -33,6 +33,7 @@ import {
   formatMoney,
   postingAvailable,
   coloursOf,
+  fitPriceNotes,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -73,6 +74,7 @@ const listOf = (names: string[]) =>
                 const cents = shownPriceCents(product);
                 const orderable = isOrderable(product);
                 const colours = coloursOf(product);
+                const otherPrices = fitPriceNotes(product);
                 return (
                   <li class="range__item" data-reveal>
                     <a class="card" href={`/shop/${product.slug}`}>
@@ -112,6 +114,11 @@ const listOf = (names: string[]) =>
                             </span>
                           )}
                         </p>
+                        {otherPrices.length > 0 && (
+                          <p class="card__also">
+                            {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
+                          </p>
+                        )}
                       </div>
                     </a>
                   </li>
@@ -250,6 +257,12 @@ const listOf = (names: string[]) =>
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card__also {
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
     font-variant-numeric: tabular-nums;
   }
 

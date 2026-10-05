@@ -18,7 +18,7 @@
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
 import { CHURCH } from '../../data/church.mjs';
-import { PRODUCTS, postingAvailable, toCents, SHIPPING } from '../../lib/shop.mjs';
+import { PRODUCTS, postingAvailable, toCents, fitsOf, fitUnitCents, SHIPPING } from '../../lib/shop.mjs';
 
 /* Only what the script needs to draw and price a line. */
 const catalogue = PRODUCTS.map((product) => ({
@@ -27,6 +27,12 @@ const catalogue = PRODUCTS.map((product) => ({
   name: product.name,
   category: product.category,
   cents: toCents(product.price) ?? 0,
+  /* Fits with a price of their own, such as kids' sizes. */
+  fitCents: Object.fromEntries(
+    fitsOf(product)
+      .filter((fit) => fit.price !== undefined && fit.name)
+      .map((fit) => [fit.name, fitUnitCents(product, fit) ?? 0])
+  ),
   limit: product.limitPerOrder ?? 10,
 }));
 
@@ -136,6 +142,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
     name: string;
     category: string;
     cents: number;
+    fitCents: Record<string, number>;
     limit: number;
   };
 
@@ -221,7 +228,8 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
       items.forEach((item) => {
         const entry = catalogue.find((e) => e.sku === item.sku)!;
         const qty = Math.min(Math.max(Number(item.qty) || 1, 1), entry.limit);
-        const lineTotal = entry.cents * qty;
+        const unit = (item.fit && entry.fitCents[item.fit]) || entry.cents;
+        const lineTotal = unit * qty;
         subtotal += lineTotal;
 
         const li = document.createElement('li');
@@ -244,7 +252,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
 
         const each = document.createElement('p');
         each.className = 'line__each';
-        each.textContent = `${money(entry.cents)} each`;
+        each.textContent = `${money(unit)} each`;
         words.append(each);
 
         const controls = document.createElement('div');

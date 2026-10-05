@@ -169,22 +169,25 @@ out in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and book covers. The RAIN clothing
   shows the client's design mockups until the garments are printed, and the books
-  show "Cover to come". Prices were confirmed on 5 October 2026: the t-shirt $35,
-  the hooded jumper $65 and Do Not Bow $20. Speak Life has no price yet, and a
-  product cannot go on sale until somebody ticks that its price has been checked,
-  which the build enforces.
+  show "Cover to come". Prices were confirmed on 5 October 2026: the t-shirt $35
+  ($25 in kids' sizes), the hooded jumper $65 ($45 in kids' sizes) and Do Not Bow
+  $20. Speak Life has no price yet, and a product cannot go on sale until
+  somebody ticks that its price has been checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **The Stripe secret key and the GST tax rate**, set on the Worker by the client.
-  Neither goes anywhere near this repository. Without the key the checkout replies
-  with a message asking people to call, which is the right way to fail.
-- **A legal review of `/shop/terms`**, and an accountant's look at a real Stripe
-  receipt to confirm it works as an Australian tax invoice.
+- **The Stripe secret key and the GST tax rate**, set on the Worker by the client,
+  who will set up the shop's side of Stripe later. Neither goes anywhere near this
+  repository. Without the key the checkout replies with a message asking people
+  to call, which is the right way to fail.
+- **An accountant's look at a real Stripe receipt**, to confirm it works as an
+  Australian tax invoice.
 
-**The decision that is genuinely open:** whether merchandise income should run
-through the same Stripe account as giving, which is how it is built, or a second
-account of its own. The client chose the same account. It is worth revisiting with
-whoever keeps the books, because giving and trading income sitting in one payout
-stream is more work to separate later than to separate now. Changing it is one
-secret, not a rebuild.
+`/shop/terms` stands as a placeholder: the client decided on 5 October 2026
+that its legal review comes later and does not hold up opening.
+
+**Stripe account, decided:** merchandise runs through the same Stripe account as
+giving, the client confirmed on 5 October 2026. It is still worth a word with
+whoever keeps the books, because giving and trading income in one payout stream
+is more work to separate later than to separate now. Changing it is one secret,
+not a rebuild.

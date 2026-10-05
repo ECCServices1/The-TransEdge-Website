@@ -77,7 +77,8 @@ export const DRAFT_PAGES = [
     route: 'shop',
     reason: 'awaiting-content',
     needs:
-      'Photographs of the real merchandise, confirmed prices, and the postage rate. ' +
+      'Photographs of the real merchandise and the book covers, the postage rate, ' +
+      'and the shop set up in Stripe. Every price is confirmed except Speak Life. ' +
       'The shop is built and works; nothing in it is on sale yet.',
   },
   {

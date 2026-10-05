@@ -36,6 +36,7 @@ import {
   needsSize,
   coloursOf,
   fitsOf,
+  fitPriceNotes,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -54,6 +55,7 @@ const colours = coloursOf(product);
 const fits = fitsOf(product);
 const sized = needsSize(product);
 const isBook = product.category === 'book';
+const otherPrices = fitPriceNotes(product);
 const images = product.images ?? [];
 
 /* The colour shown first: the first one that can be ordered, or the first. */
@@ -125,6 +127,13 @@ const sizeRange = (labels: string[]) =>
         {cents ? formatMoney(cents) : 'Price to come'}
         {cents && <span class="product__gst">includes GST</span>}
       </p>
+      {
+        otherPrices.length > 0 && (
+          <p class="product__fit-prices">
+            {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
+          </p>
+        )
+      }
       {!orderable && product.statusNote && <p class="product__status">{product.statusNote}</p>}
 
       {product.description && <p class="product__description">{product.description}</p>}
@@ -349,6 +358,10 @@ const sizeRange = (labels: string[]) =>
     font-size: var(--text-2);
     line-height: var(--text-2-leading);
     font-variant-numeric: tabular-nums;
+  }
+
+  .product__fit-prices {
+    margin-block-start: calc(var(--space-s) * -1);
   }
 
   .product__gst,

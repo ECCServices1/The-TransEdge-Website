@@ -28,7 +28,15 @@
  * quietly has a gap in it.
  */
 import Button from '../Button.astro';
-import { DEFAULT_LIMIT, fitsOf, needsSize, coloursOf } from '../../lib/shop.mjs';
+import {
+  DEFAULT_LIMIT,
+  fitsOf,
+  needsSize,
+  coloursOf,
+  fitUnitCents,
+  priceCents,
+  formatMoney,
+} from '../../lib/shop.mjs';
 import { CHURCH } from '../../data/church.mjs';
 
 interface Props {
@@ -43,6 +51,12 @@ const fits = sized ? fitsOf(product) : [];
 const chooseFit = fits.length > 1;
 const limit = product.limitPerOrder ?? DEFAULT_LIMIT;
 const quantities = Array.from({ length: Math.min(limit, 10) }, (_, i) => i + 1);
+/* A fit that costs something different from the product says so on its button. */
+const basePrice = priceCents(product);
+const fitPrice = (fit: (typeof fits)[number]) => {
+  const cents = fitUnitCents(product, fit);
+  return cents && cents !== basePrice ? formatMoney(cents) : null;
+};
 const firstFit = Math.max(
   0,
   fits.findIndex((fit) => fit.sizes.some((size) => size.available))
@@ -73,6 +87,14 @@ const firstFit = Math.max(
                 data-fit-choice={f}
               />
               <span>{fit.name}</span>
+              {/* The hidden comma keeps the name and the price apart when the
+                  choice is read aloud, as "Kids, $45.00" rather than one word. */}
+              {fitPrice(fit) && (
+                <span class="buy__fit-price">
+                  <span class="visually-hidden">, </span>
+                  {fitPrice(fit)}
+                </span>
+              )}
             </label>
           ))}
         </div>
@@ -288,6 +310,11 @@ const firstFit = Math.max(
   .buy__choice:has(input:focus-visible) {
     outline: var(--border-thick) solid var(--color-focus);
     outline-offset: var(--color-focus-offset);
+  }
+
+  .buy__fit-price {
+    margin-inline-start: var(--space-2xs);
+    font-variant-numeric: tabular-nums;
   }
 
   .buy__choice--gone {

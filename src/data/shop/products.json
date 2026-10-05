@@ -159,6 +159,7 @@
         {
           "name": "Kids",
           "note": "Australian kids' sizes, which run roughly with age.",
+          "price": "45.00",
           "sizes": [
             {
               "label": "4",
@@ -343,6 +344,7 @@
         {
           "name": "Kids",
           "note": "Australian kids' sizes, which run roughly with age.",
+          "price": "25.00",
           "sizes": [
             {
               "label": "2",

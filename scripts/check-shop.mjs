@@ -170,6 +170,13 @@ for (const product of PRODUCTS) {
     }
     if (fitNames.has(fit.name)) problems.push(`${where}: fit "${fit.name}" is listed twice.`);
     fitNames.add(fit.name);
+    if (fit.price !== undefined) {
+      if (toCents(fit.price) === null) {
+        problems.push(`${where}: fit ${label} has price "${fit.price}", which is not dollars and cents, like "45.00".`);
+      } else if (product.status === 'on-sale' && toCents(fit.price) === 0) {
+        problems.push(`${where} is on sale with fit ${label} at $0.00.`);
+      }
+    }
     if (!Array.isArray(fit.sizes) || fit.sizes.length === 0) {
       problems.push(`${where}: fit ${label} has no sizes. List the whole run, even if every size is out of stock.`);
     }

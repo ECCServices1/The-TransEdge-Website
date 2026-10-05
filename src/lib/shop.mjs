@@ -37,11 +37,14 @@ export { variantLabel } from './variant.mjs';
  *
  * A fit is one size run: "Unisex", "Women's", "Kids". Clothing that comes in a
  * single run can list `sizes` on the product instead, which reads as one fit
- * with no name.
+ * with no name. A fit can carry its own price, as kids' sizes usually do; one
+ * that does not costs the product's price. The product's `priceConfirmed`
+ * covers every price on it.
  *
  * @typedef {object} ProductFit
  * @property {string} name
  * @property {string} [note]   One line for the size guide.
+ * @property {string} [price]  Dollars, GST included. Left out, the product's price.
  * @property {ProductSize[]} sizes
  *
  * @typedef {object} ProductImage
@@ -158,6 +161,29 @@ export const priceCents = (product) => toCents(product.price);
  */
 export const shownPriceCents = (product) =>
   product.priceConfirmed ? priceCents(product) || null : null;
+
+/**
+ * What one of a product costs in a fit: the fit's own price where it has one,
+ * otherwise the product's.
+ * @param {Product} product
+ * @param {ProductFit|null|undefined} fit
+ */
+export const fitUnitCents = (product, fit) => toCents(fit?.price ?? product.price);
+
+/**
+ * The fits priced differently from the product, to be shown beside its price:
+ * "Kids sizes $45.00". Confirmed prices only, like every other price a visitor
+ * sees.
+ * @param {Product} product
+ * @returns {{ name: string, cents: number }[]}
+ */
+export function fitPriceNotes(product) {
+  if (!product.priceConfirmed) return [];
+  const base = priceCents(product);
+  return fitsOf(product)
+    .filter((fit) => fit.price !== undefined && toCents(fit.price) !== base)
+    .map((fit) => ({ name: fit.name, cents: /** @type {number} */ (toCents(fit.price)) }));
+}
 
 /** Clothing is the only kind that needs a size. @param {Product} product */
 export const needsSize = (product) => product.category === 'apparel';
@@ -292,11 +318,7 @@ export function validateBasket(items) {
       continue;
     }
 
-    const unitCents = priceCents(product);
-    if (!unitCents) {
-      errors.push(`${product.name} has no usable price.`);
-      continue;
-    }
+    let unitCents = priceCents(product);
 
     /** A product sold in colours must name one we said was available. */
     let colour = null;
@@ -330,6 +352,13 @@ export function validateBasket(items) {
       }
       fit = chosenFit.name || null;
       size = match.label;
+      /* Kids' sizes, for one, can cost less than the rest. */
+      unitCents = fitUnitCents(product, chosenFit);
+    }
+
+    if (!unitCents) {
+      errors.push(`${product.name} has no usable price.`);
+      continue;
     }
 
     const limit = product.limitPerOrder ?? DEFAULT_LIMIT;

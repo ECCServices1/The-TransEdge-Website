@@ -6,9 +6,10 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 ## What is in it
 
 As of 5 October 2026, nothing is on sale yet and four things are on the range as
-coming soon. The client confirmed three prices that day, and they show on the
-range: the t-shirt $35, the hooded jumper $65 and Do Not Bow $20, GST included,
-one price for every fit and size.
+coming soon. The client confirmed the prices that day, GST included, and they
+show on the range: the t-shirt $35 and $25 in kids' sizes, the hooded jumper $65
+and $45 in kids' sizes, and Do Not Bow $20. A fit can carry its own price; one
+without costs the product's price.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
@@ -131,7 +132,7 @@ stock, tick the size back on at `/admin`.
 
 ## What has to be set up before the shop opens
 
-Four things, none of which are code.
+Three things, none of which are code.
 
 1. **The Stripe secret key**, set on the Worker, never in this repository:
    ```
@@ -153,14 +154,21 @@ Four things, none of which are code.
    applied. A compliant Australian tax invoice also wants the words "tax invoice"
    and the ABN on it, which is Stripe receipt configuration. The accountant should
    look at a real receipt before the first sale rather than after.
-4. **Legal review of `/shop/terms`.** It is drafted and on the draft register as
-   `awaiting-legal`, alongside the privacy policy and the terms of use. The shop
-   should not open to the public until somebody has read it.
 
-Then remove `shop`, `shop/*`, `shop/terms` from `src/data/draft-pages.mjs`, take
-`noindex` off those pages, and add Shop to the primary navigation in
-`Header.astro`. The two transactional entries, `shop/basket` and
-`shop/order-complete`, stay on the register permanently.
+Stripe is the same account as giving, confirmed by the client on 5 October 2026.
+The client is setting up the shop's side of it, the key and the tax rate above,
+later; until then the checkout tells anybody who tries to pay to call.
+
+`/shop/terms` is drafted and on the draft register as `awaiting-legal`, alongside
+the privacy policy and the terms of use. The client decided on 5 October 2026
+that the draft stands as a placeholder and is reviewed later, so the review does
+not hold up opening.
+
+Then remove `shop` and `shop/*` from `src/data/draft-pages.mjs`, take `noindex`
+off those pages, and add Shop to the primary navigation in `Header.astro`.
+`shop/terms` keeps its entry, its `noindex` and its draft notice until the review
+is done. The two transactional entries, `shop/basket` and `shop/order-complete`,
+stay on the register permanently.
 
 ## What the build refuses to let through
 
