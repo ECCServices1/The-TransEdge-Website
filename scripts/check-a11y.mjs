@@ -125,6 +125,14 @@ for (const path of pages) {
          forced onto a surface it was not designed against. */
       viewport: { width: 390, height: 844 },
     });
+    /* Turnstile, the forms' spam check, is kept out. It is Cloudflare's widget
+       in Cloudflare's frame, not this site's markup, and in this sweep it never
+       settles: served from 127.0.0.1, which is not one of the widget's
+       hostnames, the prayer page (the one form near enough the top to load it
+       at once) never went network-idle once the real site key was in, and the
+       sweep timed out. Blocked, every page is audited as this site renders it,
+       with the widget's empty container in place. */
+    await context.route('https://challenges.cloudflare.com/**', (route) => route.abort());
     const page = await context.newPage();
     await page.goto(base + path, { waitUntil: 'networkidle' });
 

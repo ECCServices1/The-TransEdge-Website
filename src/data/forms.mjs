@@ -22,12 +22,14 @@
 /**
  * Cloudflare Turnstile's site key, the public half of the spam check. It is
  * safe in the page source by design. The secret half lives only in the
- * Worker's settings in Cloudflare, as TURNSTILE_SECRET_KEY.
+ * Worker's settings in Cloudflare, as TURNSTILE_SECRET_KEY, and never here.
  *
- * Until the real key replaces this placeholder the widget cannot load and no
- * form can be sent; the check script says so on every build.
+ * The widget was created in the church's Cloudflare account on 5 October 2026.
+ * Which addresses may use it is set there, not here; docs/forms.md lists them.
+ * If the widget is ever recreated, both halves change: the new site key goes
+ * here and the new secret on the Worker.
  */
-export const TURNSTILE_SITE_KEY = 'TURNSTILE_SITE_KEY_NOT_SET';
+export const TURNSTILE_SITE_KEY = '0x4AAAAAAFOPwtxgRGJ7GTxZ';
 
 /** The address the website sends as. It is never a mailbox anyone reads. */
 export const FORM_SENDER = {
