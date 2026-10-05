@@ -12,6 +12,12 @@
  * inclusive price is both the Australian Consumer Law position and the plainest
  * thing for a reader.
  *
+ * The range is in sections, clothing first and then books, and each card
+ * shows what a visitor needs to choose: the picture, the name, the price, and
+ * for clothing the colours it comes in, named for anybody who cannot tell them
+ * apart by eye. Something listed as coming soon is shown with its status in
+ * place of a price, so the range can be seen before it can be bought.
+ *
  * While the shop is unpublished this page is noindex and is on the draft
  * register. Publishing it is a data change plus two register edits, not a
  * rebuild.
@@ -21,24 +27,27 @@ import Button from '../../components/Button.astro';
 import ProductImage from '../../components/shop/ProductImage.astro';
 import { CHURCH } from '../../data/church.mjs';
 import {
-  listedProducts,
-  shopHasStock,
+  listedByCategory,
   isOrderable,
-  priceCents,
+  shownPriceCents,
   formatMoney,
   postingAvailable,
+  coloursOf,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
-const products = listedProducts();
-const anythingToSell = shopHasStock();
+const sections = listedByCategory();
+
+/* "Forest green, Chocolate and Rust". */
+const listOf = (names: string[]) =>
+  names.length > 1 ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}` : names.join('');
 ---
 
 <PageLayout
   title="Shop"
   description={`Merchandise from The Transformation Edge, a church in ${CHURCH.place}. Collect at our Sunday gathering or have it posted.`}
   route="shop"
-  standfirst="A few well made things, carrying the mark."
+  standfirst="Clothing that carries the mark, and books from our pastors."
   noindex
 >
   <div class="shop">
@@ -53,35 +62,64 @@ const anythingToSell = shopHasStock();
     </section>
 
     {
-      anythingToSell ? (
-        <ul class="range" role="list">
-          {products.map((product, index) => {
-            const cents = priceCents(product);
-            const orderable = isOrderable(product);
-            return (
-              <li class="range__item" data-reveal>
-                <a class="card" href={`/shop/${product.slug}`}>
-                  <ProductImage
-                    product={product}
-                    ratio="4 / 5"
-                    sizes="(min-width: 60rem) 20rem, (min-width: 40rem) 45vw, 100vw"
-                    quality={55}
-                    priority={index === 0}
-                    class="card__image"
-                  />
-                  <div class="card__words">
-                    <h2 class="card__name">{product.name}</h2>
-                    <p class="card__summary">{product.summary}</p>
-                    <p class="card__price">
-                      {cents ? formatMoney(cents) : 'Price to come'}
-                      {!orderable && <span class="card__status">Not available yet</span>}
-                    </p>
-                  </div>
-                </a>
-              </li>
-            );
-          })}
-        </ul>
+      sections.length > 0 ? (
+        sections.map((section, s) => (
+          <section class="section" aria-labelledby={`range-${section.category}`}>
+            <h2 id={`range-${section.category}`} class="section__heading">
+              {section.heading}
+            </h2>
+            <ul class="range" role="list">
+              {section.products.map((product, index) => {
+                const cents = shownPriceCents(product);
+                const orderable = isOrderable(product);
+                const colours = coloursOf(product);
+                return (
+                  <li class="range__item" data-reveal>
+                    <a class="card" href={`/shop/${product.slug}`}>
+                      <ProductImage
+                        product={product}
+                        ratio="4 / 5"
+                        sizes="(min-width: 60rem) 20rem, (min-width: 40rem) 45vw, 100vw"
+                        quality={55}
+                        priority={s === 0 && index === 0}
+                        class="card__image"
+                      />
+                      <div class="card__words">
+                        {product.collection && <p class="card__collection">{product.collection}</p>}
+                        <h3 class="card__name">{product.name}</h3>
+                        {product.category === 'book' && product.author && (
+                          <p class="card__author">{product.author}</p>
+                        )}
+                        <p class="card__summary">{product.summary}</p>
+                        {colours.length > 1 && (
+                          <p class="card__colours">
+                            <span class="card__swatches" aria-hidden="true">
+                              {colours.map((colour) => (
+                                <span class="card__swatch" style={`--swatch: ${colour.swatch}`} />
+                              ))}
+                            </span>
+                            <span class="visually-hidden">
+                              In {listOf(colours.map((colour) => colour.name.toLowerCase()))}.
+                            </span>
+                            <span aria-hidden="true">{colours.length} colours</span>
+                          </p>
+                        )}
+                        <p class="card__price">
+                          {cents && formatMoney(cents)}
+                          {!orderable && (
+                            <span class="card__status">
+                              {product.statusNote || (cents ? 'Not available yet' : 'Price to come')}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
       ) : (
         <section class="empty" aria-labelledby="empty-heading">
           <h2 id="empty-heading">Nothing to order just yet</h2>
@@ -116,6 +154,15 @@ const anythingToSell = shopHasStock();
     color: var(--color-text-muted);
   }
 
+  .section {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .section__heading {
+    font-size: var(--text-2);
+  }
+
   .range {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
@@ -147,6 +194,43 @@ const anythingToSell = shopHasStock();
   .card__name {
     font-size: var(--text-1);
     line-height: var(--text-1-leading);
+  }
+
+  .card__collection {
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .card__author {
+    font-size: var(--text--1);
+  }
+
+  .card__colours {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2xs);
+    font-size: var(--text--1);
+    color: var(--color-text-muted);
+  }
+
+  .card__swatches {
+    display: inline-flex;
+    gap: var(--space-3xs);
+  }
+
+  /* A ring in the border colour, so a dark swatch keeps an edge on a dark
+     ground. */
+  .card__swatch {
+    inline-size: 0.875rem;
+    block-size: 0.875rem;
+    border-radius: 50%;
+    background-color: var(--swatch);
+    box-shadow:
+      0 0 0 1px var(--color-canvas),
+      0 0 0 2px var(--color-border-strong);
   }
 
   .card:hover .card__name {

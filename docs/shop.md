@@ -1,6 +1,26 @@
 # The shop
 
-Merchandise, sold from the site, paid for through Stripe, managed at `/admin`.
+Clothing and books, sold from the site, paid for through Stripe, managed at
+`/admin`.
+
+## What is in it
+
+As of 5 October 2026, nothing is on sale yet and four things are on the range as
+coming soon:
+
+| Product | Kind | Choices | Waiting on |
+|---|---|---|---|
+| RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Price, stock, photographs of the printed garment |
+| RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Price, stock, photographs of the printed garment |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The church's price (the publisher's list price is $17.99), the cover, the format |
+| Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
+
+A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
+
+The RAIN pictures are the client's design mockups of 5 October 2026, each cut
+from a sheet of four into one garment, one colour and one side, and set on a
+plain ground at 4:5. Each says it is a mockup, under the pictures and in its
+alt text. Photographs of the printed garments replace them, file for file.
 
 ## How it fits together
 
@@ -26,7 +46,8 @@ figure you type at `/admin` is the figure on the page and the figure Stripe
 charges. They cannot drift apart, because there is only one of them.
 
 **There is no orders database.** Stripe holds the order. The Checkout Session
-records the items, the size, whether it is being collected or posted, and for a
+records the items, the colour, fit and size of each, whether it is being
+collected or posted, and for a
 posted order the address and phone number. That is the packing list. A second copy
 here would be one more place for somebody's address to live and one more thing to
 keep in step.
@@ -45,15 +66,28 @@ keep in step.
    - **Photographs** need the file to already be in `src/assets/shop/`, named
      without its extension, and every one of them needs alt text. The build fails
      without it, on purpose.
-   - **Sizes**: list the whole run, including sizes that have sold out, and untick
-     rather than delete. The page then says a size has gone instead of quietly
-     leaving a gap.
+   - **Where it shows**: hidden (its own page only), coming soon (on the shop,
+     not for sale) or on sale. **A few words beside the price** says what a
+     coming-soon item is waiting for, such as "Launching 15 November at RAIN 2026".
+   - **Colours**, for clothing that comes in more than one: each has a name, a
+     swatch colour and its own photographs, and choosing it on the page shows
+     them. The name is what the order says, so do not change it once something
+     has sold. Up to eight.
+   - **Fits**, for clothing in more than one size run, such as Unisex, Women's and
+     Kids: each has its own sizes, and a line for the size guide. Up to four.
+     Clothing with a single run uses **Sizes** instead.
+   - **Sizes**, in either place: list the whole run, including sizes that have
+     sold out, and untick rather than delete. The page then says a size has gone
+     instead of quietly leaving a gap. Before something goes on sale, untick
+     every size that is not actually stocked.
+   - **Books** take an author, and a publisher, ISBN and format where known.
 3. Save. That opens a pull request. Somebody else merges it. The site is live about
    ninety seconds later.
 
-A product needs **On sale** and **Price confirmed** both ticked before anybody can
-buy it. Until then it has a page that says it is not available yet, which is what
-lets you write and photograph something before it goes on the range.
+A product needs **On sale** and **Price confirmed** both before anybody can buy
+it. Until then it has a page that says it is not available yet, which is what
+lets you write and photograph something before it goes on the range. A price is
+not shown anywhere until it is confirmed: the page says "Price to come".
 
 ### Photographs
 
@@ -133,9 +167,12 @@ Then remove `shop`, `shop/*`, `shop/terms` from `src/data/draft-pages.mjs`, take
 - a photograph with no alt text, or naming a file that is not there
 - a price that is not dollars and cents
 - a duplicate slug or stock code
-- clothing with no size run
-- a product on sale whose price is unconfirmed, or priced at zero, or whose every
-  size is sold out
+- clothing with no size run, or sizes on anything that is not clothing
+- a colour named twice, without a swatch, or more than eight colours; a fit named
+  twice, or more than four
+- a book with no author, or an ISBN that fails its check digit
+- a product on sale whose price is unconfirmed, or priced at zero, or with no
+  colour or no size left to sell
 - a postage rate left at its placeholder
 
 Every one of those is something that looks fine on a finished-looking page and

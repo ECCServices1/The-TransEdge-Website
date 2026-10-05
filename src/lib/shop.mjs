@@ -25,33 +25,67 @@
  */
 import catalogue from '../data/shop/products.json' with { type: 'json' };
 import shipping from '../data/shop/shipping.json' with { type: 'json' };
+import { variantLabel } from './variant.mjs';
 
 export { BASKET_KEY } from './basket-key.mjs';
+export { variantLabel } from './variant.mjs';
 
 /**
  * @typedef {object} ProductSize
  * @property {string} label
  * @property {boolean} available
  *
+ * A fit is one size run: "Unisex", "Women's", "Kids". Clothing that comes in a
+ * single run can list `sizes` on the product instead, which reads as one fit
+ * with no name.
+ *
+ * @typedef {object} ProductFit
+ * @property {string} name
+ * @property {string} [note]   One line for the size guide.
+ * @property {ProductSize[]} sizes
+ *
  * @typedef {object} ProductImage
  * @property {string} file   Filename inside src/assets/shop, without the extension.
  * @property {string} alt    Required. An image without it fails the build.
+ *
+ * A colour carries its own photographs, so choosing it changes the pictures.
+ * Its name is what the buyer picks and what the order and the receipt say.
+ *
+ * @typedef {object} ProductColour
+ * @property {string} name
+ * @property {string} swatch     The colour as #rrggbb, for the chooser.
+ * @property {boolean} available
+ * @property {ProductImage[]} images
+ *
+ * hidden: built, but listed nowhere. coming-soon: on the range, not for sale.
+ * on-sale: on the range and in the basket, once the price is confirmed.
+ *
+ * @typedef {'hidden'|'coming-soon'|'on-sale'} ProductStatus
  *
  * @typedef {object} Product
  * @property {string} sku
  * @property {string} slug
  * @property {string} name
- * @property {'apparel'|'accessory'|'print'} category
+ * @property {'apparel'|'book'|'accessory'|'print'} category
  * @property {string} price            Dollars, GST included, as "45.00".
  * @property {boolean} priceConfirmed  False until a person has signed off the figure.
- * @property {boolean} available
+ * @property {ProductStatus} status
+ * @property {string} [statusNote]     A few words beside the price, such as "Coming soon".
+ * @property {string} [collection]     For example "RAIN 2026".
  * @property {number} order
  * @property {string} summary
  * @property {string} [description]
  * @property {string} [careNotes]
+ * @property {string} [pictureNote]    Said under the pictures, such as that they are mockups.
+ * @property {string} [author]         Books.
+ * @property {string} [publisher]      Books.
+ * @property {string} [isbn]           Books, ISBN-13.
+ * @property {string} [format]         Books, such as "Paperback".
  * @property {number} [limitPerOrder]
- * @property {ProductImage[]} images
- * @property {ProductSize[]} sizes
+ * @property {ProductImage[]} images   For a product without colours.
+ * @property {ProductColour[]} [colours]
+ * @property {ProductFit[]} [fits]
+ * @property {ProductSize[]} [sizes]
  */
 
 /** How many of one line a single order may carry, when a product does not say. */
@@ -117,8 +151,43 @@ export const productBySku = (sku) => PRODUCTS.find((p) => p.sku === sku) ?? null
 /** @param {Product} product */
 export const priceCents = (product) => toCents(product.price);
 
+/**
+ * The price a visitor may be shown. An unconfirmed figure is never displayed:
+ * a price on a page is a promise, and nobody has made this one yet.
+ * @param {Product} product
+ */
+export const shownPriceCents = (product) =>
+  product.priceConfirmed ? priceCents(product) || null : null;
+
+/** Clothing is the only kind that needs a size. @param {Product} product */
+export const needsSize = (product) => product.category === 'apparel';
+
+/** @param {Product} product @returns {ProductColour[]} */
+export const coloursOf = (product) => product.colours ?? [];
+
+/**
+ * The size runs a product comes in. A single `sizes` list reads as one fit with
+ * no name, so the rest of the shop has one shape to deal with.
+ * @param {Product} product
+ * @returns {ProductFit[]}
+ */
+export function fitsOf(product) {
+  if (product.fits?.length) return product.fits;
+  if (product.sizes?.length) return [{ name: '', sizes: product.sizes }];
+  return [];
+}
+
+/** The picture that stands for a product on the range page. @param {Product} product */
+export const leadImage = (product) =>
+  coloursOf(product)[0]?.images?.[0] ?? product.images?.[0] ?? null;
+
 /** @param {Product} product */
-export const orderableSizes = (product) => product.sizes.filter((size) => size.available);
+const hasOrderableColour = (product) =>
+  coloursOf(product).length === 0 || coloursOf(product).some((colour) => colour.available);
+
+/** @param {Product} product */
+const hasOrderableSize = (product) =>
+  fitsOf(product).some((fit) => fit.sizes.some((size) => size.available));
 
 /**
  * Whether a product can be put in a basket at all.
@@ -130,33 +199,75 @@ export const orderableSizes = (product) => product.sizes.filter((size) => size.a
  * @param {Product} product
  */
 export function isOrderable(product) {
-  if (!product.available || !product.priceConfirmed) return false;
+  if (product.status !== 'on-sale' || !product.priceConfirmed) return false;
   if (!priceCents(product)) return false;
-  if (product.category === 'apparel') return orderableSizes(product).length > 0;
+  if (!hasOrderableColour(product)) return false;
+  if (needsSize(product)) return hasOrderableSize(product);
   return true;
 }
 
+/** Shown on the range page: on sale, or coming soon. @param {Product} product */
+export const isListed = (product) => product.status === 'on-sale' || product.status === 'coming-soon';
+
 /** Everything a visitor may see on the range page, in display order. */
-export const listedProducts = () => PRODUCTS.filter((p) => p.available);
+export const listedProducts = () => PRODUCTS.filter(isListed);
+
+/** How the range page is divided, in the order the sections appear. */
+export const CATEGORY_HEADINGS = /** @type {const} */ ([
+  ['apparel', 'Clothing'],
+  ['book', 'Books'],
+  ['accessory', 'Accessories'],
+  ['print', 'Prints'],
+]);
+
+/** Listed products in their sections, leaving out any section with nothing in it. */
+export const listedByCategory = () =>
+  CATEGORY_HEADINGS.map(([category, heading]) => ({
+    category,
+    heading,
+    products: listedProducts().filter((product) => product.category === category),
+  })).filter((section) => section.products.length > 0);
 
 /** Whether there is anything at all to sell. Drives the empty state. */
 export const shopHasStock = () => PRODUCTS.some(isOrderable);
 
 /**
+ * @typedef {object} BasketLine
+ * @property {Product} product
+ * @property {string|null} colour
+ * @property {string|null} fit
+ * @property {string|null} size
+ * @property {number} qty
+ * @property {number} unitCents
+ * @property {number} totalCents
+ */
+
+/**
+ * What a line is called on the Stripe page and the receipt: the product, then
+ * the colour, fit and size somebody chose.
+ * @param {BasketLine} line
+ */
+export function lineName(line) {
+  const variant = variantLabel(line);
+  return variant ? `${line.product.name}, ${variant}` : line.product.name;
+}
+
+/**
  * Turn what a browser sent into priced lines, or refuse.
  *
- * The only things taken from the request are a sku, a size label and a
- * quantity. Names and prices are read from the catalogue on this side. A
- * basket that has been edited in a console gets the real price or an error,
+ * The only things taken from the request are a sku, a colour, a fit, a size
+ * label and a quantity, and each of the middle three must be one the catalogue
+ * says is available. Names and prices are read from the catalogue on this side.
+ * A basket that has been edited in a console gets the real price or an error,
  * never the price it asked for.
  *
  * @param {unknown} items
- * @returns {{ lines: {product: Product, size: string|null, qty: number, unitCents: number, totalCents: number}[], subtotalCents: number, errors: string[] }}
+ * @returns {{ lines: BasketLine[], subtotalCents: number, errors: string[] }}
  */
 export function validateBasket(items) {
   /** @type {string[]} */
   const errors = [];
-  /** @type {{product: Product, size: string|null, qty: number, unitCents: number, totalCents: number}[]} */
+  /** @type {BasketLine[]} */
   const lines = [];
 
   if (!Array.isArray(items) || items.length === 0) {
@@ -187,15 +298,37 @@ export function validateBasket(items) {
       continue;
     }
 
-    /** Apparel must name a size, and it must be one we said was available. */
-    let size = null;
-    if (product.category === 'apparel') {
-      size = typeof item?.size === 'string' ? item.size : '';
-      const match = orderableSizes(product).find((s) => s.label === size);
+    /** A product sold in colours must name one we said was available. */
+    let colour = null;
+    const colours = coloursOf(product);
+    if (colours.length) {
+      const asked = typeof item?.colour === 'string' ? item.colour : '';
+      const match = colours.find((c) => c.name === asked && c.available);
       if (!match) {
-        errors.push(`${product.name} in size ${size || 'unspecified'} is not available.`);
+        errors.push(`${product.name} in ${asked || 'that colour'} is not available.`);
         continue;
       }
+      colour = match.name;
+    }
+
+    /**
+     * Clothing must name a size, in a fit, that we said was available. A product
+     * with one fit does not need the fit named, because there is no choice.
+     */
+    let fit = null;
+    let size = null;
+    if (needsSize(product)) {
+      const fits = fitsOf(product);
+      const askedFit = typeof item?.fit === 'string' ? item.fit : '';
+      const chosenFit = fits.find((f) => f.name === askedFit) ?? (fits.length === 1 ? fits[0] : undefined);
+      const askedSize = typeof item?.size === 'string' ? item.size : '';
+      const match = chosenFit?.sizes.find((s) => s.label === askedSize && s.available);
+      if (!chosenFit || !match) {
+        const wanted = variantLabel({ colour: null, fit: askedFit || null, size: askedSize || null });
+        errors.push(`${product.name}${wanted ? `, ${wanted},` : ' in that size'} is not available.`);
+        continue;
+      }
+      fit = chosenFit.name || null;
       size = match.label;
     }
 
@@ -207,7 +340,7 @@ export function validateBasket(items) {
     }
     const qty = Math.min(asked, limit);
 
-    lines.push({ product, size, qty, unitCents, totalCents: unitCents * qty });
+    lines.push({ product, colour, fit, size, qty, unitCents, totalCents: unitCents * qty });
   }
 
   const subtotalCents = lines.reduce((sum, line) => sum + line.totalCents, 0);

@@ -161,13 +161,16 @@ for next.
 
 ### 13. The shop, before it can open
 
-The shop is built, verified and reachable at `/shop`, with nothing on sale. Four
-things stand between that and opening, and none of them are code. They are set
+The shop is built, verified and reachable at `/shop`, with nothing on sale: the
+RAIN 2026 hooded jumper and t-shirt and two books, Do Not Bow and Speak Life, are
+listed as coming soon. Four things stand between that and opening, and none of
+them are code. They are set
 out in full in `docs/shop.md`; in short:
 
-- **Photographs of the real merchandise**, and confirmed prices. A product cannot
-  go on sale until somebody ticks that its price has been checked, which the build
-  enforces.
+- **Photographs of the real merchandise**, book covers, and confirmed prices. The
+  RAIN clothing shows the client's design mockups until the garments are printed,
+  and the books show "Cover to come". A product cannot go on sale until somebody
+  ticks that its price has been checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
