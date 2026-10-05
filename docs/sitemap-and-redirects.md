@@ -47,6 +47,12 @@ reproduced on `/who-we-are` and again on `/what-we-believe`, which is where a
 reader looking for them goes. A third page holding the same two paragraphs would
 compete with both.
 
+Until a phase 2 page is built, the old addresses that will lead to it redirect
+to the section that covers it today: `/life-link` to `/life-at-tte#life-link`,
+`/live` to `/watch-and-listen#live-heading`, `/vision` to
+`/who-we-are#vision-heading`, and so on. Pointing a redirect at a page that does
+not exist yet sends the visitor to the 404 page, and `check:links` refuses it.
+
 **Draft** means the page is built, carries a visible notice naming what is
 missing, and is `noindex` until someone signs it off. The list of what each one
 needs is in `docs/open-questions.md`, question 11.
@@ -55,7 +61,9 @@ Outbound, never framed:
 
 - `https://connect.thetransedge.com` from the header, footer and home
 - Edge Community Care Services from `/outreach` and the footer
-- Renovate Health from `/get-in-touch`
+
+No link to Renovate Health: the client removed every reference to it from the
+site in August 2026.
 
 ## Locales
 

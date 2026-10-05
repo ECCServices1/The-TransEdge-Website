@@ -59,8 +59,9 @@ export const DRAFT_PAGES = [
     route: 'life-at-tte',
     reason: 'awaiting-content',
     needs:
-      'What 1B2GaS is, and the nights Life-Link groups meet. Life-Link and ' +
-      'Champions were supplied in September 2026 and are written up in full.',
+      'The nights Life-Link groups meet. Life-Link and Champions were supplied ' +
+      'in September 2026 and 1B2GaS on 5 October 2026, and all three are ' +
+      'written up in full.',
   },
   {
     route: 'privacy-policy',
