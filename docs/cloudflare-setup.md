@@ -29,9 +29,8 @@ things, and only one of them is the website:
 
 1. **The Wix website**, on `www` and the bare domain.
 2. **Email for `frontdesk@thetransedge.com`**, through Google Workspace, plus
-   the Google custom addresses for mail, calendar and docs, and email
-   authentication records for a second sender (the `s1` and `s2` keys) and for
-   Brevo.
+   the Google custom addresses for mail, calendar and docs, and email signing
+   records for Brevo and for Wix's own email marketing (Ascend).
 3. **The TTE Connect Hub** at `connect.thetransedge.com`.
 
 The move is safe exactly when (2) and (3) keep working. They will, provided
@@ -44,9 +43,11 @@ certificate; and there is no wildcard record.
 ### The records
 
 **Proxy status matters.** Everything in this table is **DNS only** (the grey
-cloud). Google's and the Connect Hub's certificates are issued against their own
-servers, and putting Cloudflare's proxy in front of them breaks those
-certificates.
+cloud). Cloudflare's import marks every `A` and `CNAME` record **Proxied**, so
+every one has to be switched off by hand before activating. Proxied, the Google
+and Connect Hub addresses lose their certificates, and the email signing
+records stop answering altogether: a proxied name only returns Cloudflare's own
+address, never the TXT record behind it, so DKIM and DMARC fail silently.
 
 | Type | Name | Content | Priority | Why |
 |---|---|---|---|---|
@@ -57,9 +58,11 @@ certificates.
 | MX | `@` | `aspmx3.googlemail.com` | 50 | Email |
 | TXT | `@` | `brevo-code:c946bc48e6ae4f44745f660d029edc24` | | Brevo verification |
 | TXT | `@` | `openai-domain-verification=dv-O8H4PPOUgF9l3QgqBIe8LOjc` | | OpenAI verification |
-| TXT | `_dmarc` | `v=DMARC1; p=none; rua=mailto:dmarc_agg@vali.email` | | Email reporting |
-| TXT | `s1._domainkey` | see below | | Email signing |
-| TXT | `s2._domainkey` | see below | | Email signing |
+| CNAME | `_dmarc` | `_dmarc.wixemails.com` | | Email reporting, hosted by Wix |
+| CNAME | `brevo1._domainkey` | `b1.thetransedge-com.dkim.brevo.com` | | Brevo email signing |
+| CNAME | `brevo2._domainkey` | `b2.thetransedge-com.dkim.brevo.com` | | Brevo email signing |
+| CNAME | `s1._domainkey` | `s1._domainkey.thetransedge.com.s013.ascendbywix.com` | | Wix email marketing signing |
+| CNAME | `s2._domainkey` | `s2._domainkey.thetransedge.com.s013.ascendbywix.com` | | Wix email marketing signing |
 | A | `connect` | `185.158.133.1` | | The Connect Hub |
 | CNAME | `mail` | `ghs.google.com` | | Google Workspace |
 | CNAME | `calendar` | `ghs.google.com` | | Google Workspace |
@@ -70,14 +73,14 @@ certificates.
 `m` (a CNAME to `www48.wixdns.net`) is Wix's old mobile site and can be left
 behind.
 
-The two signing keys, in full. Cloudflare's import scan does not look for these
-names, so they almost certainly have to be added by hand:
+The signing and reporting records are CNAMEs, not TXT records: Brevo and Wix
+host the keys themselves and can rotate them without anyone touching this
+domain. Copy them as CNAMEs. A copy of the key text as a TXT record would work
+on the day and then break, without warning, the first time either provider
+rotated its key.
 
-```
-s1._domainkey   k=rsa; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC+7IaD0RZFvYvsC8tLmEHinATEHm0CSCVyb/lpHy8RbX10GvSjuhs2MZORP1QY8F//yo2vQGmlRTx5kFegrAMeMavHK/yEokEMUXei46VHk1f9Nfq97HWaR5EV5rijMUBEP6P4iru3Vw/lv4AxwkF0CsEWsTcoT2CF5aHE2v/lHwIDAQAB
-
-s2._domainkey   k=rsa; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDB4KCzhrXVAphOcfaZ9jpO6iKn4af3csRFT8kptBLJkMuS0Sxf1OW+4O0NYizTmo1IDegB9K0/zHz52xO5qX3NAxVoJCyzZqS/IZp3GI36DhfRWFr6PQCjyIl4IH/X5wZgZ9dF2Ww5Dt+8C1rOlYOYbAEvmHE2ETyrmwz3Ntq4NwIDAQAB
-```
+Cloudflare's quick scan on 5 October 2026 found every record above, including
+the `brevo1` and `brevo2` records a by-hand inventory had missed.
 
 This list was gathered by asking for every likely name. A record on a name
 nobody would guess cannot be found that way, so check it against the full list
@@ -104,9 +107,10 @@ whether the cause is the DNS move or the launch.
    Worker cannot be attached to the domain later.
 2. Cloudflare scans the current records and imports what it finds. Go through
    the import against the table above:
-   - add anything missing, in particular the two `_domainkey` records
-   - set **every** record to **DNS only**, including `@` and `www`, so they
-     keep pointing at Wix exactly as they do now
+   - add anything missing (on 5 October 2026 nothing was)
+   - switch **every** record to **DNS only**, including `@` and `www`, so they
+     keep pointing at Wix exactly as they do now; the import marks them all
+     Proxied
    - delete `m`
 3. Cloudflare gives you two nameservers, names like `ada.ns.cloudflare.com`.
 4. In Wix: **Domains**, then `thetransedge.com`, then the name servers setting
@@ -165,6 +169,12 @@ annoyance; leaving the registration at Wix costs nothing in function.
 **Do not cancel the Wix plan until the domain's renewal is safely somewhere
 other than a plan you are cancelling.** Check the renewal date in Wix
 **Domains** before doing anything with the plan.
+
+Three records also lean on Wix, and stop working when Wix stops hosting them.
+`_dmarc` points at `wixemails.com`: before leaving Wix, replace it with a DMARC
+TXT record of your own, which is one line. `s1` and `s2` sign mail sent through
+Wix's email marketing: if that is no longer used, delete them; if it is, it
+stops when the Wix plan does anyway.
 
 ### Found while taking the inventory: email authentication
 
