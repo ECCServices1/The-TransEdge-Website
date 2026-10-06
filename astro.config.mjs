@@ -88,13 +88,26 @@ export default defineConfig({
       // strict and makes the scripts actually run; module scripts are deferred,
       // so the extra file does not hold up the first paint.
       //
-      // Scripts only. Astro reads this same setting to decide which stylesheets
+      // Astro reads this same setting to decide which stylesheets
       // `inlineStylesheets: 'auto'` inlines, so a flat 0 also pushed every small
       // stylesheet into its own render-blocking file: eight of them on the home
-      // page, and 150ms of simulated LCP against a 2000ms budget. Returning
-      // undefined for everything that is not JavaScript keeps the default 4kB
-      // rule for stylesheets and images, exactly as before.
-      assetsInlineLimit: (filePath) => (filePath.endsWith('.js') ? false : undefined),
+      // page, and 150ms of simulated LCP against a 2000ms budget.
+      //
+      // Stylesheets go inline up to 10kB rather than the default 4kB, which
+      // takes in a shop product page's own styles (about 9kB). As a separate
+      // file they held the first paint back until after the requests a browser
+      // makes as a page finishes loading, which Lighthouse then counts: the RAIN
+      // jumper page measured 1970 to 1990ms with the file and 1820 to 1840ms
+      // inline, against a 2000ms budget. The shared layout stylesheet (23kB)
+      // stays a file every page caches. The event list's (11kB) stays a file
+      // too: inline, it would take the home page's compressed HTML past the
+      // 14.6kB a first round trip can carry, which costs a whole round trip.
+      // Images keep the default 4kB rule.
+      assetsInlineLimit: (filePath, content) => {
+        if (filePath.endsWith('.js')) return false;
+        if (filePath.endsWith('.css')) return content.length <= 10 * 1024;
+        return undefined;
+      },
     },
   },
 });

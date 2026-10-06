@@ -27,6 +27,7 @@
     "check:noindex": "node scripts/check-noindex.mjs",
     "check:a11y": "node scripts/check-a11y.mjs",
     "check:shop": "node scripts/check-shop.mjs",
+    "check:bundles": "node scripts/check-bundles.mjs",
     "check:forms": "node scripts/check-forms.mjs"
   },
   "dependencies": {

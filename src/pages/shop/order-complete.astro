@@ -7,10 +7,14 @@
  * a person what happens next. Treating a redirect as proof of payment would be
  * wrong, and there is nothing on this page that depends on it being true.
  *
+ * The emptying, and why it waits for Stripe's session id, is order-complete.ts
+ * in src/components/shop.
+ *
  * Permanently noindex. An order confirmation is not a search result.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
+import ShopScript from '../../components/shop/ShopScript.astro';
 import { CHURCH } from '../../data/church.mjs';
 import { SHIPPING } from '../../lib/shop.mjs';
 ---
@@ -48,31 +52,9 @@ import { SHIPPING } from '../../lib/shop.mjs';
       <Button href="/">Home</Button>
     </p>
   </div>
+
+  <ShopScript />
 </PageLayout>
-
-<script>
-  import { BASKET_KEY } from '../../lib/basket-key.mjs';
-
-  /*
-    The order is with Stripe, so the basket has done its job. Clearing it here
-    rather than before the redirect means somebody who backed out of Stripe's
-    page still has their basket waiting for them.
-
-    Only when Stripe actually sent them, though. The success_url carries a
-    session id, so its absence means this page was reached some other way: a
-    bookmark, a back button, a shared link. Emptying a basket somebody is still
-    filling, because they pressed back one time too many, is a small disaster
-    for them and an invisible one for us.
-  */
-  if (new URLSearchParams(window.location.search).has('session_id')) {
-    try {
-      localStorage.removeItem(BASKET_KEY);
-    } catch {
-      /* A browser blocking site data had nothing stored to begin with. */
-    }
-    window.dispatchEvent(new CustomEvent('tte:basket'));
-  }
-</script>
 
 <style>
   .done {

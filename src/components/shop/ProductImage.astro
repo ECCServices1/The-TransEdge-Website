@@ -29,6 +29,8 @@ interface Props {
   /** Grid thumbnails go out lighter than the main product image. */
   quality?: number;
   priority?: boolean;
+  /** On screen with the lead picture but not it: fetched at low priority. */
+  secondary?: boolean;
   class?: string;
   [key: string]: unknown;
 }
@@ -40,6 +42,7 @@ const {
   sizes = '(min-width: 56rem) 28rem, 100vw',
   quality = 60,
   priority = false,
+  secondary = false,
   class: className = '',
   ...rest
 } = Astro.props;
@@ -70,6 +73,7 @@ const asset = image
   sizes={sizes}
   quality={quality}
   priority={priority}
+  secondary={secondary}
   class={className}
   {...rest}
 />

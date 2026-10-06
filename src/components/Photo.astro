@@ -61,6 +61,15 @@ interface Props {
    * viewport. Everything else stays lazy.
    */
   priority?: boolean;
+  /**
+   * On screen from the start but never the main picture, such as the back view
+   * beside the front on a product page. Fetched at low priority, after what the
+   * first paint needs. Left unmarked, Chrome raises a lazy picture to high
+   * priority if it notices in time that it is on screen, and whether it notices
+   * is down to timing: on the RAIN jumper page that alone moved Lighthouse's
+   * largest-paint estimate by about 70ms from one run to the next.
+   */
+  secondary?: boolean;
   /** Rendered widths, for the srcset. Defaults suit a content-column image. */
   sizes?: string;
   /**
@@ -100,6 +109,7 @@ const {
   ratio = '4 / 3',
   bleed = 'none',
   priority = false,
+  secondary = false,
   sizes = '(min-width: 56rem) 40rem, 100vw',
   cutout = false,
   quality = 80,
@@ -138,7 +148,7 @@ if (src && (!alt || !alt.trim())) {
         quality={quality}
         loading={priority ? 'eager' : 'lazy'}
         decoding={priority ? 'sync' : 'async'}
-        fetchpriority={priority ? 'high' : undefined}
+        fetchpriority={priority ? 'high' : secondary ? 'low' : undefined}
       />
     </figure>
   ) : (

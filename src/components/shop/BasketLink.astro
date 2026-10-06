@@ -10,43 +10,16 @@
  * Inside the shop the link is always present, so the script only ever changes
  * the count inside it rather than adding a control to the row. The count starts
  * empty and is filled in, which moves nothing but the width of this one item.
+ * The script that fills it is basket-count.ts, part of the shop's one script.
  */
+import ShopScript from './ShopScript.astro';
 ---
 
 <a class="basket-link" href="/shop/basket" data-basket-link>
   Basket<span class="basket-link__count" data-basket-count></span>
 </a>
 
-<script>
-  import { BASKET_KEY } from '../../lib/basket-key.mjs';
-
-  const count = document.querySelector<HTMLElement>('[data-basket-count]');
-  if (count) {
-    const paint = () => {
-      let total = 0;
-      try {
-        const raw = localStorage.getItem(BASKET_KEY);
-        const items = raw ? JSON.parse(raw) : [];
-        if (Array.isArray(items)) {
-          total = items.reduce(
-            (sum: number, item: { qty?: unknown }) => sum + (Number(item?.qty) || 0),
-            0
-          );
-        }
-      } catch {
-        /* A browser blocking site data is not an error worth shouting about. */
-      }
-      count.textContent = total > 0 ? ` (${total})` : '';
-    };
-
-    paint();
-    /* Fired by AddToBasket and by the basket page, so the count is right
-       without a reload. */
-    window.addEventListener('tte:basket', paint);
-    /* Another tab changed the basket. */
-    window.addEventListener('storage', paint);
-  }
-</script>
+<ShopScript />
 
 <style>
   .basket-link {

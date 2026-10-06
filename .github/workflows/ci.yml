@@ -80,6 +80,14 @@ jobs:
       - name: Draft register matches the build
         run: npm run check:noindex
 
+      # A module two component scripts share is split into a file of its own,
+      # which the browser only finds after the first script arrives: a round
+      # trip after another on a phone. Two of those on a product page with
+      # something on sale cost about 130ms of a 2000ms LCP budget, and
+      # Lighthouse would only have seen it on the day the shop opened.
+      - name: Page scripts load nothing else
+        run: npm run check:bundles
+
       # axe over every built page, both colour schemes. Lighthouse visits ten
       # URLs and the site builds forty-five, and that gap has cost us twice:
       # a 3:1 token used at body size in five components, of which CI saw one,

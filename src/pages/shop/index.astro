@@ -84,6 +84,7 @@ const listOf = (names: string[]) =>
                         sizes="(min-width: 60rem) 20rem, (min-width: 40rem) 45vw, 100vw"
                         quality={55}
                         priority={s === 0 && index === 0}
+                        secondary={!(s === 0 && index === 0)}
                         class="card__image"
                       />
                       <div class="card__words">

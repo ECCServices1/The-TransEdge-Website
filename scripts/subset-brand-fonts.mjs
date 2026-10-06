@@ -7,8 +7,8 @@
  * Inter comes from TTE Web Typography Handover v1.0, kept unmodified in
  * assets/typography/ so the handover remains the source of truth for the text
  * face. Fraunces is the approved display face and lives in
- * assets/typography/display/, already range-split, so it is copied rather than
- * re-subset.
+ * assets/typography/display/, already range-split, so it is not re-subset; only
+ * its weight range is cut (below).
  *
  * The pairing is deliberate: the handover's discipline with the serif the
  * client approved. See docs/typography.md for what was taken from each.
@@ -21,12 +21,26 @@
  * none. Subsetting to latin and latin-ext is what keeps the body face off the
  * LCP critical path.
  *
- * Variable axes are preserved: --layout-features and the weight axis survive,
- * so Inter is still one variable file across 100 to 900.
+ * WHY THE WEIGHT RANGE IS CUT
+ * Both faces are variable and arrive covering every weight from 100 to 900. The
+ * site draws Inter at 400 to 700 and Fraunces at 450 and 600, measured on
+ * 5 October 2026 from the computed weight of every piece of text on all 68 built
+ * pages at phone and desktop widths. Each file keeps its weight axis but only
+ * the part the site uses: Inter 400 to 700, Fraunces 400 to 600. That took about
+ * 29KB off what every page downloads. The two faces had been 139KB of the shop
+ * page's 190KB, and on the CI's simulated phone connection that was the
+ * difference between passing and failing the 2.0s LCP budget. Every weight in
+ * the range is drawn as before, to within a fraction of a pixel: every page was
+ * screenshotted before and after, and no line of text moved or re-wrapped. The
+ * optical size axes are untouched.
  *
- * Run: npm run fonts:subset
+ * A weight outside the range is drawn at the nearest end of it. A design that
+ * wants, say, Inter at 800 needs the range widened in WEIGHTS below and this
+ * script run again.
+ *
+ * Run: npm run fonts:subset (needs Python's fontTools and brotli)
  */
-import { mkdir, writeFile, stat, rm, copyFile } from 'node:fs/promises';
+import { mkdir, writeFile, stat, rm } from 'node:fs/promises';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
@@ -52,9 +66,22 @@ const RANGES = {
 };
 
 /**
+ * The weight range each face keeps. See WHY THE WEIGHT RANGE IS CUT above; the
+ * @font-face rules declare the same ranges.
+ */
+const WEIGHTS = {
+  Inter: { from: 400, to: 700 },
+  Fraunces: { from: 400, to: 600 },
+};
+
+/** Cut a variable font's weight axis to a range, keeping the axis. */
+const cutWeights = (source, target, { from, to }) =>
+  run('python3', ['-m', 'fontTools.varLib.instancer', source, `wght=${from}:${to}`, '-q', '-o', target]);
+
+/**
  * Fraunces, the display face. Already subset per range by its source, and it
- * carries opsz 9-144 and wght 100-900, so it is copied verbatim rather than run
- * through the subsetter again, which would risk the axes.
+ * carries opsz 9-144 and wght 100-900, so it is not run through the subsetter
+ * again, which would risk the axes. Only its weight range is cut.
  */
 const DISPLAY = [
   { file: 'Fraunces-latin.woff2', range: 'latin', slug: 'fraunces-latin' },
@@ -66,10 +93,15 @@ const FACES = [
   {
     file: 'InterVariable.woff2',
     family: 'Inter',
-    weight: '100 900',
     slug: 'inter',
-    note: 'Body, navigation, buttons, labels. Variable 100 to 900.',
-    preload: true,
+    note: 'Body, navigation, buttons, labels. Variable, cut to 400 to 700.',
+    // Not preloaded. The largest paint across the site is a Fraunces heading,
+    // and preloading Inter as well charged that paint with Inter's bytes: the
+    // Events page went from 2040ms to 1891ms when it stopped (16 August 2026).
+    // Inter swaps in through its size-adjusted fallback. preload.json was
+    // edited by hand at the time, so running this script would have put the
+    // preload back.
+    preload: false,
   },
 ];
 
@@ -100,6 +132,8 @@ for (const face of FACES) {
   for (const [range, unicodes] of Object.entries(RANGES)) {
     const filename = `${face.slug}-${range}.woff2`;
     const target = join(OUT, filename);
+    const subset = join(OUT, `${face.slug}-${range}.subset.woff2`);
+    const { from, to } = WEIGHTS[face.family];
 
     await run('python3', [
       '-m',
@@ -114,18 +148,20 @@ for (const face of FACES) {
       '--no-hinting',
       '--desubroutinize',
       '--drop-tables+=DSIG',
-      `--output-file=${target}`,
+      `--output-file=${subset}`,
     ]);
+    await cutWeights(subset, target, WEIGHTS[face.family]);
+    await rm(subset, { force: true });
 
     const size = (await stat(target)).size;
     after += size;
 
     rules.push(
-      `/* ${face.family} ${face.weight}, ${range}. ${face.note} */\n` +
+      `/* ${face.family} ${from} ${to}, ${range}. ${face.note} */\n` +
         `@font-face {\n` +
         `  font-family: '${face.family}';\n` +
         `  font-style: normal;\n` +
-        `  font-weight: ${face.weight};\n` +
+        `  font-weight: ${from} ${to};\n` +
         `  font-display: swap;\n` +
         `  src: url('/fonts/${filename}') format('woff2');\n` +
         `  unicode-range: ${unicodes.split(',').join(', ')};\n` +
@@ -137,23 +173,24 @@ for (const face of FACES) {
   }
 }
 
-/* Fraunces, copied with its axes intact and preloaded: it draws the h1 on
-   every page, so it is on the critical path. */
+/* Fraunces, with its optical size axis intact and its weight range cut, and
+   preloaded: it draws the h1 on every page, so it is on the critical path. */
 for (const face of DISPLAY) {
   const source = join(SRC, 'display', face.file);
   const filename = `${face.slug}.woff2`;
-  await copyFile(source, join(OUT, filename));
+  const { from, to } = WEIGHTS.Fraunces;
+  await cutWeights(source, join(OUT, filename), WEIGHTS.Fraunces);
+  before += (await stat(source)).size;
   const size = (await stat(join(OUT, filename))).size;
-  before += size;
   after += size;
 
   rules.unshift(
-    `/* Fraunces, variable opsz 9-144 and wght 100-900, ${face.range}.\n` +
+    `/* Fraunces, variable opsz 9-144 and wght ${from}-${to}, ${face.range}.\n` +
       `   The display face. Optical size is set per heading level in base.css. */\n` +
       `@font-face {\n` +
       `  font-family: 'Fraunces';\n` +
       `  font-style: normal;\n` +
-      `  font-weight: 100 900;\n` +
+      `  font-weight: ${from} ${to};\n` +
       `  font-display: swap;\n` +
       `  src: url('/fonts/${filename}') format('woff2');\n` +
       `  unicode-range: ${RANGES[face.range].split(',').join(', ')};\n` +
@@ -161,7 +198,7 @@ for (const face of DISPLAY) {
   );
 
   if (face.range === 'latin') preload.unshift(`/fonts/${filename}`);
-  console.log(`${filename}: ${(size / 1024).toFixed(1)}KB (copied, axes preserved)`);
+  console.log(`${filename}: ${(size / 1024).toFixed(1)}KB (weights ${from} to ${to})`);
 }
 
 const header =
