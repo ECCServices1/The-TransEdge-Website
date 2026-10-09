@@ -16,7 +16,8 @@
  * shows what a visitor needs to choose: the picture, the name, the price, and
  * for clothing the colours it comes in, named for anybody who cannot tell them
  * apart by eye. Something listed as coming soon is shown with its status in
- * place of a price, so the range can be seen before it can be bought.
+ * place of a price, so the range can be seen before it can be bought. Something
+ * another site sells, such as Do Not Bow, names that site in place of a price.
  *
  * While the shop is unpublished this page is noindex and is on the draft
  * register. Publishing it is a data change plus two register edits, not a
@@ -34,6 +35,7 @@ import {
   postingAvailable,
   coloursOf,
   fitPriceNotes,
+  soldElsewhere,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -75,6 +77,13 @@ const listOf = (names: string[]) =>
                 const orderable = isOrderable(product);
                 const colours = coloursOf(product);
                 const otherPrices = fitPriceNotes(product);
+                const elsewhere = soldElsewhere(product);
+                /* Said beside the price while it cannot be bought here. Something
+                   sold elsewhere has no price here to stand in for. */
+                const status = orderable
+                  ? null
+                  : product.statusNote ||
+                    (elsewhere ? null : cents ? 'Not available yet' : 'Price to come');
                 return (
                   <li class="range__item" data-reveal>
                     <a class="card" href={`/shop/${product.slug}`}>
@@ -108,14 +117,10 @@ const listOf = (names: string[]) =>
                           </p>
                         )}
                         <p class="card__price">
-                          {cents && formatMoney(cents)}
-                          {!orderable && (
-                            <span class="card__status">
-                              {product.statusNote || (cents ? 'Not available yet' : 'Price to come')}
-                            </span>
-                          )}
+                          {elsewhere ? `At ${elsewhere.name}` : cents && formatMoney(cents)}
+                          {status && <span class="card__status">{status}</span>}
                         </p>
-                        {otherPrices.length > 0 && (
+                        {!elsewhere && otherPrices.length > 0 && (
                           <p class="card__also">
                             {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
                           </p>

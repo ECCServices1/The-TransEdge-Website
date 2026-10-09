@@ -100,10 +100,8 @@ const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
         </ul>
       </section>
 
-      <!-- The shop is reachable from here rather than from the primary
-           navigation. Nothing is on sale yet, and a tenth item in the header
-           for an empty range would be advertising. Moving it up is one line in
-           Header.astro once there is stock. -->
+      <!-- The shop sits here and in the header's main navigation, so it is
+           easy to find from any page (client, 9 October 2026). -->
       <section class="site-footer__block">
         <h2>Shop</h2>
         <ul role="list">
@@ -133,7 +131,6 @@ const h = (r: string) => resolvedLocaleHref(localeHref, locale, r);
         {CHURCH.legalName}. ABN <span class="ltr-embed">{CHURCH.abn}</span>. {t('footer.charity')}.
       </p>
       <ul class="site-footer__legal-links" role="list">
-        <li><a href={h('who-we-are/safeguarding')}>{t('footer.safeguarding')}</a></li>
         <li><a href={h('privacy-policy')}>{t('footer.privacy')}</a></li>
         <li><a href={h('terms-of-use')}>Terms of use</a></li>
       </ul>

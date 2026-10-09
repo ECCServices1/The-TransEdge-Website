@@ -20,6 +20,13 @@
  * shows every set stacked, which is a long page rather than a wrong one. The
  * colour chooser shows the name beside each swatch, so nobody has to tell a
  * forest green from a navy by eye.
+ *
+ * SOLD ELSEWHERE
+ *
+ * A product with a buyUrl, such as Do Not Bow, is sold by somebody else. Its
+ * page sends people there instead of offering a basket, and leaves out what
+ * only holds for this shop: the price and the GST in it, collection on a
+ * Sunday, the shop terms, and the note that a purchase is not a gift.
  */
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -37,6 +44,7 @@ import {
   coloursOf,
   fitsOf,
   fitPriceNotes,
+  soldElsewhere,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -51,6 +59,7 @@ export const getStaticPaths = (() =>
 const { product } = Astro.props;
 const cents = shownPriceCents(product);
 const orderable = isOrderable(product);
+const elsewhere = soldElsewhere(product);
 const colours = coloursOf(product);
 const fits = fitsOf(product);
 const sized = needsSize(product);
@@ -125,12 +134,16 @@ const sizeRange = (labels: string[]) =>
     <div class="product__words">
       {product.collection && <p class="product__collection">{product.collection}</p>}
 
-      <p class="product__price">
-        {cents ? formatMoney(cents) : 'Price to come'}
-        {cents && <span class="product__gst">includes GST</span>}
-      </p>
       {
-        otherPrices.length > 0 && (
+        !elsewhere && (
+          <p class="product__price">
+            {cents ? formatMoney(cents) : 'Price to come'}
+            {cents && <span class="product__gst">includes GST</span>}
+          </p>
+        )
+      }
+      {
+        !elsewhere && otherPrices.length > 0 && (
           <p class="product__fit-prices">
             {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
           </p>
@@ -169,7 +182,19 @@ const sizeRange = (labels: string[]) =>
       }
 
       {
-        orderable ? (
+        elsewhere ? (
+          <div class="product__held">
+            <p>
+              {isBook ? 'This book is' : 'This is'} sold through {elsewhere.name}, not through
+              this shop. Its price, and getting it to you, are taken care of there.
+            </p>
+            <p class="actions">
+              <Button href={elsewhere.url} external>
+                Go to {elsewhere.name}
+              </Button>
+            </p>
+          </div>
+        ) : orderable ? (
           <AddToBasket product={product} />
         ) : (
           <div class="product__held">
@@ -253,13 +278,17 @@ const sizeRange = (labels: string[]) =>
             </div>
           )
         }
-        <div>
-          <dt>Getting it</dt>
-          <dd>
-            {SHIPPING.collect.label}, free. {SHIPPING.collect.note}
-            {postingAvailable() && ` Or ${SHIPPING.post.label.toLowerCase()}: ${SHIPPING.post.estimate}`}
-          </dd>
-        </div>
+        {
+          !elsewhere && (
+            <div>
+              <dt>Getting it</dt>
+              <dd>
+                {SHIPPING.collect.label}, free. {SHIPPING.collect.note}
+                {postingAvailable() && ` Or ${SHIPPING.post.label.toLowerCase()}: ${SHIPPING.post.estimate}`}
+              </dd>
+            </div>
+          )
+        }
         {
           product.careNotes && (
             <div>
@@ -268,27 +297,36 @@ const sizeRange = (labels: string[]) =>
             </div>
           )
         }
-        <div>
-          <dt>If it is not right</dt>
-          <dd>
-            {sized ? 'Sizes can be exchanged, and anything' : 'Anything'} faulty is put right. The
-            <a href="/shop/terms"> shop terms</a> say how, and your rights under Australian
-            Consumer Law sit on top of them.
-          </dd>
-        </div>
+        {
+          !elsewhere && (
+            <div>
+              <dt>If it is not right</dt>
+              <dd>
+                {sized ? 'Sizes can be exchanged, and anything' : 'Anything'} faulty is put right.
+                The <a href="/shop/terms">shop terms</a> say how, and your rights under Australian
+                Consumer Law sit on top of them.
+              </dd>
+            </div>
+          )
+        }
         <div>
           <dt>Questions</dt>
           <dd>
-            Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email
-            <a href={`mailto:${CHURCH.email}`}> {CHURCH.email}</a>.
+            Call <a href={`tel:${CHURCH.phoneE164}`} class="ltr-embed">{CHURCH.phone}</a> or email{' '}
+            <a href={`mailto:${CHURCH.email}`}>{CHURCH.email}</a>.
           </dd>
         </div>
       </dl>
 
-      <p class="product__notgift">
-        Buying something here is a purchase, not a gift, so it is not deductible and no gift
-        receipt is issued. If you meant to give, the <a href="/give">giving page</a> is the place.
-      </p>
+      {
+        !elsewhere && (
+          <p class="product__notgift">
+            Buying something here is a purchase, not a gift, so it is not deductible and no gift
+            receipt is issued. If you meant to give, the <a href="/give">giving page</a> is the
+            place.
+          </p>
+        )
+      }
     </div>
   </div>
 </PageLayout>

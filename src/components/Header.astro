@@ -38,6 +38,9 @@ const primaryNav = [
   { label: t('nav.lifeAtTte'), href: h('life-at-tte') },
   { label: t('nav.events'), href: h('events') },
   { label: t('nav.outreach'), href: h('outreach') },
+  /* In the header so people can find it (client, 9 October 2026), with or
+     without anything on sale; the basket link still waits for stock. */
+  { label: t('nav.shop'), href: h('shop') },
   { label: t('nav.give'), href: h('give') },
   { label: t('nav.getInTouch'), href: h('get-in-touch') },
 ];
@@ -291,6 +294,18 @@ const showBasket = inShop && shopHasStock();
   }
 
   @media (min-width: 64rem) {
+    .site-header__place {
+      display: block;
+    }
+  }
+
+  /* The full navigation shows from 1280px, and the menu button carries it below
+     that. Narrower, the items squeezed onto three lines and pushed Connect off
+     the side of the page. From 1280px a two-word item can still sit on two
+     lines, as before, inside a header of one height; every item on one line
+     takes about 1540px. Measured 9 October 2026, when Shop made it ten items:
+     another item, or a longer translated label, means measuring again. */
+  @media (min-width: 80rem) {
     .site-header__nav,
     .site-header__utility {
       display: flex;
@@ -298,10 +313,6 @@ const showBasket = inShop && shopHasStock();
 
     .site-header__mobile {
       display: none;
-    }
-
-    .site-header__place {
-      display: block;
     }
   }
 </style>

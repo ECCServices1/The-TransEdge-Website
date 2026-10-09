@@ -40,11 +40,9 @@ export const DRAFT_PAGES = [
      supplied the description and the three stages and approved the page. The
      next intake and the cost still wait for the pastoral team; the page points
      to a person for those. */
-  {
-    route: 'who-we-are/safeguarding',
-    reason: 'awaiting-content',
-    needs: 'The named contact for a concern, the policy document, and the escalation path.',
-  },
+  /* who-we-are/safeguarding is not built at all while the board decides what
+     it says (client, 9 October 2026); it returns here, as awaiting-content,
+     when it is. See who-we-are/_safeguarding.astro. */
   {
     route: 'new-here/what-to-expect',
     reason: 'awaiting-content',
