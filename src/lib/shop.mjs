@@ -84,6 +84,8 @@ export { variantLabel } from './variant.mjs';
  * @property {string} [publisher]      Books.
  * @property {string} [isbn]           Books, ISBN-13.
  * @property {string} [format]         Books, such as "Paperback".
+ * @property {string} [buyUrl]         Sold by somebody else: the https address it is
+ *                                     bought at. Never goes in a basket here.
  * @property {number} [limitPerOrder]
  * @property {ProductImage[]} images   For a product without colours.
  * @property {ProductColour[]} [colours]
@@ -225,11 +227,31 @@ const hasOrderableSize = (product) =>
  * @param {Product} product
  */
 export function isOrderable(product) {
+  /* Something sold elsewhere never goes in a basket here, whatever its status,
+     or the Worker would take money for a book somebody else is selling. */
+  if (product.buyUrl) return false;
   if (product.status !== 'on-sale' || !product.priceConfirmed) return false;
   if (!priceCents(product)) return false;
   if (!hasOrderableColour(product)) return false;
   if (needsSize(product)) return hasOrderableSize(product);
   return true;
+}
+
+/**
+ * Where a product sold by somebody else is bought, as the address and the name
+ * a visitor sees, or null for a product sold here. Do Not Bow is sold through
+ * drmichaelsa.com (client, 9 October 2026).
+ *
+ * Its pages show no price. The seller sets the price and says what tax is in
+ * it, and a copy of their figure here would one day stop agreeing with theirs
+ * without anybody noticing.
+ *
+ * @param {Product} product
+ * @returns {{ url: string, name: string } | null}
+ */
+export function soldElsewhere(product) {
+  if (!product.buyUrl) return null;
+  return { url: product.buyUrl, name: new URL(product.buyUrl).hostname.replace(/^www\./, '') };
 }
 
 /** Shown on the range page: on sale, or coming soon. @param {Product} product */

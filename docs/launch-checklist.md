@@ -17,7 +17,7 @@ These come first because everything downstream depends on them.
 | Nominated approver for weekly content | **blocked** | Client |
 | ~~Bank account details for the Give page~~ | **done**, name still unconfirmed | Two accounts supplied and on the page. Confirm the account *name* against the bank's record before launch |
 | Photo consent register location | **blocked** | Client |
-| Draft pages signed off | **blocked** | Pastoral team: Safeguarding, What to expect and Life at TTE, plus the privacy policy and terms awaiting legal review. Listed in `docs/open-questions.md` question 11. EdgeKids signed off 5 October 2026 |
+| Draft pages signed off | **blocked** | Pastoral team: What to expect and Life at TTE, plus the privacy policy and terms awaiting legal review. Listed in `docs/open-questions.md` question 11. EdgeKids signed off 5 October 2026. Safeguarding taken off the site on 9 October 2026 until the board decides |
 
 The brand gate is closed, so high-fidelity screen design is no longer blocked.
 Two brand items remain open and are in `docs/brand-audit.md`: the tagline case
@@ -149,8 +149,10 @@ below still open. They are now post-launch work.
 - [x] Wix route list: not required, by the client's decision of 3 September 2026
 - [x] Redirect verification loop: not required with the route list waived; the family rules stand
 - [ ] Privacy policy and terms written and linked
-- [ ] Child safe policy and complaints pathway linked, consistent with NSW Child
-      Safe Standards and existing Safer Churches obligations
+- [ ] Child safe policy and complaints pathway: the board decides whether the
+      website carries them (client, 9 October 2026; the church's internal
+      processes stand meanwhile). If it does, they are consistent with the NSW
+      Child Safe Standards and existing Safer Churches obligations
 - [ ] Uptime monitoring pointed at the site, alerting to a nominated address
 - [ ] Search Console and Bing Webmaster Tools verified, sitemap submitted
 - [ ] Analytics live, with the section 21 events firing

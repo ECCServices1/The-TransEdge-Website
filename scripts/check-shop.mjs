@@ -207,6 +207,22 @@ for (const product of PRODUCTS) {
     }
   }
 
+  /* ------------------------------------------------- sold somewhere else */
+
+  if (product.buyUrl !== undefined) {
+    let url = null;
+    try {
+      url = new URL(product.buyUrl);
+    } catch {
+      /* reported below */
+    }
+    if (!url || url.protocol !== 'https:') {
+      problems.push(
+        `${where}: buyUrl "${product.buyUrl}" is not a full https address, like "https://drmichaelsa.com/book".`
+      );
+    }
+  }
+
   if (product.limitPerOrder !== undefined) {
     if (!Number.isInteger(product.limitPerOrder) || product.limitPerOrder < 1) {
       problems.push(`${where}: limitPerOrder must be a whole number of at least 1.`);

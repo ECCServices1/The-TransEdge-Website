@@ -7,15 +7,20 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 
 As of 5 October 2026, nothing is on sale yet and four things are on the range as
 coming soon. The client confirmed the prices that day, GST included, and they
-show on the range: the t-shirt $35 and $25 in kids' sizes, the hooded jumper $65
-and $45 in kids' sizes, and Do Not Bow $20. A fit can carry its own price; one
-without costs the product's price.
+show on the range: the t-shirt $35 and $25 in kids' sizes, and the hooded jumper
+$65 and $45 in kids' sizes. A fit can carry its own price; one without costs the
+product's price.
+
+Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
+to drmichaelsa.com/book, so its page sends people there and shows no price (see
+"Something another site sells" below). Its catalogue entry keeps the $20 the
+client confirmed on 5 October, unused while the link is set.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
 | RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Stock, photographs of the printed garment |
 | RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Stock, photographs of the printed garment |
-| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The cover, the format |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/book | None | The cover, for its page here |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
@@ -84,6 +89,8 @@ keep in step.
      instead of quietly leaving a gap. Before something goes on sale, untick
      every size that is not actually stocked.
    - **Books** take an author, and a publisher, ISBN and format where known.
+   - **Sold elsewhere, the link to buy it** is for something another site sells.
+     Leave it empty for anything sold here.
 3. Save. That opens a pull request. Somebody else merges it. The site is live about
    ninety seconds later.
 
@@ -91,6 +98,18 @@ A product needs **On sale** and **Price confirmed** both before anybody can buy
 it. Until then it has a page that says it is not available yet, which is what
 lets you write and photograph something before it goes on the range. A price is
 not shown anywhere until it is confirmed: the page says "Price to come".
+
+### Something another site sells
+
+Fill in **Sold elsewhere, the link to buy it** with the full address, starting
+`https://`. The product stays on the range, under **Where it shows** as usual,
+but its page offers a button to that site instead of a basket, and says the
+price and delivery are taken care of there. It shows no price and none of this
+shop's terms, collection or gift notes, because none of them apply. The checkout
+refuses it even if somebody edits a basket by hand.
+
+Speak Life can go the same way when it is ready: fill in the link, and the price
+and **Price confirmed** stop mattering.
 
 ### Photographs
 
@@ -164,8 +183,10 @@ the privacy policy and the terms of use. The client decided on 5 October 2026
 that the draft stands as a placeholder and is reviewed later, so the review does
 not hold up opening.
 
-Then remove `shop` and `shop/*` from `src/data/draft-pages.mjs`, take `noindex`
-off those pages, and add Shop to the primary navigation in `Header.astro`.
+Then remove `shop` and `shop/*` from `src/data/draft-pages.mjs` and take
+`noindex` off those pages. Shop is already in the header and the footer: the
+client put it there on 9 October 2026 so people can find it before anything is
+on sale.
 `shop/terms` keeps its entry, its `noindex` and its draft notice until the review
 is done. The two transactional entries, `shop/basket` and `shop/order-complete`,
 stay on the register permanently.
@@ -210,6 +231,7 @@ Four things keep it there, and each has a note where it lives:
 - a colour named twice, without a swatch, or more than eight colours; a fit named
   twice, or more than four
 - a book with no author, or an ISBN that fails its check digit
+- a sold-elsewhere link that is not a full `https://` address
 - a product on sale whose price is unconfirmed, or priced at zero, or with no
   colour or no size left to sell
 - a postage rate left at its placeholder

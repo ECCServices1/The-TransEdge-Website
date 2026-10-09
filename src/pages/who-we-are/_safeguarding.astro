@@ -2,6 +2,20 @@
 /**
  * Safeguarding, section 9 under Who We Are and section 21.
  *
+ * NOT BUILT. The leading underscore keeps Astro from making a page of this
+ * file. The client decided on 9 October 2026 that it should not be public: the
+ * church has its own internal safeguarding processes, and the page waits until
+ * the board decides what it says. The old addresses redirect to Get in touch
+ * meanwhile (src/data/redirects.mjs).
+ *
+ * To publish it: rename this file back to safeguarding.astro, take out the
+ * redirect from /who-we-are/safeguarding, point /safeguarding and /child-safe
+ * back here, return it to the draft register (src/data/draft-pages.mjs) until
+ * it is signed off, and put back the links: the footer's "Child safe policy",
+ * the card on Who we are, and the buttons on EdgeKids and Life at TTE.
+ * `npm run check:links` fails while a redirect shadows a built page, so the
+ * first step cannot be forgotten.
+ *
  * The obligations described here are New South Wales law and are stated
  * accurately: the Child Safe Standards administered by the Office of the
  * Children's Guardian, the Working With Children Check, and the Reportable

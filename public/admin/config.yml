@@ -228,6 +228,16 @@ collections:
                 required: false
                 pattern: ['^.{1,60}$', 'Keep it under 60 characters']
                 hint: For example, Coming soon, or Launching 15 November at RAIN 2026.
+              - name: buyUrl
+                label: Sold elsewhere, the link to buy it
+                widget: string
+                required: false
+                pattern: ['^https://\S+$', 'A full address starting https://']
+                hint: >-
+                  For something another site sells, such as Do Not Bow at
+                  https://drmichaelsa.com/book. Its page then sends people there
+                  instead of offering a basket, and shows no price, because the
+                  seller sets it. Leave empty for anything sold here.
               - name: summary
                 label: One line for the range page
                 widget: string

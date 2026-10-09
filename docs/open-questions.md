@@ -121,16 +121,26 @@ Outreach page and the giving hand-off all read.
 
 ### 11. Content the pastoral team has to write
 
-Three pages are built and marked draft for content. Each carries a visible
+Two pages are built and marked draft for content. Each carries a visible
 notice naming what is missing and is `noindex` until it is signed off. Removing
 the `DraftNotice` component from a page is the act of approving it, so approval
 is a line in a diff with a name against it.
 
 | Page | What is needed |
 |---|---|
-| `/who-we-are/safeguarding` | The name and direct contact of the person who receives a concern, a link to the policy document, and who a complaint escalates to if it concerns a pastor |
 | `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
 | `/life-at-tte` | When Life-Link groups meet. Life-Link and Champions (September 2026) and 1B2GaS (5 October 2026) are supplied and on the page |
+
+Not public, by decision:
+
+- `/who-we-are/safeguarding`. On 9 October 2026 the client decided the page
+  should not be public: the church has its own internal safeguarding processes,
+  and the board decides what, if anything, goes on the website. The page is not
+  built, its addresses lead to Get in touch, and nothing links to it. When the
+  board decides, it still needs the name and direct contact of the person who
+  receives a concern, a link to the policy document, and who a complaint
+  escalates to if it concerns a pastor. How to bring it back is at the top of
+  `src/pages/who-we-are/_safeguarding.astro`.
 
 Signed off, with the date the notice came off:
 

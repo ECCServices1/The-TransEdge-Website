@@ -11,7 +11,7 @@ Three levels maximum, per section 9.
   /pastoral-team                   [built, draft, noindex]
   /our-community                   [built]
   /core-course                     [built, draft, noindex]
-  /safeguarding                    [built, draft, noindex]
+  /safeguarding                    not built until the board decides; 302 to /get-in-touch
 /new-here                          [built]
   /plan-your-visit                 [built]
   /what-to-expect                  [built, draft, noindex]
@@ -32,6 +32,10 @@ Three levels maximum, per section 9.
 /events                            [built]
   /[slug]                          [built]
 /outreach                          [built]
+/shop                              [built, draft, noindex] in the header and footer
+  /[slug]                          [built, draft, noindex]
+  /basket, /order-complete         [built, noindex]
+  /terms                           [built, draft, noindex]
 /give                              [built]
 /get-in-touch                      [built]
   /prayer                          [built]
@@ -61,6 +65,7 @@ Outbound, never framed:
 
 - `https://connect.thetransedge.com` from the header, footer and home
 - Edge Community Care Services from `/outreach` and the footer
+- `https://drmichaelsa.com/book` from `/shop/do-not-bow`, where the book is sold
 
 No link to Renovate Health: the client removed every reference to it from the
 site in August 2026.

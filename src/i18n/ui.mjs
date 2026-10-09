@@ -38,6 +38,7 @@ export const en = {
   'nav.lifeAtTte': 'Life at TTE',
   'nav.events': 'Events',
   'nav.outreach': 'Outreach',
+  'nav.shop': 'Shop',
   'nav.give': 'Give',
   'nav.getInTouch': 'Get in Touch',
   'nav.connect': 'Connect',
