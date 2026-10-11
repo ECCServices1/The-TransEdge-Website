@@ -5,17 +5,25 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 
 ## What is in it
 
-As of 5 October 2026, nothing is on sale yet and four things are on the range as
-coming soon. The client confirmed the prices that day, GST included, and they
-show on the range: the t-shirt $35 and $25 in kids' sizes, the hooded jumper $65
-and $45 in kids' sizes, and Do Not Bow $20. A fit can carry its own price; one
-without costs the product's price.
+Since 11 October 2026 the RAIN hooded jumper and t-shirt are on sale as
+pre-orders: made to order, paid for when ordered, and ready one week later to
+collect at the Sunday gathering. The two books are on the range as coming soon.
+Prices include GST and Stripe's fee: the t-shirt $50 and the hooded jumper $80,
+in every fit and size, kids' included. The client set them on
+11 October 2026, because the suppliers charge one price whatever the size; they
+were $35 and $65, with kids' sizes at $25 and $45. A fit can still carry its own
+price if that changes; one without costs the product's price.
+
+Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
+to drmichaelsa.com/book, so its page sends people there and shows no price (see
+"Something another site sells" below). Its catalogue entry keeps the $20 the
+client confirmed on 5 October, unused while the link is set.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
-| RAIN hooded jumper | Clothing, RAIN 2026 | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Stock, photographs of the printed garment |
-| RAIN t-shirt | Clothing, RAIN 2026 | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Stock, photographs of the printed garment |
-| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790 | None | The cover, the format |
+| RAIN hooded jumper | Clothing, RAIN 2026. On sale, made to order | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Photographs of the printed garment |
+| RAIN t-shirt | Clothing, RAIN 2026. On sale, made to order | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Photographs of the printed garment |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/book | None | The cover, for its page here |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
@@ -24,6 +32,26 @@ The RAIN pictures are the client's design mockups of 5 October 2026, each cut
 from a sheet of four into one garment, one colour and one side, and set on a
 plain ground at 4:5. Each says it is a mockup, under the pictures and in its
 alt text. Photographs of the printed garments replace them, file for file.
+
+### Stripe's fee is in the price
+
+The price on the page is what the buyer pays, and nothing is added at checkout
+(client, 11 October 2026). Card surcharges are not an option in any case: Stripe
+stopped supporting them in Australia on 1 October 2026. TTE pays Stripe's fee out
+of the price.
+
+On Stripe's standard Australian pricing as at October 2026, 1.65% + 30c for an
+Australian card and 3.5% + 30c for an overseas one, a sale with one item comes
+out like this. The GST is a tenth of the GST-inclusive price, so one eleventh.
+
+| Item | Price | GST in it | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
+|---|---|---|---|---|
+| T-shirt, any size | $50.00 | $4.55 | $1.13 | $44.32 |
+| Hooded jumper, any size | $80.00 | $7.27 | $1.62 | $71.11 |
+
+The 30c is charged once per payment, not per item, so a basket of several items
+pays it once. A charity rate or a negotiated rate on TTE's Stripe account
+changes these figures; Stripe shows the fee on each payment.
 
 ## How it fits together
 
@@ -84,6 +112,8 @@ keep in step.
      instead of quietly leaving a gap. Before something goes on sale, untick
      every size that is not actually stocked.
    - **Books** take an author, and a publisher, ISBN and format where known.
+   - **Sold elsewhere, the link to buy it** is for something another site sells.
+     Leave it empty for anything sold here.
 3. Save. That opens a pull request. Somebody else merges it. The site is live about
    ninety seconds later.
 
@@ -91,6 +121,18 @@ A product needs **On sale** and **Price confirmed** both before anybody can buy
 it. Until then it has a page that says it is not available yet, which is what
 lets you write and photograph something before it goes on the range. A price is
 not shown anywhere until it is confirmed: the page says "Price to come".
+
+### Something another site sells
+
+Fill in **Sold elsewhere, the link to buy it** with the full address, starting
+`https://`. The product stays on the range, under **Where it shows** as usual,
+but its page offers a button to that site instead of a basket, and says the
+price and delivery are taken care of there. It shows no price and none of this
+shop's terms, collection or gift notes, because none of them apply. The checkout
+refuses it even if somebody edits a basket by hand.
+
+Speak Life can go the same way when it is ready: fill in the link, and the price
+and **Price confirmed** stop mattering.
 
 ### Photographs
 
@@ -130,17 +172,25 @@ Refund in the Stripe Dashboard, on the payment. It goes back to the card or acco
 that paid. Nothing on the site needs changing. If the item is coming back into
 stock, tick the size back on at `/admin`.
 
-## What has to be set up before the shop opens
+## Switching payment on
 
-Three things, none of which are code.
+Four things in Stripe and Cloudflare, none of which are code. Until the first is
+done, the shop takes orders as far as the basket and the pay button asks people
+to call, which is the right failure.
 
-1. **The Stripe secret key**, set on the Worker, never in this repository:
+1. **A restricted key from TTE's Stripe account**, set on the Worker, never in
+   this repository and never sent to anybody. In Stripe, under **Developers**,
+   **API keys**, create a restricted key that can do one thing: write Checkout
+   Sessions. Everything else stays at None. If a test payment is refused,
+   Stripe's request log for that key names the permission it wanted. Save it in
+   Cloudflare under **Workers & Pages**, **the-transedge-website**, **Settings**,
+   **Variables and Secrets**, as a secret called `STRIPE_SECRET_KEY`, or with
    ```
    npx wrangler secret put STRIPE_SECRET_KEY
    ```
-   Use the live key when the shop opens and a test key before that. Until it is
-   set, the checkout endpoint replies with a polite message telling people to call,
-   which is the right failure.
+   Start with a test key (`rk_test_...`) and pay with Stripe's test card,
+   4242 4242 4242 4242, any future date, any three digits. Then replace it with
+   the live key (`rk_live_...`).
 2. **The GST tax rate.** Create a Tax Rate in Stripe: 10 per cent, **inclusive**,
    display name GST, country Australia. Take its `txr_...` id and set it as a plain
    variable on the Worker:
@@ -154,21 +204,34 @@ Three things, none of which are code.
    applied. A compliant Australian tax invoice also wants the words "tax invoice"
    and the ABN on it, which is Stripe receipt configuration. The accountant should
    look at a real receipt before the first sale rather than after.
+4. **The emails.** In Stripe's settings, turn on receipts for successful
+   payments, which is how the buyer gets one, and an email to the church for
+   every payment, which is the order alert.
 
-Stripe is the same account as giving, confirmed by the client on 5 October 2026.
-The client is setting up the shop's side of it, the key and the tax rate above,
-later; until then the checkout tells anybody who tries to pay to call.
+The account is TTE's own, the one giving uses (client, 5 and 11 October 2026).
+It is not the drmichaelsa.com account, which is Dr Michaels Aibangbee's own and
+is where Do Not Bow is sold.
 
 `/shop/terms` is drafted and on the draft register as `awaiting-legal`, alongside
 the privacy policy and the terms of use. The client decided on 5 October 2026
 that the draft stands as a placeholder and is reviewed later, so the review does
 not hold up opening.
 
-Then remove `shop` and `shop/*` from `src/data/draft-pages.mjs`, take `noindex`
-off those pages, and add Shop to the primary navigation in `Header.astro`.
-`shop/terms` keeps its entry, its `noindex` and its draft notice until the review
-is done. The two transactional entries, `shop/basket` and `shop/order-complete`,
-stay on the register permanently.
+The shop and its product pages came off the draft register when it opened on 11
+October 2026, and search engines may index them. A product set to hidden still
+stays out of search: the register reads hidden products from the catalogue, so
+hiding one at `/admin` needs nothing else. `shop/terms` keeps its entry, its
+`noindex` and its draft notice until the review is done. The two transactional
+entries, `shop/basket` and `shop/order-complete`, stay on the register
+permanently.
+
+### When an order is ready
+
+**When an order is ready**, under **Shop**, **Delivery and postage** at `/admin`,
+is one sentence: "Made to order, and ready one week after you order." It is
+said on the shop, on each product that is on sale, in the basket beside "You pay
+now, when you order", on the order confirmation, in the terms, and on Stripe's
+payment page above the pay button. Change it there and it changes everywhere.
 
 ### Speed, on the day something goes on sale
 
@@ -210,6 +273,7 @@ Four things keep it there, and each has a note where it lives:
 - a colour named twice, without a swatch, or more than eight colours; a fit named
   twice, or more than four
 - a book with no author, or an ISBN that fails its check digit
+- a sold-elsewhere link that is not a full `https://` address
 - a product on sale whose price is unconfirmed, or priced at zero, or with no
   colour or no size left to sell
 - a postage rate left at its placeholder

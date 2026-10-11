@@ -1,6 +1,6 @@
 ---
 /**
- * The basket, in the header utility row.
+ * The basket, in the header, at every width.
  *
  * Rendered only on /shop pages. Two reasons. While the shop is unpublished it
  * would advertise a range nobody can buy yet, and on every other page it would
@@ -11,18 +11,34 @@
  * the count inside it rather than adding a control to the row. The count starts
  * empty and is filled in, which moves nothing but the width of this one item.
  * The script that fills it is basket-count.ts, part of the shop's one script.
+ *
+ * ON A NARROW PHONE
+ *
+ * Below 480px the words give way to a basket icon of fixed width with the
+ * number in a badge, because "Basket (10)" beside the logo pushed the menu
+ * button off the side of a 320px screen. The words stay in the page, hidden
+ * visually, so the link is still read as "Basket (2)"; the badge repeats the
+ * number for the eye and is hidden from screen readers so it is not read twice.
  */
 import ShopScript from './ShopScript.astro';
 ---
 
 <a class="basket-link" href="/shop/basket" data-basket-link>
-  Basket<span class="basket-link__count" data-basket-count></span>
+  <svg class="basket-link__icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+    <path d="M4.5 9h15l-1.6 10.3a1.2 1.2 0 0 1-1.2 1H7.3a1.2 1.2 0 0 1-1.2-1L4.5 9Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" />
+    <path d="M8.75 9V7.25a3.25 3.25 0 0 1 6.5 0V9" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+  </svg>
+  <span class="basket-link__words">Basket<span class="basket-link__count" data-basket-count></span></span>
+  <span class="basket-link__badge" aria-hidden="true" data-basket-badge></span>
 </a>
 
 <ShopScript />
 
 <style>
   .basket-link {
+    /* Tall enough to tap on a phone: well over the 24px WCAG 2.2 minimum. */
+    display: inline-block;
+    padding-block: var(--space-2xs);
     font-size: var(--text--1);
     font-weight: var(--weight-nav);
     letter-spacing: var(--tracking-wide);
@@ -37,5 +53,54 @@ import ShopScript from './ShopScript.astro';
 
   .basket-link__count {
     font-variant-numeric: tabular-nums;
+  }
+
+  .basket-link__icon,
+  .basket-link__badge {
+    display: none;
+  }
+
+  @media (max-width: 29.99rem) {
+    .basket-link {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      inline-size: 2.75rem;
+      block-size: 2.75rem;
+      padding: 0;
+    }
+
+    .basket-link__icon {
+      display: block;
+    }
+
+    /* The site's visually-hidden pattern, applied only at this width. */
+    .basket-link__words {
+      clip-path: inset(50%);
+      block-size: 1px;
+      inline-size: 1px;
+      overflow: hidden;
+      position: absolute;
+      white-space: nowrap;
+    }
+
+    .basket-link__badge:not(:empty) {
+      position: absolute;
+      inset-block-start: 0.25rem;
+      inset-inline-end: 0;
+      display: block;
+      min-inline-size: 1.125rem;
+      padding-inline: 0.25rem;
+      border-radius: var(--radius-full);
+      background-color: var(--color-action-bg);
+      color: var(--color-action-fg);
+      font-size: 0.6875rem;
+      font-weight: var(--weight-semibold);
+      line-height: 1.125rem;
+      letter-spacing: 0;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
   }
 </style>

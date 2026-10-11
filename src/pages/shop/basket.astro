@@ -65,6 +65,7 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
 
       <fieldset class="how">
         <legend>Getting it to you</legend>
+        <p class="how__note how__when">{SHIPPING.readyIn} You pay now, when you order.</p>
         <label class="how__option">
           <input type="radio" name="fulfilment" value="collect" checked data-fulfilment />
           <span>
@@ -244,6 +245,13 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
   .how__note {
     font-size: var(--text--1);
     color: var(--color-text-muted);
+  }
+
+  /* When it is ready, and that it is paid for now, is what somebody needs
+     to know before they pay, so it is not muted. */
+  .how__when {
+    color: var(--color-text);
+    margin-block-end: var(--space-2xs);
   }
 
   .totals {

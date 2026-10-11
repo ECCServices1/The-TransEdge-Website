@@ -11,7 +11,7 @@ Three levels maximum, per section 9.
   /pastoral-team                   [built, draft, noindex]
   /our-community                   [built]
   /core-course                     [built, draft, noindex]
-  /safeguarding                    [built, draft, noindex]
+  /safeguarding                    not built until the board decides; 302 to /get-in-touch
 /new-here                          [built]
   /plan-your-visit                 [built]
   /what-to-expect                  [built, draft, noindex]
@@ -32,6 +32,10 @@ Three levels maximum, per section 9.
 /events                            [built]
   /[slug]                          [built]
 /outreach                          [built]
+/shop                              [built] in the header and footer; open for pre-orders
+  /[slug]                          [built]; a hidden product is noindex
+  /basket, /order-complete         [built, noindex]
+  /terms                           [built, draft, noindex]
 /give                              [built]
 /get-in-touch                      [built]
   /prayer                          [built]
@@ -61,6 +65,7 @@ Outbound, never framed:
 
 - `https://connect.thetransedge.com` from the header, footer and home
 - Edge Community Care Services from `/outreach` and the footer
+- `https://drmichaelsa.com/book` from `/shop/do-not-bow`, where the book is sold
 
 No link to Renovate Health: the client removed every reference to it from the
 site in August 2026.
@@ -162,7 +167,10 @@ Elvanto rules stand, and the broken-link check still runs on every push.
 ## Generated sitemaps
 
 `@astrojs/sitemap` writes `sitemap-index.xml` at build, per locale, excluding
-`/admin` and `/brand`.
+`/admin` and every page on the draft register (`src/data/draft-pages.mjs`):
+drafts, `/brand`, the basket and other transactional pages, and hidden
+products. A page kept out of search is not offered to search in the sitemap
+either.
 
 ## Cutover
 

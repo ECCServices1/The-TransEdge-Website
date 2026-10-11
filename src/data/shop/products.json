@@ -6,10 +6,9 @@
       "name": "RAIN hooded jumper",
       "category": "apparel",
       "collection": "RAIN 2026",
-      "price": "65.00",
+      "price": "80.00",
       "priceConfirmed": true,
-      "status": "coming-soon",
-      "statusNote": "Coming soon",
+      "status": "on-sale",
       "order": 10,
       "summary": "The RAIN 2026 hooded jumper: our mark on the chest and Joel 2:23 across the back.",
       "description": "Made for RAIN 2026. The Transformation Edge mark sits on the chest and RAIN runs down one sleeve. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. A pullover hood with drawcords, a front pouch pocket, and ribbed cuffs and hem.",
@@ -159,7 +158,6 @@
         {
           "name": "Kids",
           "note": "Australian kids' sizes, which run roughly with age.",
-          "price": "45.00",
           "sizes": [
             {
               "label": "4",
@@ -199,10 +197,9 @@
       "name": "RAIN t-shirt",
       "category": "apparel",
       "collection": "RAIN 2026",
-      "price": "35.00",
+      "price": "50.00",
       "priceConfirmed": true,
-      "status": "coming-soon",
-      "statusNote": "Coming soon",
+      "status": "on-sale",
       "order": 20,
       "summary": "The RAIN 2026 t-shirt: our mark on the chest and Joel 2:23 across the back.",
       "description": "Made for RAIN 2026. The Transformation Edge mark on the chest, RAIN on one sleeve, and across the back RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. Crew neck, short sleeves.",
@@ -344,7 +341,6 @@
         {
           "name": "Kids",
           "note": "Australian kids' sizes, which run roughly with age.",
-          "price": "25.00",
           "sizes": [
             {
               "label": "2",
@@ -394,6 +390,7 @@
       "priceConfirmed": true,
       "status": "coming-soon",
       "statusNote": "Launching 15 November at RAIN 2026",
+      "buyUrl": "https://drmichaelsa.com/book",
       "order": 30,
       "summary": "Three young men on the plain of Dura, and the faith that would not bow.",
       "description": "Do Not Bow returns to the plain of Dura, where three young Hebrew men stood firm while an empire bowed. It traces a six-stage progression of compromise, names the cultural pressures that quietly pull believers away from wholehearted devotion to God, and calls readers to a “But if not” faith: loyalty to God even if deliverance never comes. The book launches on Sunday 15 November, the last day of RAIN 2026.",

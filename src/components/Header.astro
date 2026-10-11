@@ -38,6 +38,9 @@ const primaryNav = [
   { label: t('nav.lifeAtTte'), href: h('life-at-tte') },
   { label: t('nav.events'), href: h('events') },
   { label: t('nav.outreach'), href: h('outreach') },
+  /* In the header so people can find it (client, 9 October 2026), with or
+     without anything on sale; the basket link still waits for stock. */
+  { label: t('nav.shop'), href: h('shop') },
   { label: t('nav.give'), href: h('give') },
   { label: t('nav.getInTouch'), href: h('get-in-touch') },
 ];
@@ -82,8 +85,19 @@ const showBasket = inShop && shopHasStock();
       </ul>
     </nav>
 
+    <!-- The basket sits outside the utility row so it shows at every width.
+         Below 1280px that row is hidden and the menu button carries the
+         navigation, and somebody shopping on a phone or a tablet still needs
+         the basket in reach. -->
+    {
+      showBasket && (
+        <div class="site-header__basket">
+          <BasketLink />
+        </div>
+      )
+    }
+
     <div class="site-header__utility">
-      {showBasket && <BasketLink />}
       <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
 
       <!-- Connect holds a persistent utility position, section 11. It is a
@@ -151,6 +165,14 @@ const showBasket = inShop && shopHasStock();
     min-block-size: 4rem;
   }
 
+  /* On a 320px phone in the shop the row holds the logo (168px), the basket
+     (44px) and the menu button (44px) inside 280px, so the gaps close up. */
+  @media (max-width: 29.99rem) {
+    .site-header__bar {
+      gap: var(--space-xs);
+    }
+  }
+
   .site-header__brand {
     display: flex;
     align-items: center;
@@ -204,6 +226,11 @@ const showBasket = inShop && shopHasStock();
     display: none;
     align-items: center;
     gap: var(--space-2xs);
+  }
+
+  .site-header__basket {
+    display: flex;
+    align-items: center;
   }
 
   .site-header__connect {
@@ -291,6 +318,18 @@ const showBasket = inShop && shopHasStock();
   }
 
   @media (min-width: 64rem) {
+    .site-header__place {
+      display: block;
+    }
+  }
+
+  /* The full navigation shows from 1280px, and the menu button carries it below
+     that. Narrower, the items squeezed onto three lines and pushed Connect off
+     the side of the page. From 1280px a two-word item can still sit on two
+     lines, as before, inside a header of one height; every item on one line
+     takes about 1540px. Measured 9 October 2026, when Shop made it ten items:
+     another item, or a longer translated label, means measuring again. */
+  @media (min-width: 80rem) {
     .site-header__nav,
     .site-header__utility {
       display: flex;
@@ -298,10 +337,6 @@ const showBasket = inShop && shopHasStock();
 
     .site-header__mobile {
       display: none;
-    }
-
-    .site-header__place {
-      display: block;
     }
   }
 </style>

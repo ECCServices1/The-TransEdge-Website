@@ -16,11 +16,11 @@
  * shows what a visitor needs to choose: the picture, the name, the price, and
  * for clothing the colours it comes in, named for anybody who cannot tell them
  * apart by eye. Something listed as coming soon is shown with its status in
- * place of a price, so the range can be seen before it can be bought.
+ * place of a price, so the range can be seen before it can be bought. Something
+ * another site sells, such as Do Not Bow, names that site in place of a price.
  *
- * While the shop is unpublished this page is noindex and is on the draft
- * register. Publishing it is a data change plus two register edits, not a
- * rebuild.
+ * The shop opened for pre-orders on the client's word of 11 October 2026: the
+ * clothing is made to order, paid for when ordered and ready a week later.
  */
 import PageLayout from '../../layouts/PageLayout.astro';
 import Button from '../../components/Button.astro';
@@ -34,6 +34,7 @@ import {
   postingAvailable,
   coloursOf,
   fitPriceNotes,
+  soldElsewhere,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -49,13 +50,13 @@ const listOf = (names: string[]) =>
   description={`Merchandise from The Transformation Edge, a church in ${CHURCH.place}. Collect at our Sunday gathering or have it posted.`}
   route="shop"
   standfirst="Clothing that carries the mark, and books from our pastors."
-  noindex
 >
   <div class="shop">
     <section class="shop__terms" aria-labelledby="how-heading">
       <h2 id="how-heading" class="visually-hidden">How the shop works</h2>
       <ul class="shop__facts" role="list">
         <li>Prices include GST.</li>
+        <li>{SHIPPING.readyIn}</li>
         <li>{SHIPPING.collect.label}, free.</li>
         {postingAvailable() && <li>{SHIPPING.post.label}.</li>}
         <li>Payment is handled by Stripe, away from this site.</li>
@@ -75,6 +76,13 @@ const listOf = (names: string[]) =>
                 const orderable = isOrderable(product);
                 const colours = coloursOf(product);
                 const otherPrices = fitPriceNotes(product);
+                const elsewhere = soldElsewhere(product);
+                /* Said beside the price while it cannot be bought here. Something
+                   sold elsewhere has no price here to stand in for. */
+                const status = orderable
+                  ? null
+                  : product.statusNote ||
+                    (elsewhere ? null : cents ? 'Not available yet' : 'Price to come');
                 return (
                   <li class="range__item" data-reveal>
                     <a class="card" href={`/shop/${product.slug}`}>
@@ -108,14 +116,10 @@ const listOf = (names: string[]) =>
                           </p>
                         )}
                         <p class="card__price">
-                          {cents && formatMoney(cents)}
-                          {!orderable && (
-                            <span class="card__status">
-                              {product.statusNote || (cents ? 'Not available yet' : 'Price to come')}
-                            </span>
-                          )}
+                          {elsewhere ? `At ${elsewhere.name}` : cents && formatMoney(cents)}
+                          {status && <span class="card__status">{status}</span>}
                         </p>
-                        {otherPrices.length > 0 && (
+                        {!elsewhere && otherPrices.length > 0 && (
                           <p class="card__also">
                             {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
                           </p>
