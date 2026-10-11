@@ -165,6 +165,14 @@ const showBasket = inShop && shopHasStock();
     min-block-size: 4rem;
   }
 
+  /* On a 320px phone in the shop the row holds the logo (168px), the basket
+     (44px) and the menu button (44px) inside 280px, so the gaps close up. */
+  @media (max-width: 29.99rem) {
+    .site-header__bar {
+      gap: var(--space-xs);
+    }
+  }
+
   .site-header__brand {
     display: flex;
     align-items: center;
