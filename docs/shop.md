@@ -6,11 +6,11 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 ## What is in it
 
 Nothing is on sale yet and four things are on the range as coming soon. The
-prices show on the range, GST and Stripe's fee included: the t-shirt $50 and $25
-in kids' sizes, and the hooded jumper $80 and $45 in kids' sizes. The client
-confirmed the kids' prices on 5 October 2026 and raised the adult prices on 11
-October 2026, from $35 and $65. A fit can carry its own price; one without
-costs the product's price.
+prices show on the range, GST and Stripe's fee included: the t-shirt $50 and the
+hooded jumper $80, in every fit and size, kids' included. The client set them on
+11 October 2026, because the suppliers charge one price whatever the size; they
+were $35 and $65, with kids' sizes at $25 and $45. A fit can still carry its own
+price if that changes; one without costs the product's price.
 
 Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
 to drmichaelsa.com/book, so its page sends people there and shows no price (see
@@ -44,10 +44,8 @@ out like this. The GST is a tenth of the GST-inclusive price, so one eleventh.
 
 | Item | Price | GST in it | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
 |---|---|---|---|---|
-| T-shirt | $50.00 | $4.55 | $1.13 | $44.32 |
-| Hooded jumper | $80.00 | $7.27 | $1.62 | $71.11 |
-| Kids' t-shirt | $25.00 | $2.27 | $0.71 | $22.02 |
-| Kids' hooded jumper | $45.00 | $4.09 | $1.04 | $39.87 |
+| T-shirt, any size | $50.00 | $4.55 | $1.13 | $44.32 |
+| Hooded jumper, any size | $80.00 | $7.27 | $1.62 | $71.11 |
 
 The 30c is charged once per payment, not per item, so a basket of several items
 pays it once. A charity rate or a negotiated rate on TTE's Stripe account

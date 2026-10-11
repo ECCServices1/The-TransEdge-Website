@@ -179,11 +179,11 @@ out in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and book covers. The RAIN clothing
   shows the client's design mockups until the garments are printed, and the books
-  show "Cover to come". Prices were confirmed on 5 October 2026 and the adult ones
-  raised on 11 October 2026: the t-shirt $50 ($25 in kids' sizes) and the hooded
-  jumper $80 ($45 in kids' sizes), Stripe's fee included. Do Not Bow is sold
-  through drmichaelsa.com. Speak Life has no price yet, and a product cannot go on sale until
-  somebody ticks that its price has been checked, which the build enforces.
+  show "Cover to come". Prices were set on 11 October 2026: the t-shirt $50 and the
+  hooded jumper $80 in every size, kids' included, Stripe's fee included. Do Not
+  Bow is sold through drmichaelsa.com. Speak Life has no price yet, and a product
+  cannot go on sale until somebody ticks that its price has been checked, which
+  the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
