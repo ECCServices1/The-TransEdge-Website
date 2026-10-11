@@ -85,8 +85,19 @@ const showBasket = inShop && shopHasStock();
       </ul>
     </nav>
 
+    <!-- The basket sits outside the utility row so it shows at every width.
+         Below 1280px that row is hidden and the menu button carries the
+         navigation, and somebody shopping on a phone or a tablet still needs
+         the basket in reach. -->
+    {
+      showBasket && (
+        <div class="site-header__basket">
+          <BasketLink />
+        </div>
+      )
+    }
+
     <div class="site-header__utility">
-      {showBasket && <BasketLink />}
       <LocaleSwitcher currentLocale={locale} route={route} placement="header" />
 
       <!-- Connect holds a persistent utility position, section 11. It is a
@@ -207,6 +218,11 @@ const showBasket = inShop && shopHasStock();
     display: none;
     align-items: center;
     gap: var(--space-2xs);
+  }
+
+  .site-header__basket {
+    display: flex;
+    align-items: center;
   }
 
   .site-header__connect {

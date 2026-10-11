@@ -1,6 +1,6 @@
 ---
 /**
- * The basket, in the header utility row.
+ * The basket, in the header, at every width.
  *
  * Rendered only on /shop pages. Two reasons. While the shop is unpublished it
  * would advertise a range nobody can buy yet, and on every other page it would
@@ -23,6 +23,9 @@ import ShopScript from './ShopScript.astro';
 
 <style>
   .basket-link {
+    /* Tall enough to tap on a phone: well over the 24px WCAG 2.2 minimum. */
+    display: inline-block;
+    padding-block: var(--space-2xs);
     font-size: var(--text--1);
     font-weight: var(--weight-nav);
     letter-spacing: var(--tracking-wide);
