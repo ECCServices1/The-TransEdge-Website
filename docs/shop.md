@@ -5,11 +5,12 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 
 ## What is in it
 
-As of 5 October 2026, nothing is on sale yet and four things are on the range as
-coming soon. The client confirmed the prices that day, GST included, and they
-show on the range: the t-shirt $35 and $25 in kids' sizes, and the hooded jumper
-$65 and $45 in kids' sizes. A fit can carry its own price; one without costs the
-product's price.
+Nothing is on sale yet and four things are on the range as coming soon. The
+prices show on the range, GST and Stripe's fee included: the t-shirt $50 and $25
+in kids' sizes, and the hooded jumper $80 and $45 in kids' sizes. The client
+confirmed the kids' prices on 5 October 2026 and raised the adult prices on 11
+October 2026, from $35 and $65. A fit can carry its own price; one without
+costs the product's price.
 
 Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
 to drmichaelsa.com/book, so its page sends people there and shows no price (see
@@ -29,6 +30,28 @@ The RAIN pictures are the client's design mockups of 5 October 2026, each cut
 from a sheet of four into one garment, one colour and one side, and set on a
 plain ground at 4:5. Each says it is a mockup, under the pictures and in its
 alt text. Photographs of the printed garments replace them, file for file.
+
+### Stripe's fee is in the price
+
+The price on the page is what the buyer pays, and nothing is added at checkout
+(client, 11 October 2026). Card surcharges are not an option in any case: Stripe
+stopped supporting them in Australia on 1 October 2026. TTE pays Stripe's fee out
+of the price.
+
+On Stripe's standard Australian pricing as at October 2026, 1.65% + 30c for an
+Australian card and 3.5% + 30c for an overseas one, a sale with one item comes
+out like this. The GST is a tenth of the GST-inclusive price, so one eleventh.
+
+| Item | Price | GST in it | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
+|---|---|---|---|---|
+| T-shirt | $50.00 | $4.55 | $1.13 | $44.32 |
+| Hooded jumper | $80.00 | $7.27 | $1.62 | $71.11 |
+| Kids' t-shirt | $25.00 | $2.27 | $0.71 | $22.02 |
+| Kids' hooded jumper | $45.00 | $4.09 | $1.04 | $39.87 |
+
+The 30c is charged once per payment, not per item, so a basket of several items
+pays it once. A charity rate or a negotiated rate on TTE's Stripe account
+changes these figures; Stripe shows the fee on each payment.
 
 ## How it fits together
 
