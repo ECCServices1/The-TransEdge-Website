@@ -273,6 +273,10 @@ if (SHIPPING.freeOver !== null && toCents(SHIPPING.freeOver) === null) {
   problems.push(`freeOver "${SHIPPING.freeOver}" is not dollars and cents. Use null for no free threshold.`);
 }
 
+if (typeof SHIPPING.readyIn !== 'string' || !SHIPPING.readyIn.trim()) {
+  problems.push('shipping.json has no readyIn: the sentence that says when an order is ready, shown wherever somebody pays.');
+}
+
 for (const key of ['collect', 'post']) {
   if (!SHIPPING[key]?.label?.trim()) problems.push(`Shipping option "${key}" has no label.`);
 }

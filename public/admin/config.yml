@@ -401,6 +401,13 @@ collections:
           Collection is always free. Posting stays switched off until the rate
           below is set and confirmed.
         fields:
+          - name: readyIn
+            label: When an order is ready
+            widget: string
+            hint: >-
+              One sentence, shown on the shop, each product, the basket, the
+              order confirmation, the terms and Stripe's payment page. For
+              example, Made to order, and ready one week after you order.
           - name: collect
             label: Collecting at church
             widget: object

@@ -38,7 +38,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*(?:/ar/|/shop(?:\\.html$|/)|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
+          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand|shop/(?:terms|basket|order\\-complete))\\.html$)).*$",
           "assertions": {
             "categories:performance": [
               "error",
@@ -114,7 +114,7 @@
           }
         },
         {
-          "matchingUrlPattern": "(?:/ar/|/shop(?:\\.html$|/)|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
+          "matchingUrlPattern": "(?:/ar/|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand|shop/(?:terms|basket|order\\-complete))\\.html$)",
           "assertions": {
             "categories:performance": [
               "error",

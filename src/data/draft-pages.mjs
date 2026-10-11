@@ -1,3 +1,5 @@
+import catalogue from './shop/products.json' with { type: 'json' };
+
 /**
  * Every page deliberately kept out of the index, and why.
  *
@@ -29,6 +31,9 @@
  * @property {'awaiting-content'|'awaiting-legal'|'working-page'|'transactional'} reason
  * @property {string} needs     What has to happen before it is indexed.
  */
+
+/* Hidden products: their own page, listed nowhere, kept out of search. */
+const HIDDEN_PRODUCTS = catalogue.products.filter((product) => product.status === 'hidden');
 
 /** @type {DraftPage[]} */
 export const DRAFT_PAGES = [
@@ -71,19 +76,10 @@ export const DRAFT_PAGES = [
     reason: 'working-page',
     needs: 'Nothing. This is an internal working page and stays out of the index.',
   },
-  {
-    route: 'shop',
-    reason: 'awaiting-content',
-    needs:
-      'Photographs of the real merchandise and the book covers, the postage rate, ' +
-      'and the shop set up in Stripe. Every price is confirmed except Speak Life. ' +
-      'The shop is built and works; nothing in it is on sale yet.',
-  },
-  {
-    route: 'shop/*',
-    reason: 'awaiting-content',
-    needs: 'Same as the shop itself. Product pages are generated from the catalogue.',
-  },
+  /* shop and shop/* left the register on 11 October 2026, when the client
+     opened the shop for pre-orders. A product set to hidden still has its own
+     page and stays out of search; those entries are read from the catalogue
+     below, so hiding one at /admin never fails the build. */
   {
     route: 'shop/terms',
     reason: 'awaiting-legal',
@@ -119,6 +115,11 @@ export const DRAFT_PAGES = [
     reason: 'transactional',
     needs: 'Nothing. A form failure page stays out of the index permanently.',
   },
+  ...HIDDEN_PRODUCTS.map((product) => ({
+    route: `shop/${product.slug}`,
+    reason: /** @type {const} */ ('working-page'),
+    needs: 'Nothing while it is hidden. Set it to coming soon or on sale at /admin and it is indexed.',
+  })),
 ];
 
 /** Exactly named routes. A wildcard cannot be asserted to have been built. */

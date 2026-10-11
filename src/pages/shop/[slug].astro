@@ -89,7 +89,7 @@ const sizeRange = (labels: string[]) =>
   route={`shop/${product.slug}`}
   crumbs={[{ name: 'Shop', href: '/shop' }]}
   standfirst={isBook && product.author ? `By ${product.author}` : product.summary}
-  noindex
+  noindex={product.status === 'hidden'}
 >
   <div class="product" data-product>
     <div class="product__pictures">
@@ -283,6 +283,7 @@ const sizeRange = (labels: string[]) =>
             <div>
               <dt>Getting it</dt>
               <dd>
+                {orderable && `${SHIPPING.readyIn} `}
                 {SHIPPING.collect.label}, free. {SHIPPING.collect.note}
                 {postingAvailable() && ` Or ${SHIPPING.post.label.toLowerCase()}: ${SHIPPING.post.estimate}`}
               </dd>

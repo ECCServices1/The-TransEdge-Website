@@ -31,6 +31,7 @@ import {
   postingAvailable,
   lineName,
   variantLabel,
+  SHIPPING,
 } from '../src/lib/shop.mjs';
 import { handleForm } from './forms.js';
 
@@ -174,6 +175,11 @@ async function handleCheckout(request, env) {
     },
     payment_intent_data: {
       description: 'The Transformation Edge shop',
+    },
+    /* Said again beside the pay button, because this is where somebody
+       decides: a made-to-order item is paid for now and ready later. */
+    custom_text: {
+      submit: { message: `${SHIPPING.readyIn} ${delivery.label}.`.slice(0, 1200) },
     },
   };
 
