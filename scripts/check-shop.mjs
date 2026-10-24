@@ -26,7 +26,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assets = join(root, 'src/assets/shop');
 
 const CATEGORIES = new Set(['apparel', 'book', 'accessory', 'print']);
-const STATUSES = new Set(['hidden', 'coming-soon', 'on-sale']);
+const STATUSES = new Set(['hidden', 'coming-soon', 'on-sale', 'sold-out']);
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SKU = /^[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
 const SWATCH = /^#[0-9a-f]{6}$/i;
@@ -292,6 +292,7 @@ if (problems.length) {
 const count = (status) => PRODUCTS.filter((p) => p.status === status).length;
 console.log(
   `Shop: ${PRODUCTS.length} product(s) in the catalogue: ${count('on-sale')} on sale, ` +
-    `${count('coming-soon')} coming soon, ${count('hidden')} hidden. Prices are GST inclusive.`
+    `${count('coming-soon')} coming soon, ${count('sold-out')} out of stock, ${count('hidden')} hidden. ` +
+    `Prices are GST inclusive.`
 );
 for (const note of notes) console.log(`  Note: ${note}`);

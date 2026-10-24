@@ -171,16 +171,18 @@ for next.
 
 ### 13. The shop, taking payment
 
-The shop opened for pre-orders on 11 October 2026, by the client's decision: the
-RAIN 2026 hooded jumper and t-shirt are on sale, made to order and ready one week
-after ordering, to collect at the Sunday gathering. Speak Life is listed as
-coming soon and Do Not Bow is sold through drmichaelsa.com. Four things remain,
-and none of them are code. They are set out in full in `docs/shop.md`; in short:
+The shop opened for orders on 11 October 2026, by the client's decision. The
+RAIN 2026 clothing arrived on 24 October 2026 and is on sale in the cuts,
+colours and sizes that came, ready to collect at the Sunday gathering within a
+week of ordering; the first designs stay on the range marked out of stock.
+Speak Life is listed as coming soon and Do Not Bow is sold through
+drmichaelsa.com. Four things remain, and none of them are code. They are set out
+in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and book covers. The RAIN clothing
-  shows the client's design mockups until the garments are printed, and the books
-  show "Cover to come". Prices were set on 11 October 2026: the t-shirt $50 and the
-  hooded jumper $80 in every size, kids' included, Stripe's fee included. Do Not
+  shows the client's design mockups, the coffee t-shirt has no picture yet, and
+  the books show "Cover to come". Prices were set on 11 October 2026: every
+  t-shirt $50 and the hoodie $80, kids' included, Stripe's fee included. Do Not
   Bow is sold through drmichaelsa.com. Speak Life has no price yet, and a product
   cannot go on sale until somebody ticks that its price has been checked, which
   the build enforces.

@@ -219,9 +219,12 @@ collections:
                   - { label: 'Hidden (its own page only)', value: hidden }
                   - { label: 'Coming soon (on the shop, not for sale)', value: coming-soon }
                   - { label: 'On sale', value: on-sale }
+                  - { label: 'Out of stock (on the shop, marked out of stock, not for sale)', value: sold-out }
                 hint: >-
-                  On sale also needs "Price confirmed" ticked. To take something off
-                  the shop without deleting it, set it back to hidden.
+                  On sale also needs "Price confirmed" ticked. Out of stock keeps a
+                  design on the shop, with its pictures and price, for people to see.
+                  To take something off the shop without deleting it, set it back to
+                  hidden.
               - name: statusNote
                 label: A few words beside the price while it is not on sale
                 widget: string
@@ -407,7 +410,7 @@ collections:
             hint: >-
               One sentence, shown on the shop, each product, the basket, the
               order confirmation, the terms and Stripe's payment page. For
-              example, Made to order, and ready one week after you order.
+              example, Ready within a week of your order.
           - name: collect
             label: Collecting at church
             widget: object

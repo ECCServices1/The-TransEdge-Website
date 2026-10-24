@@ -62,8 +62,10 @@ export { variantLabel } from './variant.mjs';
  *
  * hidden: built, but listed nowhere. coming-soon: on the range, not for sale.
  * on-sale: on the range and in the basket, once the price is confirmed.
+ * sold-out: on the range, marked out of stock, not for sale; for a design
+ * that has sold or will not be made again, kept so people can still see it.
  *
- * @typedef {'hidden'|'coming-soon'|'on-sale'} ProductStatus
+ * @typedef {'hidden'|'coming-soon'|'on-sale'|'sold-out'} ProductStatus
  *
  * @typedef {object} Product
  * @property {string} sku
@@ -255,7 +257,11 @@ export function soldElsewhere(product) {
 }
 
 /** Shown on the range page: on sale, or coming soon. @param {Product} product */
-export const isListed = (product) => product.status === 'on-sale' || product.status === 'coming-soon';
+export const isListed = (product) =>
+  product.status === 'on-sale' || product.status === 'coming-soon' || product.status === 'sold-out';
+
+/** Marked out of stock: listed, priced, not for sale. @param {Product} product */
+export const isSoldOut = (product) => product.status === 'sold-out';
 
 /** Everything a visitor may see on the range page, in display order. */
 export const listedProducts = () => PRODUCTS.filter(isListed);

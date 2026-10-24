@@ -35,6 +35,7 @@ import {
   coloursOf,
   fitPriceNotes,
   soldElsewhere,
+  isSoldOut,
   SHIPPING,
 } from '../../lib/shop.mjs';
 
@@ -81,8 +82,10 @@ const listOf = (names: string[]) =>
                    sold elsewhere has no price here to stand in for. */
                 const status = orderable
                   ? null
-                  : product.statusNote ||
-                    (elsewhere ? null : cents ? 'Not available yet' : 'Price to come');
+                  : isSoldOut(product)
+                    ? 'Out of stock'
+                    : product.statusNote ||
+                      (elsewhere ? null : cents ? 'Not available yet' : 'Price to come');
                 return (
                   <li class="range__item" data-reveal>
                     <a class="card" href={`/shop/${product.slug}`}>

@@ -5,14 +5,19 @@ Clothing and books, sold from the site, paid for through Stripe, managed at
 
 ## What is in it
 
-Since 11 October 2026 the RAIN hooded jumper and t-shirt are on sale as
-pre-orders: made to order, paid for when ordered, and ready one week later to
-collect at the Sunday gathering. The two books are on the range as coming soon.
-Prices include GST and Stripe's fee: the t-shirt $50 and the hooded jumper $80,
-in every fit and size, kids' included. The client set them on
-11 October 2026, because the suppliers charge one price whatever the size; they
-were $35 and $65, with kids' sizes at $25 and $45. A fit can still carry its own
-price if that changes; one without costs the product's price.
+The RAIN 2026 clothing arrived on 24 October 2026, with the final design: our
+mark on the chest and, across the back, RAIN over "The former rain, and the
+latter rain" and Joel 2:23 in Roman numerals. Each cut that arrived is its own
+product, in the colours and sizes that came, because a product can only mark
+sizes available for all its colours at once and the cuts came in different
+sizes. Paid for when ordered, ready to collect at the Sunday gathering within a
+week. Prices include GST and Stripe's fee: every t-shirt $50 and the hoodie $80,
+kids' included, because the suppliers charge one price whatever the size (client,
+11 October 2026; they were $35 and $65, with kids' sizes at $25 and $45).
+
+The first designs, the RAIN hooded jumper and t-shirt in forest green, chocolate,
+rust and navy, stay on the range marked out of stock (client, 24 October 2026),
+so people can still see them. The two books are on the range as coming soon.
 
 Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
 to drmichaelsa.com/book, so its page sends people there and shows no price (see
@@ -21,17 +26,33 @@ client confirmed on 5 October, unused while the link is set.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
-| RAIN hooded jumper | Clothing, RAIN 2026. On sale, made to order | Forest green, Chocolate, Rust, Navy; Unisex XS to 6XL, Women's XS to 2XL, Kids 4 to 16 | Photographs of the printed garment |
-| RAIN t-shirt | Clothing, RAIN 2026. On sale, made to order | Forest green, Chocolate, Rust; Men's XS to 6XL, Women's XXS to 3XL, Kids 2 to 16 | Photographs of the printed garment |
+| RAIN fleece hoodie | On sale. Oversized fleece hoodie | Navy; S, M, L | Nothing |
+| RAIN essential t-shirt | On sale. Cotton crew neck | Navy; XS, S, M, XL | Nothing |
+| RAIN oversized t-shirt | On sale. Oversized cotton | Black; 4XL | Nothing |
+| RAIN drop-shoulder t-shirt | On sale. Loose, dropped shoulders | Grey apricot; XL | Nothing |
+| RAIN seamless t-shirt | On sale. Unisex cotton | Coffee; S, M, L | Its picture: the design came as a coffee hoodie, the stock as coffee t-shirts |
+| RAIN kids' t-shirt | On sale. Kids' crew neck, sized by height | Green, Pink; 120, 130, 140 | Nothing |
+| RAIN hooded jumper | Out of stock. The first design | Forest green, Chocolate, Rust, Navy | Nothing; kept on the range to be seen |
+| RAIN t-shirt | Out of stock. The first design | Forest green, Chocolate, Rust | Nothing; kept on the range to be seen |
 | Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/book | None | The cover, for its page here |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
 
-The RAIN pictures are the client's design mockups of 5 October 2026, each cut
-from a sheet of four into one garment, one colour and one side, and set on a
-plain ground at 4:5. Each says it is a mockup, under the pictures and in its
-alt text. Photographs of the printed garments replace them, file for file.
+What arrived, as the client's order listed it on 24 October 2026: hoodie navy
+S 2, M 1, L 2; essential t-shirt navy XS 6, S 8, M 10, XL 5; oversized black
+4XL 1; drop-shoulder grey apricot XL 5; seamless coffee S 1, M 1, L 1; kids'
+green 120 1, 130 1, 140 3; kids' pink 120 1, 130 1, 140 3. The shop has no stock
+counts, so untick a size at `/admin` when the last one goes.
+
+The pictures are the client's design mockups of 24 October 2026, one per side,
+padded from square to 4:5 on their own white ground and scaled to 800 by 1000
+(`src/assets/shop/rain-*.webp`). At the 1400px they came in, the shop page's
+first picture was heavy enough to push its largest paint to about 1.9s; at 800
+it is about 1.82s, as before.
+The first designs' mockups of 5 October are the `.jpg` files. Each says it is a
+mockup, under the pictures and in its alt text. Photographs of the garments
+replace them, file for file.
 
 ### Stripe's fee is in the price
 
@@ -98,7 +119,8 @@ keep in step.
      without its extension, and every one of them needs alt text. The build fails
      without it, on purpose.
    - **Where it shows**: hidden (its own page only), coming soon (on the shop,
-     not for sale) or on sale. **A few words beside the price** says what a
+     not for sale), on sale, or out of stock (on the shop with its pictures
+     and price, marked out of stock, not for sale). **A few words beside the price** says what a
      coming-soon item is waiting for, such as "Launching 15 November at RAIN 2026".
    - **Colours**, for clothing that comes in more than one: each has a name, a
      swatch colour and its own photographs, and choosing it on the page shows
@@ -228,14 +250,14 @@ permanently.
 ### When an order is ready
 
 **When an order is ready**, under **Shop**, **Delivery and postage** at `/admin`,
-is one sentence: "Made to order, and ready one week after you order." It is
+is one sentence: "Ready within a week of your order." It is
 said on the shop, on each product that is on sale, in the basket beside "You pay
 now, when you order", on the order confirmation, in the terms, and on Stripe's
 payment page above the pay button. Change it there and it changes everywhere.
 
 ### Speed, on the day something goes on sale
 
-The RAIN jumper page is in the Lighthouse budget, which allows 2.0s for the
+The RAIN fleece hoodie page is in the Lighthouse budget, which allows 2.0s for the
 largest paint on a simulated phone connection. CI's runner measures it slower
 than a local run with the same settings, by up to about 0.14s, because it often
 paints after the page's last requests and Lighthouse then counts them. Putting
