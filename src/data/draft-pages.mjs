@@ -83,7 +83,7 @@ export const DRAFT_PAGES = [
   {
     route: 'shop/terms',
     reason: 'awaiting-legal',
-    needs: 'Legal review of the sale terms, the returns position and the tax invoice wording.',
+    needs: 'Legal review of the sale terms and the returns position.',
   },
   /* These two are not waiting on anything. A basket and an order confirmation
      have nothing a search engine should hold, and an indexed order page is how

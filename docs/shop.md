@@ -11,18 +11,28 @@ latter rain" and Joel 2:23 in Roman numerals. Each cut that arrived is its own
 product, in the colours and sizes that came, because a product can only mark
 sizes available for all its colours at once and the cuts came in different
 sizes. Paid for when ordered, ready to collect at the Sunday gathering within a
-week. Prices include GST and Stripe's fee: every t-shirt $50 and the hoodie $80,
-kids' included, because the suppliers charge one price whatever the size (client,
-11 October 2026; they were $35 and $65, with kids' sizes at $25 and $45).
+week.
+
+It sells from stock only (client, 24 October 2026): only the sizes that came are
+listed, and **Most one person can order at once** is set to the largest number
+in hand of any one size, so one order cannot take more than there is (one each
+for the black and the coffee t-shirts, two for the hoodie). The shop keeps no
+running count, so untick a size at `/admin` when its last one goes.
+
+Prices, set on 24 October 2026: every adult t-shirt $28, kids' t-shirts $25, and
+the hoodie $65. Stripe's fee is inside the price, and no GST is charged on
+anything in the shop (client, 24 October 2026). Before that they were $50 and
+$80 (11 October), and $35 and $65 with kids' sizes at $25 and $45 (5 October).
 
 The first designs, the RAIN hooded jumper and t-shirt in forest green, chocolate,
 rust and navy, stay on the range marked out of stock (client, 24 October 2026),
 so people can still see them. The two books are on the range as coming soon.
 
-Do Not Bow is not sold here. On 9 October 2026 the client asked for it to point
-to drmichaelsa.com/book, so its page sends people there and shows no price (see
-"Something another site sells" below). Its catalogue entry keeps the $20 the
-client confirmed on 5 October, unused while the link is set.
+Do Not Bow is not sold here. Its page sends people to the sale page at
+drmichaelsa.com/shop and shows its price there, $22.99 (client, 24 October 2026;
+it pointed to drmichaelsa.com/book from 9 October). See "Something another site
+sells" below. Its cover is still to come: drmichaelsa.com could not be reached
+from the build environment to fetch it, so it needs sending.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
@@ -63,12 +73,13 @@ of the price.
 
 On Stripe's standard Australian pricing as at October 2026, 1.65% + 30c for an
 Australian card and 3.5% + 30c for an overseas one, a sale with one item comes
-out like this. The GST is a tenth of the GST-inclusive price, so one eleventh.
+out like this. No GST is charged.
 
-| Item | Price | GST in it | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
-|---|---|---|---|---|
-| T-shirt, any size | $50.00 | $4.55 | $1.13 | $44.32 |
-| Hooded jumper, any size | $80.00 | $7.27 | $1.62 | $71.11 |
+| Item | Price | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
+|---|---|---|---|
+| T-shirt | $28.00 | $0.76 | $27.24 |
+| Kids' t-shirt | $25.00 | $0.71 | $24.29 |
+| Hoodie | $65.00 | $1.37 | $63.63 |
 
 The 30c is charged once per payment, not per item, so a basket of several items
 pays it once. A charity rate or a negotiated rate on TTE's Stripe account
@@ -108,9 +119,8 @@ keep in step.
 
 1. Go to `/admin` and open **Shop**, then **Products**.
 2. Add an entry. The fields that matter most:
-   - **Price** is dollars and cents, always two decimal places, GST included. We
-     are registered for GST, so do not add it on top. `45.00`, not `45` and not
-     `40.91`.
+   - **Price** is dollars and cents, always two decimal places: what the buyer
+     pays. No GST is charged in the shop. `45.00`, not `45`.
    - **Price confirmed** stays unticked until somebody has actually checked the
      figure. Nothing can go on sale without it and the build will refuse.
    - **Stock code** never changes once something has been sold. Baskets match on
@@ -148,13 +158,14 @@ not shown anywhere until it is confirmed: the page says "Price to come".
 
 Fill in **Sold elsewhere, the link to buy it** with the full address, starting
 `https://`. The product stays on the range, under **Where it shows** as usual,
-but its page offers a button to that site instead of a basket, and says the
-price and delivery are taken care of there. It shows no price and none of this
-shop's terms, collection or gift notes, because none of them apply. The checkout
-refuses it even if somebody edits a basket by hand.
+but its page offers a button to that site instead of a basket, and says ordering
+and delivery are taken care of there. It shows the price entered here, as the
+other site charges it, with "at" and the site's name; keep the two in step. It
+shows none of this shop's terms, collection or gift notes, because none of them
+apply. The checkout refuses it even if somebody edits a basket by hand.
 
-Speak Life can go the same way when it is ready: fill in the link, and the price
-and **Price confirmed** stop mattering.
+Speak Life can go the same way when it is ready: fill in the link and its price
+there.
 
 ### Photographs
 
@@ -196,7 +207,7 @@ stock, tick the size back on at `/admin`.
 
 ## Switching payment on
 
-Four things in Stripe and Cloudflare, none of which are code. Until the first is
+Two things in Stripe and Cloudflare, none of which are code. Until the first is
 done, the shop takes orders as far as the basket and the pay button asks people
 to call, which is the right failure.
 
@@ -213,20 +224,7 @@ to call, which is the right failure.
    Start with a test key (`rk_test_...`) and pay with Stripe's test card,
    4242 4242 4242 4242, any future date, any three digits. Then replace it with
    the live key (`rk_live_...`).
-2. **The GST tax rate.** Create a Tax Rate in Stripe: 10 per cent, **inclusive**,
-   display name GST, country Australia. Take its `txr_...` id and set it as a plain
-   variable on the Worker:
-   ```
-   npx wrangler secret put STRIPE_GST_TAX_RATE
-   ```
-   It is not secret, but putting it beside the key keeps both in one place. Without
-   it the shop still works; the receipt simply carries no GST breakdown, which for
-   a registered entity is not good enough to open with.
-3. **The tax invoice.** Stripe's receipt shows the GST once the rate above is
-   applied. A compliant Australian tax invoice also wants the words "tax invoice"
-   and the ABN on it, which is Stripe receipt configuration. The accountant should
-   look at a real receipt before the first sale rather than after.
-4. **The emails.** In Stripe's settings, turn on receipts for successful
+2. **The emails.** In Stripe's settings, turn on receipts for successful
    payments, which is how the buyer gets one, and an email to the church for
    every payment, which is the order alert.
 

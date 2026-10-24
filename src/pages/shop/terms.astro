@@ -4,17 +4,17 @@
  *
  * Separate from /terms-of-use, which governs reading the site. This governs
  * buying something, which brings the Australian Consumer Law with it: consumer
- * guarantees that cannot be contracted out of, a single price inclusive of GST,
- * and an accurate account of delivery and returns.
+ * guarantees that cannot be contracted out of, a single price, and an accurate
+ * account of delivery and returns.
  *
  * Drafted, not approved. It carries the draft notice and sits on the register
  * as awaiting-legal alongside the privacy policy and the terms of use. The
  * client decided on 5 October 2026 that it stands as a placeholder and is
  * reviewed later, so the shop does not wait for that review to open.
  *
- * Two things on it need a person rather than a developer: the returns window,
- * which is a decision and not a law, and the tax invoice wording, which the
- * accountant should confirm against what Stripe actually sends.
+ * One thing on it needs a person rather than a developer: the returns window,
+ * which is a decision and not a law. No GST is charged in the shop (client,
+ * 24 October 2026), so there is no tax invoice wording to settle.
  *
  * Redrafted on 5 October 2026 when the range grew from placeholders to the
  * RAIN 2026 clothing, in colours and fits, and books by our Senior Pastors. It
@@ -31,13 +31,13 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
 
 <PageLayout
   title="Shop terms"
-  description="Terms of sale for clothing and books from The Transformation Edge: prices, GST, delivery, exchanges and refunds."
+  description="Terms of sale for clothing and books from The Transformation Edge: prices, delivery, exchanges and refunds."
   route="shop/terms"
   crumbs={[{ name: 'Shop', href: '/shop' }]}
   standfirst="What you are agreeing to when you buy something here."
   noindex
 >
-  <DraftNotice what="These sale terms are a working draft awaiting a legal review, plus two decisions: how long the change-of-mind window runs, and the exact tax invoice wording the accountant wants Stripe to send." />
+  <DraftNotice what="These sale terms are a working draft awaiting a legal review, plus one decision: how long the change-of-mind window runs." />
 
   <div class="terms prose">
     <h2>Who you are buying from</h2>
@@ -55,14 +55,11 @@ import { SHIPPING, postingAvailable } from '../../lib/shop.mjs';
       it shows a price and an "Add to basket" button.
     </p>
 
-    <h2>Prices and GST</h2>
+    <h2>Prices</h2>
     <p>
-      Every price shown includes GST. The figure on the product page is the figure you pay for
-      that item, and delivery, where it applies, is shown separately before you pay.
-    </p>
-    <p>
-      We are registered for GST, so your receipt from Stripe shows the GST component and carries
-      our ABN. Keep it: that is your tax invoice.
+      The figure on the product page is the figure you pay for that item. No GST is added.
+      Delivery, where it applies, is shown separately before you pay. Stripe emails you a
+      receipt: keep it, as it is your record of the purchase.
     </p>
 
     <h2>Paying</h2>

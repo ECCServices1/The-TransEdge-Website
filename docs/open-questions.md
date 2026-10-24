@@ -174,27 +174,27 @@ for next.
 The shop opened for orders on 11 October 2026, by the client's decision. The
 RAIN 2026 clothing arrived on 24 October 2026 and is on sale in the cuts,
 colours and sizes that came, ready to collect at the Sunday gathering within a
-week of ordering; the first designs stay on the range marked out of stock.
-Speak Life is listed as coming soon and Do Not Bow is sold through
-drmichaelsa.com. Four things remain, and none of them are code. They are set out
-in full in `docs/shop.md`; in short:
+week of ordering, from stock only; the first designs stay on the range marked
+out of stock. Speak Life is listed as coming soon and Do Not Bow is sold through
+drmichaelsa.com/shop at $22.99. Three things remain, and none of them are code.
+They are set out in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and book covers. The RAIN clothing
   shows the client's design mockups, the coffee t-shirt has no picture yet, and
-  the books show "Cover to come". Prices were set on 11 October 2026: every
-  t-shirt $50 and the hoodie $80, kids' included, Stripe's fee included. Do Not
-  Bow is sold through drmichaelsa.com. Speak Life has no price yet, and a product
-  cannot go on sale until somebody ticks that its price has been checked, which
-  the build enforces.
+  the books show "Cover to come"; Do Not Bow's cover could not be fetched from
+  drmichaelsa.com, which did not resolve from the build environment. Prices were
+  set on 24 October 2026: adult t-shirts $28, kids' t-shirts $25 and the hoodie
+  $65, Stripe's fee included and no GST. Speak Life has no price yet, and a
+  product cannot go on sale until somebody ticks that its price has been
+  checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **A restricted Stripe key and the GST tax rate** from TTE's own Stripe account,
-  set on the Worker by the client. Neither goes anywhere near this repository.
-  Until the key is set the pay button replies with a message asking people to
-  call, which is the right way to fail.
-- **An accountant's look at a real Stripe receipt**, to confirm it works as an
-  Australian tax invoice.
+- **A restricted Stripe key** from TTE's own Stripe account, set on the Worker
+  by the client. It goes nowhere near this repository. Until it is set the pay
+  button replies with a message asking people to call, which is the right way
+  to fail. No GST is charged in the shop (client, 24 October 2026), so there is
+  no tax rate to set up.
 
 `/shop/terms` stands as a placeholder: the client decided on 5 October 2026
 that its legal review comes later and does not hold up opening.

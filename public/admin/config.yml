@@ -197,12 +197,13 @@ collections:
                 required: false
                 hint: Shown above the name, for example RAIN 2026.
               - name: price
-                label: Price in Australian dollars, GST included
+                label: Price in Australian dollars
                 widget: string
                 pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 45.00']
                 hint: >-
-                  Always two decimal places. This is the amount a buyer pays,
-                  GST included. We are registered for GST, so do not add it on top.
+                  Always two decimal places. This is the amount a buyer pays. No
+                  GST is charged in the shop. For something another site sells,
+                  the price it charges there.
               - name: priceConfirmed
                 label: Price confirmed
                 widget: boolean
@@ -423,7 +424,7 @@ collections:
             fields:
               - { name: label, label: What it is called, widget: string }
               - name: price
-                label: Flat postage rate in Australian dollars, GST included
+                label: Flat postage rate in Australian dollars
                 widget: string
                 pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 12.50']
               - name: priceConfirmed

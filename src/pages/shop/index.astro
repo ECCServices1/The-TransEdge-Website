@@ -7,10 +7,8 @@
  * and the same restraint belongs here: a church selling a jumper should not
  * sound like it is running a sale.
  *
- * Prices carry GST, which is stated once at the top rather than repeated
- * against every figure. The Transformation Edge Ltd is registered, so a single
- * inclusive price is both the Australian Consumer Law position and the plainest
- * thing for a reader.
+ * No GST is charged on anything in the shop (client, 24 October 2026), so a
+ * price is simply what the buyer pays.
  *
  * The range is in sections, clothing first and then books, and each card
  * shows what a visitor needs to choose: the picture, the name, the price, and
@@ -56,7 +54,6 @@ const listOf = (names: string[]) =>
     <section class="shop__terms" aria-labelledby="how-heading">
       <h2 id="how-heading" class="visually-hidden">How the shop works</h2>
       <ul class="shop__facts" role="list">
-        <li>Prices include GST.</li>
         <li>{SHIPPING.readyIn}</li>
         <li>{SHIPPING.collect.label}, free.</li>
         {postingAvailable() && <li>{SHIPPING.post.label}.</li>}
@@ -84,8 +81,9 @@ const listOf = (names: string[]) =>
                   ? null
                   : isSoldOut(product)
                     ? 'Out of stock'
-                    : product.statusNote ||
-                      (elsewhere ? null : cents ? 'Not available yet' : 'Price to come');
+                    : elsewhere
+                      ? [cents ? `At ${elsewhere.name}` : null, product.statusNote].filter(Boolean).join('. ') || null
+                      : product.statusNote || (cents ? 'Not available yet' : 'Price to come');
                 return (
                   <li class="range__item" data-reveal>
                     <a class="card" href={`/shop/${product.slug}`}>
@@ -119,7 +117,7 @@ const listOf = (names: string[]) =>
                           </p>
                         )}
                         <p class="card__price">
-                          {elsewhere ? `At ${elsewhere.name}` : cents && formatMoney(cents)}
+                          {cents ? formatMoney(cents) : elsewhere && `At ${elsewhere.name}`}
                           {status && <span class="card__status">{status}</span>}
                         </p>
                         {!elsewhere && otherPrices.length > 0 && (

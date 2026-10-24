@@ -106,7 +106,6 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
           <dd data-total></dd>
         </div>
       </dl>
-      <p class="totals__gst" data-gst></p>
 
       <Button type="button" size="large" data-pay>Pay with Stripe</Button>
 
@@ -278,10 +277,6 @@ const postRate = toCents(SHIPPING.post.price) ?? 0;
     font-weight: var(--weight-semibold);
   }
 
-  .totals__gst {
-    font-size: var(--text--1);
-    color: var(--color-text-muted);
-  }
 
   .basket__said:empty {
     display: none;

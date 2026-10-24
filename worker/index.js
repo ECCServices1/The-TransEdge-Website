@@ -118,8 +118,6 @@ async function handleCheckout(request, env) {
   const delivery = shippingOption(fulfilment, subtotalCents);
   if (!delivery) return fail('We could not work out delivery for that order.');
 
-  const taxRate = env.STRIPE_GST_TAX_RATE;
-
   const payload = {
     mode: 'payment',
     success_url: `${here}/shop/order-complete?session_id={CHECKOUT_SESSION_ID}`,
@@ -145,10 +143,6 @@ async function handleCheckout(request, env) {
           },
         },
       },
-      /* The tax rate object in Stripe is configured as inclusive, matching the
-         catalogue, so this reports GST rather than adding it. Left out when
-         unconfigured, which is the state before the accountant has set it up. */
-      tax_rates: taxRate ? [taxRate] : undefined,
     })),
     shipping_options: [
       {
@@ -156,7 +150,6 @@ async function handleCheckout(request, env) {
           type: 'fixed_amount',
           display_name: delivery.label,
           fixed_amount: { amount: delivery.cents, currency: 'aud' },
-          tax_behavior: 'inclusive',
         },
       },
     ],

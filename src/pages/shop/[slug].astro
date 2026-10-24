@@ -24,9 +24,10 @@
  * SOLD ELSEWHERE
  *
  * A product with a buyUrl, such as Do Not Bow, is sold by somebody else. Its
- * page sends people there instead of offering a basket, and leaves out what
- * only holds for this shop: the price and the GST in it, collection on a
- * Sunday, the shop terms, and the note that a purchase is not a gift.
+ * page shows the price, says where it is sold, and sends people there instead
+ * of offering a basket. It leaves out what only holds for this shop:
+ * collection on a Sunday, the shop terms, and the note that a purchase is not
+ * a gift.
  */
 import type { GetStaticPaths } from 'astro';
 import PageLayout from '../../layouts/PageLayout.astro';
@@ -139,10 +140,10 @@ const sizeRange = (labels: string[]) =>
       {product.collection && <p class="product__collection">{product.collection}</p>}
 
       {
-        !elsewhere && (
+        (!elsewhere || cents) && (
           <p class="product__price">
             {cents ? formatMoney(cents) : 'Price to come'}
-            {cents && <span class="product__gst">includes GST</span>}
+            {elsewhere && <span class="product__where">at {elsewhere.name}</span>}
           </p>
         )
       }
@@ -190,7 +191,7 @@ const sizeRange = (labels: string[]) =>
           <div class="product__held">
             <p>
               {isBook ? 'This book is' : 'This is'} sold through {elsewhere.name}, not through
-              this shop. Its price, and getting it to you, are taken care of there.
+              this shop. Ordering and delivery are taken care of there.
             </p>
             <p class="actions">
               <Button href={elsewhere.url} external>
@@ -416,7 +417,7 @@ const sizeRange = (labels: string[]) =>
     margin-block-start: calc(var(--space-s) * -1);
   }
 
-  .product__gst,
+  .product__where,
   .product__status {
     font-size: var(--text--1);
     color: var(--color-text-muted);

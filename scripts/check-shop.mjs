@@ -293,6 +293,6 @@ const count = (status) => PRODUCTS.filter((p) => p.status === status).length;
 console.log(
   `Shop: ${PRODUCTS.length} product(s) in the catalogue: ${count('on-sale')} on sale, ` +
     `${count('coming-soon')} coming soon, ${count('sold-out')} out of stock, ${count('hidden')} hidden. ` +
-    `Prices are GST inclusive.`
+    `No GST is charged.`
 );
 for (const note of notes) console.log(`  Note: ${note}`);
