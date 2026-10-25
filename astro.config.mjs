@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import { isDraftRoute } from './src/data/draft-pages.mjs';
 import mdx from '@astrojs/mdx';
 
 import { LOCALES, DEFAULT_LOCALE } from './src/i18n/locales.mjs';
@@ -51,7 +52,13 @@ export default defineConfig({
         defaultLocale: DEFAULT_LOCALE,
         locales: Object.fromEntries(LOCALES.map((l) => [l.path, l.hreflang])),
       },
-      filter: (page) => !page.includes('/admin') && !page.includes('/styleguide'),
+      /* A page kept out of search is kept out of the sitemap too: the draft
+         register says which, so a hidden product or the basket is listed
+         nowhere. Unreviewed locales are noindex by their own rule and stay. */
+      filter: (page) =>
+        !page.includes('/admin') &&
+        !page.includes('/styleguide') &&
+        !isDraftRoute(new URL(page).pathname.replace(/^\/|\/$/g, '')),
     }),
   ],
 

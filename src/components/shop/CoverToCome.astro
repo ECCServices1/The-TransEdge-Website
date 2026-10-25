@@ -1,6 +1,6 @@
 ---
 /**
- * The place for a book's cover before the cover file is here.
+ * The place for a book's cover, or a garment's picture, before the file is here.
  *
  * Not a mock cover. A cover is the publisher's design, and an invented one in
  * its place would be taken for the real thing. So this states which book it is
@@ -9,22 +9,28 @@
  *
  * Hidden from assistive technology: the title and author are already the
  * heading and the byline beside it, and reading them twice helps nobody.
+ *
+ * Clothing uses it too, as "Picture to come", so a garment on sale before its
+ * picture arrives shows the shopper a plain frame rather than the site's
+ * internal photo brief.
  */
 interface Props {
   title: string;
   author?: string;
+  /** What is to come. A book's cover unless said otherwise. */
+  status?: string;
   ratio?: string;
   class?: string;
 }
 
-const { title, author, ratio = '4 / 5', class: className = '' } = Astro.props;
+const { title, author, status = 'Cover to come', ratio = '4 / 5', class: className = '' } = Astro.props;
 ---
 
 <figure class:list={['cover-slot', className]} style={`--ratio: ${ratio}`} aria-hidden="true">
   <div class="cover-slot__frame">
     <p class="cover-slot__title">{title}</p>
     {author && <p class="cover-slot__author">{author}</p>}
-    <p class="cover-slot__status">Cover to come</p>
+    <p class="cover-slot__status">{status}</p>
   </div>
 </figure>
 

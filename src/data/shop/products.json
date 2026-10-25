@@ -1,6 +1,288 @@
 {
   "products": [
     {
+      "sku": "TTE-RAIN-FLEECE-HOOD",
+      "slug": "rain-fleece-hoodie",
+      "name": "RAIN fleece hoodie",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "65.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 10,
+      "summary": "The RAIN 2026 hoodie in navy: oversized and fleeced, with Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. An oversized fleece hoodie with a front pouch pocket, in navy. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
+      "limitPerOrder": 2,
+      "images": [],
+      "colours": [
+        {
+          "name": "Navy",
+          "swatch": "#263645",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-fleece-hoodie-navy-back",
+              "alt": "A mockup of the RAIN fleece hoodie in navy, from the back: RAIN in tall letters shading from white to blue, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-fleece-hoodie-navy-front",
+              "alt": "A mockup of the RAIN fleece hoodie in navy, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "label": "S",
+          "available": true
+        },
+        {
+          "label": "M",
+          "available": true
+        },
+        {
+          "label": "L",
+          "available": true
+        }
+      ]
+    },
+    {
+      "sku": "TTE-RAIN-TEE-ESS",
+      "slug": "rain-essential-t-shirt",
+      "name": "RAIN essential t-shirt",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "28.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 11,
+      "summary": "The RAIN 2026 t-shirt in navy: our mark on the chest and Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. A cotton crew-neck t-shirt in navy. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
+      "limitPerOrder": 10,
+      "images": [],
+      "colours": [
+        {
+          "name": "Navy",
+          "swatch": "#171820",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-essential-tee-navy-back",
+              "alt": "A mockup of the RAIN essential t-shirt in navy, from the back: RAIN in tall letters shading from white to gold, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-essential-tee-navy-front",
+              "alt": "A mockup of the RAIN essential t-shirt in navy, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "label": "XS",
+          "available": true
+        },
+        {
+          "label": "S",
+          "available": true
+        },
+        {
+          "label": "M",
+          "available": true
+        },
+        {
+          "label": "XL",
+          "available": true
+        }
+      ]
+    },
+    {
+      "sku": "TTE-RAIN-TEE-OS",
+      "slug": "rain-oversized-t-shirt",
+      "name": "RAIN oversized t-shirt",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "28.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 12,
+      "summary": "The RAIN 2026 oversized t-shirt in black, with our name on the chest and Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. An oversized cotton t-shirt in black. On the chest, The Transformation Edge with “A change is inevitable” beneath. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
+      "limitPerOrder": 1,
+      "images": [],
+      "colours": [
+        {
+          "name": "Black",
+          "swatch": "#1b1b1b",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-oversized-tee-black-back",
+              "alt": "A mockup of the RAIN oversized t-shirt in black, from the back: RAIN in tall letters shading from white to blue, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-oversized-tee-black-front",
+              "alt": "A mockup of the RAIN oversized t-shirt in black, from the front: The Transformation Edge mark and name, with “A change is inevitable” beneath, small and white on the chest."
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "label": "4XL",
+          "available": true
+        }
+      ]
+    },
+    {
+      "sku": "TTE-RAIN-TEE-DS",
+      "slug": "rain-drop-shoulder-t-shirt",
+      "name": "RAIN drop-shoulder t-shirt",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "28.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 13,
+      "summary": "The RAIN 2026 t-shirt in grey apricot: a loose cut with dropped shoulders, Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. A loose t-shirt with dropped shoulders, in grey apricot. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
+      "limitPerOrder": 5,
+      "images": [],
+      "colours": [
+        {
+          "name": "Grey apricot",
+          "swatch": "#e4d5c0",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-drop-shoulder-tee-apricot-back",
+              "alt": "A mockup of the RAIN drop-shoulder t-shirt in grey apricot, from the back: RAIN in tall letters shading from white to gold, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-drop-shoulder-tee-apricot-front",
+              "alt": "A mockup of the RAIN drop-shoulder t-shirt in grey apricot, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "label": "XL",
+          "available": true
+        }
+      ]
+    },
+    {
+      "sku": "TTE-RAIN-TEE-SL",
+      "slug": "rain-seamless-t-shirt",
+      "name": "RAIN seamless t-shirt",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "28.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 14,
+      "summary": "The RAIN 2026 t-shirt in coffee: our mark on the chest and Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. A unisex cotton t-shirt in coffee. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "A picture of this one is on its way.",
+      "limitPerOrder": 1,
+      "images": [],
+      "colours": [
+        {
+          "name": "Coffee",
+          "swatch": "#59422a",
+          "available": true,
+          "images": []
+        }
+      ],
+      "sizes": [
+        {
+          "label": "S",
+          "available": true
+        },
+        {
+          "label": "M",
+          "available": true
+        },
+        {
+          "label": "L",
+          "available": true
+        }
+      ]
+    },
+    {
+      "sku": "TTE-RAIN-TEE-KIDS",
+      "slug": "rain-kids-t-shirt",
+      "name": "RAIN kids' t-shirt",
+      "category": "apparel",
+      "collection": "RAIN 2026",
+      "price": "25.00",
+      "priceConfirmed": true,
+      "status": "on-sale",
+      "order": 15,
+      "summary": "The RAIN 2026 kids' t-shirt in green or pink, with Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. A kids' cotton crew-neck t-shirt in green or pink. Sizes are by height in centimetres: 120, 130 and 140. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "careNotes": "Wash cold and inside out, and do not iron over the print.",
+      "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
+      "limitPerOrder": 3,
+      "images": [],
+      "colours": [
+        {
+          "name": "Green",
+          "swatch": "#dbe8cc",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-kids-tee-green-back",
+              "alt": "A mockup of the RAIN kids' t-shirt in green, from the back: RAIN in tall letters shading from green to white, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-kids-tee-green-front",
+              "alt": "A mockup of the RAIN kids' t-shirt in green, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        },
+        {
+          "name": "Pink",
+          "swatch": "#e6c2c1",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-kids-tee-pink-back",
+              "alt": "A mockup of the RAIN kids' t-shirt in pink, from the back: RAIN in tall letters shading from red to pink, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-kids-tee-pink-front",
+              "alt": "A mockup of the RAIN kids' t-shirt in pink, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        }
+      ],
+      "sizes": [
+        {
+          "label": "120",
+          "available": true
+        },
+        {
+          "label": "130",
+          "available": true
+        },
+        {
+          "label": "140",
+          "available": true
+        }
+      ]
+    },
+    {
       "sku": "TTE-RAIN-HOOD",
       "slug": "rain-hooded-jumper",
       "name": "RAIN hooded jumper",
@@ -8,9 +290,8 @@
       "collection": "RAIN 2026",
       "price": "65.00",
       "priceConfirmed": true,
-      "status": "coming-soon",
-      "statusNote": "Coming soon",
-      "order": 10,
+      "status": "sold-out",
+      "order": 70,
       "summary": "The RAIN 2026 hooded jumper: our mark on the chest and Joel 2:23 across the back.",
       "description": "Made for RAIN 2026. The Transformation Edge mark sits on the chest and RAIN runs down one sleeve. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. A pullover hood with drawcords, a front pouch pocket, and ribbed cuffs and hem.",
       "careNotes": "Wash cold and inside out, and do not iron over the print.",
@@ -159,7 +440,6 @@
         {
           "name": "Kids",
           "note": "Australian kids' sizes, which run roughly with age.",
-          "price": "45.00",
           "sizes": [
             {
               "label": "4",
@@ -199,11 +479,10 @@
       "name": "RAIN t-shirt",
       "category": "apparel",
       "collection": "RAIN 2026",
-      "price": "35.00",
+      "price": "28.00",
       "priceConfirmed": true,
-      "status": "coming-soon",
-      "statusNote": "Coming soon",
-      "order": 20,
+      "status": "sold-out",
+      "order": 71,
       "summary": "The RAIN 2026 t-shirt: our mark on the chest and Joel 2:23 across the back.",
       "description": "Made for RAIN 2026. The Transformation Edge mark on the chest, RAIN on one sleeve, and across the back RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 falling away beneath like rain. Crew neck, short sleeves.",
       "careNotes": "Wash cold and inside out, and do not iron over the print.",
@@ -390,10 +669,11 @@
       "author": "Dr Michaels Aibangbee",
       "publisher": "Ark House Press",
       "isbn": "9781764750790",
-      "price": "20.00",
+      "price": "22.99",
       "priceConfirmed": true,
       "status": "coming-soon",
       "statusNote": "Launching 15 November at RAIN 2026",
+      "buyUrl": "https://drmichaelsa.com/shop",
       "order": 30,
       "summary": "Three young men on the plain of Dura, and the faith that would not bow.",
       "description": "Do Not Bow returns to the plain of Dura, where three young Hebrew men stood firm while an empire bowed. It traces a six-stage progression of compromise, names the cultural pressures that quietly pull believers away from wholehearted devotion to God, and calls readers to a “But if not” faith: loyalty to God even if deliverance never comes. The book launches on Sunday 15 November, the last day of RAIN 2026.",

@@ -121,16 +121,26 @@ Outreach page and the giving hand-off all read.
 
 ### 11. Content the pastoral team has to write
 
-Three pages are built and marked draft for content. Each carries a visible
+Two pages are built and marked draft for content. Each carries a visible
 notice naming what is missing and is `noindex` until it is signed off. Removing
 the `DraftNotice` component from a page is the act of approving it, so approval
 is a line in a diff with a name against it.
 
 | Page | What is needed |
 |---|---|
-| `/who-we-are/safeguarding` | The name and direct contact of the person who receives a concern, a link to the policy document, and who a complaint escalates to if it concerns a pastor |
 | `/new-here/what-to-expect` | Confirmation of the order of a Sunday and how long the message runs |
 | `/life-at-tte` | When Life-Link groups meet. Life-Link and Champions (September 2026) and 1B2GaS (5 October 2026) are supplied and on the page |
+
+Not public, by decision:
+
+- `/who-we-are/safeguarding`. On 9 October 2026 the client decided the page
+  should not be public: the church has its own internal safeguarding processes,
+  and the board decides what, if anything, goes on the website. The page is not
+  built, its addresses lead to Get in touch, and nothing links to it. When the
+  board decides, it still needs the name and direct contact of the person who
+  receives a concern, a link to the policy document, and who a complaint
+  escalates to if it concerns a pastor. How to bring it back is at the top of
+  `src/pages/who-we-are/_safeguarding.astro`.
 
 Signed off, with the date the notice came off:
 
@@ -159,29 +169,32 @@ visitor-essential set stays at five pages at launch, or whether Find Us, the FAQ
 and Give are added to it, since those are the three a first-time visitor reaches
 for next.
 
-### 13. The shop, before it can open
+### 13. The shop, taking payment
 
-The shop is built, verified and reachable at `/shop`, with nothing on sale: the
-RAIN 2026 hooded jumper and t-shirt and two books, Do Not Bow and Speak Life, are
-listed as coming soon. Four things stand between that and opening, and none of
-them are code. They are set
-out in full in `docs/shop.md`; in short:
+The shop opened for orders on 11 October 2026, by the client's decision. The
+RAIN 2026 clothing arrived on 24 October 2026 and is on sale in the cuts,
+colours and sizes that came, ready to collect at the Sunday gathering within a
+week of ordering, from stock only; the first designs stay on the range marked
+out of stock. Speak Life is listed as coming soon and Do Not Bow is sold through
+drmichaelsa.com/shop at $22.99. Three things remain, and none of them are code.
+They are set out in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and book covers. The RAIN clothing
-  shows the client's design mockups until the garments are printed, and the books
-  show "Cover to come". Prices were confirmed on 5 October 2026: the t-shirt $35
-  ($25 in kids' sizes), the hooded jumper $65 ($45 in kids' sizes) and Do Not Bow
-  $20. Speak Life has no price yet, and a product cannot go on sale until
-  somebody ticks that its price has been checked, which the build enforces.
+  shows the client's design mockups, the coffee t-shirt has no picture yet, and
+  the books show "Cover to come"; Do Not Bow's cover could not be fetched from
+  drmichaelsa.com, which did not resolve from the build environment. Prices were
+  set on 24 October 2026: adult t-shirts $28, kids' t-shirts $25 and the hoodie
+  $65, Stripe's fee included and no GST. Speak Life has no price yet, and a
+  product cannot go on sale until somebody ticks that its price has been
+  checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **The Stripe secret key and the GST tax rate**, set on the Worker by the client,
-  who will set up the shop's side of Stripe later. Neither goes anywhere near this
-  repository. Without the key the checkout replies with a message asking people
-  to call, which is the right way to fail.
-- **An accountant's look at a real Stripe receipt**, to confirm it works as an
-  Australian tax invoice.
+- **A restricted Stripe key** from TTE's own Stripe account, set on the Worker
+  by the client. It goes nowhere near this repository. Until it is set the pay
+  button replies with a message asking people to call, which is the right way
+  to fail. No GST is charged in the shop (client, 24 October 2026), so there is
+  no tax rate to set up.
 
 `/shop/terms` stands as a placeholder: the client decided on 5 October 2026
 that its legal review comes later and does not hold up opening.

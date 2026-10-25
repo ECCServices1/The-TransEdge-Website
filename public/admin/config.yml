@@ -197,12 +197,13 @@ collections:
                 required: false
                 hint: Shown above the name, for example RAIN 2026.
               - name: price
-                label: Price in Australian dollars, GST included
+                label: Price in Australian dollars
                 widget: string
                 pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 45.00']
                 hint: >-
-                  Always two decimal places. This is the amount a buyer pays,
-                  GST included. We are registered for GST, so do not add it on top.
+                  Always two decimal places. This is the amount a buyer pays. No
+                  GST is charged in the shop. For something another site sells,
+                  the price it charges there.
               - name: priceConfirmed
                 label: Price confirmed
                 widget: boolean
@@ -219,15 +220,28 @@ collections:
                   - { label: 'Hidden (its own page only)', value: hidden }
                   - { label: 'Coming soon (on the shop, not for sale)', value: coming-soon }
                   - { label: 'On sale', value: on-sale }
+                  - { label: 'Out of stock (on the shop, marked out of stock, not for sale)', value: sold-out }
                 hint: >-
-                  On sale also needs "Price confirmed" ticked. To take something off
-                  the shop without deleting it, set it back to hidden.
+                  On sale also needs "Price confirmed" ticked. Out of stock keeps a
+                  design on the shop, with its pictures and price, for people to see.
+                  To take something off the shop without deleting it, set it back to
+                  hidden.
               - name: statusNote
                 label: A few words beside the price while it is not on sale
                 widget: string
                 required: false
                 pattern: ['^.{1,60}$', 'Keep it under 60 characters']
                 hint: For example, Coming soon, or Launching 15 November at RAIN 2026.
+              - name: buyUrl
+                label: Sold elsewhere, the link to buy it
+                widget: string
+                required: false
+                pattern: ['^https://\S+$', 'A full address starting https://']
+                hint: >-
+                  For something another site sells, such as Do Not Bow at
+                  https://drmichaelsa.com/book. Its page then sends people there
+                  instead of offering a basket, and shows no price, because the
+                  seller sets it. Leave empty for anything sold here.
               - name: summary
                 label: One line for the range page
                 widget: string
@@ -391,6 +405,13 @@ collections:
           Collection is always free. Posting stays switched off until the rate
           below is set and confirmed.
         fields:
+          - name: readyIn
+            label: When an order is ready
+            widget: string
+            hint: >-
+              One sentence, shown on the shop, each product, the basket, the
+              order confirmation, the terms and Stripe's payment page. For
+              example, Ready within a week of your order.
           - name: collect
             label: Collecting at church
             widget: object
@@ -403,7 +424,7 @@ collections:
             fields:
               - { name: label, label: What it is called, widget: string }
               - name: price
-                label: Flat postage rate in Australian dollars, GST included
+                label: Flat postage rate in Australian dollars
                 widget: string
                 pattern: ['^\d+\.\d{2}$', 'Dollars and cents, for example 12.50']
               - name: priceConfirmed

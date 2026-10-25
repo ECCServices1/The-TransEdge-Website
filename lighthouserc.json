@@ -12,11 +12,11 @@
         "http://localhost/events.html",
         "http://localhost/edgedin.html",
         "http://localhost/ar/new-here/plan-your-visit.html",
-        "http://localhost/who-we-are/safeguarding.html",
+        "http://localhost/new-here/what-to-expect.html",
         "http://localhost/new-here/faq.html",
         "http://localhost/outreach.html",
         "http://localhost/shop.html",
-        "http://localhost/shop/rain-hooded-jumper.html"
+        "http://localhost/shop/rain-fleece-hoodie.html"
       ],
       "settings": {
         "throttlingMethod": "simulate",
@@ -38,7 +38,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*(?:/ar/|/shop(?:\\.html$|/)|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)).*$",
+          "matchingUrlPattern": "^(?!.*(?:/ar/|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand|shop/(?:terms|basket|order\\-complete))\\.html$)).*$",
           "assertions": {
             "categories:performance": [
               "error",
@@ -114,7 +114,7 @@
           }
         },
         {
-          "matchingUrlPattern": "(?:/ar/|/shop(?:\\.html$|/)|/(?:who\\-we\\-are/safeguarding|new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand)\\.html$)",
+          "matchingUrlPattern": "(?:/ar/|/(?:new\\-here/what\\-to\\-expect|life\\-at\\-tte|privacy\\-policy|terms\\-of\\-use|brand|shop/(?:terms|basket|order\\-complete))\\.html$)",
           "assertions": {
             "categories:performance": [
               "error",

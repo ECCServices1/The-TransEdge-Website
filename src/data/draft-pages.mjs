@@ -1,3 +1,5 @@
+import catalogue from './shop/products.json' with { type: 'json' };
+
 /**
  * Every page deliberately kept out of the index, and why.
  *
@@ -30,6 +32,9 @@
  * @property {string} needs     What has to happen before it is indexed.
  */
 
+/* Hidden products: their own page, listed nowhere, kept out of search. */
+const HIDDEN_PRODUCTS = catalogue.products.filter((product) => product.status === 'hidden');
+
 /** @type {DraftPage[]} */
 export const DRAFT_PAGES = [
   /* who-we-are/what-we-believe left the register in September 2026: the client
@@ -40,11 +45,9 @@ export const DRAFT_PAGES = [
      supplied the description and the three stages and approved the page. The
      next intake and the cost still wait for the pastoral team; the page points
      to a person for those. */
-  {
-    route: 'who-we-are/safeguarding',
-    reason: 'awaiting-content',
-    needs: 'The named contact for a concern, the policy document, and the escalation path.',
-  },
+  /* who-we-are/safeguarding is not built at all while the board decides what
+     it says (client, 9 October 2026); it returns here, as awaiting-content,
+     when it is. See who-we-are/_safeguarding.astro. */
   {
     route: 'new-here/what-to-expect',
     reason: 'awaiting-content',
@@ -73,23 +76,14 @@ export const DRAFT_PAGES = [
     reason: 'working-page',
     needs: 'Nothing. This is an internal working page and stays out of the index.',
   },
-  {
-    route: 'shop',
-    reason: 'awaiting-content',
-    needs:
-      'Photographs of the real merchandise and the book covers, the postage rate, ' +
-      'and the shop set up in Stripe. Every price is confirmed except Speak Life. ' +
-      'The shop is built and works; nothing in it is on sale yet.',
-  },
-  {
-    route: 'shop/*',
-    reason: 'awaiting-content',
-    needs: 'Same as the shop itself. Product pages are generated from the catalogue.',
-  },
+  /* shop and shop/* left the register on 11 October 2026, when the client
+     opened the shop for pre-orders. A product set to hidden still has its own
+     page and stays out of search; those entries are read from the catalogue
+     below, so hiding one at /admin never fails the build. */
   {
     route: 'shop/terms',
     reason: 'awaiting-legal',
-    needs: 'Legal review of the sale terms, the returns position and the tax invoice wording.',
+    needs: 'Legal review of the sale terms and the returns position.',
   },
   /* These two are not waiting on anything. A basket and an order confirmation
      have nothing a search engine should hold, and an indexed order page is how
@@ -121,6 +115,11 @@ export const DRAFT_PAGES = [
     reason: 'transactional',
     needs: 'Nothing. A form failure page stays out of the index permanently.',
   },
+  ...HIDDEN_PRODUCTS.map((product) => ({
+    route: `shop/${product.slug}`,
+    reason: /** @type {const} */ ('working-page'),
+    needs: 'Nothing while it is hidden. Set it to coming soon or on sale at /admin and it is indexed.',
+  })),
 ];
 
 /** Exactly named routes. A wildcard cannot be asserted to have been built. */

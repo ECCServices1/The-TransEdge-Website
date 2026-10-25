@@ -26,7 +26,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assets = join(root, 'src/assets/shop');
 
 const CATEGORIES = new Set(['apparel', 'book', 'accessory', 'print']);
-const STATUSES = new Set(['hidden', 'coming-soon', 'on-sale']);
+const STATUSES = new Set(['hidden', 'coming-soon', 'on-sale', 'sold-out']);
 const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SKU = /^[A-Z0-9]+(?:-[A-Z0-9]+)*$/;
 const SWATCH = /^#[0-9a-f]{6}$/i;
@@ -207,6 +207,22 @@ for (const product of PRODUCTS) {
     }
   }
 
+  /* ------------------------------------------------- sold somewhere else */
+
+  if (product.buyUrl !== undefined) {
+    let url = null;
+    try {
+      url = new URL(product.buyUrl);
+    } catch {
+      /* reported below */
+    }
+    if (!url || url.protocol !== 'https:') {
+      problems.push(
+        `${where}: buyUrl "${product.buyUrl}" is not a full https address, like "https://drmichaelsa.com/book".`
+      );
+    }
+  }
+
   if (product.limitPerOrder !== undefined) {
     if (!Number.isInteger(product.limitPerOrder) || product.limitPerOrder < 1) {
       problems.push(`${where}: limitPerOrder must be a whole number of at least 1.`);
@@ -257,6 +273,10 @@ if (SHIPPING.freeOver !== null && toCents(SHIPPING.freeOver) === null) {
   problems.push(`freeOver "${SHIPPING.freeOver}" is not dollars and cents. Use null for no free threshold.`);
 }
 
+if (typeof SHIPPING.readyIn !== 'string' || !SHIPPING.readyIn.trim()) {
+  problems.push('shipping.json has no readyIn: the sentence that says when an order is ready, shown wherever somebody pays.');
+}
+
 for (const key of ['collect', 'post']) {
   if (!SHIPPING[key]?.label?.trim()) problems.push(`Shipping option "${key}" has no label.`);
 }
@@ -272,6 +292,7 @@ if (problems.length) {
 const count = (status) => PRODUCTS.filter((p) => p.status === status).length;
 console.log(
   `Shop: ${PRODUCTS.length} product(s) in the catalogue: ${count('on-sale')} on sale, ` +
-    `${count('coming-soon')} coming soon, ${count('hidden')} hidden. Prices are GST inclusive.`
+    `${count('coming-soon')} coming soon, ${count('sold-out')} out of stock, ${count('hidden')} hidden. ` +
+    `No GST is charged.`
 );
 for (const note of notes) console.log(`  Note: ${note}`);

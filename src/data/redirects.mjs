@@ -65,8 +65,12 @@ const wixPageRoutes = [
   { from: '/pastors', to: '/who-we-are/pastoral-team', status: 301 },
   { from: '/core', to: '/who-we-are/core-course', status: 301 },
   { from: '/core-course', to: '/who-we-are/core-course', status: 301 },
-  { from: '/safeguarding', to: '/who-we-are/safeguarding', status: 301 },
-  { from: '/child-safe', to: '/who-we-are/safeguarding', status: 301 },
+  /* The Safeguarding page is not public until the board decides (client,
+     9 October 2026), so its addresses lead to a person instead. 302, not 301:
+     browsers remember a 301, and these will point at the page again. */
+  { from: '/safeguarding', to: '/get-in-touch', status: 302 },
+  { from: '/child-safe', to: '/get-in-touch', status: 302 },
+  { from: '/who-we-are/safeguarding', to: '/get-in-touch', status: 302 },
 
   { from: '/visit', to: '/new-here/plan-your-visit', status: 301 },
   { from: '/plan-a-visit', to: '/new-here/plan-your-visit', status: 301 },

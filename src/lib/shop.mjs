@@ -18,10 +18,9 @@
  * is 1998.9999999999998. The parse below never multiplies a float. It splits on
  * the decimal point and adds two integers.
  *
- * GST: The Transformation Edge Ltd is registered, and every price in the
- * catalogue includes GST. The component of a GST-inclusive amount is a
- * eleventh of it, which is what `gstComponent` returns, for display only.
- * Stripe is told `tax_behavior: inclusive` and works out its own figure.
+ * GST: none. The client decided on 24 October 2026 that nothing in the shop
+ * carries GST, so a price is simply what the buyer pays and Stripe is told no
+ * tax.
  */
 import catalogue from '../data/shop/products.json' with { type: 'json' };
 import shipping from '../data/shop/shipping.json' with { type: 'json' };
@@ -44,7 +43,7 @@ export { variantLabel } from './variant.mjs';
  * @typedef {object} ProductFit
  * @property {string} name
  * @property {string} [note]   One line for the size guide.
- * @property {string} [price]  Dollars, GST included. Left out, the product's price.
+ * @property {string} [price]  Dollars. Left out, the product's price.
  * @property {ProductSize[]} sizes
  *
  * @typedef {object} ProductImage
@@ -62,15 +61,17 @@ export { variantLabel } from './variant.mjs';
  *
  * hidden: built, but listed nowhere. coming-soon: on the range, not for sale.
  * on-sale: on the range and in the basket, once the price is confirmed.
+ * sold-out: on the range, marked out of stock, not for sale; for a design
+ * that has sold or will not be made again, kept so people can still see it.
  *
- * @typedef {'hidden'|'coming-soon'|'on-sale'} ProductStatus
+ * @typedef {'hidden'|'coming-soon'|'on-sale'|'sold-out'} ProductStatus
  *
  * @typedef {object} Product
  * @property {string} sku
  * @property {string} slug
  * @property {string} name
  * @property {'apparel'|'book'|'accessory'|'print'} category
- * @property {string} price            Dollars, GST included, as "45.00".
+ * @property {string} price            Dollars, as "45.00".
  * @property {boolean} priceConfirmed  False until a person has signed off the figure.
  * @property {ProductStatus} status
  * @property {string} [statusNote]     A few words beside the price, such as "Coming soon".
@@ -84,6 +85,8 @@ export { variantLabel } from './variant.mjs';
  * @property {string} [publisher]      Books.
  * @property {string} [isbn]           Books, ISBN-13.
  * @property {string} [format]         Books, such as "Paperback".
+ * @property {string} [buyUrl]         Sold by somebody else: the https address it is
+ *                                     bought at. Never goes in a basket here.
  * @property {number} [limitPerOrder]
  * @property {ProductImage[]} images   For a product without colours.
  * @property {ProductColour[]} [colours]
@@ -100,9 +103,6 @@ export const DEFAULT_LIMIT = 10;
  * Anyone with a genuine reason to order more than this should talk to a person.
  */
 export const MAX_BASKET_CENTS = 200_000;
-
-/** GST is a tenth added, so it is an eleventh of the inclusive figure. */
-const GST_DIVISOR = 11;
 
 /** @type {Product[]} */
 export const PRODUCTS = [...catalogue.products].sort(
@@ -134,15 +134,6 @@ export function formatMoney(cents) {
     style: 'currency',
     currency: 'AUD',
   }).format(cents / 100);
-}
-
-/**
- * The GST inside a GST-inclusive amount. For display on the basket only;
- * Stripe computes the figure that appears on the receipt.
- * @param {number} cents
- */
-export function gstComponent(cents) {
-  return Math.round(cents / GST_DIVISOR);
 }
 
 /** @param {string} slug */
@@ -225,6 +216,9 @@ const hasOrderableSize = (product) =>
  * @param {Product} product
  */
 export function isOrderable(product) {
+  /* Something sold elsewhere never goes in a basket here, whatever its status,
+     or the Worker would take money for a book somebody else is selling. */
+  if (product.buyUrl) return false;
   if (product.status !== 'on-sale' || !product.priceConfirmed) return false;
   if (!priceCents(product)) return false;
   if (!hasOrderableColour(product)) return false;
@@ -232,8 +226,29 @@ export function isOrderable(product) {
   return true;
 }
 
+/**
+ * Where a product sold by somebody else is bought, as the address and the name
+ * a visitor sees, or null for a product sold here. Do Not Bow is sold through
+ * drmichaelsa.com (client, 9 October 2026).
+ *
+ * Its pages show the price entered here, as the seller charges it (Do Not Bow,
+ * $22.99 at drmichaelsa.com/shop, client, 24 October 2026). The seller's own
+ * page is the one that counts, so change it here when it changes there.
+ *
+ * @param {Product} product
+ * @returns {{ url: string, name: string } | null}
+ */
+export function soldElsewhere(product) {
+  if (!product.buyUrl) return null;
+  return { url: product.buyUrl, name: new URL(product.buyUrl).hostname.replace(/^www\./, '') };
+}
+
 /** Shown on the range page: on sale, or coming soon. @param {Product} product */
-export const isListed = (product) => product.status === 'on-sale' || product.status === 'coming-soon';
+export const isListed = (product) =>
+  product.status === 'on-sale' || product.status === 'coming-soon' || product.status === 'sold-out';
+
+/** Marked out of stock: listed, priced, not for sale. @param {Product} product */
+export const isSoldOut = (product) => product.status === 'sold-out';
 
 /** Everything a visitor may see on the range page, in display order. */
 export const listedProducts = () => PRODUCTS.filter(isListed);

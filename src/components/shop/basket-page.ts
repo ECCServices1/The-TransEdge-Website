@@ -32,7 +32,6 @@ if (root) {
   const deliveryEl = root.querySelector<HTMLElement>('[data-delivery]')!;
   const deliveryRow = root.querySelector<HTMLElement>('[data-delivery-row]')!;
   const totalEl = root.querySelector<HTMLElement>('[data-total]')!;
-  const gstEl = root.querySelector<HTMLElement>('[data-gst]')!;
   const payEl = root.querySelector<HTMLButtonElement>('[data-pay]')!;
   const saidEl = root.querySelector<HTMLElement>('[data-said]')!;
 
@@ -163,7 +162,6 @@ if (root) {
     deliveryRow.hidden = false;
     deliveryEl.textContent = delivery === 0 ? 'Free' : money(delivery);
     totalEl.textContent = money(subtotal + delivery);
-    gstEl.textContent = `Includes GST of ${money(Math.round((subtotal + delivery) / 11))}.`;
   }
 
   for (const radio of root.querySelectorAll<HTMLInputElement>('[data-fulfilment]')) {

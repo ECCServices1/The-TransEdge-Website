@@ -8,9 +8,10 @@
  * a real asset at build time and hands it to Photo, which carries the alt-text
  * guard and the responsive set.
  *
- * A product with no photography yet falls through to the reserved slot, so the
- * range page is laid out correctly before the shoot happens and dropping the
- * files in later costs no layout shift.
+ * A product with no photography yet gets a plain frame saying the cover or the
+ * picture is to come (CoverToCome.astro), so the range page is laid out
+ * correctly before the shoot happens and dropping the files in later costs no
+ * layout shift.
  *
  * Which picture is the caller's choice, because a product sold in colours has a
  * set per colour. Left out, it is the product's lead picture: the first colour's
@@ -61,8 +62,12 @@ const asset = image
 ---
 
 {
-  !asset && product.category === 'book' ? (
-    <CoverToCome title={product.name} author={product.author} ratio={ratio} class={className} />
+  !asset ? (
+    product.category === 'book' ? (
+      <CoverToCome title={product.name} author={product.author} ratio={ratio} class={className} />
+    ) : (
+      <CoverToCome title={product.name} status="Picture to come" ratio={ratio} class={className} />
+    )
   ) : (
 <Photo
   ref="P1"
