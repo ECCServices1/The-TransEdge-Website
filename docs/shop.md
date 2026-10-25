@@ -248,8 +248,9 @@ and the pay button asks people to call, which is the right failure.
 
    Saving a secret redeploys the live site with it, which is harmless before
    this change is merged. A preview built before the secrets existed does not
-   have them: under **Deployments** (or **Builds**), retry the latest build for
-   this branch, and the new preview picks them up.
+   have them, and Cloudflare offers no retry for a build that succeeded, so the
+   preview picks them up from the next push to its branch. Ask for one if
+   nothing else is due to change.
 
    Unlike Stripe, Square has no restricted key: this token can do anything in
    the Square account. That is why it lives only as a Worker secret. If it is
