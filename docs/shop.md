@@ -237,10 +237,19 @@ and the pay button asks people to call, which is the right failure.
    | Name | Type | Value |
    |---|---|---|
    | `SQUARE_ACCESS_TOKEN` | Secret | the access token |
-   | `SQUARE_LOCATION_ID` | Secret or text | the location ID |
-   | `SQUARE_ENVIRONMENT` | Text | `sandbox` while testing; delete it, or set `production`, to go live |
+   | `SQUARE_LOCATION_ID` | Secret | the location ID |
+   | `SQUARE_ENVIRONMENT` | Secret | `sandbox` while testing; `production` to go live |
 
-   or, for the token, `npx wrangler secret put SQUARE_ACCESS_TOKEN`.
+   All three as **Secret**, even the two that are not sensitive. A plain-text
+   variable added in the dashboard is removed the next time the site deploys
+   from GitHub, because `wrangler.jsonc` does not ask Wrangler to keep them.
+   Secrets are kept. From a terminal instead, `npx wrangler secret put
+   SQUARE_ACCESS_TOKEN` and the same for the other two.
+
+   Saving a secret redeploys the live site with it, which is harmless before
+   this change is merged. A preview built before the secrets existed does not
+   have them: under **Deployments** (or **Builds**), retry the latest build for
+   this branch, and the new preview picks them up.
 
    Unlike Stripe, Square has no restricted key: this token can do anything in
    the Square account. That is why it lives only as a Worker secret. If it is
