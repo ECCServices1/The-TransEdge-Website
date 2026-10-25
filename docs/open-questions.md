@@ -181,8 +181,9 @@ They are set out in full in `docs/shop.md`; in short:
 
 - **Photographs of the real merchandise**, and Speak Life's cover. The RAIN
   clothing shows the client's design mockups and the coffee t-shirt has no
-  picture yet. Do Not Bow has its covers (25 October 2026); Speak Life still
-  shows "Cover to come". Prices were
+  picture yet. Do Not Bow has its covers (25 October 2026), and says it is
+  also on Kindle and Amazon; those two become links once their addresses are
+  added at `/admin`. Speak Life still shows "Cover to come". Prices were
   set on 24 October 2026: adult t-shirts $28, kids' t-shirts $25 and the hoodie
   $65, the payment fee included and no GST. Speak Life has no price yet, and a
   product cannot go on sale until somebody ticks that its price has been
