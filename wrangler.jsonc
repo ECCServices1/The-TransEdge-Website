@@ -8,8 +8,8 @@
   // nothing had been pointed at.
   //
   // This was an assets-only Worker with no "main" until the shop arrived. It
-  // now has one, for a single reason: creating a Stripe Checkout Session needs
-  // a secret key, and a secret key in a browser is not a secret. Everything
+  // now has one, for a single reason: creating a Square payment link needs an
+  // access token, and a token in a browser is not a secret. Everything
   // that is not /api/* still goes straight to the built files, so the site is
   // served exactly as it was. See worker/index.js.
   "$schema": "node_modules/wrangler/config-schema.json",

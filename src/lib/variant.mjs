@@ -1,6 +1,6 @@
 /**
  * How a chosen colour, fit and size are written down, everywhere they are
- * written: on the basket page, on the Stripe page and on the receipt.
+ * written: on the basket page, on Square's payment page and on the receipt.
  *
  * Its own module, with no catalogue in it, because the basket's script imports
  * it too, and a script that pulled in the whole catalogue would ship it to every

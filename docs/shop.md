@@ -1,7 +1,11 @@
 # The shop
 
-Clothing and books, sold from the site, paid for through Stripe, managed at
+Clothing and books, sold from the site, paid for through Square, managed at
 `/admin`.
+
+Payment moved from Stripe to Square on 25 October 2026, by the client's
+decision, because Square costs less on the items most orders are made of. Giving
+is not part of this: it runs through Stripe inside Connect, as it always has.
 
 ## What is in it
 
@@ -20,7 +24,7 @@ for the black and the coffee t-shirts, two for the hoodie). The shop keeps no
 running count, so untick a size at `/admin` when its last one goes.
 
 Prices, set on 24 October 2026: every adult t-shirt $28, kids' t-shirts $25, and
-the hoodie $65. Stripe's fee is inside the price, and no GST is charged on
+the hoodie $65. Square's fee is inside the price, and no GST is charged on
 anything in the shop (client, 24 October 2026). Before that they were $50 and
 $80 (11 October), and $35 and $65 with kids' sizes at $25 and $45 (5 October).
 
@@ -64,26 +68,27 @@ The first designs' mockups of 5 October are the `.jpg` files. Each says it is a
 mockup, under the pictures and in its alt text. Photographs of the garments
 replace them, file for file.
 
-### Stripe's fee is in the price
+### Square's fee is in the price
 
 The price on the page is what the buyer pays, and nothing is added at checkout
-(client, 11 October 2026). Card surcharges are not an option in any case: Stripe
-stopped supporting them in Australia on 1 October 2026. TTE pays Stripe's fee out
-of the price.
+(client, 11 October 2026). Card surcharges are not an option in any case: they
+ended in Australia on 1 October 2026. TTE pays Square's fee out of the price.
 
-On Stripe's standard Australian pricing as at October 2026, 1.65% + 30c for an
-Australian card and 3.5% + 30c for an overseas one, a sale with one item comes
-out like this. No GST is charged.
+Square's published rate for online payments in Australia, as at October 2026, is
+2.2% with no fixed fee per payment. A sale with one item comes out like this, with
+Stripe's 1.65% + 30c alongside for comparison. No GST is charged.
 
-| Item | Price | Stripe's fee, Australian card | TTE keeps, before the cost of the garment |
-|---|---|---|---|
-| T-shirt | $28.00 | $0.76 | $27.24 |
-| Kids' t-shirt | $25.00 | $0.71 | $24.29 |
-| Hoodie | $65.00 | $1.37 | $63.63 |
+| Item | Price | Square's fee | TTE keeps, before the cost of the garment | Stripe's fee would have been |
+|---|---|---|---|---|
+| T-shirt | $28.00 | $0.62 | $27.38 | $0.76 |
+| Kids' t-shirt | $25.00 | $0.55 | $24.45 | $0.71 |
+| Hoodie | $65.00 | $1.43 | $63.57 | $1.37 |
 
-The 30c is charged once per payment, not per item, so a basket of several items
-pays it once. A charity rate or a negotiated rate on TTE's Stripe account
-changes these figures; Stripe shows the fee on each payment.
+Square takes the same share of every dollar, so it costs less on any payment under
+about $55 and slightly more above it. Most orders here are a t-shirt or two, so it
+comes out ahead. Afterpay is switched off at checkout, because Square charges
+several times the card rate for it. Square shows the fee on each payment, and its
+pricing page has the current rates, including for overseas cards.
 
 ## How it fits together
 
@@ -93,25 +98,24 @@ changes these figures; Stripe shows the fee on each payment.
             +-------------+-------------+
             |                           |
       the /shop pages            the checkout Worker
-   (what a visitor reads)      (what Stripe is told to charge)
+   (what a visitor reads)      (what Square is told to charge)
                                          |
-                                checkout.stripe.com
+                              Square's payment page
                                          |
-                       Stripe Dashboard is the order book
+                       Square Dashboard is the order book
 ```
 
 Two things are worth knowing before anything else.
 
-**A price lives in one place.** Nothing is set up in Stripe. There are no Stripe
-Products and no Stripe Prices to keep in step with the site, because the Worker
-builds each line item from the same catalogue file the pages were built from. The
-figure you type at `/admin` is the figure on the page and the figure Stripe
+**A price lives in one place.** Nothing is set up in Square. There are no items
+in Square's catalogue to keep in step with the site, because the Worker builds
+each line item from the same catalogue file the pages were built from. The
+figure you type at `/admin` is the figure on the page and the figure Square
 charges. They cannot drift apart, because there is only one of them.
 
-**There is no orders database.** Stripe holds the order. The Checkout Session
-records the items, the colour, fit and size of each, whether it is being
-collected or posted, and for a
-posted order the address and phone number. That is the packing list. A second copy
+**There is no orders database.** Square holds the order. It records the items,
+with the colour, fit and size of each in its name, whether it is being collected
+or posted, and for a posted order the address. That is the packing list. A second copy
 here would be one more place for somebody's address to live and one more thing to
 keep in step.
 
@@ -183,54 +187,78 @@ collection only, including for anybody who tries to ask for posting.
 In `/admin`, **Shop**, **Delivery and postage**: set the flat rate, tick
 **Postage rate confirmed**, save, merge. That is the whole switch.
 
+One check first, in the sandbox: make a posted test order and see whether
+Square's payment page asks for a phone number as well as the address. The
+carrier needs one, and the terms and privacy policy say a posted order collects
+one. When it was set up with Stripe, Stripe was told to ask; Square was not
+tested for it before postage was needed.
+
 ## Reading and packing an order
 
-Orders are in the Stripe Dashboard under **Payments**. Each one shows:
+Orders are in the Square Dashboard, with the payments. Each one shows:
 
-- the items, with the size in the product name
-- `fulfilment` in the metadata: `collect` or `post`
-- the delivery address and phone, for a posted order only
-- the buyer's email, which is where Stripe sent the receipt
+- the items, with the colour and size in each name
+- the payment note, which starts with how it is being fulfilled ("Collect at our
+  Sunday gathering" or the postage option) and then lists what to pack
+- the delivery address, for a posted order only
+- the buyer's email, which is where Square sent the receipt
+- a reference such as `TTE-1A2B3C4D`, which is also in the address the buyer
+  came back to the site on
 
-Set Stripe to email you on every successful payment, under
-**Settings**, **Business**, **Email notifications**. That is the whole order alert
-system and it needs nothing built.
+Turn on Square's email notifications for online payments, so the church hears
+about each order. That is the whole order alert system and it needs nothing
+built.
 
 A collection order has no address on it. That is deliberate, not a fault: we do not
 ask for an address we have no use for.
 
 ## Refunds
 
-Refund in the Stripe Dashboard, on the payment. It goes back to the card or account
+Refund in the Square Dashboard, on the payment. It goes back to the card or account
 that paid. Nothing on the site needs changing. If the item is coming back into
 stock, tick the size back on at `/admin`.
 
 ## Switching payment on
 
-Two things in Stripe and Cloudflare, none of which are code. Until the first is
-done, the shop takes orders as far as the basket and the pay button asks people
-to call, which is the right failure.
+Three settings on the Worker and one check in Square, none of which are code.
+Until the token and location are set, the shop takes orders as far as the basket
+and the pay button asks people to call, which is the right failure.
 
-1. **A restricted key from TTE's Stripe account**, set on the Worker, never in
-   this repository and never sent to anybody. In Stripe, under **Developers**,
-   **API keys**, create a restricted key that can do one thing: write Checkout
-   Sessions. Everything else stays at None. If a test payment is refused,
-   Stripe's request log for that key names the permission it wanted. Save it in
-   Cloudflare under **Workers & Pages**, **the-transedge-website**, **Settings**,
-   **Variables and Secrets**, as a secret called `STRIPE_SECRET_KEY`, or with
-   ```
-   npx wrangler secret put STRIPE_SECRET_KEY
-   ```
-   Start with a test key (`rk_test_...`) and pay with Stripe's test card,
-   4242 4242 4242 4242, any future date, any three digits. Then replace it with
-   the live key (`rk_live_...`).
-2. **The emails.** In Stripe's settings, turn on receipts for successful
-   payments, which is how the buyer gets one, and an email to the church for
-   every payment, which is the order alert.
+1. **An application in Square's Developer Console.** Sign in at
+   developer.squareup.com with TTE's Square account (not a personal one) and
+   create an application, called something like "TTE website". Its
+   **Credentials** page has an access token for the sandbox (Square's test
+   system) and one for production. Its **Locations** page has the location ID
+   for each.
+2. **The token and location, set on the Worker**, never in this repository and
+   never sent to anybody. In Cloudflare, under **Workers & Pages**,
+   **the-transedge-website**, **Settings**, **Variables and Secrets**, add:
 
-The account is TTE's own, the one giving uses (client, 5 and 11 October 2026).
-It is not the drmichaelsa.com account, which is Dr Michaels Aibangbee's own and
-is where Do Not Bow is sold.
+   | Name | Type | Value |
+   |---|---|---|
+   | `SQUARE_ACCESS_TOKEN` | Secret | the access token |
+   | `SQUARE_LOCATION_ID` | Secret or text | the location ID |
+   | `SQUARE_ENVIRONMENT` | Text | `sandbox` while testing; delete it, or set `production`, to go live |
+
+   or, for the token, `npx wrangler secret put SQUARE_ACCESS_TOKEN`.
+
+   Unlike Stripe, Square has no restricted key: this token can do anything in
+   the Square account. That is why it lives only as a Worker secret. If it is
+   ever exposed, replace it on the same Credentials page and the old one stops
+   working.
+3. **A test purchase.** With the sandbox token, sandbox location and
+   `SQUARE_ENVIRONMENT=sandbox`, buy something on the preview and pay with one
+   of the test cards on Square's "Sandbox payments" page. Check that the payment
+   page shows the right items and total, that it returns to the "Thank you" page
+   with an empty basket, and that the order appears in the sandbox Square
+   Dashboard with the payment note. Then swap in the production token and
+   location and set `SQUARE_ENVIRONMENT` to `production`.
+4. **The emails.** Check that the buyer's receipt arrives on the test purchase,
+   and turn on Square's email notifications for online payments, which is the
+   order alert.
+
+The Square account is TTE's own. Do Not Bow is sold on drmichaelsa.com, which is
+Dr Michaels Aibangbee's own site and nothing to do with this one.
 
 `/shop/terms` is drafted and on the draft register as `awaiting-legal`, alongside
 the privacy policy and the terms of use. The client decided on 5 October 2026
@@ -250,8 +278,9 @@ permanently.
 **When an order is ready**, under **Shop**, **Delivery and postage** at `/admin`,
 is one sentence: "Ready within a week of your order." It is
 said on the shop, on each product that is on sale, in the basket beside "You pay
-now, when you order", on the order confirmation, in the terms, and on Stripe's
-payment page above the pay button. Change it there and it changes everywhere.
+now, when you order", on the order confirmation and in the terms. Square's
+payment page has no place for a line of our own, so the basket says it under
+"Getting it to you", before the pay button. Change it there and it changes everywhere.
 
 ### Speed, on the day something goes on sale
 
@@ -312,18 +341,20 @@ items on a checklist.
   a malformed request cannot open a session for a fortune.
 - The checkout endpoint is same-origin only and sends no CORS headers, so another
   site cannot call it or read its reply.
-- Card details never touch this site. Stripe's hosted page collects them, which is
+- Card details never touch this site. Square's hosted page collects them, which is
   also what keeps us at the simplest PCI obligation there is.
+- The Square token has full access to the account, because Square has no
+  restricted keys. It is a Worker secret and nowhere else.
 - Cloudflare's rate limiting should be pointed at `/api/checkout` before the shop
   opens. It is a dashboard rule, not code.
 
 ## Things deliberately not built
 
 - **Live stock counts.** The client chose an editor tick over counts that fall as
-  items sell. Counts need a database and order processing on top of Stripe, and a
+  items sell. Counts need a database and order processing on top of Square, and a
   range this size does not earn it.
-- **An order database.** See above. Stripe is the order book.
-- **A Stripe webhook.** Nothing here depends on knowing about a payment after the
+- **An order database.** See above. Square is the order book.
+- **A Square webhook.** Nothing here depends on knowing about a payment after the
   fact. If orders ever need to land in Connect automatically, that is where it
   would go.
 - **`/api/contact`.** The Worker now exists, so the contact and prayer forms could

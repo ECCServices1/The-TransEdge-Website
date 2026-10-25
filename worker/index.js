@@ -3,8 +3,8 @@
  *
  * Until now this site had no server code at all: wrangler.jsonc carried no
  * `main` and Cloudflare served the build directly. That was right while nothing
- * needed a server. The shop needs one, because creating a Stripe Checkout
- * Session requires a secret key, and a secret key in a browser is not a secret.
+ * needed a server. The shop needs one, because creating a Square payment link
+ * requires an access token, and a token in a browser is not a secret.
  *
  * Everything that is not /api/* still goes straight to the static assets, so
  * the site keeps behaving exactly as it did.
@@ -18,12 +18,17 @@
  * console gets the real price or an error. It never gets the price it asked
  * for.
  *
- * It also does not record the order. Stripe does that. The Checkout Session
- * holds the line items, the size, the fulfilment choice and, for a posted
- * order, the address and phone. Whoever packs the orders reads them in the
- * Stripe Dashboard. A second copy of that data in a database here would be one
- * more place for personal information to live and one more thing to keep in
- * step with Stripe.
+ * It also does not record the order. Square does that. The order behind the
+ * payment link holds the line items with the size in each name, the payment
+ * note says collect or post, and for a posted order Square asks for the
+ * address. Whoever packs the orders reads them in the Square Dashboard. A
+ * second copy of that data in a database here would be one more place for
+ * personal information to live and one more thing to keep in step with Square.
+ *
+ * Square, not Stripe, since 25 October 2026, by the client's decision. Square's
+ * published online rate in October 2026 was a flat 2.2% with no fixed fee,
+ * which costs less than Stripe's 1.65% plus 30c on the $25 and $28 items that
+ * most orders are made of.
  */
 import {
   validateBasket,
@@ -31,11 +36,20 @@ import {
   postingAvailable,
   lineName,
   variantLabel,
-  SHIPPING,
 } from '../src/lib/shop.mjs';
+import { CHURCH } from '../src/data/church.mjs';
 import { handleForm } from './forms.js';
 
-const STRIPE_API = 'https://api.stripe.com/v1/checkout/sessions';
+/* SQUARE_ENVIRONMENT=sandbox points at Square's test system, for a test
+   purchase with a sandbox token. Anything else is the real one. */
+const SQUARE_API = {
+  production: 'https://connect.squareup.com/v2/online-checkout/payment-links',
+  sandbox: 'https://connect.squareupsandbox.com/v2/online-checkout/payment-links',
+};
+
+/* Pinned rather than left to the account's default, so a change on Square's
+   side cannot quietly change what these fields mean. */
+const SQUARE_VERSION = '2026-09-16';
 
 /** A request body larger than this is not a basket. */
 const MAX_BODY_BYTES = 8_000;
@@ -46,34 +60,6 @@ const fail = (message, status = 400) =>
     status,
     headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
   });
-
-/**
- * Flatten a nested object into Stripe's bracketed form encoding.
- * Stripe's API takes form bodies, not JSON, and nested values are expressed as
- * a[b][0][c]. Undefined and null are dropped so optional settings can simply be
- * left out of the object above.
- *
- * @param {Record<string, unknown>} value
- * @param {string} prefix
- * @param {URLSearchParams} into
- */
-function toForm(value, prefix = '', into = new URLSearchParams()) {
-  for (const [key, item] of Object.entries(value)) {
-    if (item === undefined || item === null) continue;
-    const name = prefix ? `${prefix}[${key}]` : key;
-    if (Array.isArray(item)) {
-      item.forEach((entry, index) => {
-        if (entry !== null && typeof entry === 'object') toForm(entry, `${name}[${index}]`, into);
-        else into.append(`${name}[${index}]`, String(entry));
-      });
-    } else if (typeof item === 'object') {
-      toForm(/** @type {Record<string, unknown>} */ (item), name, into);
-    } else {
-      into.append(name, String(item));
-    }
-  }
-  return into;
-}
 
 /**
  * @param {Request} request
@@ -92,7 +78,7 @@ async function handleCheckout(request, env) {
   const here = new URL(request.url).origin;
   if (origin && origin !== here) return fail('Not allowed from there.', 403);
 
-  if (!env.STRIPE_SECRET_KEY) {
+  if (!env.SQUARE_ACCESS_TOKEN || !env.SQUARE_LOCATION_ID) {
     /* Configuration is missing, which is our problem rather than the
        visitor's. Say something true and useful without describing our setup. */
     return fail('Online payment is not switched on yet. Please call us and we will take the order.', 503);
@@ -118,90 +104,92 @@ async function handleCheckout(request, env) {
   const delivery = shippingOption(fulfilment, subtotalCents);
   if (!delivery) return fail('We could not work out delivery for that order.');
 
+  /* Square appends its own details to the address it sends people back to.
+     This one is ours, so the confirmation page knows the visit came from a
+     payment, and it is on the order in Square too. */
+  const reference = `TTE-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+
+  const packingList = lines
+    .map((line) => {
+      const variant = variantLabel(line);
+      return `${line.qty} x ${line.product.sku}${variant ? ` (${variant})` : ''}`;
+    })
+    .join(', ');
+
   const payload = {
-    mode: 'payment',
-    success_url: `${here}/shop/order-complete?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${here}/shop/basket`,
-    /* Stripe collects an email address of its own accord, which is how the
-       receipt reaches the buyer. */
-    billing_address_collection: 'auto',
-    line_items: lines.map((line) => ({
-      quantity: line.qty,
-      /* Prices are created here per session rather than kept as Stripe Price
-         objects, so the catalogue at /admin is the only place a price lives
-         and the two can never drift apart. */
-      price_data: {
-        currency: 'aud',
-        unit_amount: line.unitCents,
-        product_data: {
-          name: lineName(line),
-          metadata: {
+    /* Stops a double click or a retried request opening two payment links. */
+    idempotency_key: crypto.randomUUID(),
+    order: {
+      location_id: env.SQUARE_LOCATION_ID,
+      reference_id: reference,
+      /* Prices are sent with each order rather than kept as Square catalogue
+         items, so the catalogue at /admin is the only place a price lives and
+         the two can never drift apart. */
+      line_items: lines.map((line) => ({
+        name: lineName(line),
+        quantity: String(line.qty),
+        base_price_money: { amount: line.unitCents, currency: 'AUD' },
+        metadata: Object.fromEntries(
+          Object.entries({
             sku: line.product.sku,
-            colour: line.colour ?? '',
-            fit: line.fit ?? '',
-            size: line.size ?? '',
-          },
-        },
-      },
-    })),
-    shipping_options: [
-      {
-        shipping_rate_data: {
-          type: 'fixed_amount',
-          display_name: delivery.label,
-          fixed_amount: { amount: delivery.cents, currency: 'aud' },
-        },
-      },
-    ],
-    /* An address is only collected when there is something to post to it. */
-    shipping_address_collection: fulfilment === 'post' ? { allowed_countries: ['AU'] } : undefined,
-    phone_number_collection: fulfilment === 'post' ? { enabled: true } : undefined,
-    metadata: {
-      fulfilment,
-      items: lines
-        .map((line) => {
-          const variant = variantLabel(line);
-          return `${line.qty} x ${line.product.sku}${variant ? ` (${variant})` : ''}`;
-        })
-        .join(', ')
-        .slice(0, 480),
+            colour: line.colour,
+            fit: line.fit,
+            size: line.size,
+          }).filter(([, value]) => value),
+        ),
+      })),
+      metadata: { fulfilment },
     },
-    payment_intent_data: {
-      description: 'The Transformation Edge shop',
+    checkout_options: {
+      redirect_url: `${here}/shop/order-complete?ref=${reference}`,
+      merchant_support_email: CHURCH.email,
+      /* An address is only asked for when there is something to post to it. */
+      ask_for_shipping_address: fulfilment === 'post',
+      shipping_fee:
+        delivery.cents > 0
+          ? { name: delivery.label, charge: { amount: delivery.cents, currency: 'AUD' } }
+          : undefined,
+      /* A purchase, not a donation, so no tip. Afterpay is off because it
+         costs several times the card fee. */
+      allow_tipping: false,
+      enable_coupon: false,
+      enable_loyalty: false,
+      accepted_payment_methods: { afterpay_clearpay: false },
     },
-    /* Said again beside the pay button, because this is where somebody
-       decides: a made-to-order item is paid for now and ready later. */
-    custom_text: {
-      submit: { message: `${SHIPPING.readyIn} ${delivery.label}.`.slice(0, 1200) },
-    },
+    /* The note Square shows on the payment in its Dashboard, so whoever packs
+       the order sees collect or post, and what to pack, at a glance. */
+    payment_note: `${delivery.label}. ${packingList}`.slice(0, 500),
   };
 
   let response;
   try {
-    response = await fetch(STRIPE_API, {
-      method: 'POST',
-      headers: {
-        authorization: `Bearer ${env.STRIPE_SECRET_KEY}`,
-        'content-type': 'application/x-www-form-urlencoded',
-        /* Stops a double click or a retried request opening two sessions. */
-        'idempotency-key': crypto.randomUUID(),
+    response = await fetch(
+      env.SQUARE_ENVIRONMENT === 'sandbox' ? SQUARE_API.sandbox : SQUARE_API.production,
+      {
+        method: 'POST',
+        headers: {
+          authorization: `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
+          'content-type': 'application/json',
+          'square-version': SQUARE_VERSION,
+        },
+        body: JSON.stringify(payload),
       },
-      body: toForm(payload).toString(),
-    });
+    );
   } catch {
     return fail('We could not reach the payment service. Please try again shortly.', 502);
   }
 
-  const session = await response.json().catch(() => null);
+  const reply = await response.json().catch(() => null);
+  const url = reply?.payment_link?.url ?? reply?.payment_link?.long_url;
 
-  if (!response.ok || !session?.url) {
-    /* Stripe's message can name internal configuration, so it is logged rather
+  if (!response.ok || !url) {
+    /* Square's message can name internal configuration, so it is logged rather
        than returned. Observability is on for this Worker. */
-    console.error('Stripe rejected a checkout session', response.status, session?.error?.code ?? '');
+    console.error('Square rejected a payment link', response.status, reply?.errors?.[0]?.code ?? '');
     return fail('We could not start the payment. Please try again, or call us and we will take the order.', 502);
   }
 
-  return new Response(JSON.stringify({ url: session.url }), {
+  return new Response(JSON.stringify({ url }), {
     headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
   });
 }
