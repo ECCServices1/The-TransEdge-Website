@@ -2,9 +2,9 @@
  * The shop's only understanding of money, stock and what may be bought.
  *
  * This module is imported by two very different things: the Astro pages that
- * render the shop, and the Cloudflare Worker that creates the Stripe Checkout
- * Session. That is deliberate. If the price a visitor reads and the price
- * Stripe charges came from two pieces of code, they would eventually disagree,
+ * render the shop, and the Cloudflare Worker that creates the Square payment
+ * link. That is deliberate. If the price a visitor reads and the price Square
+ * charges came from two pieces of code, they would eventually disagree,
  * and the first anyone would know about it is a customer being charged the
  * wrong amount. There is one catalogue and one set of rules, and both sides
  * read them.
@@ -19,7 +19,7 @@
  * the decimal point and adds two integers.
  *
  * GST: none. The client decided on 24 October 2026 that nothing in the shop
- * carries GST, so a price is simply what the buyer pays and Stripe is told no
+ * carries GST, so a price is simply what the buyer pays and Square is told no
  * tax.
  */
 import catalogue from '../data/shop/products.json' with { type: 'json' };
@@ -99,7 +99,7 @@ export const DEFAULT_LIMIT = 10;
 
 /**
  * A ceiling on one basket. Not a business rule: a blunt guard so that a
- * malformed or malicious request cannot open a Stripe session for a fortune.
+ * malformed or malicious request cannot open a Square payment for a fortune.
  * Anyone with a genuine reason to order more than this should talk to a person.
  */
 export const MAX_BASKET_CENTS = 200_000;
@@ -284,7 +284,7 @@ export const shopHasStock = () => PRODUCTS.some(isOrderable);
  */
 
 /**
- * What a line is called on the Stripe page and the receipt: the product, then
+ * What a line is called on Square's payment page and the receipt: the product, then
  * the colour, fit and size somebody chose.
  * @param {BasketLine} line
  */

@@ -1,13 +1,13 @@
 ---
 /**
- * Where Stripe sends somebody after they have paid.
+ * Where Square sends somebody after they have paid.
  *
- * Nothing is fetched here and nothing is confirmed here. Stripe has the money
+ * Nothing is fetched here and nothing is confirmed here. Square has the money
  * and the order; this page's whole job is to say so, empty the basket, and tell
  * a person what happens next. Treating a redirect as proof of payment would be
  * wrong, and there is nothing on this page that depends on it being true.
  *
- * The emptying, and why it waits for Stripe's session id, is order-complete.ts
+ * The emptying, and why it waits for the order reference, is order-complete.ts
  * in src/components/shop.
  *
  * Permanently noindex. An order confirmation is not a search result.
@@ -24,13 +24,13 @@ import { SHIPPING } from '../../lib/shop.mjs';
   description="Your order at The Transformation Edge."
   route="shop/order-complete"
   crumbs={[{ name: 'Shop', href: '/shop' }]}
-  standfirst="That is done. Stripe has emailed you a receipt."
+  standfirst="That is done. Square sends your receipt by email."
   noindex
 >
   <div class="done" data-done>
     <div class="prose">
       <p>
-        Thank you. Your receipt is on its way from Stripe.
+        Thank you. Your receipt is on its way from Square.
       </p>
       <p>
         {SHIPPING.readyIn} If you chose to collect, ask at the welcome desk on a Sunday from

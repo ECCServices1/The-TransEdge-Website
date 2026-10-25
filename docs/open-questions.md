@@ -184,23 +184,24 @@ They are set out in full in `docs/shop.md`; in short:
   the books show "Cover to come"; Do Not Bow's cover could not be fetched from
   drmichaelsa.com, which did not resolve from the build environment. Prices were
   set on 24 October 2026: adult t-shirts $28, kids' t-shirts $25 and the hoodie
-  $65, Stripe's fee included and no GST. Speak Life has no price yet, and a
+  $65, the payment fee included and no GST. Speak Life has no price yet, and a
   product cannot go on sale until somebody ticks that its price has been
   checked, which the build enforces.
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **A restricted Stripe key** from TTE's own Stripe account, set on the Worker
-  by the client. It goes nowhere near this repository. Until it is set the pay
-  button replies with a message asking people to call, which is the right way
-  to fail. No GST is charged in the shop (client, 24 October 2026), so there is
-  no tax rate to set up.
+- **A Square access token and location ID** from TTE's own Square account,
+  set on the Worker by the client. Payment moved from Stripe to Square on 25
+  October 2026, by the client's decision, because it costs less. The token goes
+  nowhere near this repository. Until it is set the pay button replies with a
+  message asking people to call, which is the right way to fail. No GST is
+  charged in the shop (client, 24 October 2026), so there is no tax rate to set
+  up.
 
 `/shop/terms` stands as a placeholder: the client decided on 5 October 2026
 that its legal review comes later and does not hold up opening.
 
-**Stripe account, decided:** merchandise runs through the same Stripe account as
-giving, the client confirmed on 5 October 2026. It is still worth a word with
-whoever keeps the books, because giving and trading income in one payout stream
-is more work to separate later than to separate now. Changing it is one secret,
-not a rebuild.
+**Payment account, decided:** merchandise runs through TTE's own Square account
+from 25 October 2026, and giving stays on Stripe inside Connect. That also keeps
+trading income and giving in separate payout streams, which whoever keeps the
+books will find easier.

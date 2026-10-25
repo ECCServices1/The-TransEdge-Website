@@ -138,9 +138,9 @@ collections:
   # The shop.
   #
   # This is the whole product backend. A price lives here and nowhere else:
-  # nothing is set up in Stripe, so there is no second figure to keep in step
+  # nothing is set up in Square, so there is no second figure to keep in step
   # and no way for the two to disagree. What you save here is what the site
-  # shows and what Stripe charges.
+  # shows and what Square charges.
   #
   # Saving opens a pull request rather than changing the live site, which is
   # deliberate. A mistyped price is real money, and a second pair of eyes on
@@ -410,8 +410,8 @@ collections:
             widget: string
             hint: >-
               One sentence, shown on the shop, each product, the basket, the
-              order confirmation, the terms and Stripe's payment page. For
-              example, Ready within a week of your order.
+              order confirmation and the terms. For example, Ready within a
+              week of your order.
           - name: collect
             label: Collecting at church
             widget: object

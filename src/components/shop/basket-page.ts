@@ -1,6 +1,6 @@
 /**
  * Drawing the basket page, src/pages/shop/basket.astro, from what is in this
- * browser's basket, and handing it to the Worker to start a Stripe payment.
+ * browser's basket, and handing it to the Worker to start a Square payment.
  *
  * The catalogue arrives in a data attribute on the page, so the prices shown
  * here are the reader's. The figure anybody is charged is worked out again in
@@ -173,7 +173,7 @@ if (root) {
     if (items.length === 0) return;
 
     payEl.disabled = true;
-    saidEl.textContent = 'Taking you to Stripe.';
+    saidEl.textContent = 'Taking you to Square.';
 
     try {
       const response = await fetch('/api/checkout', {
