@@ -46,6 +46,12 @@ export { variantLabel } from './variant.mjs';
  * @property {string} [price]  Dollars. Left out, the product's price.
  * @property {ProductSize[]} sizes
  *
+ * @typedef {object} OtherStore
+ * @property {string} name   As a buyer knows it: "Kindle", "Amazon".
+ * @property {string} [url]  Its page there. With one, the name is a link on the
+ *                           product's page; the card is a link already, so it
+ *                           names the store and nothing more.
+ *
  * @typedef {object} ProductImage
  * @property {string} file   Filename inside src/assets/shop, without the extension.
  * @property {string} alt    Required. An image without it fails the build.
@@ -87,6 +93,8 @@ export { variantLabel } from './variant.mjs';
  * @property {string} [format]         Books, such as "Paperback".
  * @property {string} [buyUrl]         Sold by somebody else: the https address it is
  *                                     bought at. Never goes in a basket here.
+ * @property {OtherStore[]} [alsoOn]   Other places it can be bought, such as Kindle
+ *                                     and Amazon, named on its card and its page.
  * @property {number} [limitPerOrder]
  * @property {ProductImage[]} images   For a product without colours.
  * @property {ProductColour[]} [colours]

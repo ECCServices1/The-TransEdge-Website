@@ -48,7 +48,7 @@ are on its card and page, each centred on white in the shop's 4:5 frame.
 | RAIN kids' t-shirt | On sale. Kids' crew neck, sized by height | Green, Pink; 120, 130, 140 | Nothing |
 | RAIN hooded jumper | Out of stock. The first design | Forest green, Chocolate, Rust, Navy | Nothing; kept on the range to be seen |
 | RAIN t-shirt | Out of stock. The first design | Forest green, Chocolate, Rust | Nothing; kept on the range to be seen |
-| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/shop | None | Nothing |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/shop; also on Kindle and Amazon | None | The Kindle and Amazon links, to make those names links |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
@@ -162,14 +162,20 @@ not shown anywhere until it is confirmed: the page says "Price to come".
 
 Fill in **Sold elsewhere, the link to buy it** with the full address, starting
 `https://`. The product stays on the range, under **Where it shows** as usual,
-but its page offers a button to that site instead of a basket, and says ordering
-and delivery are taken care of there. It shows the price entered here, as the
+but its card goes straight to that address, in a new tab, and its page offers a
+button there instead of a basket and says ordering and delivery are taken care
+of there. The page is still built, for anybody who finds it from a search. It shows the price entered here, as the
 other site charges it, with "at" and the site's name; keep the two in step. It
 shows none of this shop's terms, collection or gift notes, because none of them
 apply. The checkout refuses it even if somebody edits a basket by hand.
 
 Speak Life can go the same way when it is ready: fill in the link and its price
 there.
+
+**Also available on** names other places it can be bought, under the price on
+its page and on its card: Do Not Bow is also on Kindle and Amazon (client, 25
+October 2026). Add a store's link and its name on the page becomes a link to it.
+The card does not link it, because the whole card is already a link.
 
 ### Photographs
 

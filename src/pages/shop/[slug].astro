@@ -25,7 +25,9 @@
  *
  * A product with a buyUrl, such as Do Not Bow, is sold by somebody else. Its
  * page shows the price, says where it is sold, and sends people there instead
- * of offering a basket. It leaves out what only holds for this shop:
+ * of offering a basket. Its card on the range goes straight there, so this page
+ * is mostly reached from a search. Other stores it is on, such as Kindle and
+ * Amazon, are named under the price. It leaves out what only holds for this shop:
  * collection on a Sunday, the shop terms, and the note that a purchase is not
  * a gift.
  */
@@ -75,6 +77,7 @@ const isBook = product.category === 'book';
    against 10KB for the hoodie, which put its page past two seconds. Lower
    numbers keep the lettering clean on a cover. */
 const [leadQuality, restQuality] = isBook ? [55, 45] : [75, 60];
+const alsoOn = product.alsoOn ?? [];
 const otherPrices = fitPriceNotes(product);
 const images = product.images ?? [];
 
@@ -150,6 +153,25 @@ const sizeRange = (labels: string[]) =>
           <p class="product__price">
             {cents ? formatMoney(cents) : 'Price to come'}
             {elsewhere && <span class="product__where">at {elsewhere.name}</span>}
+          </p>
+        )
+      }
+      {
+        alsoOn.length > 0 && (
+          <p class="product__also">
+            Also available on{' '}
+            {alsoOn.map((store, index) => (
+              <>
+                {index > 0 && (index === alsoOn.length - 1 ? ' and ' : ', ')}
+                {store.url ? (
+                  <a href={store.url} rel="noopener">
+                    {store.name}
+                  </a>
+                ) : (
+                  store.name
+                )}
+              </>
+            ))}.
           </p>
         )
       }
@@ -424,6 +446,7 @@ const sizeRange = (labels: string[]) =>
   }
 
   .product__where,
+  .product__also,
   .product__status {
     font-size: var(--text--1);
     color: var(--color-text-muted);
