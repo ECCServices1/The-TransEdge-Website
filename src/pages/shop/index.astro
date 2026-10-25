@@ -15,7 +15,10 @@
  * for clothing the colours it comes in, named for anybody who cannot tell them
  * apart by eye. Something listed as coming soon is shown with its status in
  * place of a price, so the range can be seen before it can be bought. Something
- * another site sells, such as Do Not Bow, names that site in place of a price.
+ * another site sells, such as Do Not Bow, names that site beside its price, and
+ * its card goes straight to that site's sale page (client, 25 October 2026),
+ * because that is where it is bought. Its own page here is still found by
+ * search.
  *
  * The shop opened for pre-orders on the client's word of 11 October 2026: the
  * clothing is made to order, paid for when ordered and ready a week later.
@@ -86,7 +89,12 @@ const listOf = (names: string[]) =>
                       : product.statusNote || (cents ? 'Not available yet' : 'Price to come');
                 return (
                   <li class="range__item" data-reveal>
-                    <a class="card" href={`/shop/${product.slug}`}>
+                    <a
+                      class="card"
+                      href={elsewhere ? elsewhere.url : `/shop/${product.slug}`}
+                      rel={elsewhere ? 'noopener' : undefined}
+                      target={elsewhere ? '_blank' : undefined}
+                    >
                       <ProductImage
                         product={product}
                         ratio="4 / 5"
@@ -125,6 +133,12 @@ const listOf = (names: string[]) =>
                             {otherPrices.map((fit) => `${fit.name} sizes ${formatMoney(fit.cents)}`).join(', ')}
                           </p>
                         )}
+                        {(product.alsoOn ?? []).length > 0 && (
+                          <p class="card__also">
+                            Also available on {listOf((product.alsoOn ?? []).map((store) => store.name))}.
+                          </p>
+                        )}
+                        {elsewhere && <span class="visually-hidden">, opens {elsewhere.name} in a new tab</span>}
                       </div>
                     </a>
                   </li>

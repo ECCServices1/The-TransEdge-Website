@@ -239,9 +239,27 @@ collections:
                 pattern: ['^https://\S+$', 'A full address starting https://']
                 hint: >-
                   For something another site sells, such as Do Not Bow at
-                  https://drmichaelsa.com/book. Its page then sends people there
-                  instead of offering a basket, and shows no price, because the
-                  seller sets it. Leave empty for anything sold here.
+                  https://drmichaelsa.com/shop. Its card on the range goes
+                  straight there, and its page offers a button there instead of
+                  a basket. Set the price above to what that site charges. Leave
+                  empty for anything sold here.
+              - name: alsoOn
+                label: Also available on
+                label_singular: store
+                widget: list
+                required: false
+                summary: '{{fields.name}}'
+                hint: >-
+                  Other places it can be bought, such as Kindle and Amazon. They
+                  are named on its card and its page. Add a store's link and its
+                  name on the page becomes a link there.
+                fields:
+                  - { name: name, label: Where, widget: string, hint: 'As a buyer knows it, like Kindle.' }
+                  - name: url
+                    label: Its page there
+                    widget: string
+                    required: false
+                    pattern: ['^https://\S+$', 'A full address starting https://']
               - name: summary
                 label: One line for the range page
                 widget: string

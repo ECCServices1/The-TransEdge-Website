@@ -209,6 +209,21 @@ for (const product of PRODUCTS) {
 
   /* ------------------------------------------------- sold somewhere else */
 
+  if (product.alsoOn !== undefined) {
+    if (!Array.isArray(product.alsoOn)) {
+      problems.push(`${where}: alsoOn should be a list of stores.`);
+    } else {
+      for (const store of product.alsoOn) {
+        if (typeof store?.name !== 'string' || !store.name.trim() || store.name.length > 30) {
+          problems.push(`${where}: each store in alsoOn needs a short name, like "Kindle".`);
+        }
+        if (store?.url !== undefined && !/^https:\/\/\S+$/.test(store.url)) {
+          problems.push(`${where}: the link for ${store.name} is not a full https address.`);
+        }
+      }
+    }
+  }
+
   if (product.buyUrl !== undefined) {
     let url = null;
     try {
