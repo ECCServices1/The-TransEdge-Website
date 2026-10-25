@@ -179,10 +179,10 @@ out of stock. Speak Life is listed as coming soon and Do Not Bow is sold through
 drmichaelsa.com/shop at $22.99. Three things remain, and none of them are code.
 They are set out in full in `docs/shop.md`; in short:
 
-- **Photographs of the real merchandise**, and book covers. The RAIN clothing
-  shows the client's design mockups, the coffee t-shirt has no picture yet, and
-  the books show "Cover to come"; Do Not Bow's cover could not be fetched from
-  drmichaelsa.com, which did not resolve from the build environment. Prices were
+- **Photographs of the real merchandise**, and Speak Life's cover. The RAIN
+  clothing shows the client's design mockups and the coffee t-shirt has no
+  picture yet. Do Not Bow has its covers (25 October 2026); Speak Life still
+  shows "Cover to come". Prices were
   set on 24 October 2026: adult t-shirts $28, kids' t-shirts $25 and the hoodie
   $65, the payment fee included and no GST. Speak Life has no price yet, and a
   product cannot go on sale until somebody ticks that its price has been

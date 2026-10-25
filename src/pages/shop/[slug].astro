@@ -69,6 +69,12 @@ const colours = coloursOf(product);
 const fits = fitsOf(product);
 const sized = needsSize(product);
 const isBook = product.category === 'book';
+
+/* A book cover is printed artwork, and its texture costs bytes a garment on
+   white does not. Do Not Bow's front came to 50KB at quality 75 on a phone,
+   against 10KB for the hoodie, which put its page past two seconds. Lower
+   numbers keep the lettering clean on a cover. */
+const [leadQuality, restQuality] = isBook ? [55, 45] : [75, 60];
 const otherPrices = fitPriceNotes(product);
 const images = product.images ?? [];
 
@@ -108,7 +114,7 @@ const sizeRange = (labels: string[]) =>
                   image={image}
                   ratio="4 / 5"
                   sizes={gallerySizes(colour.images.length)}
-                  quality={index === 0 ? 75 : 60}
+                  quality={index === 0 ? leadQuality : restQuality}
                   priority={c === firstColour && index === 0}
                   secondary={!(c === firstColour && index === 0)}
                 />
@@ -123,7 +129,7 @@ const sizeRange = (labels: string[]) =>
                 image={image}
                 ratio="4 / 5"
                 sizes={gallerySizes(images.length)}
-                quality={index === 0 ? 75 : 60}
+                quality={index === 0 ? leadQuality : restQuality}
                 priority={index === 0}
                 secondary={index !== 0}
               />

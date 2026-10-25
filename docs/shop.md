@@ -35,8 +35,8 @@ so people can still see them. The two books are on the range as coming soon.
 Do Not Bow is not sold here. Its page sends people to the sale page at
 drmichaelsa.com/shop and shows its price there, $22.99 (client, 24 October 2026;
 it pointed to drmichaelsa.com/book from 9 October). See "Something another site
-sells" below. Its cover is still to come: drmichaelsa.com could not be reached
-from the build environment to fetch it, so it needs sending.
+sells" below. Its front and back covers, sent by the author on 25 October 2026,
+are on its card and page, each centred on white in the shop's 4:5 frame.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
@@ -48,7 +48,7 @@ from the build environment to fetch it, so it needs sending.
 | RAIN kids' t-shirt | On sale. Kids' crew neck, sized by height | Green, Pink; 120, 130, 140 | Nothing |
 | RAIN hooded jumper | Out of stock. The first design | Forest green, Chocolate, Rust, Navy | Nothing; kept on the range to be seen |
 | RAIN t-shirt | Out of stock. The first design | Forest green, Chocolate, Rust | Nothing; kept on the range to be seen |
-| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/book | None | The cover, for its page here |
+| Do Not Bow, Dr Michaels Aibangbee | Book, Ark House Press, ISBN 9781764750790. Sold through drmichaelsa.com/shop | None | Nothing |
 | Speak Life, Ps Osas Michaels-Aibangbee and Dr Michaels Aibangbee | Book | None | Everything: description, publisher, date, price, cover |
 
 A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
