@@ -191,13 +191,15 @@ They are set out in full in `docs/shop.md`; in short:
 - **The flat postage rate**, or a decision to stay collection-only. Posting is off
   until the rate is set and confirmed, and a request to post falls back to
   collection rather than charging a rate nobody checked.
-- **A Square access token and location ID** from TTE's own Square account,
-  set on the Worker by the client. Payment moved from Stripe to Square on 25
-  October 2026, by the client's decision, because it costs less. The token goes
-  nowhere near this repository. Until it is set the pay button replies with a
-  message asking people to call, which is the right way to fail. No GST is
-  charged in the shop (client, 24 October 2026), so there is no tax rate to set
-  up.
+- **The items in Square, for stock.** Payment moved from Stripe to Square on 25
+  October 2026, and the client set the live token and location on the Worker
+  that day, after a sandbox test purchase. From 29 October 2026 Square also
+  keeps the stock, and the site reads it, but only for variations set up in
+  Square's item library with the SKU the site expects and stock tracked. Until
+  they are, the shop runs on the ticks at `/admin`, as before. The list and the
+  steps, including adding a helper for stocktakes, are in `docs/shop.md`,
+  "Stock, kept in Square". No GST is charged in the shop (client, 24 October
+  2026), so the items carry no tax.
 
 `/shop/terms` stands as a placeholder: the client decided on 5 October 2026
 that its legal review comes later and does not hold up opening.

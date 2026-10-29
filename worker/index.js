@@ -25,6 +25,17 @@
  * second copy of that data in a database here would be one more place for
  * personal information to live and one more thing to keep in step with Square.
  *
+ * STOCK
+ *
+ * Square is also the stock book (client, 29 October 2026; worker/square.js
+ * says how). Before opening a payment, the checkout reads Square's stock and
+ * refuses more than there is. Each line then points at its item in Square, so
+ * the sale counts the stock down there, with the catalogue's price sent beside
+ * it. Square's own total for the order is checked against ours before the buyer
+ * is sent on: if Square has charged anything else, that link is not used, and
+ * the order goes as plain lines, the way it did before stock was in Square.
+ * Nobody is ever charged a figure the site did not show them.
+ *
  * Square, not Stripe, since 25 October 2026, by the client's decision. Square's
  * published online rate in October 2026 was a flat 2.2% with no fixed fee,
  * which costs less than Stripe's 1.65% plus 30c on the $25 and $28 items that
@@ -36,20 +47,11 @@ import {
   postingAvailable,
   lineName,
   variantLabel,
+  stockCode,
 } from '../src/lib/shop.mjs';
 import { CHURCH } from '../src/data/church.mjs';
 import { handleForm } from './forms.js';
-
-/* SQUARE_ENVIRONMENT=sandbox points at Square's test system, for a test
-   purchase with a sandbox token. Anything else is the real one. */
-const SQUARE_API = {
-  production: 'https://connect.squareup.com/v2/online-checkout/payment-links',
-  sandbox: 'https://connect.squareupsandbox.com/v2/online-checkout/payment-links',
-};
-
-/* Pinned rather than left to the account's default, so a change on Square's
-   side cannot quietly change what these fields mean. */
-const SQUARE_VERSION = '2026-09-16';
+import { squareConfigured, squareUrl, squareHeaders, readStock, handleStock } from './square.js';
 
 /** A request body larger than this is not a basket. */
 const MAX_BODY_BYTES = 8_000;
@@ -78,7 +80,7 @@ async function handleCheckout(request, env) {
   const here = new URL(request.url).origin;
   if (origin && origin !== here) return fail('Not allowed from there.', 403);
 
-  if (!env.SQUARE_ACCESS_TOKEN || !env.SQUARE_LOCATION_ID) {
+  if (!squareConfigured(env)) {
     /* Configuration is missing, which is our problem rather than the
        visitor's. Say something true and useful without describing our setup. */
     return fail('Online payment is not switched on yet. Please call us and we will take the order.', 503);
@@ -104,6 +106,30 @@ async function handleCheckout(request, env) {
   const delivery = shippingOption(fulfilment, subtotalCents);
   if (!delivery) return fail('We could not work out delivery for that order.');
 
+  /** @param {import('../src/lib/shop.mjs').BasketLine} line */
+  const codeOf = (line) => stockCode({ sku: line.product.sku, colour: line.colour, fit: line.fit, size: line.size });
+
+  /* Read afresh, not from the minute-old copy the product pages see. Null if
+     Square could not be read, and then the order goes on as it always has. */
+  const stock = await readStock(env);
+  if (stock) {
+    /** @type {Map<string, number>} */
+    const asked = new Map();
+    for (const line of lines) asked.set(codeOf(line), (asked.get(codeOf(line)) ?? 0) + line.qty);
+    for (const line of lines) {
+      const held = stock.get(codeOf(line));
+      if (!held?.tracked || (asked.get(codeOf(line)) ?? 0) <= held.quantity) continue;
+      const variant = variantLabel(line);
+      const what = `${line.product.name}${variant ? `, ${variant},` : ''}`;
+      return fail(
+        held.quantity === 0
+          ? `Sorry, ${what} has just sold out. Please take it out of your basket.`
+          : `Sorry, only ${held.quantity} of ${what} ${held.quantity === 1 ? 'is' : 'are'} left. Please lower the quantity in your basket.`,
+        409
+      );
+    }
+  }
+
   /* Square appends its own details to the address it sends people back to.
      This one is ours, so the confirmation page knows the visit came from a
      payment, and it is on the order in Square too. */
@@ -116,28 +142,44 @@ async function handleCheckout(request, env) {
     })
     .join(', ');
 
-  const payload = {
+  /**
+   * The request to Square. With `held`, a line whose item is set up in Square
+   * points at it, so Square counts the sale off its stock; the price still
+   * comes from the catalogue at /admin, sent with every line, so a price lives
+   * in one place. Without it, every line is plain: a name and a price.
+   *
+   * @param {Map<string, import('./square.js').HeldStock> | null} held
+   */
+  const payloadFor = (held) => ({
     /* Stops a double click or a retried request opening two payment links. */
     idempotency_key: crypto.randomUUID(),
     order: {
       location_id: env.SQUARE_LOCATION_ID,
       reference_id: reference,
-      /* Prices are sent with each order rather than kept as Square catalogue
-         items, so the catalogue at /admin is the only place a price lives and
-         the two can never drift apart. */
-      line_items: lines.map((line) => ({
-        name: lineName(line),
-        quantity: String(line.qty),
-        base_price_money: { amount: line.unitCents, currency: 'AUD' },
-        metadata: Object.fromEntries(
+      line_items: lines.map((line) => {
+        const metadata = Object.fromEntries(
           Object.entries({
             sku: line.product.sku,
             colour: line.colour,
             fit: line.fit,
             size: line.size,
           }).filter(([, value]) => value),
-        ),
-      })),
+        );
+        const item = held?.get(codeOf(line));
+        return item
+          ? {
+              catalog_object_id: item.id,
+              quantity: String(line.qty),
+              base_price_money: { amount: line.unitCents, currency: 'AUD' },
+              metadata,
+            }
+          : {
+              name: lineName(line),
+              quantity: String(line.qty),
+              base_price_money: { amount: line.unitCents, currency: 'AUD' },
+              metadata,
+            };
+      }),
       metadata: { fulfilment },
     },
     checkout_options: {
@@ -159,33 +201,56 @@ async function handleCheckout(request, env) {
     /* The note Square shows on the payment in its Dashboard, so whoever packs
        the order sees collect or post, and what to pack, at a glance. */
     payment_note: `${delivery.label}. ${packingList}`.slice(0, 500),
+  });
+
+  /** @param {ReturnType<typeof payloadFor>} payload */
+  const openLink = async (payload) => {
+    const response = await fetch(squareUrl(env, '/v2/online-checkout/payment-links'), {
+      method: 'POST',
+      headers: squareHeaders(env),
+      body: JSON.stringify(payload),
+    });
+    const reply = await response.json().catch(() => null);
+    return {
+      status: response.status,
+      ok: response.ok,
+      code: reply?.errors?.[0]?.code ?? '',
+      url: reply?.payment_link?.url ?? reply?.payment_link?.long_url,
+      /* The order Square made, with the total it will charge. */
+      charges: Number(reply?.related_resources?.orders?.[0]?.total_money?.amount),
+    };
   };
 
-  let response;
+  const pointsAtSquare = Boolean(stock && lines.some((line) => stock.get(codeOf(line))));
+  const expected = subtotalCents + delivery.cents;
+
+  let link;
   try {
-    response = await fetch(
-      env.SQUARE_ENVIRONMENT === 'sandbox' ? SQUARE_API.sandbox : SQUARE_API.production,
-      {
-        method: 'POST',
-        headers: {
-          authorization: `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
-          'content-type': 'application/json',
-          'square-version': SQUARE_VERSION,
-        },
-        body: JSON.stringify(payload),
-      },
-    );
+    link = await openLink(payloadFor(pointsAtSquare ? stock : null));
+    if (pointsAtSquare && (!link.ok || !link.url || link.charges !== expected)) {
+      /* Square refused the lines that point at its items, or would charge a
+         different total, or did not say what it would charge. That link is
+         left unused, and the order goes as plain lines, as it did before stock
+         was in Square: the sale is not counted off Square's stock, but nobody
+         pays a figure the site did not show. */
+      console.error(
+        'Square payment link pointing at stock items not used',
+        link.status,
+        link.code,
+        Number.isFinite(link.charges) ? link.charges : 'no total',
+        expected
+      );
+      link = await openLink(payloadFor(null));
+    }
   } catch {
     return fail('We could not reach the payment service. Please try again shortly.', 502);
   }
 
-  const reply = await response.json().catch(() => null);
-  const url = reply?.payment_link?.url ?? reply?.payment_link?.long_url;
-
-  if (!response.ok || !url) {
+  const { url } = link;
+  if (!link.ok || !url) {
     /* Square's message can name internal configuration, so it is logged rather
        than returned. Observability is on for this Worker. */
-    console.error('Square rejected a payment link', response.status, reply?.errors?.[0]?.code ?? '');
+    console.error('Square rejected a payment link', link.status, link.code);
     return fail('We could not start the payment. Please try again, or call us and we will take the order.', 502);
   }
 
@@ -198,11 +263,13 @@ export default {
   /**
    * @param {Request} request
    * @param {{ ASSETS: { fetch: (request: Request) => Promise<Response> } } & Record<string, string | undefined>} env
+   * @param {{ waitUntil: (promise: Promise<unknown>) => void }} [ctx]
    */
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
 
     if (pathname === '/api/checkout') return handleCheckout(request, env);
+    if (pathname === '/api/stock') return handleStock(request, env, ctx);
 
     /* The contact form and the Life-Link finder share /api/contact; prayer
        requests have their own address so they can never be routed with
