@@ -20,8 +20,9 @@ week.
 It sells from stock only (client, 24 October 2026): only the sizes that came are
 listed, and **Most one person can order at once** is set to the largest number
 in hand of any one size, so one order cannot take more than there is (one each
-for the black and the coffee t-shirts, two for the hoodie). The shop keeps no
-running count, so untick a size at `/admin` when its last one goes.
+for the black and the coffee t-shirts, two for the hoodie). From 29 October 2026
+the running count is kept in Square: see "Stock, kept in Square" below. Until a
+size is set up there, untick it at `/admin` when its last one goes.
 
 Prices, set on 24 October 2026: every adult t-shirt $28, kids' t-shirts $25, and
 the hoodie $65. Square's fee is inside the price, and no GST is charged on
@@ -56,8 +57,8 @@ A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
 What arrived, as the client's order listed it on 24 October 2026: hoodie navy
 S 2, M 1, L 2; essential t-shirt navy XS 6, S 8, M 10, XL 5; oversized black
 4XL 1; drop-shoulder grey apricot XL 5; seamless coffee S 1, M 1, L 1; kids'
-green 120 1, 130 1, 140 3; kids' pink 120 1, 130 1, 140 3. The shop has no stock
-counts, so untick a size at `/admin` when the last one goes.
+green 120 1, 130 1, 140 3; kids' pink 120 1, 130 1, 140 3. Those are the
+numbers to enter in Square, less anything sold since.
 
 The pictures are the client's design mockups of 24 October 2026, one per side,
 padded from square to 4:5 on their own white ground and scaled to 800 by 1000
@@ -146,7 +147,9 @@ keep in step.
    - **Sizes**, in either place: list the whole run, including sizes that have
      sold out, and untick rather than delete. The page then says a size has gone
      instead of quietly leaving a gap. Before something goes on sale, untick
-     every size that is not actually stocked.
+     every size that is not actually stocked. Once a size's stock is counted in
+     Square, the site marks it sold out by itself when Square reaches zero; the
+     tick here stays the off switch, and Square cannot turn a size back on.
    - **Books** take an author, and a publisher, ISBN and format where known.
    - **Sold elsewhere, the link to buy it** is for something another site sells.
      Leave it empty for anything sold here.
@@ -222,7 +225,103 @@ ask for an address we have no use for.
 
 Refund in the Square Dashboard, on the payment. It goes back to the card or account
 that paid. Nothing on the site needs changing. If the item is coming back into
-stock, tick the size back on at `/admin`.
+stock, add it back to the count in Square; if that size is not counted in Square,
+tick it back on at `/admin` instead.
+
+## Stock, kept in Square
+
+Square is the stock book (client, 29 October 2026). The numbers live in TTE's
+Square item library, a helper updates them there, and Square sends the low-stock
+warnings. The website reads them and never writes them.
+
+**What the website does with them.** On a product page, a size Square has none
+of in the colour on show is marked sold out, and when there are three or fewer
+left the page says so: "Only 2 left in this size." The quantity stops at what is
+left. The checkout reads Square again before it opens a payment and refuses more
+than there is, with a message saying how many are left. A sale online, or at the
+welcome desk through Square, counts the same stock down.
+
+**What it does not do.** It cannot put a size back on sale that is unticked at
+`/admin`; that tick is still the off switch. A size not set up in Square, or with
+its stock not tracked there, is unknown, and the shop treats it exactly as it did
+before. If Square cannot be reached, the pages stay as they were built and the
+checkout carries on; the order is still recorded in Square.
+
+### Setting up the items in Square, once
+
+In the Square Dashboard, under **Items**, create one item per product and one
+variation per colour and size. What matters is the **SKU** on each variation: it
+must be exactly the code below, because that is how the website finds it. Then,
+for each variation, turn on stock tracking, enter how many are on hand, and set a
+low-stock alert. Square warns when stock falls below the alert number, so 3 tells
+you when two are left; use 1 for sizes there was only ever one of, which tells
+you when it has sold.
+
+Leave tax off these items: no GST is charged in the shop. The prices below are
+for anyone selling at the welcome desk with Square. Online orders always carry
+the price set at `/admin`, whatever Square says.
+
+Make the items at the same location as `SQUARE_LOCATION_ID`. To test first, make
+the same items in the sandbox test account and buy one on the preview: its
+count should fall by one.
+
+| Item in Square | Variation | SKU | Price |
+|---|---|---|---|
+| RAIN fleece hoodie | Navy, size S | `TTE-RAIN-FLEECE-HOOD-NAVY-S` | $65.00 |
+| RAIN fleece hoodie | Navy, size M | `TTE-RAIN-FLEECE-HOOD-NAVY-M` | $65.00 |
+| RAIN fleece hoodie | Navy, size L | `TTE-RAIN-FLEECE-HOOD-NAVY-L` | $65.00 |
+| RAIN essential t-shirt | Navy, size XS | `TTE-RAIN-TEE-ESS-NAVY-XS` | $28.00 |
+| RAIN essential t-shirt | Navy, size S | `TTE-RAIN-TEE-ESS-NAVY-S` | $28.00 |
+| RAIN essential t-shirt | Navy, size M | `TTE-RAIN-TEE-ESS-NAVY-M` | $28.00 |
+| RAIN essential t-shirt | Navy, size XL | `TTE-RAIN-TEE-ESS-NAVY-XL` | $28.00 |
+| RAIN oversized t-shirt | Black, size 4XL | `TTE-RAIN-TEE-OS-BLACK-4XL` | $28.00 |
+| RAIN drop-shoulder t-shirt | Grey apricot, size XL | `TTE-RAIN-TEE-DS-GREYAPRICOT-XL` | $28.00 |
+| RAIN seamless t-shirt | Coffee, size S | `TTE-RAIN-TEE-SL-COFFEE-S` | $28.00 |
+| RAIN seamless t-shirt | Coffee, size M | `TTE-RAIN-TEE-SL-COFFEE-M` | $28.00 |
+| RAIN seamless t-shirt | Coffee, size L | `TTE-RAIN-TEE-SL-COFFEE-L` | $28.00 |
+| RAIN kids' t-shirt | Green, size 120 | `TTE-RAIN-TEE-KIDS-GREEN-120` | $25.00 |
+| RAIN kids' t-shirt | Green, size 130 | `TTE-RAIN-TEE-KIDS-GREEN-130` | $25.00 |
+| RAIN kids' t-shirt | Green, size 140 | `TTE-RAIN-TEE-KIDS-GREEN-140` | $25.00 |
+| RAIN kids' t-shirt | Pink, size 120 | `TTE-RAIN-TEE-KIDS-PINK-120` | $25.00 |
+| RAIN kids' t-shirt | Pink, size 130 | `TTE-RAIN-TEE-KIDS-PINK-130` | $25.00 |
+| RAIN kids' t-shirt | Pink, size 140 | `TTE-RAIN-TEE-KIDS-PINK-140` | $25.00 |
+
+18 variations in 6 items.
+
+That list is printed by `npm run shop:square-list` and changes when the range
+does: a new product, colour or size needs its variation in Square too.
+
+### Low stock, and seeing the numbers
+
+Square emails the account's address once a day when anything with an alert set
+has fallen below its alert number, and lists everything still low. In the Square
+Dashboard, **Items**, **Item library** shows the stock on hand, with low items
+marked. The Square app on a phone shows the same.
+
+### A helper who does the stocktake
+
+Add them as a team member in the Square Dashboard: **Staff**, then **Team**, then
+add a team member with their name and email. Square sends them an invitation to
+sign in with their own login, so the account owner's password is never shared.
+
+Then give them a permission set that lets them manage items, and nothing else
+they do not need, under **Staff**, **Team**, **Permissions**. Every Square
+account can customise one permission set without paying for a plan. They can
+then open an item in the Square app or Dashboard and change its stock count after
+a count at the table.
+
+Square's formal stocktake tool, a full count that a manager reviews and commits,
+needs the paid Square for Retail Plus plan and an iPhone or iPad. Changing the
+numbers directly, as above, does not.
+
+### If the counts stop falling
+
+When a sale online should have counted a size down and has not, look in the
+Worker's logs in Cloudflare for "Square payment link pointing at stock items not
+used". It means Square refused the lines that point at its items, or would have
+charged a different total, so the order went through without them, priced from
+the catalogue as always. The line says why. Send it to whoever looks after the
+site.
 
 ## Switching payment on
 
@@ -357,6 +456,9 @@ items on a checklist.
   a malformed request cannot open a session for a fortune.
 - The checkout endpoint is same-origin only and sends no CORS headers, so another
   site cannot call it or read its reply.
+- `/api/stock` is public and read-only. It says how many of each of our
+  variations Square holds, which is no more than anybody at the welcome desk can
+  count, and it is kept for a minute so a busy page is not a busy Square.
 - Card details never touch this site. Square's hosted page collects them, which is
   also what keeps us at the simplest PCI obligation there is.
 - The Square token has full access to the account, because Square has no
@@ -366,9 +468,8 @@ items on a checklist.
 
 ## Things deliberately not built
 
-- **Live stock counts.** The client chose an editor tick over counts that fall as
-  items sell. Counts need a database and order processing on top of Square, and a
-  range this size does not earn it.
+- **A stock database.** Square keeps the counts, and the site only reads them.
+  See "Stock, kept in Square".
 - **An order database.** See above. Square is the order book.
 - **A Square webhook.** Nothing here depends on knowing about a payment after the
   fact. If orders ever need to land in Connect automatically, that is where it

@@ -24,10 +24,10 @@
  */
 import catalogue from '../data/shop/products.json' with { type: 'json' };
 import shipping from '../data/shop/shipping.json' with { type: 'json' };
-import { variantLabel } from './variant.mjs';
+import { variantLabel, stockCode } from './variant.mjs';
 
 export { BASKET_KEY } from './basket-key.mjs';
-export { variantLabel } from './variant.mjs';
+export { variantLabel, stockCode } from './variant.mjs';
 
 /**
  * @typedef {object} ProductSize
@@ -279,6 +279,46 @@ export const listedByCategory = () =>
 
 /** Whether there is anything at all to sell. Drives the empty state. */
 export const shopHasStock = () => PRODUCTS.some(isOrderable);
+
+/**
+ * At or below this many left in Square, a product page says how many: "Only 2
+ * left in this size". Above it, nothing is said, because a number that is not
+ * small is not news.
+ */
+export const LOW_STOCK = 3;
+
+/**
+ * Every colour, fit and size that can be bought here, each with the code it
+ * goes by in Square (see stockCode). The Worker reads stock for these and no
+ * others, and `npm run shop:square-list` prints them for setting the items up
+ * in Square.
+ *
+ * @returns {{ code: string, product: Product, colour: string|null, fit: string|null, size: string|null, unitCents: number }[]}
+ */
+export function stockVariants() {
+  const variants = [];
+  for (const product of PRODUCTS.filter(isOrderable)) {
+    const colours = coloursOf(product).filter((colour) => colour.available).map((colour) => colour.name);
+    const fits = needsSize(product) ? fitsOf(product) : [null];
+    for (const colour of colours.length ? colours : [null]) {
+      for (const fit of fits) {
+        const fitName = fit?.name || null;
+        const sizes = fit ? fit.sizes.filter((size) => size.available).map((size) => size.label) : [null];
+        for (const size of sizes) {
+          variants.push({
+            code: stockCode({ sku: product.sku, colour, fit: fitName, size }),
+            product,
+            colour,
+            fit: fitName,
+            size,
+            unitCents: fit ? fitUnitCents(product, fit) : priceCents(product),
+          });
+        }
+      }
+    }
+  }
+  return variants;
+}
 
 /**
  * @typedef {object} BasketLine

@@ -381,7 +381,7 @@ collections:
                     summary: '{{fields.label}}'
                     fields:
                       - { name: label, label: Size, widget: string }
-                      - { name: available, label: In stock, widget: boolean, default: true }
+                      - { name: available, label: In stock, widget: boolean, default: true, hint: 'Untick to stop selling this size. Once its stock is counted in Square, the site also marks it sold out when Square reaches zero.' }
               - name: images
                 label: Photographs
                 label_singular: photograph
@@ -414,7 +414,7 @@ collections:
                   can say it has gone rather than quietly leaving a gap.
                 fields:
                   - { name: label, label: Size, widget: string }
-                  - { name: available, label: In stock, widget: boolean, default: true }
+                  - { name: available, label: In stock, widget: boolean, default: true, hint: 'Untick to stop selling this size. Once its stock is counted in Square, the site also marks it sold out when Square reaches zero.' }
 
       - name: shipping
         label: Delivery and postage

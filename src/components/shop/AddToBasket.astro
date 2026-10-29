@@ -28,6 +28,15 @@
  * Sold-out sizes are rendered rather than hidden. Someone who wears a medium is
  * better served by being told the medium has gone than by a size list that
  * quietly has a gap in it.
+ *
+ * STOCK FROM SQUARE
+ *
+ * The page is built with the sizes ticked at /admin. Once it has loaded, the
+ * script asks /api/stock what Square holds and marks any size it has none of as
+ * sold out, for the colour on show, and says "Only 2 left in this size" when it
+ * is down to LOW_STOCK or fewer. It never brings back a size /admin has
+ * switched off, and when Square cannot be asked, nothing changes. The checkout
+ * checks Square again in any case.
  */
 import Button from '../Button.astro';
 import ShopScript from './ShopScript.astro';
@@ -39,6 +48,7 @@ import {
   fitUnitCents,
   priceCents,
   formatMoney,
+  LOW_STOCK,
 } from '../../lib/shop.mjs';
 import { CHURCH } from '../../data/church.mjs';
 
@@ -74,6 +84,8 @@ const firstFit = Math.max(
   data-needs-size={sized ? 'true' : 'false'}
   data-has-colours={coloursOf(product).length > 0 ? 'true' : 'false'}
   data-single-fit={!chooseFit && fits[0] ? fits[0].name : ''}
+  data-limit={limit}
+  data-low-stock={LOW_STOCK}
 >
   {
     chooseFit && (
@@ -118,15 +130,18 @@ const firstFit = Math.max(
                 value={size.label}
                 disabled={!size.available}
                 data-size
+                data-listed-out={size.available ? undefined : 'true'}
               />
               <span>{size.label}</span>
-              {!size.available && <span class="visually-hidden">, sold out</span>}
+              {!size.available && <span class="visually-hidden" data-gone-note>, sold out</span>}
             </label>
           ))}
         </div>
       </fieldset>
     ))
   }
+
+  {sized && <p class="buy__stock" role="status" aria-live="polite" data-stock-note />}
 
   <div class="buy__row">
     <label class="buy__qty">
@@ -267,8 +282,15 @@ const firstFit = Math.max(
     border-radius: var(--radius-s);
   }
 
-  .buy__said:empty {
+  .buy__said:empty,
+  .buy__stock:empty {
     display: none;
+  }
+
+  .buy__stock {
+    margin-block-start: calc(var(--space-s) * -1);
+    font-size: var(--text--1);
+    font-weight: var(--weight-semibold);
   }
 
   .buy__said {
