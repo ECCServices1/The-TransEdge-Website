@@ -21,8 +21,9 @@ It sells from stock only (client, 24 October 2026): only the sizes that came are
 listed, and **Most one person can order at once** is set to the largest number
 in hand of any one size, so one order cannot take more than there is (one each
 for the black and the coffee t-shirts, two for the hoodie). From 29 October 2026
-the running count is kept in Square: see "Stock, kept in Square" below. Until a
-size is set up there, untick it at `/admin` when its last one goes.
+the running count is kept in Square: see "Stock, kept in Square" below, and the
+checkout refuses more than Square holds. Until a size is set up there, untick it
+at `/admin` when its last one goes.
 
 Prices, set on 24 October 2026: every adult t-shirt $28, kids' t-shirts $25, and
 the hoodie $65. Square's fee is inside the price, and no GST is charged on
@@ -41,11 +42,11 @@ are on its card and page, each centred on white in the shop's 4:5 frame.
 
 | Product | Kind | Choices | Waiting on |
 |---|---|---|---|
-| RAIN fleece hoodie | On sale. Oversized fleece hoodie | Navy; S, M, L | Nothing |
-| RAIN essential t-shirt | On sale. Cotton crew neck | Navy; XS, S, M, XL | Nothing |
+| RAIN fleece hoodie | On sale. Oversized fleece hoodie | Navy, Coffee; S, M, L | Nothing |
+| RAIN essential t-shirt | On sale. Cotton crew neck | Navy; XS, S, M, L, XL, 2XL | Nothing |
 | RAIN oversized t-shirt | On sale. Oversized cotton | Black; 4XL | Nothing |
-| RAIN drop-shoulder t-shirt | On sale. Loose, dropped shoulders | Grey apricot; XL | Nothing |
-| RAIN seamless t-shirt | On sale. Unisex cotton | Coffee; S, M, L | Its picture: the design came as a coffee hoodie, the stock as coffee t-shirts |
+| RAIN drop-shoulder t-shirt | On sale. Loose, dropped shoulders | Grey apricot; S, M, L, XL | Nothing |
+| RAIN seamless t-shirt | On sale. Unisex cotton | Coffee; S, M, L | Its picture: the coffee design that came was the hoodie's |
 | RAIN kids' t-shirt | On sale. Kids' crew neck, sized by height | Green, Pink; 120, 130, 140 | Nothing |
 | RAIN hooded jumper | Out of stock. The first design | Forest green, Chocolate, Rust, Navy | Nothing; kept on the range to be seen |
 | RAIN t-shirt | Out of stock. The first design | Forest green, Chocolate, Rust | Nothing; kept on the range to be seen |
@@ -57,8 +58,15 @@ A pen is in the catalogue as hidden: it has its own page and is listed nowhere.
 What arrived, as the client's order listed it on 24 October 2026: hoodie navy
 S 2, M 1, L 2; essential t-shirt navy XS 6, S 8, M 10, XL 5; oversized black
 4XL 1; drop-shoulder grey apricot XL 5; seamless coffee S 1, M 1, L 1; kids'
-green 120 1, 130 1, 140 3; kids' pink 120 1, 130 1, 140 3. Those are the
-numbers to enter in Square, less anything sold since.
+green 120 1, 130 1, 140 3; kids' pink 120 1, 130 1, 140 3.
+
+That list left some out. What Square held on 30 October 2026, from the client's
+item library: drop-shoulder grey apricot S 8, M 10, L 7, XL 5; essential navy XS
+6, S 8, M 9, L 6, XL 5, 2XL 1; and a fleece hoodie in coffee, S 1, M 1, L 1, the
+same design as the navy one. Those sizes and the coffee hoodie were added to the
+catalogue that day, with the coffee hoodie mockups from the 24 October designs,
+and the drop-shoulder's per-order limit went back to the usual 10. Square holds
+the counts from here.
 
 The pictures are the client's design mockups of 24 October 2026, one per side,
 padded from square to 4:5 on their own white ground and scaled to 800 by 1000
@@ -251,7 +259,10 @@ checkout carries on; the order is still recorded in Square.
 
 In the Square Dashboard, under **Items**, create one item per product and one
 variation per colour and size. What matters is the **SKU** on each variation: it
-must be exactly the code below, because that is how the website finds it. Then,
+must be the code below, because that is how the website finds it. Capitals,
+spaces and hyphens do not matter (`TTE-RAIN-TEE-DS-GREY-APRICOT-XL` matches), but
+every letter and digit does. Give each variation its own SKU: an item copied in
+Square keeps the original's SKUs until they are changed. Then,
 for each variation, turn on stock tracking, enter how many are on hand, and set a
 low-stock alert. Square warns when stock falls below the alert number, so 3 tells
 you when two are left; use 1 for sizes there was only ever one of, which tells
@@ -270,11 +281,19 @@ count should fall by one.
 | RAIN fleece hoodie | Navy, size S | `TTE-RAIN-FLEECE-HOOD-NAVY-S` | $65.00 |
 | RAIN fleece hoodie | Navy, size M | `TTE-RAIN-FLEECE-HOOD-NAVY-M` | $65.00 |
 | RAIN fleece hoodie | Navy, size L | `TTE-RAIN-FLEECE-HOOD-NAVY-L` | $65.00 |
+| RAIN fleece hoodie | Coffee, size S | `TTE-RAIN-FLEECE-HOOD-COFFEE-S` | $65.00 |
+| RAIN fleece hoodie | Coffee, size M | `TTE-RAIN-FLEECE-HOOD-COFFEE-M` | $65.00 |
+| RAIN fleece hoodie | Coffee, size L | `TTE-RAIN-FLEECE-HOOD-COFFEE-L` | $65.00 |
 | RAIN essential t-shirt | Navy, size XS | `TTE-RAIN-TEE-ESS-NAVY-XS` | $28.00 |
 | RAIN essential t-shirt | Navy, size S | `TTE-RAIN-TEE-ESS-NAVY-S` | $28.00 |
 | RAIN essential t-shirt | Navy, size M | `TTE-RAIN-TEE-ESS-NAVY-M` | $28.00 |
+| RAIN essential t-shirt | Navy, size L | `TTE-RAIN-TEE-ESS-NAVY-L` | $28.00 |
 | RAIN essential t-shirt | Navy, size XL | `TTE-RAIN-TEE-ESS-NAVY-XL` | $28.00 |
+| RAIN essential t-shirt | Navy, size 2XL | `TTE-RAIN-TEE-ESS-NAVY-2XL` | $28.00 |
 | RAIN oversized t-shirt | Black, size 4XL | `TTE-RAIN-TEE-OS-BLACK-4XL` | $28.00 |
+| RAIN drop-shoulder t-shirt | Grey apricot, size S | `TTE-RAIN-TEE-DS-GREYAPRICOT-S` | $28.00 |
+| RAIN drop-shoulder t-shirt | Grey apricot, size M | `TTE-RAIN-TEE-DS-GREYAPRICOT-M` | $28.00 |
+| RAIN drop-shoulder t-shirt | Grey apricot, size L | `TTE-RAIN-TEE-DS-GREYAPRICOT-L` | $28.00 |
 | RAIN drop-shoulder t-shirt | Grey apricot, size XL | `TTE-RAIN-TEE-DS-GREYAPRICOT-XL` | $28.00 |
 | RAIN seamless t-shirt | Coffee, size S | `TTE-RAIN-TEE-SL-COFFEE-S` | $28.00 |
 | RAIN seamless t-shirt | Coffee, size M | `TTE-RAIN-TEE-SL-COFFEE-M` | $28.00 |
@@ -286,7 +305,7 @@ count should fall by one.
 | RAIN kids' t-shirt | Pink, size 130 | `TTE-RAIN-TEE-KIDS-PINK-130` | $25.00 |
 | RAIN kids' t-shirt | Pink, size 140 | `TTE-RAIN-TEE-KIDS-PINK-140` | $25.00 |
 
-18 variations in 6 items.
+26 variations in 6 items.
 
 That list is printed by `npm run shop:square-list` and changes when the range
 does: a new product, colour or size needs its variation in Square too.
@@ -314,14 +333,25 @@ Square's formal stocktake tool, a full count that a manager reviews and commits,
 needs the paid Square for Retail Plus plan and an iPhone or iPad. Changing the
 numbers directly, as above, does not.
 
-### If the counts stop falling
+### If the counts stop falling, or a size looks wrong
 
-When a sale online should have counted a size down and has not, look in the
-Worker's logs in Cloudflare for "Square payment link pointing at stock items not
-used". It means Square refused the lines that point at its items, or would have
-charged a different total, so the order went through without them, priced from
-the catalogue as always. The line says why. Send it to whoever looks after the
-site.
+Look in the Worker's logs in Cloudflare for one of these, and send it to whoever
+looks after the site:
+
+- **"Square payment link pointing at stock items not used"**: Square refused the
+  lines that point at its items, or would have charged a different total, so the
+  order went through without them, priced from the catalogue as always.
+- **"Could not read stock from Square"**: Square did not answer. Orders still go
+  through, but that one is not counted down, so check the count by hand.
+- **"Square has more than one variation with this SKU"**: two variations carry the
+  same code, usually because an item was copied. The site uses the one Square is
+  counting, with stock, but give the copy its own SKU.
+- **"Square holds stock for this SKU only at another location"**: the stock is at
+  a different Square location from the one the site reads. The site treats that
+  size as unknown rather than sold out.
+
+A size Square has switched to sold out reads as none left, whatever the count.
+A variation not available at TTE's location in Square is not read at all.
 
 ## Switching payment on
 

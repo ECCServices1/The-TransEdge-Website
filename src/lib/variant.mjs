@@ -33,3 +33,13 @@ export function stockCode({ sku, colour = null, fit = null, size = null }) {
   const part = (value) => value.toUpperCase().replace(/[^A-Z0-9]+/g, '');
   return [sku, ...[colour, fit, size].filter((value) => value).map((value) => part(String(value)))].join('-');
 }
+
+/**
+ * A stock code as letters and digits only, for comparing it with a SKU a
+ * person typed into Square: "TTE-RAIN-TEE-DS-GREY-APRICOT-XL", "tte rain tee ds
+ * greyapricot xl" and the code itself all come out the same. check-shop makes
+ * sure no two codes on sale here come out the same as each other.
+ *
+ * @param {string} code
+ */
+export const squashCode = (code) => code.toUpperCase().replace(/[^A-Z0-9]/g, '');

@@ -10,8 +10,8 @@
       "priceConfirmed": true,
       "status": "on-sale",
       "order": 10,
-      "summary": "The RAIN 2026 hoodie in navy: oversized and fleeced, with Joel 2:23 across the back.",
-      "description": "Made for RAIN 2026. An oversized fleece hoodie with a front pouch pocket, in navy. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
+      "summary": "The RAIN 2026 hoodie in navy or coffee: oversized and fleeced, with Joel 2:23 across the back.",
+      "description": "Made for RAIN 2026. An oversized fleece hoodie with a front pouch pocket, in navy or coffee. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
       "careNotes": "Wash cold and inside out, and do not iron over the print.",
       "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
       "limitPerOrder": 2,
@@ -29,6 +29,21 @@
             {
               "file": "rain-fleece-hoodie-navy-front",
               "alt": "A mockup of the RAIN fleece hoodie in navy, from the front: The Transformation Edge mark, small and white, on the chest."
+            }
+          ]
+        },
+        {
+          "name": "Coffee",
+          "swatch": "#5a432c",
+          "available": true,
+          "images": [
+            {
+              "file": "rain-fleece-hoodie-coffee-back",
+              "alt": "A mockup of the RAIN fleece hoodie in coffee, from the back: RAIN in tall letters shading from white to gold, the words “The former rain, and the latter rain”, and Joel 2:23 in Roman numerals beneath, its strokes running down like rain."
+            },
+            {
+              "file": "rain-fleece-hoodie-coffee-front",
+              "alt": "A mockup of the RAIN fleece hoodie in coffee, from the front: The Transformation Edge mark, small and white, on the chest."
             }
           ]
         }
@@ -95,7 +110,15 @@
           "available": true
         },
         {
+          "label": "L",
+          "available": true
+        },
+        {
           "label": "XL",
+          "available": true
+        },
+        {
+          "label": "2XL",
           "available": true
         }
       ]
@@ -154,7 +177,7 @@
       "description": "Made for RAIN 2026. A loose t-shirt with dropped shoulders, in grey apricot. Our mark sits small on the chest. Across the back, RAIN in tall letters over “The former rain, and the latter rain”, with Joel 2:23 in Roman numerals falling away beneath like rain.",
       "careNotes": "Wash cold and inside out, and do not iron over the print.",
       "pictureNote": "The pictures are design mockups. Colours on a screen can differ a little from the garment.",
-      "limitPerOrder": 5,
+      "limitPerOrder": 10,
       "images": [],
       "colours": [
         {
@@ -174,6 +197,18 @@
         }
       ],
       "sizes": [
+        {
+          "label": "S",
+          "available": true
+        },
+        {
+          "label": "M",
+          "available": true
+        },
+        {
+          "label": "L",
+          "available": true
+        },
         {
           "label": "XL",
           "available": true

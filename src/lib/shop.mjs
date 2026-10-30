@@ -27,7 +27,7 @@ import shipping from '../data/shop/shipping.json' with { type: 'json' };
 import { variantLabel, stockCode } from './variant.mjs';
 
 export { BASKET_KEY } from './basket-key.mjs';
-export { variantLabel, stockCode } from './variant.mjs';
+export { variantLabel, stockCode, squashCode } from './variant.mjs';
 
 /**
  * @typedef {object} ProductSize

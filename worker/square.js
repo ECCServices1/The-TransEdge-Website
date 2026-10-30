@@ -14,7 +14,7 @@
  * up in Square, or with its stock not tracked there, is simply unknown, and the
  * shop treats it exactly as it did before: the ticks at /admin decide.
  */
-import { stockVariants } from '../src/lib/shop.mjs';
+import { stockVariants, squashCode } from '../src/lib/shop.mjs';
 
 /* SQUARE_ENVIRONMENT=sandbox points at Square's test system, for a test
    purchase with a sandbox token. Anything else is the real one. */
@@ -46,10 +46,25 @@ export const squareHeaders = (env) => ({
 
 /**
  * @typedef {object} HeldStock
- * @property {string} id         The variation's id in Square's item library.
- * @property {boolean} tracked   Whether Square is counting its stock.
- * @property {number} quantity   In stock at TTE's location. Zero when untracked.
+ * @property {string} id        The variation's id in Square's item library.
+ * @property {boolean} known    Whether Square's number for it can be relied on:
+ *                              stock tracked at TTE's location, or marked sold
+ *                              out there. Unknown is left to the ticks at /admin.
+ * @property {number} quantity  In stock at TTE's location. Zero when sold out.
  */
+
+/**
+ * Whether a catalogue object exists at a location. Square's rule: present
+ * everywhere unless `present_at_all_locations` is false, less any location
+ * listed as absent; or, when it is false, only where listed as present.
+ *
+ * @param {{ present_at_all_locations?: boolean, present_at_location_ids?: string[], absent_at_location_ids?: string[] }} object
+ * @param {string | undefined} location
+ */
+const presentAt = (object, location) =>
+  object.present_at_all_locations === false
+    ? (object.present_at_location_ids ?? []).includes(location ?? '')
+    : !(object.absent_at_location_ids ?? []).includes(location ?? '');
 
 /**
  * Every variation in Square whose SKU is one of ours, with its stock. Null
@@ -60,10 +75,17 @@ export const squareHeaders = (env) => ({
  * @returns {Promise<Map<string, HeldStock> | null>}
  */
 export async function readStock(env) {
-  const ours = new Set(stockVariants().map((variant) => variant.code));
+  const location = env.SQUARE_LOCATION_ID;
+  /* SKUs are typed by a person, so they are compared as letters and digits
+     only: "GREY-APRICOT", a stray space or lower case still match. */
+  const ours = new Map(stockVariants().map((variant) => [squashCode(variant.code), variant.code]));
   const headers = squareHeaders(env);
-  /** @type {Map<string, HeldStock>} */
-  const found = new Map();
+  /**
+   * Every variation carrying one of our codes. Usually one each; more than
+   * one when an item was copied in Square without changing its SKUs.
+   * @type {Map<string, { id: string, tracked: boolean, soldOut: boolean, quantity: number, here: boolean, elsewhere: boolean }[]>}
+   */
+  const candidates = new Map();
 
   try {
     /* The item library is small, so listing its variations and picking ours
@@ -79,26 +101,36 @@ export async function readStock(env) {
 
       for (const object of data.objects ?? []) {
         const variation = object?.item_variation_data;
-        /* Typed in by a person, so forgiving of case and stray spaces. */
-        const code = typeof variation?.sku === 'string' ? variation.sku.trim().toUpperCase() : '';
-        if (object.type !== 'ITEM_VARIATION' || object.is_deleted || !ours.has(code) || found.has(code)) continue;
+        const code = typeof variation?.sku === 'string' ? ours.get(squashCode(variation.sku)) : undefined;
+        /* A variation not stocked at TTE's location is not ours to sell. */
+        if (object.type !== 'ITEM_VARIATION' || object.is_deleted || !code || !presentAt(object, location)) continue;
         const here = (variation.location_overrides ?? []).find(
-          (/** @type {{ location_id?: string }} */ override) => override.location_id === env.SQUARE_LOCATION_ID
+          (/** @type {{ location_id?: string }} */ override) => override.location_id === location
         );
-        found.set(code, {
+        /* Square's own "sold out" switch counts as none left, until the date
+           it was set to lapse, if any. */
+        const lapses = here?.sold_out_valid_until ? Date.parse(here.sold_out_valid_until) : NaN;
+        const list = candidates.get(code) ?? [];
+        list.push({
           id: object.id,
           tracked: Boolean(here?.track_inventory ?? variation.track_inventory),
+          soldOut: here?.sold_out === true && !(lapses <= Date.now()),
           quantity: 0,
+          here: false,
+          elsewhere: false,
         });
+        candidates.set(code, list);
       }
 
       cursor = data.cursor ?? '';
       if (!cursor) break;
     }
 
-    /* A tracked variation Square has no count for has never had stock added,
-       so it stays at the zero it started with. */
-    const tracked = new Map([...found.values()].filter((held) => held.tracked).map((held) => [held.id, held]));
+    /* Counts at every location, so stock held somewhere else can be told
+       apart from stock never added. */
+    const tracked = new Map(
+      [...candidates.values()].flat().filter((candidate) => candidate.tracked).map((candidate) => [candidate.id, candidate])
+    );
     const ids = [...tracked.keys()];
     for (let start = 0; start < ids.length; start += 100) {
       let countCursor = '';
@@ -108,7 +140,6 @@ export async function readStock(env) {
           headers,
           body: JSON.stringify({
             catalog_object_ids: ids.slice(start, start + 100),
-            location_ids: [env.SQUARE_LOCATION_ID],
             states: ['IN_STOCK'],
             cursor: countCursor || undefined,
           }),
@@ -117,14 +148,46 @@ export async function readStock(env) {
         if (!response.ok || !data) throw new Error(`stock counts ${response.status} ${data?.errors?.[0]?.code ?? ''}`);
 
         for (const count of data.counts ?? []) {
-          const held = tracked.get(count?.catalog_object_id);
-          if (!held || count.state !== 'IN_STOCK' || count.location_id !== env.SQUARE_LOCATION_ID) continue;
-          held.quantity = Math.max(0, Math.floor(Number(count.quantity) || 0));
+          const candidate = tracked.get(count?.catalog_object_id);
+          if (!candidate || count.state !== 'IN_STOCK') continue;
+          if (count.location_id === location) {
+            candidate.quantity = Math.max(0, Math.floor(Number(count.quantity) || 0));
+            candidate.here = true;
+          } else {
+            candidate.elsewhere = true;
+          }
         }
 
         countCursor = data.cursor ?? '';
         if (!countCursor) break;
       }
+    }
+
+    /** @type {Map<string, HeldStock>} */
+    const found = new Map();
+    for (const [code, list] of candidates) {
+      const judged = list.map((candidate) => {
+        /* Tracked with no count anywhere: stock was never added, so none.
+           Tracked with counts only at another location: that is a setup
+           question, not an empty shelf, so unknown. */
+        if (candidate.tracked && !candidate.here && candidate.elsewhere && !candidate.soldOut) {
+          console.warn('Square holds stock for this SKU only at another location', code, candidate.id);
+        }
+        return {
+          id: candidate.id,
+          known: candidate.soldOut || (candidate.tracked && (candidate.here || !candidate.elsewhere)),
+          quantity: candidate.soldOut ? 0 : candidate.quantity,
+        };
+      });
+      if (judged.length > 1) {
+        console.warn('Square has more than one variation with this SKU', code, judged.map((held) => held.id).join(', '));
+      }
+      /* With copies, the one Square is counting, and of those the one with
+         stock, so a forgotten copy cannot mark a size sold out. */
+      const best = judged.reduce((a, b) =>
+        Number(b.known) > Number(a.known) || (b.known === a.known && b.quantity > a.quantity) ? b : a
+      );
+      found.set(code, best);
     }
 
     return found;
@@ -135,8 +198,8 @@ export async function readStock(env) {
 }
 
 /**
- * GET /api/stock: { stock: { "<code>": <number in stock> } }, for tracked
- * variations only. Read by the product pages' script. It holds nothing
+ * GET /api/stock: { stock: { "<code>": <number in stock> } }, for variations
+ * whose stock is known (see HeldStock). Read by the product pages' script. It holds nothing
  * private: anybody standing at the welcome desk can count the shirts.
  *
  * Kept for a minute, in the browser and at Cloudflare's edge, so a busy page
@@ -171,7 +234,7 @@ export async function handleStock(request, env, ctx) {
   const response = reply(
     {
       stock: Object.fromEntries(
-        [...held].filter(([, item]) => item.tracked).map(([code, item]) => [code, item.quantity])
+        [...held].filter(([, item]) => item.known).map(([code, item]) => [code, item.quantity])
       ),
     },
     'public, max-age=60'

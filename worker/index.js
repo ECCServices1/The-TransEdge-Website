@@ -118,7 +118,7 @@ async function handleCheckout(request, env) {
     for (const line of lines) asked.set(codeOf(line), (asked.get(codeOf(line)) ?? 0) + line.qty);
     for (const line of lines) {
       const held = stock.get(codeOf(line));
-      if (!held?.tracked || (asked.get(codeOf(line)) ?? 0) <= held.quantity) continue;
+      if (!held?.known || (asked.get(codeOf(line)) ?? 0) <= held.quantity) continue;
       const variant = variantLabel(line);
       const what = `${line.product.name}${variant ? `, ${variant},` : ''}`;
       return fail(
