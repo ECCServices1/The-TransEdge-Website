@@ -48,8 +48,8 @@
   },
 
   // Email from the website's forms, through Cloudflare's own email service.
-  // Locked to one sender and the two church inboxes the forms deliver to, so
-  // the Worker cannot email anyone else whatever its code says. Keep the lists
+  // EMAIL is locked to one sender and the two church inboxes the forms deliver
+  // to, so the forms cannot email anyone else whatever their code says. Keep the lists
   // in step with src/data/forms.mjs; scripts/check-forms.mjs fails the build
   // if they differ. Both inboxes must be verified in Cloudflare before anything
   // reaches them: docs/forms.md has the steps.
@@ -58,8 +58,29 @@
       "name": "EMAIL",
       "allowed_sender_addresses": ["website@thetransedge.com"],
       "allowed_destination_addresses": ["frontdesk@thetransedge.com", "admin@thetransedge.com"]
+    },
+    // The shop's own emails (worker/notify.js): paid website orders, and a
+    // morning list of sizes running low. A second binding, because these go
+    // to people rather than to the forms' two church inboxes, and their
+    // addresses are Worker secrets (SHOP_PACKER_EMAIL, SHOP_INFO_EMAIL), not
+    // written in a public repository. Cloudflare still sends only to
+    // addresses verified in the church's account. docs/shop.md has the steps.
+    {
+      "name": "SHOP_EMAIL",
+      "allowed_sender_addresses": ["website@thetransedge.com"]
     }
   ],
+
+  // What the shop's emails have already sent, so nothing goes twice.
+  "kv_namespaces": [
+    { "binding": "SHOP_STATE", "id": "3f1999e2da2046e898ec4b862b5904cd" }
+  ],
+
+  // The shop's emails run every ten minutes. Times are UTC; notify.js works
+  // out Sydney time itself.
+  "triggers": {
+    "crons": ["*/10 * * * *"]
+  },
 
   "observability": {
     // Request logs, so a broken redirect is visible rather than guessed at.

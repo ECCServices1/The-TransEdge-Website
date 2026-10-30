@@ -52,6 +52,7 @@ import {
 import { CHURCH } from '../src/data/church.mjs';
 import { handleForm } from './forms.js';
 import { squareConfigured, squareUrl, squareHeaders, readStock, handleStock } from './square.js';
+import { runShopNotices } from './notify.js';
 
 /** A request body larger than this is not a basket. */
 const MAX_BODY_BYTES = 8_000;
@@ -278,5 +279,17 @@ export default {
     if (pathname === '/api/prayer') return handleForm(request, env, 'prayer');
 
     return env.ASSETS.fetch(request);
+  },
+
+  /**
+   * Every ten minutes (wrangler.jsonc): email newly paid website orders, and
+   * once each morning the sizes running low. worker/notify.js says who to.
+   *
+   * @param {unknown} controller
+   * @param {Record<string, any>} env
+   * @param {{ waitUntil: (promise: Promise<unknown>) => void }} ctx
+   */
+  async scheduled(controller, env, ctx) {
+    ctx.waitUntil(runShopNotices(env));
   },
 };
