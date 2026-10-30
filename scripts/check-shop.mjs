@@ -20,7 +20,7 @@ import { readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, extname } from 'node:path';
 
-import { PRODUCTS, SHIPPING, toCents, fitsOf, coloursOf, needsSize } from '../src/lib/shop.mjs';
+import { PRODUCTS, SHIPPING, toCents, fitsOf, coloursOf, needsSize, stockVariants, squashCode } from '../src/lib/shop.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assets = join(root, 'src/assets/shop');
@@ -297,6 +297,17 @@ for (const key of ['collect', 'post']) {
 }
 
 /* ------------------------------------------------------------------ report */
+
+/* Square SKUs are matched on letters and digits alone, so two things on sale
+   whose codes differ only by a hyphen or a space would read each other's
+   stock. */
+const squashed = new Map();
+for (const variant of stockVariants()) {
+  const key = squashCode(variant.code);
+  const other = squashed.get(key);
+  if (other) problems.push(`Stock codes ${other} and ${variant.code} are the same once hyphens and spaces go, so Square could not tell them apart.`);
+  else squashed.set(key, variant.code);
+}
 
 if (problems.length) {
   console.log(`\n${problems.length} problem(s) in the shop catalogue:\n`);

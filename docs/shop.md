@@ -251,7 +251,10 @@ checkout carries on; the order is still recorded in Square.
 
 In the Square Dashboard, under **Items**, create one item per product and one
 variation per colour and size. What matters is the **SKU** on each variation: it
-must be exactly the code below, because that is how the website finds it. Then,
+must be the code below, because that is how the website finds it. Capitals,
+spaces and hyphens do not matter (`TTE-RAIN-TEE-DS-GREY-APRICOT-XL` matches), but
+every letter and digit does. Give each variation its own SKU: an item copied in
+Square keeps the original's SKUs until they are changed. Then,
 for each variation, turn on stock tracking, enter how many are on hand, and set a
 low-stock alert. Square warns when stock falls below the alert number, so 3 tells
 you when two are left; use 1 for sizes there was only ever one of, which tells
@@ -314,14 +317,25 @@ Square's formal stocktake tool, a full count that a manager reviews and commits,
 needs the paid Square for Retail Plus plan and an iPhone or iPad. Changing the
 numbers directly, as above, does not.
 
-### If the counts stop falling
+### If the counts stop falling, or a size looks wrong
 
-When a sale online should have counted a size down and has not, look in the
-Worker's logs in Cloudflare for "Square payment link pointing at stock items not
-used". It means Square refused the lines that point at its items, or would have
-charged a different total, so the order went through without them, priced from
-the catalogue as always. The line says why. Send it to whoever looks after the
-site.
+Look in the Worker's logs in Cloudflare for one of these, and send it to whoever
+looks after the site:
+
+- **"Square payment link pointing at stock items not used"**: Square refused the
+  lines that point at its items, or would have charged a different total, so the
+  order went through without them, priced from the catalogue as always.
+- **"Could not read stock from Square"**: Square did not answer. Orders still go
+  through, but that one is not counted down, so check the count by hand.
+- **"Square has more than one variation with this SKU"**: two variations carry the
+  same code, usually because an item was copied. The site uses the one Square is
+  counting, with stock, but give the copy its own SKU.
+- **"Square holds stock for this SKU only at another location"**: the stock is at
+  a different Square location from the one the site reads. The site treats that
+  size as unknown rather than sold out.
+
+A size Square has switched to sold out reads as none left, whatever the count.
+A variation not available at TTE's location in Square is not read at all.
 
 ## Switching payment on
 
