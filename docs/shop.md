@@ -222,9 +222,9 @@ Orders are in the Square Dashboard, with the payments. Each one shows:
 - a reference such as `TTE-1A2B3C4D`, which is also in the address the buyer
   came back to the site on
 
-Turn on Square's email notifications for online payments, so the church hears
-about each order. That is the whole order alert system and it needs nothing
-built.
+Each paid website order is also emailed: to whoever packs, to act on, and a copy
+for information. See "The shop's emails" below. Square's own payment emails go to
+the account owner and anyone with Full access in Square, and can stay on as well.
 
 A collection order has no address on it. That is deliberate, not a fault: we do not
 ask for an address we have no use for.
@@ -317,6 +317,10 @@ has fallen below its alert number, and lists everything still low. In the Square
 Dashboard, **Items**, **Item library** shows the stock on hand, with low items
 marked. The Square app on a phone shows the same.
 
+Square only sends its low-stock email to the account owner and anyone with Full
+access. The website sends its own each morning to whoever packs, and a copy for
+information: see "The shop's emails" below.
+
 ### A helper who does the stocktake
 
 Add them as a team member in the Square Dashboard: **Staff**, then **Team**, then
@@ -352,6 +356,57 @@ looks after the site:
 
 A size Square has switched to sold out reads as none left, whatever the count.
 A variation not available at TTE's location in Square is not read at all.
+
+## The shop's emails
+
+Two emails, sent by the website itself (client, 30 October 2026), so the people
+who need them do not need Full access in Square:
+
+- **Each paid website order**, within about ten minutes. Whoever packs gets it to
+  act on: the reference, collect or post, what to pack, the total, the buyer's
+  email, and the address for a posted order. A second person gets the same,
+  headed "for your information" and saying there is nothing for them to do.
+  Sales at the welcome desk are not emailed; they were handed over there.
+- **The sizes running low**, each morning from 7 am Sydney time: anything at 3
+  or fewer, the same point at which the shop says "Only N left", with sold-out
+  sizes named. Only on mornings when something is low.
+
+Katie packs and gets the first version; Osas gets the copy (client, 30 October
+2026). Their addresses are not written in this repository, which is public. They
+are two Worker secrets.
+
+### Switching them on
+
+1. **Verify both addresses in Cloudflare**, the same way as the forms' inboxes
+   (`docs/forms.md`, "Verify the two inboxes"): in Email Service, under
+   **destination addresses**, add each address, and each person clicks the link
+   Cloudflare emails them. Cloudflare sends to verified addresses only.
+2. **Set the two secrets** on the Worker, under **Settings**, **Variables and
+   Secrets**, type **Secret**:
+
+   | Name | Value |
+   |---|---|
+   | `SHOP_PACKER_EMAIL` | the address of whoever packs the orders |
+   | `SHOP_INFO_EMAIL` | the address that gets the copy for information |
+
+Either can be left out, and the emails simply skip it. To change who gets them,
+change the secret and verify the new address.
+
+### How it works, and what it keeps
+
+Every ten minutes the Worker (`worker/notify.js`, run by the schedule in
+`wrangler.jsonc`) asks Square for the last day's payments at TTE's location,
+keeps the completed ones whose order came from the website, and emails any it
+has not emailed before. A Square webhook would be a few minutes quicker but needs
+setting up in Square, and loses what arrives while it is broken; this catches up
+on its own.
+
+A small Cloudflare store, `SHOP_STATE` (created 30 October 2026, named
+`the-transedge-website-shop`), remembers which payments have been emailed and
+whether the morning's list has gone, for a month at most. It holds payment ids
+and order references, nothing about the buyer. If an email fails to send, it is
+not marked as sent, so the next run tries again; the Worker's log says
+"order email could not be sent" with the reference.
 
 ## Switching payment on
 
@@ -501,9 +556,9 @@ items on a checklist.
 - **A stock database.** Square keeps the counts, and the site only reads them.
   See "Stock, kept in Square".
 - **An order database.** See above. Square is the order book.
-- **A Square webhook.** Nothing here depends on knowing about a payment after the
-  fact. If orders ever need to land in Connect automatically, that is where it
-  would go.
+- **A Square webhook.** The order emails ask Square every ten minutes instead;
+  see "The shop's emails". If orders ever need to land in Connect the moment they
+  are paid, a webhook is where it would go.
 - **`/api/contact`.** The Worker now exists, so the contact and prayer forms could
   finally be delivered somewhere. Open question 5 in `docs/open-questions.md` has
   not been answered, so where they should be delivered is still undecided and
